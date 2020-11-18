@@ -28,6 +28,14 @@ describe Shrine::Plugins::Mirroring do
 
         refute mirrored_file.exists?
       end
+
+      it "forwards options to the mirror upload" do
+        @shrine.expects(:upload).with do |file, mirror, options|
+          mirror == :other_store && options[:foo] == "bar"
+        end
+
+        @uploader.upload(fakeio, foo: "bar")
+      end
     end
   end
 

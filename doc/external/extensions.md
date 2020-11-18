@@ -28,6 +28,8 @@ title: Extensions
 | :----                                                                                       | :--------                                                             |
 | [administrate-field-shrine](https://github.com/catsky/administrate-field-shrine)            | Plugin for [Administrate](https://github.com/thoughtbot/administrate) |
 | [rails_admin_shrine](https://github.com/iquest/rails_admin_shrine)                          | Plugin for [RailsAdmin](https://github.com/sferik/rails_admin)        |
+| [shrine-blurhash](https://github.com/renchap/shrine-blurhash)                               | Plugin for computing [Blurhash](https://blurha.sh/) on images         |
+| [shrine-cloudimage](https://github.com/janklimo/shrine-cloudimage)                          | Plugin for [Cloudimage](https://www.cloudimage.io/)                   |
 | [shrine-color](https://github.com/jnylen/shrine-color)                                      | Plugin for finding dominant color in an image                         |
 | [shrine-configurable_storage](https://github.com/SleeplessByte/shrine-configurable_storage) | Plugin for lazy storage registration                                  |
 | [shrine-content_addressable](https://github.com/SleeplessByte/shrine-content_addressable)   | Plugin for generating content addressable locations                   |
@@ -45,6 +47,7 @@ title: Extensions
 | Gem                                                             | Description                                                                     |
 | :-----                                                          | :-------                                                                        |
 | [ckeditor](https://github.com/galetahub/ckeditor)               | Integration for [CKEditor](https://ckeditor.com/ckeditor-4/)                    |
+| [faster_s3_url](https://github.com/jrochkind/faster_s3_url)     | Optimized generation of public and presigned AWS S3 GET URLs                    |
 | [imgproxy](https://github.com/imgproxy/imgproxy.rb)             | Integration for [imgproxy](https://github.com/imgproxy/imgproxy)                |
 | [rails_admin](https://github.com/sferik/rails_admin)            | Integration for [RailsAdmin](https://github.com/sferik/rails_admin)             |
 | [uppy-s3_multipart](https://github.com/janko/uppy-s3_multipart) | Integration for [Uppy AWS S3 Multipart](https://uppy.io/docs/aws-s3-multipart/) |

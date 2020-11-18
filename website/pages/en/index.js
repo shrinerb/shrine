@@ -90,14 +90,6 @@ class Index extends React.Component {
       )
     };
 
-    /* https://codefund.io */
-    const Ads = () => (
-      <div className="codefund">
-        <div id="codefund"></div>
-        <script src="https://codefund.io/properties/535/funder.js" async="async"></script>
-      </div>
-    )
-
     const Sponsors = () => {
       const sponsors = JSON.parse(readFile("sponsors.json"))
       const heartEmoji = "https://github.githubassets.com/images/icons/emoji/unicode/1f496.png"
@@ -125,7 +117,6 @@ class Index extends React.Component {
     return (
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
-        <Ads />
         <div className="mainContainer">
           <Demo />
           <Sponsors />

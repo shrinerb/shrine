@@ -230,6 +230,28 @@ describe Shrine::Plugins::Activerecord do
         assert_equal file, @user.avatar
       end
 
+      it "preserves state other than the file" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.save
+        @user.avatar_attacher(cache: :other_cache)
+        @user.avatar_attacher.context[:foo] = "bar"
+        @user.reload
+
+        assert_equal :other_cache, @user.avatar_attacher.cache_key
+        assert_equal "bar",        @user.avatar_attacher.context[:foo]
+      end
+
+      it "doesn't initialize the attacher if it hasn't been initialized" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.save
+        @user = @user.class.find(@user.id)
+        @user.reload
+
+        refute @user.instance_variable_defined?(:@avatar_attacher)
+      end
+
       it "returns self" do
         @user.class.include @shrine::Attachment.new(:avatar)
 
@@ -252,14 +274,10 @@ describe Shrine::Plugins::Activerecord do
         @user.class.class_eval { attr_accessor :avatar_data }
       end
 
-      after do
-        @user.class.columns_hash["avatar_data"].sql_type_metadata
-          .instance_variable_set(:@type, :text) # revert schema change
-      end
-
       it "handles json type" do
-        @user.class.columns_hash["avatar_data"].sql_type_metadata
-          .instance_variable_set(:@type, :json)
+        column = @user.class.columns_hash["avatar_data"].dup
+        column.singleton_class.send(:define_method, :type) { :json }
+        @user.class.columns_hash["avatar_data"] = column
 
         @attacher.load_model(@user, :avatar)
         @attacher.attach(fakeio)
@@ -272,8 +290,9 @@ describe Shrine::Plugins::Activerecord do
       end
 
       it "handles jsonb type" do
-        @user.class.columns_hash["avatar_data"].sql_type_metadata
-          .instance_variable_set(:@type, :jsonb)
+        column = @user.class.columns_hash["avatar_data"].dup
+        column.singleton_class.send(:define_method, :type) { :jsonb }
+        @user.class.columns_hash["avatar_data"] = column
 
         @attacher.load_model(@user, :avatar)
         @attacher.attach(fakeio)

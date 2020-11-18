@@ -401,7 +401,8 @@ attacher.process_derivatives(:my_processor) # downloads attached file and passes
 
 If you want to use a different source file, you can pass it in to the process
 call. Typically you'd pass a local file on disk. If you pass a
-`Shrine::UploadedFile` object, it will be automatically downloaded to disk.
+`Shrine::UploadedFile` object or another IO-like object, it will be
+automatically downloaded/copied to a local TempFile on disk.
 
 ```rb
 # named processor:
@@ -418,6 +419,20 @@ can use this to avoid re-downloading the same source file each time:
 attacher.file.download do |original|
   attacher.process_derivatives(:thumbnails, original)
   attacher.process_derivatives(:colors,     original)
+end
+```
+
+If a processor might not always need a local source file, you avoid a
+potentially expensive download/copy by registering the processor with
+`download: false`, in which case the source file will be passed to the
+processor as is.
+
+```rb
+Attacher.derivatives :my_processor, download: false do |source|
+  source #=> Could be File, Shrine::UploadedFile, or other IO-like object
+  shrine_class.with_file(source) do |file|
+    # can force download/copy if necessary with `with_file`,
+  end
 end
 ```
 
@@ -463,6 +478,11 @@ For adding a single derivative, you can also use the singular
 ```rb
 attacher.add_derivative(:thumb, thumbnail_file)
 ```
+
+> Note that new derivatives will replace any existing derivatives living under
+the same key, but won't delete them. If this is your case, make sure to save a
+reference to the old derivatives before assigning new ones, and then delete
+them after persisting the change.
 
 Any options passed to `Attacher#add_derivative(s)` will be forwarded to
 [`Attacher#upload_derivatives`](#uploading-derivatives).
@@ -571,6 +591,11 @@ attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
 attacher.merge_derivatives attacher.upload_derivatives({ nested: { two: two_file } })
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
 ```
+
+> Note that new derivatives will replace any existing derivatives living under
+the same key, but won't delete them. If this is your case, make sure to save a
+reference to the old derivatives before assigning new ones, and then delete
+them after persisting the change.
 
 The `Attacher#merge_derivatives` method is thread-safe.
 

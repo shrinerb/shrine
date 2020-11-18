@@ -55,7 +55,7 @@ class Shrine
           # reload the attacher on record reload
           define_method :reload do |*args|
             result = super(*args)
-            instance_variable_set(:"@#{name}_attacher", nil)
+            send(:"#{name}_attacher").reload if instance_variable_defined?(:"@#{name}_attacher")
             result
           end
         end

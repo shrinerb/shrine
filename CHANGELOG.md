@@ -1,4 +1,36 @@
-## master
+## HEAD
+
+* `entity` – Make `Attacher#read` method public (@janko)
+
+* `entity` – Reset attachment dirty tracking in `Attacher#reload` (@janko)
+
+* `activerecord` – Don't load the attacher on `ActiveRecord::Base#reload` if it hasn't yet been initialized (@janko)
+
+* `sequel` – Don't load the attacher on `Sequel::Model#reload` if it hasn't yet been initialized (@janko)
+
+## 3.3.0 (2020-10-04)
+
+* `s3` - Support new `Aws::S3::EncryptionV2::Client` for client-side encryption (@janko)
+
+* `derivation_endpoint` – Reduce possibility of timing attacks when comparing signatures (@esparta)
+
+* `derivatives` – Avoid downloading the attached file when calling default no-op processor (@janko)
+
+* `derivatives` – Add `:download` processor setting for skipping downloading source file (@jrochkind, @janko)
+
+* `derivatives` – Copy non-file source IO objects into local file before passing them to the processor (@jrochkind)
+
+* `sequel` – Call `Attacher#reload` in `Sequel::Model#reload`, which keeps rest of attacher state (@janko, @jrochkind)
+
+* `activerecord` – Call `Attacher#reload` in `ActiveRecord::Base#reload`, which keeps rest of attacher state (@janko, @jrochkind)
+
+* `add_metadata` – Add `:skip_nil` option for excluding metadata keys whose values are nil (@renchap)
+
+* `store_dimensions` – Add `:auto_extraction` option for disabling automatically extracting dimensions on upload (@renchap)
+
+* `mirroring` – Forward original upload options when mirroring upload (@corneverbruggen)
+
+* `derivation_endpoint` – Apply `version` URL option in derivation endpoint (@janko)
 
 * `remove_attachment` – Delete removed file if a new file was attached right after removal (@janko)
 
@@ -11,6 +43,10 @@
 * `s3` – Add back support for client-side encryption (@janko)
 
 * `memory` – Ensure `Memory#open` returns content in original encoding (@jrochkind)
+
+## 3.2.2 (2020-08-05)
+
+* `s3` – Fix `S3#open` not working on aws-sdk-core 3.104 and above (@janko)
 
 ## 3.2.1 (2020-01-12)
 

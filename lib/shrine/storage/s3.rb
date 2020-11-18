@@ -9,6 +9,7 @@ require "down/chunked_io"
 require "content_disposition"
 
 require "uri"
+require "tempfile"
 
 class Shrine
   module Storage
@@ -282,20 +283,36 @@ class Shrine
       # Aws::S3::Object#get doesn't allow us to get the content length of the
       # object before all content is downloaded, so we hack our way around it.
       # This way get the content length without an additional HEAD request.
-      def get(id, **params)
-        req = client.build_request(:get_object, bucket: bucket.name, key: object_key(id), **params)
+      if Gem::Version.new(Aws::CORE_GEM_VERSION) >= Gem::Version.new("3.104.0")
+        def get(id, **params)
+          enum = object(id).enum_for(:get, **params)
 
-        body = req.enum_for(:send_request)
-        begin
-          body.peek # start the request
-        rescue StopIteration
-          # the S3 object is empty
+          begin
+            content_length = Integer(enum.peek.last["content-length"])
+          rescue StopIteration
+            content_length = 0
+          end
+
+          chunks = Enumerator.new { |y| loop { y << enum.next.first } }
+
+          [chunks, content_length]
         end
+      else
+        def get(id, **params)
+          req = client.build_request(:get_object, bucket: bucket.name, key: object_key(id), **params)
 
-        content_length = Integer(req.context.http_response.headers["Content-Length"])
-        chunks         = Enumerator.new { |y| loop { y << body.next } }
+          body = req.enum_for(:send_request)
+          begin
+            body.peek # start the request
+          rescue StopIteration
+            # the S3 object is empty
+          end
 
-        [chunks, content_length]
+          content_length = Integer(req.context.http_response.headers["Content-Length"])
+          chunks         = Enumerator.new { |y| loop { y << body.next } }
+
+          [chunks, content_length]
+        end
       end
 
       # The file is copyable if it's on S3 and on the same Amazon account.
@@ -326,7 +343,7 @@ class Shrine
         # Save the encryption client and continue initialization with normal
         # client.
         def initialize(client: nil, **options)
-          return super unless client.is_a?(Aws::S3::Encryption::Client)
+          return super unless client.class.name.start_with?("Aws::S3::Encryption")
 
           super(client: client.client, **options)
           @encryption_client = client
@@ -342,16 +359,24 @@ class Shrine
           encryption_client.put_object(body: io, bucket: bucket.name, key: object_key(id), **options)
         end
 
-        # Encryption client doesn't implement #head_object, so we use regular
-        # client for that. We also need to actually call `#get_object` for the
-        # encryption client to add the decrypt handler.
         def get(id, **options)
           return super unless encryption_client
 
-          content_length = client.head_object(bucket: bucket.name, key: object_key(id)).content_length
-          chunks         = encryption_client.enum_for(:get_object, bucket: bucket.name, key: object_key(id), **options)
+          # Encryption client v2 warns against streaming download, so we first
+          # download all content into a file.
+          tempfile = Tempfile.new("shrine-s3", binmode: true)
+          response = encryption_client.get_object(response_target: tempfile, bucket: bucket.name, key: object_key(id), **options)
+          tempfile.rewind
 
-          [chunks, content_length]
+          chunks = Enumerator.new do |yielder|
+            begin
+              yielder << tempfile.read(16*1024) until tempfile.eof?
+            ensure
+              tempfile.close!
+            end
+          end
+
+          [chunks, tempfile.size]
         end
       end
 

@@ -399,7 +399,7 @@ describe Shrine do
     end
 
     it "doesn't error when storage already closed the file" do
-      @uploader.storage.instance_eval { def upload(io, *); super; io.close; end }
+      @uploader.storage.instance_eval { def upload(io, id, **); super; io.close; end }
       @uploader.upload(fakeio)
     end
 

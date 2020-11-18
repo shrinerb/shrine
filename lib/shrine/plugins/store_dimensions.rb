@@ -12,7 +12,7 @@ class Shrine
       end
 
       def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
-        uploader.opts[:store_dimensions] ||= { analyzer: :fastimage, on_error: :warn }
+        uploader.opts[:store_dimensions] ||= { analyzer: :fastimage, on_error: :warn, auto_extraction: true }
         uploader.opts[:store_dimensions].merge!(opts)
 
         # resolve error strategy
@@ -71,8 +71,10 @@ class Shrine
       end
 
       module InstanceMethods
-        # We update the metadata with "width" and "height".
         def extract_metadata(io, **options)
+          return super unless opts[:store_dimensions][:auto_extraction]
+
+          # We update the metadata with "width" and "height".
           width, height = self.class.extract_dimensions(io)
 
           super.merge!("width" => width, "height" => height)

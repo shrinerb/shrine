@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 # Web framework
 gem "puma"
-gem "roda", "~> 3.9"
+gem "roda", "~> 3.36"
 
 # Rendering
 gem "tilt", ">= 2.0.8"
@@ -30,7 +30,6 @@ gem "pry-byebug"
 
 # Testing
 gem "minitest"
-gem "capybara"
-gem "chromedriver-helper"
-gem "selenium-webdriver"
+gem "capybara", "~> 3.33"
+gem "cuprite"
 gem "rake"

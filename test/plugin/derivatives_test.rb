@@ -767,6 +767,13 @@ describe Shrine::Plugins::Derivatives do
         assert_equal "elif", files[:reversed].read
       end
 
+      it "has an implicit no-op default processor" do
+        @attacher.attach(fakeio)
+        @attacher.file.expects(:download).never
+
+        assert_equal Hash.new, @attacher.process_derivatives
+      end
+
       it "passes downloaded attached file" do
         minitest = self
         @attacher.class.derivatives :reversed do |original|
@@ -810,6 +817,38 @@ describe Shrine::Plugins::Derivatives do
         result = @attacher.process_derivatives(:path, file)
 
         assert_match /^#{Dir.tmpdir}/, result[:path].read
+      end
+
+      it "downloads source non-file IO" do
+        @attacher.class.derivatives :path do |original|
+          { path: StringIO.new(original.path) }
+        end
+
+        result = @attacher.process_derivatives(:path, StringIO.new("fake content"))
+
+        assert result[:path]
+        assert_match /^#{Dir.tmpdir}/, result[:path].read
+      end
+
+      it "does not download source UploadedFile with `download: false`" do
+        @attacher.class.derivatives :original_class, download: false do |original|
+          { original_class: StringIO.new(original.class.inspect) }
+        end
+
+        file   = @attacher.upload(fakeio("file"))
+        result = @attacher.process_derivatives(:original_class, file)
+
+        assert_match /::UploadedFile\Z/, result[:original_class].read
+      end
+
+      it "does not download source StringIO with `download: false`" do
+        @attacher.class.derivatives :original_class, download: false do |original|
+          { original_class: StringIO.new(original.class.inspect) }
+        end
+
+        result = @attacher.process_derivatives(:original_class, StringIO.new("stringIO"))
+
+        assert_equal "StringIO", result[:original_class].read
       end
 
       it "forwards additional options" do
@@ -872,13 +911,6 @@ describe Shrine::Plugins::Derivatives do
         end
       end
 
-      it "doesn't fail for missing default processor" do
-        @attacher.attach(fakeio)
-        @attacher.process_derivatives
-
-        assert_equal Hash.new, @attacher.derivatives
-      end
-
       it "fails if no file is attached" do
         @attacher.class.derivatives :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
@@ -905,6 +937,14 @@ describe Shrine::Plugins::Derivatives do
 
           assert_logged /^Derivatives \(\d+ms\) – \{.+\}$/ do
             @attacher.process_derivatives(:reversed)
+          end
+        end
+
+        it "doesn't instrument default no-op processor" do
+          @shrine.plugin :derivatives
+
+          refute_logged /^Derivatives \(\d+ms\) – \{.+\}$/ do
+            @attacher.process_derivatives
           end
         end
 

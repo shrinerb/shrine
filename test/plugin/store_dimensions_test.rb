@@ -210,4 +210,12 @@ describe Shrine::Plugins::StoreDimensions do
       @shrine.extract_dimensions(image)
     end
   end
+
+  it "can disable automatically extracting dimensions on upload" do
+    @shrine.plugin :store_dimensions, auto_extraction: false
+    uploaded_file = @uploader.upload(image)
+    assert_nil uploaded_file.metadata["width"]
+    assert_nil uploaded_file.metadata["height"]
+    assert_equal [100, 67], @shrine.extract_dimensions(image)
+  end
 end

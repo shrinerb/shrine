@@ -191,7 +191,7 @@ attacher.file   #=> nil
 ### Reloading
 
 The `Attacher#reload` method reloads attached file from the attachment data on
-the entity attribute.
+the entity attribute and resets dirty tracking.
 
 ```rb
 photo = Photo.new
@@ -205,6 +205,9 @@ attacher.file #=> nil
 attacher.reload
 attacher.file #=> #<ImageUploader::UploadedFile>
 ```
+
+If you want to reload attachment data while retaining dirty tracking state, use
+`Attacher#read` instead.
 
 ### Column values
 

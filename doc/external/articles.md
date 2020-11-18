@@ -48,14 +48,12 @@ title: Articles
 
 | Screencast                                                                                                             | Source  | Published             |
 | :----                                                                                                                  | :------ | --------:             |
+| [Testing File Uploads in Rails with Shrine](https://gorails.com/episodes/testing-file-uploads-with-shrine?autoplay=1)  | GoRails | 23&nbsp;Mar&nbsp;2020 |
+| [File Uploads in Rails with Shrine](https://gorails.com/episodes/rails-file-uploads-with-shrine?autoplay=1)            | GoRails | 16&nbsp;Mar&nbsp;2020 |
 | [Uploading Files to DigitalOcean Spaces](https://gorails.com/episodes/digital-ocean-spaces-with-rails?autoplay=1)      | GoRails | 31&nbsp;Oct&nbsp;2017 |
 | [Trix WYSIWYG Editor And File Uploads](https://gorails.com/episodes/trix-editor?autoplay=1)                            | GoRails | 03&nbsp;Oct&nbsp;2017 |
 | [Multiple File Uploads with Shrine](https://gorails.com/episodes/multiple-file-uploads-with-shrine?autoplay=1)         | GoRails | 14&nbsp;Dec&nbsp;2016 |
 | [Backgrounding and Video Transcoding](https://gorails.com/episodes/shrine-background-and-video-transcoding?autoplay=1) | GoRails | 03&nbsp;Nov&nbsp;2016 |
-| [Direct File Uploads to S3: Part 3](https://gorails.com/episodes/direct-file-uploads-to-s3-part-3?autoplay=1)          | GoRails | 05&nbsp;Oct&nbsp;2016 |
-| [Direct File Uploads to S3: Part 2](https://gorails.com/episodes/direct-file-uploads-to-s3-part-2?autoplay=1)          | GoRails | 05&nbsp;Oct&nbsp;2016 |
-| [Direct File Uploads to S3: Part 1](https://gorails.com/episodes/direct-file-uploads-to-s3-part-1?autoplay=1)          | GoRails | 05&nbsp;Oct&nbsp;2016 |
-| [File Uploads in Rails with Shrine](https://gorails.com/episodes/file-uploading-with-shrine?autoplay=1)                | GoRails | 23&nbsp;Sep&nbsp;2016 |
 
 ## Talks
 

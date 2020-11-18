@@ -36,8 +36,8 @@ class Shrine
 
       module AttacherMethods
         # Inherits global hooks if defined.
-        def initialize(*args)
-          super
+        def initialize(**args)
+          super(**args)
           @destroy_block = self.class.destroy_block
           @promote_block = self.class.promote_block
         end

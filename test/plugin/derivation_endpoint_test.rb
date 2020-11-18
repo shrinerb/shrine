@@ -248,6 +248,14 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_match "filename=\"custom\"", response.headers["Content-Disposition"]
     end
 
+    it "applies 'version' param" do
+      @shrine.plugin :derivation_endpoint, version: 1, filename: -> { "#{options[:version]}" }
+      derivation_url = @uploaded_file.derivation_url(:gray, version: 2)
+      response = app(version: 1).get(derivation_url)
+      assert_equal 200, response.status
+      assert_match "filename=\"2\"", response.headers["Content-Disposition"]
+    end
+
     it "returns Cache-Control header on 2xx response" do
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app.get(derivation_url)
