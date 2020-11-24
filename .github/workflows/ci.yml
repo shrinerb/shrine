@@ -33,7 +33,7 @@ jobs:
           - jruby-9.2
           # - jruby-head
 
-    name: testing under ruby ${{ matrix.ruby }}
+    name: ${{ matrix.ruby }}
 
     steps:
     - uses: actions/checkout@v2
