@@ -33,7 +33,7 @@ jobs:
           - jruby-9.2.13.0
           # - jruby-head
 
-    name: CI, ruby ${{ matrix.ruby }}
+    name: testing under ruby ${{ matrix.ruby }}
 
     steps:
     - uses: actions/checkout@v2
