@@ -29,9 +29,7 @@ jobs:
           - 2.5
           - 2.6
           - 2.7
-          # - ruby-head
           - jruby-9.2
-          # - jruby-head
 
     name: ${{ matrix.ruby }}
 
