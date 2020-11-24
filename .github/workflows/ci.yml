@@ -31,8 +31,6 @@ jobs:
           - 2.7
           - jruby-9.2
 
-    name: ${{ matrix.ruby }}
-
     steps:
     - uses: actions/checkout@v2
 
@@ -51,7 +49,3 @@ jobs:
 
     - name: Run tests
       run: bundle exec rake test
-
-
-
-
