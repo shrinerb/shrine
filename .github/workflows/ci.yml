@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ '**' ]
+
+env:
+  RACK_ENV: development
+  S3_REAL: true
+  S3_REGION: us-east-1
+  S3_BUCKET: minio-bucket
+  S3_ACCESS_KEY_ID: weak_key
+  S3_SECRET_ACCESS_KEY: weak_key
+  S3_ENDPOINT: http://localhost:9000
+  MINIO_ACCESS_KEY: weak_key
+  MINIO_SECRET_KEY: weak_key
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - 2.3
+          - 2.4
+          - 2.5
+          - 2.6
+          - 2.7
+          # - ruby-head
+          - jruby-9.2.13.0
+          # - jruby-head
+
+    name: CI, ruby ${{ matrix.ruby }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+
+    - name: Set up Minio
+      run: |
+        mkdir -p "${GITHUB_WORKSPACE}"/minio/data/minio-bucket
+        wget -nc -O "${GITHUB_WORKSPACE}"/minio/minio https://dl.min.io/server/minio/release/linux-amd64/minio
+        chmod +x "${GITHUB_WORKSPACE}"/minio/minio
+        ${GITHUB_WORKSPACE}/minio/minio server ${GITHUB_WORKSPACE}/minio/data --address localhost:9000 &>${GITHUB_WORKSPACE}/minio/data/server.log &
+
+    - name: Run tests
+      run: bundle exec rake test
+
+
+
+
