@@ -695,6 +695,7 @@ s3.upload(io, "object/destination/path")
 The Shrine storage has no replacement for the `:url` Paperclip option, and it
 isn't needed.
 
+[metadata_attributes]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/metadata_attributes.rb
 [Managing Derivatives]: https://shrinerb.com/docs/changing-derivatives
 [direct uploads]: https://shrinerb.com/docs/getting-started#direct-uploads
 [S3]: https://shrinerb.com/docs/storage/s3
