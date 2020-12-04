@@ -9,11 +9,11 @@ There are five main types of classes that you deal with in Shrine:
 
 | Class | Description |
 | :---- | :---------- |
-| `Shrine::Storage::*` | Manages files on a particular storage service |
-| `Shrine` | Wraps uploads and handles loading plugins |
-| `Shrine::UploadedFile` | Represents a file uploaded to a storage |
-| `Shrine::Attacher` | Handles file attachment logic |
-| `Shrine::Attachment` | Provides convenience model attachment interface |
+| [`Shrine::Storage::*`](#Storage) | Manages files on a particular storage service |
+| [`Shrine`](#Shrine) | Wraps uploads and handles loading plugins |
+| [`Shrine::UploadedFile`](#shrineuploadedfile) | Represents a file uploaded to a storage |
+| [`Shrine::Attacher`](#shrineattacher) | Handles file attachment logic |
+| [`Shrine::Attachment`](#shrineattachment) | Provides convenience model attachment interface |
 
 ## Storage
 
