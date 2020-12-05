@@ -53,16 +53,17 @@ Photo.find_each do |photo|
   next unless attacher.stored? # move only attachments uploaded to permanent storage
 
   old_attacher = attacher.dup
+  current_file = old_attacher.file
 
   attacher.set             attacher.upload(attacher.file)                    # reupload file
   attacher.set_derivatives attacher.upload_derivatives(attacher.derivatives) # reupload derivatives if you have derivatives
 
   begin
-    attacher.atomic_persist           # persist changes if attachment has not changed in the meantime
-    old_attacher.destroy_attached     # delete files on old location
-  rescue Shrine::AttachmentChanged,   # attachment has changed during reuploading
-         ActiveRecord::RecordNotFound # record has been deleted during reuploading
-    attacher.destroy_attached         # delete now orphaned files
+    attacher.atomic_persist(current_file) # persist changes if attachment has not changed in the meantime
+    old_attacher.destroy_attached         # delete files on old location
+  rescue Shrine::AttachmentChanged,       # attachment has changed during reuploading
+         ActiveRecord::RecordNotFound     # record has been deleted during reuploading
+    attacher.destroy_attached             # delete now orphaned files
   end
 end
 ```
