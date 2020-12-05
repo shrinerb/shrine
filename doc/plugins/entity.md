@@ -22,7 +22,9 @@ These methods read attachment data from the `#<name>_data` attribute on the
 entity instance.
 
 ```rb
-class Photo < Entity(:image_data) # has `image_data` reader
+class Photo
+  attr_reader :image_data
+
   include ImageUploader::Attachment(:image)
 end
 ```
@@ -94,7 +96,9 @@ You can also specify default attacher options when including
 `Shrine::Attachment`:
 
 ```rb
-class Photo < Entity(:image_data)
+class Photo
+  attr_reader :image_data
+
   include ImageUploader::Attachment(:image, store: :other_store)
 end
 ```
@@ -123,7 +127,8 @@ You can also use `Shrine::Attacher` directly (with or without the
 `Shrine::Attachment` module):
 
 ```rb
-class Photo < Entity(:image_data) # has `image_data` reader
+class Photo
+  attr_reader :image_data
 end
 ```
 ```rb

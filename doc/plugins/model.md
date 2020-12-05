@@ -17,7 +17,9 @@ Including a `Shrine::Attachment` module into a model class will:
 * add `#<name>=` and `#<name>_changed?` methods
 
 ```rb
-class Photo < Model(:image_data) # has `image_data` accessor
+class Photo
+  attr_accessor :image_data
+
   include ImageUploader::Attachment(:image)
 end
 ```
@@ -107,7 +109,9 @@ If you still want to include `Shrine::Attachment` modules to immutable
 entities, you can disable "model" behaviour by passing `model: false`:
 
 ```rb
-class Photo < Entity(:image_data)
+class Photo
+  attr_reader :image_data
+
   include ImageUploader::Attachment(:image, model: false)
 end
 ```
@@ -118,7 +122,8 @@ You can also use `Shrine::Attacher` directly (with or without the
 `Shrine::Attachment` module):
 
 ```rb
-class Photo < Model(:image_data) # has `image_data` accessor
+class Photo
+  attr_accessor :image_data
 end
 ```
 ```rb
