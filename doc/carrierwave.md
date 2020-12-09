@@ -275,8 +275,9 @@ Shrine. Let's assume we have a `Photo` model with the "image" attachment.
 First we need to create the `image_data` column for Shrine:
 
 ```rb
-add_column :photos, :image_data, :text # or :json or :jsonb if supported
+add_column :photos, :image_data, :text # please don't use :json or :jsonb here (even if supported) - this will result in errors during migration!
 ```
+
 
 ### 2. Dual write
 
