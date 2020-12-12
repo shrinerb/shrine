@@ -269,39 +269,25 @@ describe Shrine::Plugins::Activerecord do
 
   describe "Attacher" do
     describe "JSON columns" do
-      before do
-        # work around Active Record casting assigned values into a string
-        @user.class.class_eval { attr_accessor :avatar_data }
-      end
+      [:json, :jsonb].each do |type|
+        it "handles #{type} type" do
+          # work around Active Record casting assigned values into a string
+          @user.class.send(:attr_accessor, :avatar_data)
 
-      it "handles json type" do
-        column = @user.class.columns_hash["avatar_data"].dup
-        column.singleton_class.send(:define_method, :type) { :json }
-        @user.class.columns_hash["avatar_data"] = column
+          columns_hash = @user.class.columns_hash.dup # unfreeze
+          columns_hash["avatar_data"] = columns_hash["avatar_data"].dup # unfreeze
+          columns_hash["avatar_data"].singleton_class.send(:define_method, :type) { type }
+          @user.class.instance_variable_set(:@columns_hash, columns_hash)
 
-        @attacher.load_model(@user, :avatar)
-        @attacher.attach(fakeio)
+          @attacher.load_model(@user, :avatar)
+          @attacher.attach(fakeio)
 
-        assert_equal @attacher.file.data, @user.avatar_data
+          assert_equal @attacher.file.data, @user.avatar_data
 
-        @attacher.reload
+          @attacher.reload
 
-        assert_equal @attacher.file.data, @user.avatar_data
-      end
-
-      it "handles jsonb type" do
-        column = @user.class.columns_hash["avatar_data"].dup
-        column.singleton_class.send(:define_method, :type) { :jsonb }
-        @user.class.columns_hash["avatar_data"] = column
-
-        @attacher.load_model(@user, :avatar)
-        @attacher.attach(fakeio)
-
-        assert_equal @attacher.file.data, @user.avatar_data
-
-        @attacher.reload
-
-        assert_equal @attacher.file.data, @user.avatar_data
+          assert_equal @attacher.file.data, @user.avatar_data
+        end
       end
     end
 

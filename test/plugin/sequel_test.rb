@@ -248,30 +248,19 @@ describe Shrine::Plugins::Sequel do
         @user.class.db_schema[:avatar_data][:type] = :string # revert schema change
       end
 
-      it "handles json type" do
-        @user.class.db_schema[:avatar_data][:type] = :json
+      [:json, :jsonb].each do |type|
+        it "handles #{type} type" do
+          @user.class.db_schema[:avatar_data][:type] = type
 
-        @attacher.load_model(@user, :avatar)
-        @attacher.attach(fakeio)
+          @attacher.load_model(@user, :avatar)
+          @attacher.attach(fakeio)
 
-        assert_equal @attacher.file.data, @user.avatar_data
+          assert_equal @attacher.file.data, @user.avatar_data
 
-        @attacher.reload
+          @attacher.reload
 
-        assert_equal @attacher.file.data, @user.avatar_data
-      end
-
-      it "handles jsonb type" do
-        @user.class.db_schema[:avatar_data][:type] = :jsonb
-
-        @attacher.load_model(@user, :avatar)
-        @attacher.attach(fakeio)
-
-        assert_equal @attacher.file.data, @user.avatar_data
-
-        @attacher.reload
-
-        assert_equal @attacher.file.data, @user.avatar_data
+          assert_equal @attacher.file.data, @user.avatar_data
+        end
       end
     end
 
