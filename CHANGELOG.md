@@ -1,5 +1,7 @@
 ## HEAD
 
+* `activerecord` – Fix keyword argument warning when adding errors with options (@janko)
+
 * `entity` – Make `Attacher#read` method public (@janko)
 
 * `entity` – Reset attachment dirty tracking in `Attacher#reload` (@janko)

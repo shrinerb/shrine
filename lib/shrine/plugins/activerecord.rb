@@ -75,8 +75,8 @@ class Shrine
         def activerecord_validate
           return unless respond_to?(:errors)
 
-          errors.each do |message|
-            record.errors.add(name, *message)
+          errors.each do |(type, options)|
+            record.errors.add(name, type, **options.to_h)
           end
         end
 
