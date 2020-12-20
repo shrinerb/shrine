@@ -237,7 +237,7 @@ class PromoteJob
   rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
     # attachment has changed or record has been deleted, nothing to do
   end
-and
+end
 ```
 ```rb
 class DestroyJob
@@ -258,7 +258,7 @@ class DestroyJob
     attacher = attacher_class.from_data(data)
     attacher.destroy
   end
-and
+end
 ```
 
 ### Attacher backgrounding
