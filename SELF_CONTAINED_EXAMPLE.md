@@ -4,7 +4,7 @@
 
 It is very difficult to debug a problem without a simple example.
 
-You can [clone this repository](https://github.com/BKSpurgeon/debugging-shrine-example) here with everything set up, to make this as easy as possible to debug.
+You can [clone this repository](https://github.com/benkoshy/debugging-shrine-example) here with everything set up, to make this as easy as possible to debug.
 
 But if you wish to set things up manually, please follow the guide lines below.
 
