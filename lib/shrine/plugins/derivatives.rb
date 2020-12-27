@@ -512,8 +512,7 @@ class Shrine
             processor_options: processor_options,
             io:                source,
             attacher:          self,
-            &block
-          })
+          }, &block)
         end
 
         # Returns symbolized array or single key.
