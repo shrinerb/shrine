@@ -63,6 +63,7 @@ direct uploads for fully asynchronous user experience.
   # for S3 storage
   gem.add_development_dependency "aws-sdk-s3", "~> 1.69"
   gem.add_development_dependency "aws-sdk-core", "~> 3.23"
+  gem.add_development_dependency "rexml"
 
   # for instrumentation plugin
   gem.add_development_dependency "dry-monitor"

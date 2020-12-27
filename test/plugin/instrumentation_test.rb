@@ -212,7 +212,7 @@ describe Shrine::Plugins::Instrumentation do
         assert_equal io,                          @event[:io]
         assert_equal "bar",                       @event[:upload_options][:foo]
         assert_equal %w[filename mime_type size], @event[:metadata].keys.sort
-        assert_equal Hash[baz: "quux"],           @event[:options]
+        assert_equal "quux",                      @event[:options][:baz]
         assert_equal @shrine,                     @event[:uploader]
         assert_kind_of Integer,                   @event[:time]
       end
