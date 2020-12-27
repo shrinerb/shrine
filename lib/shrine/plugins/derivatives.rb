@@ -507,14 +507,13 @@ class Shrine
         def instrument_derivatives(processor_name, source, processor_options, &block)
           return yield unless shrine_class.respond_to?(:instrument)
 
-          shrine_class.instrument(
-            :derivatives,
+          shrine_class.instrument(:derivatives, {
             processor:         processor_name,
             processor_options: processor_options,
             io:                source,
             attacher:          self,
             &block
-          )
+          })
         end
 
         # Returns symbolized array or single key.

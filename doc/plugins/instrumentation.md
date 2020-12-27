@@ -173,7 +173,7 @@ methods:
 
 ```rb
 # sends a `my_event.shrine` event to the notifications component
-Shrine.instrument(:my_event, foo: "bar") do
+Shrine.instrument(:my_event, { foo: "bar" }) do
   # do work
 end
 ```

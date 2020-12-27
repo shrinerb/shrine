@@ -603,7 +603,7 @@ class Shrine
     def instrument_derivation(&block)
       return yield unless shrine_class.respond_to?(:instrument)
 
-      shrine_class.instrument(:derivation, derivation: derivation, &block)
+      shrine_class.instrument(:derivation, { derivation: derivation }, &block)
     end
 
     # Massages the derivation result, ensuring it's opened in binary mode,

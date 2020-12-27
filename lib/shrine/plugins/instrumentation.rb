@@ -69,27 +69,25 @@ class Shrine
 
         # Sends a `upload.shrine` event.
         def _upload(io, location:, metadata:, upload_options: {}, **options)
-          self.class.instrument(
-            :upload,
+          self.class.instrument(:upload, {
             storage: storage_key,
             location: location,
             io: io,
             upload_options: upload_options,
             metadata: metadata,
             options: options,
-          ) { super }
+          }) { super }
         end
 
         # Sends a `metadata.shrine` event.
         def get_metadata(io, metadata: nil, **options)
           return super if io.is_a?(UploadedFile) && metadata != true || metadata == false
 
-          self.class.instrument(
-            :metadata,
+          self.class.instrument(:metadata, {
             storage: storage_key,
             io: io,
             options: options,
-          ) { super }
+          }) { super }
         end
       end
 
@@ -98,30 +96,27 @@ class Shrine
         def stream(destination, **options)
           return super if opened?
 
-          shrine_class.instrument(
-            :download,
+          shrine_class.instrument(:download, {
             storage: storage_key,
             location: id,
             download_options: options,
-          ) { super(destination, **options, instrument: false) }
+          }) { super(destination, **options, instrument: false) }
         end
 
         # Sends a `exists.shrine` event.
         def exists?
-          shrine_class.instrument(
-            :exists,
+          shrine_class.instrument(:exists, {
             storage: storage_key,
             location: id,
-          ) { super }
+          }) { super }
         end
 
         # Sends a `delete.shrine` event.
         def delete
-          shrine_class.instrument(
-            :delete,
+          shrine_class.instrument(:delete, {
             storage: storage_key,
             location: id,
-          ) { super }
+          }) { super }
         end
 
         private
@@ -130,12 +125,11 @@ class Shrine
         def _open(instrument: true, **options)
           return super(**options) unless instrument
 
-          shrine_class.instrument(
-            :open,
+          shrine_class.instrument(:open, {
             storage: storage_key,
             location: id,
             download_options: options,
-          ) { super(**options) }
+          }) { super(**options) }
         end
       end
 
