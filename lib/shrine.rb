@@ -95,8 +95,8 @@ class Shrine
     #     class Photo
     #       include Shrine::Attachment(:image) # creates a Shrine::Attachment object
     #     end
-    def Attachment(name, *args)
-      self::Attachment.new(name, *args)
+    def Attachment(name, **args)
+      self::Attachment.new(name, **args)
     end
     alias attachment Attachment
     alias [] Attachment
