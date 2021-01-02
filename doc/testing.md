@@ -251,6 +251,16 @@ TestMode.disable_processing(Photo.image_attacher) do
 end
 ```
 
+## Testing direct upload
+
+If you'd like to unit-test direct upload on the server side, you can
+emulate it by uploading a file to `cache` and then assigning it to the record.
+
+```rb
+cached_file = Shrine.upload(some_file, :cache)
+record.attachment = cached_file.to_json
+```
+
 [DatabaseCleaner]: https://github.com/DatabaseCleaner/database_cleaner
 [`#attach_file`]: http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method
 [aws-sdk-ruby stubs]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html
