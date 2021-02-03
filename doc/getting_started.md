@@ -531,7 +531,7 @@ the [Extracting Metadata] guide for more details.
 
 Shrine allows you to process attached files both "eagerly" and "on-the-fly".
 For example, if your app is accepting image uploads, you can generate a
-predefined set of of thumbnails when the image is attached to a record, or you
+predefined set of thumbnails when the image is attached to a record, or you
 can have thumbnails generated dynamically as they're needed.
 
 For image processing, it's recommended to use the **[ImageProcessing]** gem,
