@@ -51,7 +51,7 @@ end
 ```
 <!--Rails-->
 ```
-$ rails generate migration add_image_data_to_photos image_data:text
+$ rails generate migration add_image_data_to_photos image_data:text  # or image_data:jsonb 
 ```
 <!--END_DOCUSAURUS_CODE_TABS-->
 
