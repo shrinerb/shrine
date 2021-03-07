@@ -316,7 +316,7 @@ previews.
 Shrine provides on-the-fly processing functionality via the
 **[`derivation_endpoint`][derivation_endpoint]** plugin. You set it up by
 loading the plugin with a secret key (you generate this yourself, maybe via
-something like SecureRandom.hex) and a path prefix, mount its Rack app in
+something like `SecureRandom.hex`) and a path prefix, mount its Rack app in
 your routes on the configured path prefix, and define processing you want to
 perform:
 
@@ -329,7 +329,7 @@ Shrine.plugin :derivation_endpoint, secret_key: "<SHRINE_SECRET_KEY>"
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  plugin :derivation_endpoint, secret_key: ENV.fetch("SHRINE_SECRET_KEY"), prefix: "derivations/image" # matches mount point
+  plugin :derivation_endpoint, prefix: "derivations/image" # matches mount point
 
   derivation :thumbnail do |file, width, height|
     ImageProcessing::MiniMagick
