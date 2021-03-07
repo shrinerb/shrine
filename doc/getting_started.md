@@ -481,6 +481,12 @@ If you want to extend Shrine functionality with custom behaviour, you can also
 [create your own plugin][Creating Plugins]. There are also additional [external
 plugins] created by others.
 
+> NOTE: An uploader class will inherit a copy of current superclass' plugin
+> options at the time of subclassing. This means you should *not* load
+> additional plugins on a superclass after the subclass has already been
+> created, because new options will not get applied to the subclass, which
+> can result in errors.
+
 ## Metadata
 
 Shrine automatically extracts some basic file metadata and saves them to the
