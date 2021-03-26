@@ -439,7 +439,7 @@ creation in the `PromoteJob` instead of the controller:
 class PromoteJob
   include Sidekiq::Worker
 
-  def perform(attacher_class, record_class, record.id, name, file_data)
+  def perform(attacher_class, record_class, record_id, name, file_data)
     attacher_class = Object.const_get(attacher_class)
     record         = Object.const_get(record_class).find(record_id) # if using Active Record
 
