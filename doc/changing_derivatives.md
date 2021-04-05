@@ -212,7 +212,7 @@ Photo.find_each do |photo|
   next unless attacher.stored?
 
   square = attacher.file.download do |original|
-    ImageProcessor::MiniMagick
+    ImageProcessing::MiniMagick
       .source(original)
       .resize_to_fill!(150, 150)
   end
