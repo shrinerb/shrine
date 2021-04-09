@@ -57,7 +57,7 @@ Next, add the `<name>_data` column to the table you want to attach files to. For
 an "image" attachment on a `photos` table this would be an `image_data` column:
 
 ```
-$ rails generate migration add_image_data_to_photos image_data:text
+$ rails generate migration add_image_data_to_photos image_data:text # or :jsonb
 ```
 
 Now create an uploader class (which you can put in `app/uploaders`) and
