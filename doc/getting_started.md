@@ -37,22 +37,26 @@ will use to store all information about the attachment:
 ```rb
 Sequel.migration do
   change do
-    add_column :photos, :image_data, :text # or :jsonb
+    add_column :photos, :image_data, :text # or :jsonb   
   end
 end
 ```
+ If using jsonb consider adding a [gin index](https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING) for fast key-value pair searchability
 <!--ActiveRecord-->
 ```rb
 class AddImageDataToPhotos < ActiveRecord::Migration
   def change
-    add_column :photos, :image_data, :text # or :jsonb
+    add_column :photos, :image_data, :text # or :jsonb   
   end
 end
 ```
+If using jsonb consider adding a [gin index](https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING) for fast key-value pair searchability.
 <!--Rails-->
-```
+```rb
 $ rails generate migration add_image_data_to_photos image_data:text  # or image_data:jsonb 
 ```
+If using jsonb consider adding a [gin index](https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING) for fast key-value pair searchability.
+
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 Now you can create an uploader class for the type of files you want to upload,

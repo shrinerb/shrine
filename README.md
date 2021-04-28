@@ -59,6 +59,7 @@ an "image" attachment on a `photos` table this would be an `image_data` column:
 ```
 $ rails generate migration add_image_data_to_photos image_data:text # or :jsonb
 ```
+If using jsonb consider adding a [gin index](https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING) for fast key-value pair searchability
 
 Now create an uploader class (which you can put in `app/uploaders`) and
 register the attachment on your model:
