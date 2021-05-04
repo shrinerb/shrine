@@ -41,7 +41,7 @@ Sequel.migration do
   end
 end
 ```
- If using jsonb consider adding a [gin index](https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING) for fast key-value pair searchability
+
 <!--ActiveRecord-->
 ```rb
 class AddImageDataToPhotos < ActiveRecord::Migration
@@ -50,12 +50,12 @@ class AddImageDataToPhotos < ActiveRecord::Migration
   end
 end
 ```
-If using jsonb consider adding a [gin index](https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING) for fast key-value pair searchability.
+
 <!--Rails-->
 ```rb
 $ rails generate migration add_image_data_to_photos image_data:text  # or image_data:jsonb 
 ```
-If using jsonb consider adding a [gin index](https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING) for fast key-value pair searchability.
+If using `jsonb` consider adding a [gin index] for fast key-value pair searchability within `image_data`.
 
 <!--END_DOCUSAURUS_CODE_TABS-->
 
@@ -1112,3 +1112,4 @@ Shrine.logger.level = Logger::WARN
 [storages]: https://shrinerb.com/docs/external/extensions#storages
 [plugins]: https://shrinerb.com/plugins
 [external plugins]: https://shrinerb.com/docs/external/extensions#plugins
+[gin index]: https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING
