@@ -124,6 +124,8 @@ class Shrine
           require "fastimage"
 
           type = FastImage.type(io)
+          return 'image/svg+xml' if type == :svg
+
           "image/#{type}" if type
         end
 
