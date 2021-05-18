@@ -76,6 +76,18 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_equal "image/jpeg", @shrine.determine_mime_type(image)
     end
 
+    it "returns image/svg+xml if the image is an svg" do
+      io = StringIO.new
+      io.puts <<-SVG
+        <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" viewBox="0 0 20 20">
+          <g>
+            <path d="M0.567016+10.1229L19.267+10.1229"/>
+          </g>
+        </svg>
+        SVG
+      assert_equal "image/svg+xml", @shrine.determine_mime_type(io)
+    end
+
     it "returns nil for unidentified MIME types" do
       assert_nil @shrine.determine_mime_type(fakeio("😃"))
     end
