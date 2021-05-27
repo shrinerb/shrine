@@ -175,7 +175,7 @@ uploaded_file.exif             #=> {...}
 ```
 
 Or, if you're uploading videos, you might want to extract some video-specific
-meatadata:
+metadata:
 
 ```rb
 # Gemfile
