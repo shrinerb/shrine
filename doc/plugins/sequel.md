@@ -172,7 +172,7 @@ attacher.file    #=> #<Shrine::UploadedFile id="397eca.jpg" storage=:store ...>
 photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
 ```
 
-### Pesistence
+### Persistence
 
 The following persistence methods are added to `Shrine::Attacher`:
 
