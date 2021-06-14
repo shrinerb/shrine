@@ -41,8 +41,13 @@ The test suite requires that you have the following installed:
 * [SQLite]
 * [libvips] - please download the appropriate package suiting your operating system.
 
-If you're using Homebrew, you can just run `brew bundle`. The test suite is
-best run using Rake:
+With Hombrew this would be:
+
+```sh
+$ brew install libmagic sqlite libvips
+```
+
+The test suite is best run using Rake:
 
 ```
 $ rake test
