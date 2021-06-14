@@ -68,9 +68,9 @@ describe Shrine do
     it "returns an instance of Attachment" do
       uploader = Class.new(Shrine)
 
-      assert_instance_of uploader::Attachment, uploader::Attachment(:file)
-      assert_instance_of uploader::Attachment, uploader.attachment(:file)
-      assert_instance_of uploader::Attachment, uploader[:file]
+      assert_instance_of uploader::Attachment, uploader::Attachment(:file, cache: :store)
+      assert_instance_of uploader::Attachment, uploader.attachment(:file, cache: :store)
+      assert_instance_of uploader::Attachment, uploader[:file, cache: :store]
     end
   end
 
