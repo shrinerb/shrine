@@ -1,4 +1,8 @@
-## HEAD
+## 3.4.0 (2021-06-14)
+
+* `base` – Fix passing options to `Shrine.Attachment` on Ruby 3.0 (@lucianghinda)
+
+* `determine_mime_type` – Return correct `image/svg+xml` MIME type for SVGs with `:fastimage` analyzer (@Bandes)
 
 * `activerecord` – Fix keyword argument warning when adding errors with options (@janko)
 
