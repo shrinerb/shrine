@@ -30,7 +30,7 @@ README.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-10-02 18:59:19 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -61,7 +61,7 @@ Last Update:
 <p><strong>Background jobs</strong> – built-in support for <a href="https://shrinerb.com/docs/plugins/backgrounding">background processing</a> that supports <a href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">any backgrounding library</a></p>
 </li></ul>
 
-<p>If you&#39;re curious how it compares to other file attachment libraries, see the <a href="https://shrinerb.com/docs/advantages">Advantages of Shrine</a>. Otherwise, follow along with the <strong><a href="https://shrinerb.com/docs/getting-started">Getting Started guide</a></strong>.</p>
+<p>If you&#39;re curious how it compares to other file attachment libraries, see the <a href="https://shrinerb.com/docs/advantages">Advantages of Shrine</a>. Otherwise, follow along with the <strong>{Getting Started guide}[https://shrinerb.com/docs/getting-started]</strong>.</p>
 
 <h2 id="label-Links">Links<span><a href="#label-Links">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -79,7 +79,9 @@ Last Update:
 
 <p>Next, add the <code>&lt;name&gt;_data</code> column to the table you want to attach files to. For an “image” attachment on a <code>photos</code> table this would be an <code>image_data</code> column:</p>
 
-<pre>$ rails generate migration add_image_data_to_photos image_data:text</pre>
+<pre>$ rails generate migration add_image_data_to_photos image_data:text # or :jsonb</pre>
+
+<p>If using <code>jsonb</code> consider adding a <a href="https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING">gin index</a> for fast key-value pair searchability within <code>image_data</code>.</p>
 
 <p>Now create an uploader class (which you can put in <code>app/uploaders</code>) and register the attachment on your model:</p>
 
@@ -99,7 +101,7 @@ Last Update:
 
 <pre>&lt;%= image_tag @photo.image_url %&gt;</pre>
 
-<p>See the <strong><a href="https://shrinerb.com/docs/getting-started">Getting Started guide</a></strong> for further documentation.</p>
+<p>See the <strong>{Getting Started guide}[https://shrinerb.com/docs/getting-started]</strong> for further documentation.</p>
 
 <h2 id="label-Inspiration">Inspiration<span><a href="#label-Inspiration">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -120,11 +122,11 @@ Last Update:
 
 <h2 id="label-Contributing">Contributing<span><a href="#label-Contributing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Please refer to the <a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md">contributing page</a>.</p>
+<p>Please refer to the <a href="https://github_com/shrinerb/shrine/blob/master/CONTRIBUTING_md.html">contributing page</a>.</p>
 
 <h2 id="label-Code+of+Conduct">Code of Conduct<span><a href="#label-Code+of+Conduct">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Everyone interacting in the <a href="../classes/Shrine.html"><code>Shrine</code></a> project’s codebases, issue trackers, and mailing lists is expected to follow the <a href="/CODE_OF_CONDUCT.md">Shrine code of conduct</a>.</p>
+<p>Everyone interacting in the <a href="../classes/Shrine.html"><code>Shrine</code></a> project’s codebases, issue trackers, and mailing lists is expected to follow the <a href="/CODE_OF_CONDUCT_md.html">Shrine code of conduct</a>.</p>
 
 <h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

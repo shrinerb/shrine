@@ -30,7 +30,7 @@ doc/creating_persistence_plugins.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -48,11 +48,11 @@ Last Update:
 
 <h2 id="label-Attachment">Attachment<span><a href="#label-Attachment">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>If your database library uses the <a href="https://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record pattern</a>, it&#39;s recommended to load the <a href="https://shrinerb.com/docs/plugins/model">model</a> plugin as a dependency.</p>
+<p>If your database library uses the <a href="https://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record pattern</a>, it&#39;s recommended to load the {<code>model</code><a href="https://shrinerb.com/docs/plugins/model">}</a> plugin as a dependency.</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">Raptor</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:model</span> <span class="ruby-comment"># for Active Record pattern</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Otherwise if it uses the <a href="https://martinfowler.com/eaaCatalog/repository.html">Repository pattern</a>, you can load the <a href="https://shrinerb.com/docs/plugins/entity">entity</a> plugin as a dependency.</p>
+<p>Otherwise if it uses the <a href="https://martinfowler.com/eaaCatalog/repository.html">Repository pattern</a>, you can load the {<code>entity</code><a href="https://shrinerb.com/docs/plugins/entity">}</a> plugin as a dependency.</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">Raptor</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:entity</span> <span class="ruby-comment"># for Repository pattern</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 

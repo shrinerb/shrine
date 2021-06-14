@@ -30,7 +30,7 @@ doc/attacher.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -54,7 +54,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_model</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment"># called by `photo.image`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span>  <span class="ruby-comment"># called by `photo.image_url`</span></pre>
 
-<p>The <a href="https://shrinerb.com/docs/plugins/model">model</a>, <a href="https://shrinerb.com/docs/plugins/entity">entity</a>, and <a href="https://shrinerb.com/docs/plugins/column">column</a> plugins provide additional <code>Shrine::Attacher</code> methods (such as <code>Shrine::Attacher.from_model</code> we see above), but in this guide we&#39;ll focus only on the core <code>Shrine::Attacher</code> methods.</p>
+<p>The {<code>model</code><a href="https://shrinerb.com/docs/plugins/model">}</a>, {<code>entity</code><a href="https://shrinerb.com/docs/plugins/entity">}</a>, and {<code>column</code><a href="https://shrinerb.com/docs/plugins/column">}</a> plugins provide additional <code>Shrine::Attacher</code> methods (such as <code>Shrine::Attacher.from_model</code> we see above), but in this guide we&#39;ll focus only on the core <code>Shrine::Attacher</code> methods.</p>
 
 <p>So, we&#39;ll assume a <code>Shrine::Attacher</code> object not backed by any model/entity:</p>
 
@@ -138,7 +138,7 @@ Last Update:
 
 <h3 id="label-Changes">Changes<span><a href="#label-Changes">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>When a new file is attached, calling <a href="#finalization">Attacher#finalize</a> will perform additional actions such as promotion and deleting any previous file. It will also trigger <a href="https://shrinerb.com/docs/plugins/validation">validation</a>.</p>
+<p>When a new file is attached, calling {<code>Attacher#finalize</code><a href="#finalization">}</a> will perform additional actions such as promotion and deleting any previous file. It will also trigger <a href="https://shrinerb.com/docs/plugins/validation">validation</a>.</p>
 
 <p>You can check whether a new file has been attached with <code>Attacher#changed?</code>:</p>
 
@@ -240,7 +240,7 @@ Last Update:
 
 <pre>attacher.uploaded_file(&quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... }) #=&gt; #&lt;Shrine::UploadedFile&gt;&#x000A;attacher.uploaded_file(id: &quot;...&quot;, storage: &quot;...&quot;, metadata: { ... })             #=&gt; #&lt;Shrine::UploadedFile&gt;&#x000A;attacher.uploaded_file(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;)          #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 
-<p>You will likely want to use a higher level abstraction for saving and loading this data, see <a href="https://shrinerb.com/docs/plugins/column">column</a>, <a href="https://shrinerb.com/docs/plugins/entity">entity</a> and <a href="https://shrinerb.com/docs/plugins/model">model</a> plugins for more details.</p>
+<p>You will likely want to use a higher level abstraction for saving and loading this data, see {<code>column</code><a href="https://shrinerb.com/docs/plugins/column">}</a>, {<code>entity</code><a href="https://shrinerb.com/docs/plugins/entity">}</a> and {<code>model</code><a href="https://shrinerb.com/docs/plugins/model">}</a> plugins for more details.</p>
 
 <h2 id="label-Deleting">Deleting<span><a href="#label-Deleting">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -256,7 +256,7 @@ Last Update:
 
 <h2 id="label-Context">Context<span><a href="#label-Context">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>The <code>Attacher#context</code> hash is automatically forwarded to the uploader on <code>Attacher#upload</code>. When <a href="https://shrinerb.com/docs/plugins/model">model</a> or <a href="https://shrinerb.com/docs/plugins/model">entity</a> plugin is loaded, this will include <code>:record</code> and <code>:name</code> values:</p>
+<p>The <code>Attacher#context</code> hash is automatically forwarded to the uploader on <code>Attacher#upload</code>. When {<code>model</code><a href="https://shrinerb.com/docs/plugins/model">}</a> or {<code>entity</code><a href="https://shrinerb.com/docs/plugins/model">}</a> plugin is loaded, this will include <code>:record</code> and <code>:name</code> values:</p>
 
 <pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_model</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">context</span> <span class="ruby-comment">#=&gt; { record: #&lt;Photo&gt;, name: :image }</span></pre>
 

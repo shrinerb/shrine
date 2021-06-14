@@ -30,7 +30,7 @@ doc/release_notes/3.0.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -38,15 +38,15 @@ Last Update:
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+3.0.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.0.0<span><a href="#label-title-3A+Shrine+3.0.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-title-3A+Shrine+3.0.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_0_0_md.html">3.0.0</a><span><a href="#label-title-3A+Shrine+3.0.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>This guide covers all the changes in the 3.0.0 version of <a href="../../../classes/Shrine.html"><code>Shrine</code></a>. If you&#39;re currently using <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.x, see <strong><a href="https://shrinerb.com/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></strong> for instructions on how to upgrade.</p>
+<p>This guide covers all the changes in the <a href="3_0_0_md.html">3.0.0</a> version of <a href="../../../classes/Shrine.html"><code>Shrine</code></a>. If you&#39;re currently using <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.x, see <strong>{Upgrading to Shrine 3.x}[https://shrinerb.com/docs/upgrading-to-3]</strong> for instructions on how to upgrade.</p>
 
 <h2 id="label-Major+features">Major features<span><a href="#label-Major+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <h3 id="label-Derivatives">Derivatives<span><a href="#label-Derivatives">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>The new <strong><a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a></strong> plugin has been added for storing additional processed files alongside the main file.</p>
+<p>The new <strong>{<code>derivatives</code>}[https://shrinerb.com/docs/plugins/derivatives]</strong> plugin has been added for storing additional processed files alongside the main file.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivatives</span></pre>
 
@@ -54,7 +54,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo_params</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives!</span> <span class="ruby-comment"># creates derivatives</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span></pre>
 
-<p>This is a rewrite of the <a href="https://shrinerb.com/docs/plugins/versions">versions</a> plugin, bringing numerous improvements:</p>
+<p>This is a rewrite of the {<code>versions</code><a href="https://shrinerb.com/docs/plugins/versions">}</a> plugin, bringing numerous improvements:</p>
 <ul><li>
 <p>processed files are separated from the main file</p>
 </li></ul>
@@ -94,7 +94,7 @@ Last Update:
 
 <h3 id="label-Attacher+redesign">Attacher redesign<span><a href="#label-Attacher+redesign">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>The <a href="https://shrinerb.com/docs/attacher">Shrine::Attacher</a> class has been rewritten and can now be used without models:</p>
+<p>The {<code>Shrine::Attacher</code><a href="https://shrinerb.com/docs/attacher">}</a> class has been rewritten and can now be used without models:</p>
 
 <pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
 
@@ -121,7 +121,7 @@ Last Update:
 
 <h4 id="label-Column">Column<span><a href="#label-Column">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The new <a href="https://shrinerb.com/docs/plugins/column">column</a> plugin adds the ability to serialize attached file data, in format suitable for writing into a database column.</p>
+<p>The new {<code>column</code><a href="https://shrinerb.com/docs/plugins/column">}</a> plugin adds the ability to serialize attached file data, in format suitable for writing into a database column.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:column</span></pre>
 
@@ -131,7 +131,7 @@ Last Update:
 
 <h4 id="label-Entity">Entity<span><a href="#label-Entity">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The new <a href="https://shrinerb.com/docs/plugins/entity">entity</a> plugin adds support for immutable structs, which are commonly used with ROM, Hanami and dry-rb.</p>
+<p>The new {<code>entity</code><a href="https://shrinerb.com/docs/plugins/entity">}</a> plugin adds support for immutable structs, which are commonly used with ROM, Hanami and dry-rb.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:entity</span></pre>
 
@@ -141,7 +141,7 @@ Last Update:
 
 <h4 id="label-Model">Model<span><a href="#label-Model">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The new <a href="https://shrinerb.com/docs/plugins/model">model</a> plugin adds support for mutable structs, which is used by <code>activerecord</code> and <code>sequel</code> plugins.</p>
+<p>The new {<code>model</code><a href="https://shrinerb.com/docs/plugins/model">}</a> plugin adds support for mutable structs, which is used by <code>activerecord</code> and <code>sequel</code> plugins.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:model</span></pre>
 
@@ -151,7 +151,7 @@ Last Update:
 
 <h3 id="label-Backgrounding+rewrite">Backgrounding rewrite<span><a href="#label-Backgrounding+rewrite">&para;</a> <a href="#top">&uarr;</a></span></h3>
 <ul><li>
-<p>The <a href="https://shrinerb.com/docs/plugins/backgrounding">backgrounding</a> plugin has been rewritten for more flexibility and simplicity. The new usage is much more explicit:</p>
+<p>The {<code>backgrounding</code><a href="https://shrinerb.com/docs/plugins/backgrounding">}</a> plugin has been rewritten for more flexibility and simplicity. The new usage is much more explicit:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote_block</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">destroy_block</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">DestroyJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">data</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
@@ -179,7 +179,7 @@ Last Update:
 
 <p>| Method | Description | | :—————– | :———- | | <code>Attacher#persist</code> | persists attachment data | | <code>Attacher#atomic_persist</code> | persists attachment data if attachment hasn’t changed | | <code>Attacher#atomic_promote</code> | promotes cached file and atomically persists changes |</p>
 
-<p>The “atomic” methods use the new <a href="https://shrinerb.com/docs/plugins/atomic_helpers">atomic_helpers</a> plugin, and are useful for background jobs. For example, this is how we&#39;d use them to implement metadata extraction in the background in a concurrency-safe way:</p>
+<p>The “atomic” methods use the new {<code>atomic_helpers</code><a href="https://shrinerb.com/docs/plugins/atomic_helpers">}</a> plugin, and are useful for background jobs. For example, this is how we&#39;d use them to implement metadata extraction in the background in a concurrency-safe way:</p>
 
 <pre class="ruby"><span class="ruby-constant">MetadataJob</span>.<span class="ruby-identifier">perform_async</span>(&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>,&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>,&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>,&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">name</span>,&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file_data</span>,&#x000A;)</pre>
 
@@ -187,21 +187,21 @@ Last Update:
 
 <h2 id="label-Other+new+plugins">Other new plugins<span><a href="#label-Other+new+plugins">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The new <a href="https://shrinerb.com/docs/plugins/mirroring">mirroring</a> plugin has been added for replicating  uploads and deletes to other storages.</p>
+<p>The new {<code>mirroring</code><a href="https://shrinerb.com/docs/plugins/mirroring">}</a> plugin has been added for replicating  uploads and deletes to other storages.</p>
 </li></ul>
 
 <p>“`rb  Shrine.storages = { cache: …, store: …, backup: … }</p>
 
 <p>Shrine.plugin :mirroring, mirror: { store: :backup }  <code> </code>rb  file = <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>(io, :store) # uploads to :store and :backup  file.delete # deletes from :store and :backup  “`</p>
 <ul><li>
-<p>The new <a href="https://shrinerb.com/docs/plugins/multi_cache">multi_cache</a> plugin has been added for allowing an  attacher to accept files from additional temporary storages.</p>
+<p>The new {<code>multi_cache</code><a href="https://shrinerb.com/docs/plugins/multi_cache">}</a> plugin has been added for allowing an  attacher to accept files from additional temporary storages.</p>
 </li></ul>
 
 <p>“`rb  Shrine.storages = { cache: …, cache_one: …, cache_two: …, store: … }</p>
 
 <p>Shrine.plugin :multi_cache, additional_cache: [:cache_one, :cache_two]  <code> </code>rb  photo.image = { “id” =&gt; “…”, “storage” =&gt; “cache”, “metadata” =&gt; { … } }  photo.image.storage_key #=&gt; :cache  # or  photo.image = { “id” =&gt; “…”, “storage” =&gt; “cache_one”, “metadata” =&gt; { … } }  photo.image.storage_key #=&gt; :cache_one  # or  photo.image = { “id” =&gt; “…”, “storage” =&gt; “cache_two”, “metadata” =&gt; { … } }  photo.image.storage_key #=&gt; :cache_two  “`</p>
 <ul><li>
-<p>The new <a href="https://shrinerb.com/docs/plugins/form_assign">form_assign</a> plugin has been added for assigning  files directly from form params.</p>
+<p>The new {<code>form_assign</code><a href="https://shrinerb.com/docs/plugins/form_assign">}</a> plugin has been added for assigning  files directly from form params.</p>
 </li></ul>
 
 <p><code>rb   Shrine.plugin :form_assign </code>  <code>rb   attacher = photo.image_attacher   attacher.form_assign({ &quot;image&quot; =&gt; file, &quot;title&quot; =&gt; &quot;...&quot;, &quot;description&quot; =&gt; &quot;...&quot; })   attacher.file #=&gt; #&lt;Shrine::UploadedFile id=&quot;...&quot; storage=:cache ...&gt; </code></p>
@@ -454,7 +454,7 @@ Last Update:
 <p>The <code>UploadedFile</code> method now extracts data from the given hash on  initialization, it doesn&#39;t store the whole hash anymore. This means the  following potential code won&#39;t work anymore:</p>
 </li></ul>
 
-<p><code>rb   uploaded_file.id #=&gt; &quot;foo&quot;   uploaded_file.data["id"] = &quot;bar&quot;   uploaded_file.id #=&gt; &quot;foo&quot; </code></p>
+<p><code>rb   uploaded_file.id #=&gt; &quot;foo&quot;   uploaded_file.data[&quot;id&quot;] = &quot;bar&quot;   uploaded_file.id #=&gt; &quot;foo&quot; </code></p>
 <ul><li>
 <p>The <code>UploadedFile#storage_key</code> method now returns a Symbol instead of a  String.</p>
 </li></ul>

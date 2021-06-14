@@ -30,7 +30,7 @@ doc/retrieving_uploads.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -60,7 +60,7 @@ Last Update:
 
 <h2 id="label-Storage-23open"><code>Storage#open</code><span><a href="#label-Storage-23open">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>The underlying IO object that <code>Shrine::UploadedFile</code> will use depends on the storage. The <code>FileSystem</code> storage will return a <code>File</code> object, while <code>S3</code> and most other remote storages will return <a href="https://github.com/janko/down#streaming">Down::ChunkedIO</a> that downloads file content on-demand.</p>
+<p>The underlying IO object that <code>Shrine::UploadedFile</code> will use depends on the storage. The <code>FileSystem</code> storage will return a <code>File</code> object, while <code>S3</code> and most other remote storages will return {<code>Down::ChunkedIO</code><a href="https://github.com/janko/down#streaming">}</a> that downloads file content on-demand.</p>
 
 <pre>Shrine.storages = {&#x000A;  file_system: Shrine::Storage::FileSystem.new(...),&#x000A;  s3:          Shrine::Storage::S3.new(...),&#x000A;}&#x000A;local_file = Shrine.upload(file, :file_system)&#x000A;local_file.to_io #=&gt; #&lt;File:/path/to/file&gt;&#x000A;&#x000A;remote_file = Shrine.upload(file, :s3)&#x000A;remote_file.to_io #=&gt; #&lt;Down::ChunkedIO&gt; (opens HTTP connection)&#x000A;remote_file.read(1*1024*1024) # downloads first 1MB&#x000A;remote_file.read(1*1024*1024) # downloads next 1MB&#x000A;remote_file.close # closes HTTP connection</pre>
 

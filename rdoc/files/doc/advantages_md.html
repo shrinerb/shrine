@@ -30,7 +30,7 @@ doc/advantages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-10-02 18:59:19 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -78,7 +78,7 @@ Last Update:
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> is very diligent when it comes to dependencies. It has two mandatory dependencies – <a href="https://github.com/janko/down">Down</a> and <a href="https://github.com/shrinerb/content_disposition">ContentDisposition</a> – which are loaded only by components that need them. Some <a href="../../classes/Shrine.html"><code>Shrine</code></a> plugins also require additional dependencies, but you only need to load them if you&#39;re using those plugins.</p>
 
-<p>Moreover, <a href="../../classes/Shrine.html"><code>Shrine</code></a> often gives you the ability choose between multiple alternative dependencies for doing the same task. For example, the <code>determine_mime_type</code> plugin allows you to choose between the <a target="_top" href="http://linux.die.net/man/1/file">file</a> command, <a href="https://github.com/blackwinter/ruby-filemagic">FileMagic</a>, <a href="https://github.com/sdsykes/fastimage">FastImage</a>, <a href="https://github.com/minad/mimemagic">MimeMagic</a>, or <a href="https://github.com/basecamp/marcel">Marcel</a> gem for determining the MIME type, while the <code>store_dimensions</code> plugin can extract dimensions using <a href="https://github.com/sdsykes/fastimage">FastImage</a>, <a href="https://github.com/minimagick/minimagick">MiniMagick</a>, or <a href="https://github.com/libvips/ruby-vips">ruby-vips</a> gem.</p>
+<p>Moreover, <a href="../../classes/Shrine.html"><code>Shrine</code></a> often gives you the ability choose between multiple alternative dependencies for doing the same task. For example, the <code>determine_mime_type</code> plugin allows you to choose between the {<code>file</code><a target="_top" href="http://linux.die.net/man/1/file">}</a> command, <a href="https://github.com/blackwinter/ruby-filemagic">FileMagic</a>, <a href="https://github.com/sdsykes/fastimage">FastImage</a>, <a href="https://github.com/minad/mimemagic">MimeMagic</a>, or <a href="https://github.com/basecamp/marcel">Marcel</a> gem for determining the MIME type, while the <code>store_dimensions</code> plugin can extract dimensions using <a href="https://github.com/sdsykes/fastimage">FastImage</a>, <a href="https://github.com/minimagick/minimagick">MiniMagick</a>, or <a href="https://github.com/libvips/ruby-vips">ruby-vips</a> gem.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:marcel</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>,    <span class="ruby-value">analyzer:</span> <span class="ruby-value">:mini_magick</span></pre>
 
@@ -119,7 +119,7 @@ Last Update:
 
 <h3 id="label-ImageMagick">ImageMagick<span><a href="#label-ImageMagick">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>Many file attachment libraries, such as CarrierWave, Paperclip, Dragonfly and Refile, implement their own image processing macros. Rather than building yet another in-house implementation, a general purpose <strong><a href="https://github.com/janko/image_processing">ImageProcessing</a></strong> gem was created instead, which works great with <a href="../../classes/Shrine.html"><code>Shrine</code></a>.</p>
+<p>Many file attachment libraries, such as CarrierWave, Paperclip, Dragonfly and Refile, implement their own image processing macros. Rather than building yet another in-house implementation, a general purpose <strong>{ImageProcessing}[https://github.com/janko/image_processing]</strong> gem was created instead, which works great with <a href="../../classes/Shrine.html"><code>Shrine</code></a>.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">thumbnail</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;  .<span class="ruby-identifier">source</span>(<span class="ruby-identifier">image</span>)&#x000A;  .<span class="ruby-identifier">resize_to_limit</span>(<span class="ruby-value">400</span>, <span class="ruby-value">400</span>)&#x000A;  .<span class="ruby-identifier">call</span> <span class="ruby-comment"># convert input.jpg -auto-orient -resize 400x400&gt; -sharpen 0x1 output.jpg</span>&#x000A;&#x000A;<span class="ruby-identifier">thumbnail</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile:/var/folders/.../image_processing20180316-18446-1j247h6.jpg&gt;</span></pre>
 
@@ -127,7 +127,7 @@ Last Update:
 
 <h3 id="label-libvips">libvips<span><a href="#label-libvips">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p><strong><a target="_top" href="http://libvips.github.io/libvips/">libvips</a></strong> is a full-featured image processing library like ImageMagick, with <a href="https://github.com/libvips/libvips/wiki/Speed-and-memory-use#results">great performance characteristics</a>. It&#39;s often <strong>multiple times faster</strong> than ImageMagick, and also has lower memory usage. For more details, see <a href="https://github.com/libvips/libvips/wiki/Why-is-libvips-quick">Why is libvips quick</a>.</p>
+<p><strong>{libvips}[http://libvips.github.io/libvips/]</strong> is a full-featured image processing library like ImageMagick, with <a href="https://github.com/libvips/libvips/wiki/Speed-and-memory-use#results">great performance characteristics</a>. It&#39;s often <strong>multiple times faster</strong> than ImageMagick, and also has lower memory usage. For more details, see <a href="https://github.com/libvips/libvips/wiki/Why-is-libvips-quick">Why is libvips quick</a>.</p>
 
 <p>The ImageProcessing gem provides libvips support as an alternative <code>ImageProcessing::Vips</code> backend, sharing the same API as the <code>ImageProcessing::MiniMagick</code> backend.</p>
 
@@ -161,7 +161,7 @@ Last Update:
 
 <h2 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>In most file upload solutions, support for background processing was an afterthought, which resulted in complex and unreliable implementations. <a href="../../classes/Shrine.html"><code>Shrine</code></a> was designed with backgrounding feature in mind from day one. It is supported via the <a href="https://shrinerb.com/docs/plugins/backgrounding">backgrounding</a> plugin and can be used with <a href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">any backgrounding library</a>.</p>
+<p>In most file upload solutions, support for background processing was an afterthought, which resulted in complex and unreliable implementations. <a href="../../classes/Shrine.html"><code>Shrine</code></a> was designed with backgrounding feature in mind from day one. It is supported via the {<code>backgrounding</code><a href="https://shrinerb.com/docs/plugins/backgrounding">}</a> plugin and can be used with <a href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">any backgrounding library</a>.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote_block</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -173,13 +173,13 @@ Last Update:
 
 <h2 id="label-Direct+Uploads">Direct Uploads<span><a href="#label-Direct+Uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>For client side uploads, <a href="../../classes/Shrine.html"><code>Shrine</code></a> adopts <strong><a href="https://uppy.io">Uppy</a></strong>, a modern JavaScript file upload library. This gives the developer a lot more power in customizing the user experience compared to a custom JavaScript solution implemented by Refile and Active Storage.</p>
+<p>For client side uploads, <a href="../../classes/Shrine.html"><code>Shrine</code></a> adopts <strong>{Uppy}[https://uppy.io]</strong>, a modern JavaScript file upload library. This gives the developer a lot more power in customizing the user experience compared to a custom JavaScript solution implemented by Refile and Active Storage.</p>
 
 <p>Uppy supports direct uploads to <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> or to a <a href="https://uppy.io/docs/xhr-upload/">custom endpoint</a>. It also supports <strong>resumable</strong> uploads, either <a href="https://uppy.io/docs/aws-s3-multipart/">directly to S3</a> or via the <a href="https://tus.io">tus protocol</a>. For the UI you can choose from various components, ranging from a simple <a href="https://uppy.io/examples/statusbar/">status bar</a> to a full-featured <a href="https://uppy.io/examples/dashboard/">dashboard</a>.</p>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> provides server side components for each type of upload. They are built on top of Rack, so that they can be used with any Ruby web framework.</p>
 
-<p>| Uppy | <a href="../../classes/Shrine.html"><code>Shrine</code></a> | | :— | :—– | | <a href="https://uppy.io/docs/xhr-upload/">XHRUpload</a> | <a href="https://shrinerb.com/docs/plugins/upload_endpoint">upload_endpoint</a> | | <a href="https://uppy.io/docs/aws-s3/">AwsS3</a> | <a href="https://shrinerb.com/docs/plugins/presign_endpoint">presign_endpoint</a> | | <a href="https://uppy.io/docs/aws-s3-multipart/">AwsS3Multipart</a> | <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> | | <a href="https://uppy.io/docs/tus/">Tus</a> | <a href="https://github.com/janko/tus-ruby-server">tus-ruby-server</a> |</p>
+<p>| Uppy | <a href="../../classes/Shrine.html"><code>Shrine</code></a> | | :— | :—– | | <a href="https://uppy.io/docs/xhr-upload/">XHRUpload</a> | {<code>upload_endpoint</code><a href="https://shrinerb.com/docs/plugins/upload_endpoint">}</a> | | <a href="https://uppy.io/docs/aws-s3/">AwsS3</a> | {<code>presign_endpoint</code><a href="https://shrinerb.com/docs/plugins/presign_endpoint">}</a> | | <a href="https://uppy.io/docs/aws-s3-multipart/">AwsS3Multipart</a> | {<code>uppy-s3_multipart</code><a href="https://github.com/janko/uppy-s3_multipart">}</a> | | <a href="https://uppy.io/docs/tus/">Tus</a> | {<code>tus-ruby-server</code><a href="https://github.com/janko/tus-ruby-server">}</a> |</p>
 </div>
 <div id='context'>
 </div>

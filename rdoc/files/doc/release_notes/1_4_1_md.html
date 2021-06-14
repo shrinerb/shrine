@@ -30,7 +30,7 @@ doc/release_notes/1.4.1.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -38,11 +38,11 @@ Last Update:
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+1.4.1">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 1.4.1<span><a href="#label-title-3A+Shrine+1.4.1">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-title-3A+Shrine+1.4.1">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_4_1_md.html">1.4.1</a><span><a href="#label-title-3A+Shrine+1.4.1">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> 1.4.0 introduced a regression where it didn&#39;t trigger callbacks for  promoting files anymore. This was done in order to eliminate a tiny chance  for a race condition when same attachment is updated subsequently with  backgrounding. We bring back triggering callbacks on promote. For Sequel we  eliminate the chance of a race condition, while ActiveRecord users can now  add optimistic locking to prevent this.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_4_0_md.html">1.4.0</a> introduced a regression where it didn&#39;t trigger callbacks for  promoting files anymore. This was done in order to eliminate a tiny chance  for a race condition when same attachment is updated subsequently with  backgrounding. We bring back triggering callbacks on promote. For Sequel we  eliminate the chance of a race condition, while ActiveRecord users can now  add optimistic locking to prevent this.</p>
 </li></ul>
 </div>
 <div id='context'>

@@ -30,7 +30,7 @@ doc/metadata.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-06-14 18:26:46 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -81,7 +81,7 @@ Last Update:
 
 <p>Moreover, only <code>ActionDispatch::Http::UploadedFile</code>, <code>Shrine::RackFile</code>, and <code>Shrine::DataFile</code> objects have <code>#content_type</code> defined, so when uploading objects such as <code>File</code>, the <code>mime_type</code> value will be nil by default.</p>
 
-<p>To remedy that, <a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a <a href="https://shrinerb.com/docs/plugins/determine_mime_type">determine_mime_type</a> plugin which is able to extract the MIME type from IO <em>content</em>:</p>
+<p>To remedy that, <a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a {<code>determine_mime_type</code><a href="https://shrinerb.com/docs/plugins/determine_mime_type">}</a> plugin which is able to extract the MIME type from IO <em>content</em>:</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;marcel&quot;</span>, <span class="ruby-string">&quot;~&gt; 0.3&quot;</span></pre>
 
@@ -89,11 +89,11 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;&lt;?php ... ?&gt;&quot;</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span> <span class="ruby-comment">#=&gt; &quot;application/x-php&quot;</span></pre>
 
-<p>You can choose different analyzers, and even mix-and-match them. See the <a href="https://shrinerb.com/docs/plugins/determine_mime_type">determine_mime_type</a> plugin docs for more details.</p>
+<p>You can choose different analyzers, and even mix-and-match them. See the {<code>determine_mime_type</code><a href="https://shrinerb.com/docs/plugins/determine_mime_type">}</a> plugin docs for more details.</p>
 
 <h2 id="label-Image+Dimensions">Image Dimensions<span><a href="#label-Image+Dimensions">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a <a href="https://shrinerb.com/docs/plugins/store_dimensions">store_dimensions</a> plugin for extracting image dimensions. It adds <code>width</code> and <code>height</code> metadata values, and also adds <code>#width</code>, <code>#height</code>, and <code>#dimensions</code> methods to the <code>Shrine::UploadedFile</code> object.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a {<code>store_dimensions</code><a href="https://shrinerb.com/docs/plugins/store_dimensions">}</a> plugin for extracting image dimensions. It adds <code>width</code> and <code>height</code> metadata values, and also adds <code>#width</code>, <code>#height</code>, and <code>#dimensions</code> methods to the <code>Shrine::UploadedFile</code> object.</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;fastimage&quot;</span> <span class="ruby-comment"># default analyzer</span></pre>
 
@@ -101,11 +101,11 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;width&quot;</span>]  <span class="ruby-comment">#=&gt; 1600</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-comment">#=&gt; 900</span>&#x000A;&#x000A;<span class="ruby-comment"># convenience methods</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">width</span>      <span class="ruby-comment">#=&gt; 1600</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">height</span>     <span class="ruby-comment">#=&gt; 900</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">dimensions</span> <span class="ruby-comment">#=&gt; [1600, 900]</span></pre>
 
-<p>By default, the plugin uses <a href="https://github.com/sdsykes/fastimage">FastImage</a> to analyze dimensions, but you can also have it use <a href="https://github.com/minimagick/minimagick">MiniMagick</a> or <a href="https://github.com/libvips/ruby-vips">ruby-vips</a>. See the <a href="https://shrinerb.com/docs/plugins/store_dimensions">store_dimensions</a> plugin docs for more details.</p>
+<p>By default, the plugin uses <a href="https://github.com/sdsykes/fastimage">FastImage</a> to analyze dimensions, but you can also have it use <a href="https://github.com/minimagick/minimagick">MiniMagick</a> or <a href="https://github.com/libvips/ruby-vips">ruby-vips</a>. See the {<code>store_dimensions</code><a href="https://shrinerb.com/docs/plugins/store_dimensions">}</a> plugin docs for more details.</p>
 
 <h2 id="label-Custom+metadata">Custom metadata<span><a href="#label-Custom+metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>In addition to the built-in metadata, <a href="../../classes/Shrine.html"><code>Shrine</code></a> allows you to extract and store any custom metadata, using the <a href="https://shrinerb.com/docs/plugins/add_metadata">add_metadata</a> plugin (which internally extends <code>Shrine#extract_metadata</code>).</p>
+<p>In addition to the built-in metadata, <a href="../../classes/Shrine.html"><code>Shrine</code></a> allows you to extract and store any custom metadata, using the {<code>add_metadata</code><a href="https://shrinerb.com/docs/plugins/add_metadata">}</a> plugin (which internally extends <code>Shrine#extract_metadata</code>).</p>
 
 <p>For example, you might want to extract EXIF data from images:</p>
 
@@ -115,7 +115,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;exif&quot;</span>] <span class="ruby-comment">#=&gt; {...}</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exif</span>             <span class="ruby-comment">#=&gt; {...}</span></pre>
 
-<p>Or, if you&#39;re uploading videos, you might want to extract some video-specific meatadata:</p>
+<p>Or, if you&#39;re uploading videos, you might want to extract some video-specific metadata:</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;streamio-ffmpeg&quot;</span></pre>
 

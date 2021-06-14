@@ -30,7 +30,7 @@ doc/design.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -40,11 +40,11 @@ Last Update:
 
 <h2 id="label-title-3A+The+Design+of+Shrine">title: The Design of <a href="../../classes/Shrine.html"><code>Shrine</code></a><span><a href="#label-title-3A+The+Design+of+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p><em>If you want an in-depth walkthrough through the <a href="../../classes/Shrine.html"><code>Shrine</code></a> codebase, see <a href="https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/">Notes on study of shrine implementation</a> article by Jonathan Rochkind.</em></p>
+<p><em>If you want an in-depth walkthrough through the Shrine codebase, see {Notes on study of shrine implementation}[https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/] article by Jonathan Rochkind.</em></p>
 
 <p>There are five main types of classes that you deal with in Shrine:</p>
 
-<p>| Class | Description | | :—- | :———- | | <code>Shrine::Storage::*</code> | Manages files on a particular storage service | | <code>Shrine</code> | Wraps uploads and handles loading plugins | | <code>Shrine::UploadedFile</code> | Represents a file uploaded to a storage | | <code>Shrine::Attacher</code> | Handles file attachment logic | | <code>Shrine::Attachment</code> | Provides convenience model attachment interface |</p>
+<p>| Class | Description | | :—- | :———- | | {<code>Shrine::Storage::*</code><a href="#Storage">}</a> | Manages files on a particular storage service | | {<code>Shrine</code><a href="#Shrine">}</a> | Wraps uploads and handles loading plugins | | {<code>Shrine::UploadedFile</code><a href="#shrineuploadedfile">}</a> | Represents a file uploaded to a storage | | {<code>Shrine::Attacher</code><a href="#shrineattacher">}</a> | Handles file attachment logic | | {<code>Shrine::Attachment</code><a href="#shrineattachment">}</a> | Provides convenience model attachment interface |</p>
 
 <h2 id="label-Storage">Storage<span><a href="#label-Storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -56,7 +56,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-value">shrine_metadata:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">upload_options</span>)&#x000A;        <span class="ruby-comment"># uploads `io` to the location `id`</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">open</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;        <span class="ruby-comment"># returns the remote file as an IO-like object</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># checks if the file exists on the storage</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># deletes the file from the storage</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;        <span class="ruby-comment"># URL to the remote file, accepts options for customizing the URL</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Storages are typically not used directly, but through <a href="#shrine">Shrine</a> and <a href="#shrine-uploadedfile">Shrine::UploadedFile</a> classes.</p>
+<p>Storages are typically not used directly, but through {<code>Shrine</code><a href="#shrine">}</a> and {<code>Shrine::UploadedFile</code><a href="#shrine-uploadedfile">}</a> classes.</p>
 
 <h2 id="label-Shrine"><code>Shrine</code><span><a href="#label-Shrine">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -129,7 +129,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_model</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt; &quot;{\&quot;storage\&quot;:\&quot;cache\&quot;,\&quot;id\&quot;:\&quot;9260ea09d8effd.jpg\&quot;,\&quot;metadata\&quot;:{...}}&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt; &quot;{\&quot;storage\&quot;:\&quot;store\&quot;,\&quot;id\&quot;:\&quot;ksdf02lr9sf3la.jpg\&quot;,\&quot;metadata\&quot;:{...}}&quot;</span></pre>
 
-<p>For more details, see the <a href="https://shrinerb.com/docs/attacher">Using Attacher</a> guide and <a href="https://shrinerb.com/docs/plugins/model">entity}[https://shrinerb.com/docs/plugins/entity]/{model</a> plugins.</p>
+<p>For more details, see the <a href="https://shrinerb.com/docs/attacher">Using Attacher</a> guide and {<code>entity</code>}[https://shrinerb.com/docs/plugins/entity]/{<code>model</code><a href="}[https://shrinerb.com/docs/plugins/model]">}[https://shrinerb.com/docs/plugins/model]</a> plugins.</p>
 
 <h2 id="label-Shrine-3A-3AAttachment"><code>Shrine::Attachment</code><span><a href="#label-Shrine-3A-3AAttachment">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -143,7 +143,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">file</span>   <span class="ruby-comment"># shorthand for `photo.image_attacher.assign(file)`</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>          <span class="ruby-comment"># shorthand for `photo.image_attacher.get`</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>      <span class="ruby-comment"># shorthand for `photo.image_attacher.url`</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher @cache_key=:cache @store_key=:store ...&gt;</span></pre>
 
-<p>When a persistence plugin is loaded (<a href="https://shrinerb.com/docs/plugins/activerecord">activerecord</a>, <a href="https://shrinerb.com/docs/plugins/sequel">sequel</a>), the <code>Shrine::Attachment</code> module also automatically:</p>
+<p>When a persistence plugin is loaded ({<code>activerecord</code><a href="https://shrinerb.com/docs/plugins/activerecord">}</a>, {<code>sequel</code><a href="https://shrinerb.com/docs/plugins/sequel">}</a>), the <code>Shrine::Attachment</code> module also automatically:</p>
 <ul><li>
 <p>syncs Shrine&#39;s validation errors with the record</p>
 </li><li>

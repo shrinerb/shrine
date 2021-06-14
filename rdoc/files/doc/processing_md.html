@@ -30,7 +30,7 @@ doc/processing.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-10-02 18:59:19 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -42,7 +42,7 @@ Last Update:
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> allows you to process attached files eagerly or on-the-fly. For example, if your app is accepting image uploads, you can generate a predefined set of of thumbnails when the image is attached to a record, or you can have thumbnails generated dynamically as they&#39;re needed.</p>
 
-<p>How you&#39;re going to implement processing is entirely up to you. For images it&#39;s recommended to use the <strong><a href="https://github.com/janko/image_processing">ImageProcessing</a></strong> gem, which provides wrappers for processing with <a href="https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme">MiniMagick</a> and <a href="https://github.com/janko/image_processing/blob/master/doc/vips.md#readme">libvips</a>. Here is an example of generating a thumbnail with ImageProcessing:</p>
+<p>How you&#39;re going to implement processing is entirely up to you. For images it&#39;s recommended to use the <strong>{ImageProcessing}[https://github.com/janko/image_processing]</strong> gem, which provides wrappers for processing with <a href="https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme">MiniMagick</a> and <a href="https://github.com/janko/image_processing/blob/master/doc/vips.md#readme">libvips</a>. Here is an example of generating a thumbnail with ImageProcessing:</p>
 
 <pre>$ brew install imagemagick</pre>
 
@@ -52,7 +52,7 @@ Last Update:
 
 <h2 id="label-Eager+processing">Eager processing<span><a href="#label-Eager+processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Let&#39;s say we&#39;re handling images, and want to generate a predefined set of thumbnails with various dimensions. We can use the <strong><a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a></strong> plugin to upload and save the processed files:</p>
+<p>Let&#39;s say we&#39;re handling images, and want to generate a predefined set of thumbnails with various dimensions. We can use the <strong>{<code>derivatives</code>}[https://shrinerb.com/docs/plugins/derivatives]</strong> plugin to upload and save the processed files:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivatives</span></pre>
 
@@ -60,7 +60,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>)&#x000A;&#x000A;<span class="ruby-keyword">if</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">valid?</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives!</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_changed?</span> <span class="ruby-comment"># creates derivatives</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>After the processed files are uploaded, their data is saved into the <code>&lt;attachment&gt;_data</code> column. You can then retrieve the derivatives as <a target="_top" href="http://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html">Shrine::UploadedFile</a> objects:</p>
+<p>After the processed files are uploaded, their data is saved into the <code>&lt;attachment&gt;_data</code> column. You can then retrieve the derivatives as {<code>Shrine::UploadedFile</code><a target="_top" href="http://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html">}</a> objects:</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:large</span>)            <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:large</span>).<span class="ruby-identifier">url</span>        <span class="ruby-comment">#=&gt; &quot;/uploads/store/lg043.jpg&quot;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:large</span>).<span class="ruby-identifier">size</span>       <span class="ruby-comment">#=&gt; 5825949</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:large</span>).<span class="ruby-identifier">mime_type</span>  <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span></pre>
 
@@ -74,7 +74,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;  <span class="ruby-identifier">result</span> = {}&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Photo</span>)&#x000A;    <span class="ruby-identifier">result</span>[<span class="ruby-value">:jpg</span>]  = <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">convert!</span>(<span class="ruby-string">&quot;jpeg&quot;</span>)&#x000A;    <span class="ruby-identifier">result</span>[<span class="ruby-value">:gray</span>] = <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">colorspace!</span>(<span class="ruby-string">&quot;grayscale&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">mime_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;image/svg+xml&quot;</span>&#x000A;    <span class="ruby-identifier">result</span>[<span class="ruby-value">:png</span>] = <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">loader</span>(<span class="ruby-value">transparent:</span> <span class="ruby-string">&quot;white&quot;</span>).<span class="ruby-identifier">convert!</span>(<span class="ruby-string">&quot;png&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>The <a href="https://shrinerb.com/docs/plugins/type_predicates">type_predicates</a> plugin provides convenient predicate methods for branching based on the file type.</p>
+<p>The {<code>type_predicates</code><a href="https://shrinerb.com/docs/plugins/type_predicates">}</a> plugin provides convenient predicate methods for branching based on the file type.</p>
 
 <h3 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -82,7 +82,7 @@ Last Update:
 
 <h4 id="label-A-29+Creating+derivatives+with+promotion">A) Creating derivatives with promotion<span><a href="#label-A-29+Creating+derivatives+with+promotion">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The simplest way is to use the <a href="https://shrinerb.com/docs/plugins/backgrounding">backgrounding</a> plugin to move promotion into a background job, and then create derivatives as part of promotion:</p>
+<p>The simplest way is to use the {<code>backgrounding</code><a href="https://shrinerb.com/docs/plugins/backgrounding">}</a> plugin to move promotion into a background job, and then create derivatives as part of promotion:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote_block</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -108,7 +108,7 @@ Last Update:
 
 <h3 id="label-URL+fallbacks">URL fallbacks<span><a href="#label-URL+fallbacks">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>If you&#39;re creating derivatives in a background job, you&#39;ll likely want to use some fallbacks for derivative URLs while the background job is still processing. You can do that with the <a href="https://shrinerb.com/docs/plugins/default_url">default_url</a> plugin.</p>
+<p>If you&#39;re creating derivatives in a background job, you&#39;ll likely want to use some fallbacks for derivative URLs while the background job is still processing. You can do that with the {<code>default_url</code><a href="https://shrinerb.com/docs/plugins/default_url">}</a> plugin.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span></pre>
 
@@ -142,9 +142,9 @@ Last Update:
 
 <p>Sometimes it makes more sense to generate thumbnails dynamically as they&#39;re requested, and then cache them for future requests. This strategy is known as processing “<strong>on-the-fly</strong>” or “<strong>on-demand</strong>”, and it&#39;s suitable for short-running processing such as creating image thumbnails or document previews.</p>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> provides on-the-fly processing functionality via the <strong><a href="https://shrinerb.com/docs/plugins/derivation_endpoint">derivation_endpoint</a></strong> plugin. You set it up by loading the plugin with a secret key and a path prefix, mount its Rack app in your routes on the configured path prefix, and define processing you want to perform:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> provides on-the-fly processing functionality via the <strong>{<code>derivation_endpoint</code>}[https://shrinerb.com/docs/plugins/derivation_endpoint]</strong> plugin. You set it up by loading the plugin with a secret key (you generate this yourself, maybe via something like <code>SecureRandom.hex</code>) and a path prefix, mount its Rack app in your routes on the configured path prefix, and define processing you want to perform:</p>
 
-<pre class="ruby"><span class="ruby-comment"># config/initializers/shrine.rb (Rails)</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivation_endpoints</span>, <span class="ruby-value">secret_key:</span> <span class="ruby-string">&quot;&lt;YOUR_SECRET_KEY&gt;&quot;</span></pre>
+<pre class="ruby"><span class="ruby-comment"># config/initializers/shrine.rb (Rails)</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivation_endpoint</span>, <span class="ruby-value">secret_key:</span> <span class="ruby-string">&quot;&lt;SHRINE_SECRET_KEY&gt;&quot;</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivation_endpoint</span>, <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;derivations/image&quot;</span> <span class="ruby-comment"># matches mount point</span>&#x000A;&#x000A;  <span class="ruby-identifier">derivation</span> <span class="ruby-value">:thumbnail</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span>, <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;      .<span class="ruby-identifier">source</span>(<span class="ruby-identifier">file</span>)&#x000A;      .<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-identifier">width</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">height</span>.<span class="ruby-identifier">to_i</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -198,9 +198,9 @@ Last Update:
 
 <h3 id="label-libvips">libvips<span><a href="#label-libvips">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>As mentioned, ImageProcessing gem also has an alternative backend for processing images with <strong><a href="https://libvips.github.io/libvips/">libvips</a></strong>. libvips is a full-featured image processing library like ImageMagick, with impressive performance characteristics – it&#39;s often <strong>multiple times faster</strong> than ImageMagick and has low memory usage (see <a href="https://github.com/libvips/libvips/wiki/Why-is-libvips-quick">Why is libvips quick</a>).</p>
+<p>As mentioned, ImageProcessing gem also has an alternative backend for processing images with <strong>{libvips}[https://libvips.github.io/libvips/]</strong>. libvips is a full-featured image processing library like ImageMagick, with impressive performance characteristics – it&#39;s often <strong>multiple times faster</strong> than ImageMagick and has low memory usage (see <a href="https://github.com/libvips/libvips/wiki/Why-is-libvips-quick">Why is libvips quick</a>).</p>
 
-<p>Using libvips is as easy as installing it and switching to the <a href="https://github.com/janko/image_processing/blob/master/doc/vips.md#readme">ImageProcessing::Vips</a> backend:</p>
+<p>Using libvips is as easy as installing it and switching to the {<code>ImageProcessing::Vips</code><a href="https://github.com/janko/image_processing/blob/master/doc/vips.md#readme">}</a> backend:</p>
 
 <pre>$ brew install vips</pre>
 

@@ -30,7 +30,7 @@ doc/release_notes/2.13.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -38,7 +38,7 @@ Last Update:
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.13.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.13.0<span><a href="#label-title-3A+Shrine+2.13.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-title-3A+Shrine+2.13.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_13_0_md.html">2.13.0</a><span><a href="#label-title-3A+Shrine+2.13.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
@@ -76,7 +76,7 @@ Last Update:
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>It&#39;s now possible to use an S3 endpoint which requires bucket name to be in  the URI path (e.g. Minio) with CDNs where bucket name shouldn&#39;t be in the URI  path (e.g. CloudFront). Since version 2.11.0, when initializing  <code>Shrine::Storage::S3</code> with <code>:endpoint</code> with <code>:force_path_style</code>, generating  an URL with a <code>:host</code> returned an URI with bucket name in the path. This  introduced a regression for anyone relying on previous behaviour, so that  change has been reverted, and this is the current behaviour:</p>
+<p>It&#39;s now possible to use an S3 endpoint which requires bucket name to be in  the URI path (e.g. Minio) with CDNs where bucket name shouldn&#39;t be in the URI  path (e.g. CloudFront). Since version <a href="2_11_0_md.html">2.11.0</a>, when initializing  <code>Shrine::Storage::S3</code> with <code>:endpoint</code> with <code>:force_path_style</code>, generating  an URL with a <code>:host</code> returned an URI with bucket name in the path. This  introduced a regression for anyone relying on previous behaviour, so that  change has been reverted, and this is the current behaviour:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">endpoint:</span> <span class="ruby-string">&quot;https://minio.example.com&quot;</span>)&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;foo&quot;</span>)                                     <span class="ruby-comment">#=&gt; &quot;https://my-s3-endpoint.com/foo&quot;</span>&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;foo&quot;</span>, <span class="ruby-value">host:</span> <span class="ruby-string">&quot;https://123.cloudfront.net&quot;</span>) <span class="ruby-comment">#=&gt; &quot;https://123.cloudfront.net/foo&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">endpoint:</span> <span class="ruby-string">&quot;https://my-s3-endpoint.com&quot;</span>, <span class="ruby-value">force_path_style:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;foo&quot;</span>)                                     <span class="ruby-comment">#=&gt; &quot;https://my-s3-endpoint.com/my-bucket/foo&quot;</span>&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;foo&quot;</span>, <span class="ruby-value">host:</span> <span class="ruby-string">&quot;https://123.cloudfront.net&quot;</span>) <span class="ruby-comment">#=&gt; &quot;https://123.cloudfront.net/foo&quot;</span></pre>

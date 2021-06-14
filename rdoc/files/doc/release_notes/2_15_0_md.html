@@ -30,7 +30,7 @@ doc/release_notes/2.15.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -38,11 +38,11 @@ Last Update:
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.15.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.15.0<span><a href="#label-title-3A+Shrine+2.15.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-title-3A+Shrine+2.15.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_15_0_md.html">2.15.0</a><span><a href="#label-title-3A+Shrine+2.15.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <a href="https://shrinerb.com/docs/plugins/derivation_endpoint">derivation_endpoint</a> plugin has been added, which  provides on-the-fly processing functionality, similar to what Dragonfly,  Refile, and Active Storage provide. It&#39;s suitable for fast transformations,  such as generating image thumbnails or document previews.</p>
+<p>The {<code>derivation_endpoint</code><a href="https://shrinerb.com/docs/plugins/derivation_endpoint">}</a> plugin has been added, which  provides on-the-fly processing functionality, similar to what Dragonfly,  Refile, and Active Storage provide. It&#39;s suitable for fast transformations,  such as generating image thumbnails or document previews.</p>
 </li></ul>
 
 <p>Rather than encoding processing steps in the URL (like Dragonfly and Active  Storage do), with <code>derivation_endpoint</code> you generate URLs to named  “derivation” blocks, passing any arguments you need for the processing.</p>
@@ -63,7 +63,7 @@ Last Update:
 
 <p><code>rb   plugin :derivation_endpoint, secret_key: &quot;&lt;YOUR SECRET KEY&gt;&quot; </code></p>
 
-<p>The <code>derivation_endpoint</code> plugin is highly configurable, you can set a <a href="https://shrinerb.com/docs/plugins/derivation_endpoint#host">CDN host</a>, change response headers of derivatives (<a href="https://shrinerb.com/docs/plugins/derivation_endpoint#content-type">Content-Type</a>,  <a href="https://shrinerb.com/docs/plugins/derivation_endpoint#content-disposition">Content-Disposition</a>), add <a href="https://shrinerb.com/docs/plugins/derivation_endpoint#expiration">URL expiration</a>, <a href="https://shrinerb.com/docs/plugins/derivation_endpoint#uploading">cache</a>  generated derivatives to a <a href="../../../classes/Shrine.html"><code>Shrine</code></a> storage and more. Check out the  <a href="https://shrinerb.com/docs/plugins/derivation_endpoint">documentation</a> for more details.</p>
+<p>The <code>derivation_endpoint</code> plugin is highly configurable, you can set a <a href="https://shrinerb.com/docs/plugins/derivation_endpoint#host">CDN host</a>, change response headers of derivatives ({<code>Content-Type</code><a href="https://shrinerb.com/docs/plugins/derivation_endpoint#content-type">}</a>,  {<code>Content-Disposition</code><a href="https://shrinerb.com/docs/plugins/derivation_endpoint#content-disposition">}</a>), add <a href="https://shrinerb.com/docs/plugins/derivation_endpoint#expiration">URL expiration</a>, <a href="https://shrinerb.com/docs/plugins/derivation_endpoint#uploading">cache</a>  generated derivatives to a <a href="../../../classes/Shrine.html"><code>Shrine</code></a> storage and more. Check out the  <a href="https://shrinerb.com/docs/plugins/derivation_endpoint">documentation</a> for more details.</p>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>

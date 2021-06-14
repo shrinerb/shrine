@@ -155,13 +155,12 @@ Superclass:
 <div class='method public-class' id='method-method-c-new'>
 <a name='method-c-new'></a>
 <div class='synopsis'>
-<span class='name'>new</span>
-<span class='arguments'>(bucket:, client: nil, prefix: nil, upload_options: {}, multipart_threshold: {}, signer: nil, public: nil, **s3_options)</span>
+<span class='name'>new</span><span class='arguments'>(bucket:, client: nil, prefix: nil, upload_options: {}, multipart_threshold: {}, signer: nil, public: nil, **s3_options)</span>
 
 </div>
 <div class='description'>
 
-<p>Initializes a storage for uploading to <a href="S3.html"><code>S3</code></a>. All options are forwarded to <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method">Aws::S3::Client#initialize</a>, except the following:</p>
+<p>Initializes a storage for uploading to <a href="S3.html"><code>S3</code></a>. All options are forwarded to {<code>Aws::S3::Client#initialize</code><a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method">}</a>, except the following:</p>
 <table class="rdoc-list note-list"><tbody><tr><td class='label'>:bucket</td><td>
 <p>(Required). Name of the <a href="S3.html"><code>S3</code></a> bucket.</p>
 </td></tr><tr><td class='label'>:client</td><td>
@@ -169,7 +168,7 @@ Superclass:
 </td></tr><tr><td class='label'>:prefix</td><td>
 <p>“Directory” inside the bucket to store files into.</p>
 </td></tr><tr><td class='label'>:upload_options</td><td>
-<p>Additional options that will be used for uploading files, they will  be passed to <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method">Aws::S3::Object#put</a>, <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method">Aws::S3::Object#copy_from</a>  and <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method">Aws::S3::Bucket#presigned_post</a>.</p>
+<p>Additional options that will be used for uploading files, they will  be passed to {<code>Aws::S3::Object#put</code><a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method">}</a>, {<code>Aws::S3::Object#copy_from</code><a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method">}</a>  and {<code>Aws::S3::Bucket#presigned_post</code><a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method">}</a>.</p>
 </td></tr><tr><td class='label'>:multipart_threshold</td><td>
 <p>If the input file is larger than the specified size, a parallelized  multipart will be used for the upload/copy. Defaults to  <code>{upload: 15*1024*1024, copy: 100*1024*1024}</code> (15MB for upload  requests, 100MB for copy requests).</p>
 </td></tr></tbody></table>
@@ -188,8 +187,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-clear-21'>
 <a name='method-i-clear-21'></a>
 <div class='synopsis'>
-<span class='name'>clear!</span>
-<span class='arguments'>(&block)</span>
+<span class='name'>clear!</span><span class='arguments'>(&block)</span>
 
 </div>
 <div class='description'>
@@ -209,8 +207,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-delete'>
 <a name='method-i-delete'></a>
 <div class='synopsis'>
-<span class='name'>delete</span>
-<span class='arguments'>(id)</span>
+<span class='name'>delete</span><span class='arguments'>(id)</span>
 
 </div>
 <div class='description'>
@@ -228,8 +225,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-delete_prefixed'>
 <a name='method-i-delete_prefixed'></a>
 <div class='synopsis'>
-<span class='name'>delete_prefixed</span>
-<span class='arguments'>(delete_prefix)</span>
+<span class='name'>delete_prefixed</span><span class='arguments'>(delete_prefix)</span>
 
 </div>
 <div class='description'>
@@ -249,8 +245,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-exists-3F'>
 <a name='method-i-exists-3F'></a>
 <div class='synopsis'>
-<span class='name'>exists?</span>
-<span class='arguments'>(id)</span>
+<span class='name'>exists?</span><span class='arguments'>(id)</span>
 
 </div>
 <div class='description'>
@@ -268,8 +263,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-object'>
 <a name='method-i-object'></a>
 <div class='synopsis'>
-<span class='name'>object</span>
-<span class='arguments'>(id)</span>
+<span class='name'>object</span><span class='arguments'>(id)</span>
 
 </div>
 <div class='description'>
@@ -287,15 +281,14 @@ Superclass:
 <div class='method public-instance' id='method-method-i-open'>
 <a name='method-i-open'></a>
 <div class='synopsis'>
-<span class='name'>open</span>
-<span class='arguments'>(id, rewindable: true, **options)</span>
+<span class='name'>open</span><span class='arguments'>(id, rewindable: true, **options)</span>
 
 </div>
 <div class='description'>
 
 <p>Returns a <code>Down::ChunkedIO</code> object that downloads <a href="S3.html"><code>S3</code></a> object content on-demand. By default, read content will be cached onto disk so that it can be rewinded, but if you don&#39;t need that you can pass <code>rewindable: false</code>.</p>
 
-<p>Any additional options are forwarded to <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method">Aws::S3::Object#get</a>.</p>
+<p>Any additional options are forwarded to {<code>Aws::S3::Object#get</code><a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method">}</a>.</p>
 
 </div>
 <div class='source'>
@@ -308,8 +301,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-presign'>
 <a name='method-i-presign'></a>
 <div class='synopsis'>
-<span class='name'>presign</span>
-<span class='arguments'>(id, method: :post, **presign_options)</span>
+<span class='name'>presign</span><span class='arguments'>(id, method: :post, **presign_options)</span>
 
 </div>
 <div class='description'>
@@ -318,7 +310,7 @@ Superclass:
 
 <pre class="ruby"><span class="ruby-identifier">s3</span>.<span class="ruby-identifier">presign</span>(<span class="ruby-string">&quot;key&quot;</span>) <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   url: &quot;https://my-bucket.s3.amazonaws.com/...&quot;,</span>&#x000A;<span class="ruby-comment">#   fields: { ... },  # blank for PUT presigns</span>&#x000A;<span class="ruby-comment">#   headers: { ... }, # blank for POST presigns</span>&#x000A;<span class="ruby-comment">#   method: &quot;post&quot;,</span>&#x000A;<span class="ruby-comment"># }</span></pre>
 
-<p>By default it calls <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method">Aws::S3::Object#presigned_post</a> which generates data for a POST request, but you can also specify <code>method: :put</code> for PUT uploads which calls <a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method">Aws::S3::Object#presigned_url</a>.</p>
+<p>By default it calls {<code>Aws::S3::Object#presigned_post</code><a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method">}</a> which generates data for a POST request, but you can also specify <code>method: :put</code> for PUT uploads which calls {<code>Aws::S3::Object#presigned_url</code><a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method">}</a>.</p>
 
 <pre class="ruby"><span class="ruby-identifier">s3</span>.<span class="ruby-identifier">presign</span>(<span class="ruby-string">&quot;key&quot;</span>, <span class="ruby-value">method:</span> <span class="ruby-value">:post</span>) <span class="ruby-comment"># for POST upload (default)</span>&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">presign</span>(<span class="ruby-string">&quot;key&quot;</span>, <span class="ruby-value">method:</span> <span class="ruby-value">:put</span>)  <span class="ruby-comment"># for PUT upload</span></pre>
 
@@ -335,8 +327,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-upload'>
 <a name='method-i-upload'></a>
 <div class='synopsis'>
-<span class='name'>upload</span>
-<span class='arguments'>(io, id, shrine_metadata: {}, **upload_options)</span>
+<span class='name'>upload</span><span class='arguments'>(io, id, shrine_metadata: {}, **upload_options)</span>
 
 </div>
 <div class='description'>
@@ -356,8 +347,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-url'>
 <a name='method-i-url'></a>
 <div class='synopsis'>
-<span class='name'>url</span>
-<span class='arguments'>(id, public: self.public, host: nil, **options)</span>
+<span class='name'>url</span><span class='arguments'>(id, public: self.public, host: nil, **options)</span>
 
 </div>
 <div class='description'>
@@ -369,7 +359,7 @@ Superclass:
 <p>Returns the unsigned URL to the <a href="S3.html"><code>S3</code></a> object. This requires the <a href="S3.html"><code>S3</code></a>  object to be public.</p>
 </td></tr></tbody></table>
 
-<p>All other options are forwarded to <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method">Aws::S3::Object#presigned_url</a> or <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#public_url-instance_method">Aws::S3::Object#public_url</a>.</p>
+<p>All other options are forwarded to {<code>Aws::S3::Object#presigned_url</code><a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method">}</a> or {<code>Aws::S3::Object#public_url</code><a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#public_url-instance_method">}</a>.</p>
 
 </div>
 <div class='source'>

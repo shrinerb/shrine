@@ -30,7 +30,7 @@ doc/creating_storages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -54,7 +54,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;http&quot;</span>&#x000A;&#x000A;<span class="ruby-comment"># streaming raw upload</span>&#x000A;<span class="ruby-constant">HTTP</span>.<span class="ruby-identifier">post</span>(<span class="ruby-string">&quot;http://example.com/upload&quot;</span>, <span class="ruby-value">body:</span> <span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-comment"># streaming multipart upload</span>&#x000A;<span class="ruby-constant">HTTP</span>.<span class="ruby-identifier">post</span>(<span class="ruby-string">&quot;http://example.com/upload&quot;</span>, <span class="ruby-value">form:</span> { <span class="ruby-value">file:</span> <span class="ruby-constant">HTTP</span><span class="ruby-operator">::</span><span class="ruby-constant">FormData</span><span class="ruby-operator">::</span><span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>) })</pre>
 
-<p>It&#39;s good practice to test the storage with a <a href="https://github.com/shrinerb/shrine/blob/master/test/support/fakeio.rb">fake IO</a> object which responds only to required methods, as not all received IO objects will be file objects.</p>
+<p>It&#39;s good practice to test the storage with a <a href="https://github_com/shrinerb/shrine/blob/master/test/support/fakeio_rb.html">fake IO</a> object which responds only to required methods, as not all received IO objects will be file objects.</p>
 
 <p>If your storage doesn&#39;t control which id the uploaded file will have, you can modify the <code>id</code> variable before returning:</p>
 
@@ -72,7 +72,7 @@ Last Update:
 
 <p>Ideally, the returned IO object should lazily retrieve uploaded content, so that in cases where metadata needs to be extracted from an uploaded file, only a small portion of the file will be downloaded.</p>
 
-<p>It&#39;s recommended to use the <a href="https://github.com/janko/down">Down</a> gem for this. If the storage exposes its files over HTTP, you can use <code>Down.open</code>, otherwise if it&#39;s possible to stream chunks of content from the storage, that can be wrapped in a <code>Down::ChunkedIO</code>. It&#39;s recommended to use the <a href="https://github.com/janko/down#httprb">Down::Http</a> backend, as the <a href="https://github.com/httprb/http">HTTP.rb</a> gem allocates an order of magnitude less memory when reading the response body compared to <code>Net::HTTP</code>.</p>
+<p>It&#39;s recommended to use the <a href="https://github.com/janko/down">Down</a> gem for this. If the storage exposes its files over HTTP, you can use <code>Down.open</code>, otherwise if it&#39;s possible to stream chunks of content from the storage, that can be wrapped in a <code>Down::ChunkedIO</code>. It&#39;s recommended to use the {<code>Down::Http</code><a href="https://github.com/janko/down#httprb">}</a> backend, as the <a href="https://github.com/httprb/http">HTTP.rb</a> gem allocates an order of magnitude less memory when reading the response body compared to <code>Net::HTTP</code>.</p>
 
 <p>The storage can support additional options to customize how the file will be opened, <code>Shrine::UploadedFile#open</code> and <code>Shrine::UploadedFile#download</code> will forward any given options to <code>#open</code>.</p>
 

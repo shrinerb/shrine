@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>3.4.0.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>3.4.0.md
+</h1>
+<div class='paths'>
+doc/release_notes/3.4.0.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2021-06-14 23:14:24 +0200</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>—</p>
+
+<h2 id="label-title-3A+Shrine+3.4.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_4_0_md.html">3.4.0</a><span><a href="#label-title-3A+Shrine+3.4.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Passing attacher options to <code>Shrine.Attachment</code> method now works on Ruby 3.0.</p>
+</li><li>
+<p>Defining validation errors as an array of I18n key and options in  <code>activerecord</code> plugin now works on Ruby 3.0.</p>
+</li><li>
+<p>The <code>:fastimage</code> MIME type analyzer now correctly detects SVGs as  <code>image/svg+html</code> in the <code>determine_mime_type</code> plugin.</p>
+</li><li>
+<p>The <code>Shrine::Attacher#read</code> method provided by the <code>entity</code> plugin is now  public. This is consistent with <code>Shrine::Attacher#write</code> from <code>model</code> plugin  being public as well.</p>
+</li><li>
+<p>The <code>Shrine::Attacher#reload</code> method now resets attachment&#39;s dirty state.  This means that for a model whose <code>Attacher#changed?</code> returns <code>true</code>, calling  <code>#reload</code> on the model will make <code>Attacher#changed?</code> return <code>false</code>. This was  the behaviour before <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.3.0.</p>
+</li></ul>
+
+<p>“`rb  # before  model.file_attacher.changed? #=&gt; true  model.reload  model.file_attacher.changed? #=&gt; true</p>
+
+<p># after  model.file_attacher.changed? #=&gt; true  model.reload  model.file_attacher.changed? #=&gt; false  “`</p>
+<ul><li>
+<p>Calling <code>#reload</code> on the model will not initialize a <code>Shrine::Attacher</code>  instance anymore if one hasn&#39;t previously been initialized.</p>
+</li></ul>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

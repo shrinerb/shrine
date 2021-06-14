@@ -30,7 +30,7 @@ doc/refile.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-09-16 01:40:22 +0200</span>
+<span class='datetime'>2021-05-20 21:03:17 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -73,7 +73,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-ivar">@photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;https://my-bucket.s3.amazonaws.com/cache/50dfl833lfs0gfh.jpg&quot;</span></pre>
 
-<p>If you&#39;re using storage which don&#39;t expose files over URL (e.g. a database storage), or you want to secure your downloads, you can also serve files through your app using the <a href="https://shrinerb.com/docs/plugins/download_endpoint">download_endpoint</a> plugin.</p>
+<p>If you&#39;re using storage which don&#39;t expose files over URL (e.g. a database storage), or you want to secure your downloads, you can also serve files through your app using the {<code>download_endpoint</code><a href="https://shrinerb.com/docs/plugins/download_endpoint">}</a> plugin.</p>
 
 <h3 id="label-Persistence">Persistence<span><a href="#label-Persistence">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -94,17 +94,17 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">id</span>          <span class="ruby-comment">#=&gt; &quot;path/to/image.jpg&quot;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :store</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">metadata</span>    <span class="ruby-comment">#=&gt; { &quot;filename&quot; =&gt; &quot;...&quot;, &quot;size&quot; =&gt; ..., &quot;mime_type&quot; =&gt; &quot;...&quot; }</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;nature.jpg&quot;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 4739472</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span></pre>
 
-<p>This column can be queried if it&#39;s made a JSON column. Alternatively, you can use the <a href="https://shrinerb.com/docs/plugins/metadata_attributes">metadata_attributes</a> plugin to save metadata into separate columns.</p>
+<p>This column can be queried if it&#39;s made a JSON column. Alternatively, you can use the {<code>metadata_attributes</code><a href="https://shrinerb.com/docs/plugins/metadata_attributes">}</a> plugin to save metadata into separate columns.</p>
 
 <h3 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> provides on-the-fly processing via the <a href="https://shrinerb.com/docs/plugins/derivation_endpoint">derivation_endpoint</a> plugin:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> provides on-the-fly processing via the {<code>derivation_endpoint</code><a href="https://shrinerb.com/docs/plugins/derivation_endpoint">}</a> plugin:</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivation_endpoint</span>,&#x000A;    <span class="ruby-value">secret_key:</span> <span class="ruby-string">&quot;&lt;YOUR SECRET KEY&gt;&quot;</span>,&#x000A;    <span class="ruby-value">prefix:</span>     <span class="ruby-string">&quot;derivations/image&quot;</span> <span class="ruby-comment"># needs to match the mount point in routes</span>&#x000A;&#x000A;  <span class="ruby-identifier">derivation</span> <span class="ruby-value">:thumbnail</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span>, <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;      .<span class="ruby-identifier">source</span>(<span class="ruby-identifier">file</span>)&#x000A;      .<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-identifier">width</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">height</span>.<span class="ruby-identifier">to_i</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">derivation_endpoint</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/derivations/image&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> also support eager processing using the <a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a> plugin.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> also support eager processing using the {<code>derivatives</code><a href="https://shrinerb.com/docs/plugins/derivatives">}</a> plugin.</p>
 
 <h3 id="label-Validation">Validation<span><a href="#label-Validation">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -116,7 +116,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">10</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>&#x000A;    <span class="ruby-identifier">validate_extension</span> <span class="ruby-node">%w[jpg jpeg png webp]</span>&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">validate_mime_type</span> <span class="ruby-node">%w[image/jpeg image/png image/webp]</span>&#x000A;      <span class="ruby-identifier">validate_max_dimensions</span> [<span class="ruby-value">5000</span>, <span class="ruby-value">5000</span>]&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Refile extracts the MIME type from the file extension, which means it can easily be spoofed (just give a PHP file a <code>.jpg</code> extension). <a href="../../classes/Shrine.html"><code>Shrine</code></a> has the <a href="https://shrinerb.com/docs/plugins/determine_mime_type">determine_mime_type</a> plugin for determining MIME type from file <em>content</em>.</p>
+<p>Refile extracts the MIME type from the file extension, which means it can easily be spoofed (just give a PHP file a <code>.jpg</code> extension). <a href="../../classes/Shrine.html"><code>Shrine</code></a> has the {<code>determine_mime_type</code><a href="https://shrinerb.com/docs/plugins/determine_mime_type">}</a> plugin for determining MIME type from file <em>content</em>.</p>
 
 <h3 id="label-Direct+uploads">Direct uploads<span><a href="#label-Direct+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -206,7 +206,7 @@ Last Update:
 
 <h4 id="label-.extract_content_type"><code>.extract_content_type</code><span><a href="#label-.extract_content_type">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The <a href="https://shrinerb.com/docs/plugins/determine_mime_type">determine_mime_type</a> plugin provides a <code>Shrine.determine_mime_type</code> method.</p>
+<p>The {<code>determine_mime_type</code><a href="https://shrinerb.com/docs/plugins/determine_mime_type">}</a> plugin provides a <code>Shrine.determine_mime_type</code> method.</p>
 
 <h4 id="label-.app_url-2C+.upload_url-2C+.attachment_upload_url-2C+.presign_url-2C+.attachment_presign_url"><code>.app_url</code>, <code>.upload_url</code>, <code>.attachment_upload_url</code>, <code>.presign_url</code>, <code>.attachment_presign_url</code><span><a href="#label-.app_url-2C+.upload_url-2C+.attachment_upload_url-2C+.presign_url-2C+.attachment_presign_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
@@ -222,7 +222,7 @@ Last Update:
 
 <h4 id="label-.secret_key-2C+.token-2C+.valid_token-3F"><code>.secret_key</code>, <code>.token</code>, <code>.valid_token?</code><span><a href="#label-.secret_key-2C+.token-2C+.valid_token-3F">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The secret key is required for the <a href="https://shrinerb.com/docs/plugins/derivation_endpoint">derivation_endpoint</a>, but these methods are not exposed.</p>
+<p>The secret key is required for the {<code>derivation_endpoint</code><a href="https://shrinerb.com/docs/plugins/derivation_endpoint">}</a>, but these methods are not exposed.</p>
 
 <h3 id="label-Attachment"><code>Attachment</code><span><a href="#label-Attachment">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
