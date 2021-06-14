@@ -87,6 +87,7 @@ If you're using [Uppy], this is the recommended CORS configuration for the
 ```
 
 Or in JSON format:
+
 ```json
 [
     {

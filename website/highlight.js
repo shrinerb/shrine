@@ -10,6 +10,7 @@ const languageScopes = {
   rb: 'source.ruby',
   ruby: 'source.ruby',
   js: 'source.js',
+  json: 'source.json',
   erb: 'text.html.erb',
   diff: 'source.diff',
   xml: 'text.xml',
