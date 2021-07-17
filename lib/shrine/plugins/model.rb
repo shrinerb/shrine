@@ -48,7 +48,9 @@ class Shrine
           # The copy constructor that's called on #dup and #clone.
           define_method :initialize_copy do |other|
             super(other)
-            instance_variable_set(:"@#{name}_attacher", instance_variable_get(:"@#{name}_attacher")&.dup)
+            attacher_copy = instance_variable_get(:"@#{name}_attacher")&.dup
+            attacher_copy.set_entity(self, name) if attacher_copy
+            instance_variable_set(:"@#{name}_attacher", attacher_copy)
             self
           end
           private :initialize_copy

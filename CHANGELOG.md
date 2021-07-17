@@ -1,3 +1,7 @@
+## HEAD
+
+* `model` – When duplicating a record, make the duplicated attacher reference the duplicated record (@janko)
+
 ## 3.4.0 (2021-06-14)
 
 * `base` – Fix passing options to `Shrine.Attachment` on Ruby 3.0 (@lucianghinda)

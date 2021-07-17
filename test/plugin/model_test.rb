@@ -132,8 +132,11 @@ describe Shrine::Plugins::Model do
 
         model_copy = model.dup
 
-        assert model_copy.file_attacher.changed? # retains any state
         refute_equal model.file_attacher, model_copy.file_attacher
+        assert_equal model_copy, model_copy.file_attacher.record
+        assert_equal :file, model_copy.file_attacher.name
+        assert_equal Hash[record: model_copy, name: :file], model_copy.file_attacher.context
+        assert model_copy.file_attacher.changed? # retains any state
       end
 
       it "handles attacher not being loaded" do
