@@ -118,7 +118,7 @@ describe Shrine::Plugins::Signature do
   end
 
   it "defaults hash format to hexadecimal" do
-    assert_match /^[[:alnum:]]+$/, @uploader.calculate_signature(fakeio("content"), :md5)
+    assert_match /^[[:xdigit:]]+$/, @uploader.calculate_signature(fakeio("content"), :md5)
   end
 
   it "accepts uppercase algorithm names" do
