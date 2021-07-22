@@ -51,6 +51,10 @@ class Shrine
       end
 
       module InstanceMethods
+        def infer_extension(mime_type)
+          self.class.infer_extension(mime_type)
+        end
+
         private
 
         def basic_location(io, metadata:)

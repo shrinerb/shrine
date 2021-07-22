@@ -151,4 +151,9 @@ describe Shrine::Plugins::InferExtension do
       @shrine.infer_extension("image/png")
     end
   end
+
+  it "can infer extension both from instance and class level" do
+    assert_instance_of String, @uploader.infer_extension("image/png")
+    assert_instance_of String, @shrine.infer_extension("image/png")
+  end
 end
