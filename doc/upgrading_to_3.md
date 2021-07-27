@@ -447,7 +447,7 @@ class PromoteJob
     attacher.create_derivatives # call derivatives processor
     attacher.atomic_promote
   rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
-    # attachment has changed or record has beeen deleted, nothing to do
+    # attachment has changed or record has been deleted, nothing to do
   end
 end
 ```
