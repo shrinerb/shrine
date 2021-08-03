@@ -28,8 +28,8 @@ class Shrine
         uploader.opts[:derivation_endpoint] ||= { options: {}, derivations: {} }
         uploader.opts[:derivation_endpoint][:options].merge!(opts)
 
-        unless uploader.opts[:derivation_endpoint][:options][:secret_key]
-          fail Error, "must provide :secret_key option to derivation_endpoint plugin"
+        if !uploader.opts[:derivation_endpoint][:options][:secret_key] && !uploader.opts[:derivation_endpoint][:options][:signer]
+          fail Error, "must provide :secret_key option to derivation_endpoint plugin when no custom signer is set"
         end
 
         # instrumentation plugin integration
@@ -197,6 +197,7 @@ class Shrine
     option :metadata,                    default: -> { [] }
     option :prefix
     option :secret_key
+    option :signer
     option :type
     option :upload,                      default: -> { false }
     option :upload_location,             default: -> { default_upload_location }, result: -> (o) { upload_location(o) }
@@ -216,7 +217,7 @@ class Shrine
       option_definition = self.class.options.fetch(name)
 
       value = options.fetch(name) { shrine_class.derivation_options[name] }
-      value = instance_exec(&value) if value.is_a?(Proc)
+      value = instance_exec(&value) if value.is_a?(Proc) && value.arity == 0
 
       if value.nil?
         default = option_definition[:default]
@@ -300,20 +301,36 @@ class Shrine
   end
 
   class Derivation::Url < Derivation::Command
-    delegate :name, :args, :source, :secret_key
+    delegate :name, :args, :source, :secret_key, :signer
 
     def call(host: nil, prefix: nil, **options)
-      [host, *prefix, identifier(**options)].join("/")
+      base_url = [host, *prefix].join("/")
+      path = path_identifier(metadata: options.delete(:metadata))
+
+      if signer
+        url = [base_url, path].join("/")
+        signer.call(url, **options)
+      else
+        signed_part = signed_url("#{path}?#{query(**options)}")
+        [base_url, signed_part].join("/")
+      end
     end
 
     private
 
-    def identifier(expires_in: nil,
-                   version: nil,
-                   type: nil,
-                   filename: nil,
-                   disposition: nil,
-                   metadata: [])
+    def path_identifier(metadata: [])
+      [
+        name,
+        *args,
+        source.urlsafe_dump(metadata: metadata)
+      ].map{|component| Rack::Utils.escape_path(component.to_s)}.join('/')
+    end
+
+    def query(expires_in: nil,
+              type: nil,
+              filename: nil,
+              disposition: nil,
+              version: nil)
 
       params = {}
       params[:expires_at]  = (Time.now + expires_in).to_i if expires_in
@@ -322,23 +339,7 @@ class Shrine
       params[:filename]    = filename if filename
       params[:disposition] = disposition if disposition
 
-      # serializes the source uploaded file into an URL-safe format
-      source_component = source.urlsafe_dump(metadata: metadata)
-
-      # generate plain URL
-      url = plain_url(name, *args, source_component, params)
-
-      # generate signed URL
-      signed_url(url)
-    end
-
-    def plain_url(*components, params)
-      # When using Rack < 2, Rack::Utils#escape_path will escape '/'.
-      # Escape each component and then join them together.
-      path  = components.map{|component| Rack::Utils.escape_path(component.to_s)}.join('/')
-      query = Rack::Utils.build_query(params)
-
-      "#{path}?#{query}"
+      Rack::Utils.build_query(params)
     end
 
     def signed_url(url)
@@ -379,7 +380,7 @@ class Shrine
     # Returns "404 Not Found" if derivation block is not defined, or if source
     # file was not found on the storage.
     def handle_request(request)
-      verify_signature!(request)
+      verify_signature!(request) if secret_key
       check_expiry!(request)
 
       name, *args, serialized_file = request.path_info.split("/")[1..-1]
