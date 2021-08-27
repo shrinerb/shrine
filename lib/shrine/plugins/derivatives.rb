@@ -139,7 +139,7 @@ class Shrine
         # Allows generating a URL to the derivative by passing the derivative
         # name.
         #
-        #     attacher.add_derivatives(thumb: thumb)
+        #     attacher.add_derivatives({ thumb: thumb })
         #     attacher.url(:thumb) #=> "https://example.org/thumb.jpg"
         def url(*path, **options)
           return super if path.empty?
@@ -180,7 +180,7 @@ class Shrine
 
         # In addition to deleting the main file it also deletes any derivatives.
         #
-        #     attacher.add_derivatives(thumb: thumb)
+        #     attacher.add_derivatives({ thumb: thumb })
         #     attacher.derivatives[:thumb].exists? #=> true
         #     attacher.destroy
         #     attacher.derivatives[:thumb].exists? #=> false
@@ -208,7 +208,7 @@ class Shrine
         #     # {
         #     #   thumb: #<Shrine::UploadedFile>,
         #     # }
-        #     attacher.add_derivatives(cropped: cropped)
+        #     attacher.add_derivatives({ cropped: cropped })
         #     attacher.derivatives #=>
         #     # {
         #     #   thumb: #<Shrine::UploadedFile>,
@@ -239,7 +239,7 @@ class Shrine
 
         # Uploads given hash of files.
         #
-        #     hash = attacher.upload_derivatives(thumb: thumb)
+        #     hash = attacher.upload_derivatives({ thumb: thumb })
         #     hash[:thumb] #=> #<Shrine::UploadedFile>
         def upload_derivatives(files, **options)
           map_derivative(files) do |path, file|
@@ -298,7 +298,7 @@ class Shrine
         # Deep merges given uploaded derivatives with current derivatives.
         #
         #     attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
-        #     attacher.merge_derivatives(two: uploaded_file)
+        #     attacher.merge_derivatives({ two: uploaded_file })
         #     attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
         def merge_derivatives(new_derivatives)
           @derivatives_mutex.synchronize do
@@ -379,7 +379,7 @@ class Shrine
 
         # Deletes given hash of uploaded files.
         #
-        #     attacher.delete_derivatives(thumb: uploaded_file)
+        #     attacher.delete_derivatives({ thumb: uploaded_file })
         #     uploaded_file.exists? #=> false
         def delete_derivatives(derivatives = self.derivatives)
           map_derivative(derivatives) { |_, derivative| derivative.delete }
@@ -387,7 +387,7 @@ class Shrine
 
         # Sets the given hash of uploaded files as derivatives.
         #
-        #     attacher.set_derivatives(thumb: uploaded_file)
+        #     attacher.set_derivatives({ thumb: uploaded_file })
         #     attacher.derivatives #=> { thumb: #<Shrine::UploadedFile> }
         def set_derivatives(derivatives)
           self.derivatives = derivatives
@@ -398,7 +398,7 @@ class Shrine
         # Adds derivative data into the hash.
         #
         #     attacher.attach(io)
-        #     attacher.add_derivatives(thumb: thumb)
+        #     attacher.add_derivatives({ thumb: thumb })
         #     attacher.data
         #     #=>
         #     # {
