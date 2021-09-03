@@ -99,11 +99,12 @@ class MoveFilesJob
 
     attacher     = attacher_class.retrieve(model: record, name: name, file: file_data)
     old_attacher = attacher.dup
+    current_file = old_attacher.file
 
     attacher.set             attacher.upload(attacher.file)
     attacher.set_derivatives attacher.upload_derivatives(attacher.derivatives)
 
-    attacher.atomic_persist
+    attacher.atomic_persist(current_file)
     old_attacher.destroy_attached
   rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
     attacher&.destroy_attached
