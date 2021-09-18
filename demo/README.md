@@ -42,8 +42,8 @@ Files of interest:
 * [assets/js/app.js]
 * [app.rb]
 * [config/shrine.rb]
-* [jobs/attachment/destroy_job.rb]
 * [jobs/attachment/promote_job.rb]
+* [jobs/attachment/destroy_job.rb]
 * [uploaders/image_uploader.rb]
 * [db/migrations/001_create_albums.rb]
 * [db/migrations/002_create_photos.rb]
@@ -97,8 +97,8 @@ $ bundle exec rackup
 [assets/js/app.js]: /demo/assets/js/app.js
 [app.rb]: /demo/app.rb
 [config/shrine.rb]: /demo/config/shrine.rb
-[jobs/destroy_job.rb]: /demo/jobs/destroy_job.rb
-[jobs/promote_job.rb]: /demo/jobs/promote_job.rb
+[jobs/attachment/promote_job.rb]: /demo/jobs/attachment/promote_job.rb
+[jobs/attachment/destroy_job.rb]: /demo/jobs/attachment/destroy_job.rb
 [uploaders/image_uploader.rb]: /demo/uploaders/image_uploader.rb
 [db/migrations/001_create_albums.rb]: /demo/db/migrations/001_create_albums.rb
 [db/migrations/002_create_photos.rb]: /demo/db/migrations/002_create_photos.rb
