@@ -5,18 +5,3 @@
 .file-upload-preview[src=""] {
   visibility: hidden;
 }
-
-.file-upload-list li {
-  margin-bottom: 20px;
-}
-
-.image-preview {
-  margin-top: 10px;
-  margin-bottom: 20px;
-  display: inline-block;
-}
-
-label {
-  margin-left: 5px;
-  margin-right: 5px;
-}

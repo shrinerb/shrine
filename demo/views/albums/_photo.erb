@@ -1,17 +1,15 @@
-<li class="album-photo">
-  <div class="media">
-    <div class="media-left">
+<li class="mb-3">
+  <div class="d-flex">
+    <div class="flex-shrink-0">
       <!-- dynamic link that will generate a thumbnail "on-the-fly" -->
-      <img src="<%= photo.image.derivation_url(:thumbnail, 300, 300) %>"
-           width=150
-           class="img-thumbnail media-object" />
+      <img src="<%= photo.image.derivation_url(:thumbnail, 300, 300) %>" width=150 class="img-thumbnail" />
     </div>
-    <div class="media-body">
-      <div class="form-group">
-        <%= f.input :title, class: "form-control" %>
+    <div class="flex-grow-1 ms-3">
+      <div class="mb-3">
+        <%= f.input :title, class: "form-control", label_attr: { class: "form-label" } %>
       </div>
-      <div class="form-group">
-        <%= f.input :_delete, type: :checkbox, label: "Remove photo" %>
+      <div class="mb-3 form-check">
+        <%= f.input :_delete, type: :checkbox, class: "form-check-input", label: "Remove photo", label_attr: { class: "form-check-label" } %>
       </div>
     </div>
   </div>

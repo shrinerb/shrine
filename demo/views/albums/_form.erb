@@ -1,16 +1,19 @@
 <% form album, { action: form_action, enctype: "multipart/form-data" }, labeler: :explicit do |f| %>
   <%= f.input :hidden, name: "_method", value: form_method, obj: nil %> <%# # used in tandem with Rack::MethodOverride to enable PUT requests %>
 
-  <div class="form-group">
-    <%= f.input :name, class: "form-control" %>
+  <div class="mb-3">
+    <%= f.input :name, class: "form-control", label_attr: { class: "form-label" } %>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <!-- will be replaced by Uppy -->
     <%= f.input :cover_photo,
       type: :file,
       attr: {
         accept: ImageUploader::ALLOWED_TYPES.join(",")
+      },
+      label_attr: {
+        class: "form-label"
       },
       data: {
         upload_server: upload_server,
@@ -28,7 +31,7 @@
       id: "album-cover-photo-upload-result" %>
   </div>
 
-  <div class="image-preview">
+  <div class="d-inline-block mt-1 mb-3">
     <!-- static link to the thumbnail generated on attachment -->
     <img src="<%= album.cover_photo_url(:medium) %>"
          width=300
@@ -37,7 +40,7 @@
   </div>
 
   <% unless album.new? %>
-    <div class="form-group">
+    <div class="mb-3">
       <!-- will be replaced by Uppy -->
       <%= f.input :photos,
         type: :file,
@@ -45,6 +48,9 @@
         attr: {
           multiple: true,
           accept: ImageUploader::ALLOWED_TYPES.join(",")
+        },
+        label_attr: {
+          class: "form-label"
         },
         data: {
           upload_server: upload_server,
