@@ -5,13 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Shrine demo featuring multiple file uploads to S3 with Uppy" />
     <meta charset="utf-8" />
-
-    <script src="https://unpkg.com/babel-polyfill@6.26.0/dist/polyfill.min.js"></script>
-    <script src="https://unpkg.com/whatwg-fetch@3.4.1/fetch.js"></script>
-    <script src="https://transloadit.edgly.net/releases/uppy/v1.21.2/uppy.min.js"></script>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <link href="https://transloadit.edgly.net/releases/uppy/v1.21.2/uppy.min.css" rel="stylesheet" />
+    <link href="https://releases.transloadit.com/uppy/v2.1.0/uppy.min.css" rel="stylesheet">
     <%= assets(:css) %>
   </head>
 
@@ -20,6 +15,7 @@
       <%= yield %>
     </div>
 
+    <script src="https://releases.transloadit.com/uppy/v2.1.0/uppy.min.js"></script>
     <%= assets(:js) %>
   </body>
 </html>
