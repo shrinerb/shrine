@@ -368,7 +368,7 @@ Now you should be able to rewrite your application so that it uses Shrine
 instead of CarrierWave (you can consult the reference in the next section). You
 can remove the `CarrierwaveShrineSynchronization` module as well.
 
-### 5. Backill metadata
+### 5. Backfill metadata
 
 You'll notice that Shrine metadata will be absent from the migrated files'
 data. You can run a script that will fill in any missing metadata defined in
