@@ -107,7 +107,7 @@ const siteConfig = {
   // template. For example, if you need your repo's URL...
   githubUrl: 'https://github.com/shrinerb/shrine',
   editUrl: 'https://github.com/shrinerb/shrine/edit/master/doc/',
-  blogUrl: 'https://twin.github.io',
+  blogUrl: 'https://janko.io',
   discourseUrl: 'https://discourse.shrinerb.com',
   stackOverflowUrl: 'https://stackoverflow.com/questions/tagged/shrine',
 
