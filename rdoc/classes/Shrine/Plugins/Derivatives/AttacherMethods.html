@@ -136,7 +136,7 @@ Shrine::Plugins::Derivatives::AttacherMethods
 
 <p>Uploads given hash of files and adds uploaded files to the derivatives hash.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   thumb: #&lt;Shrine::UploadedFile&gt;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>(<span class="ruby-value">cropped:</span> <span class="ruby-identifier">cropped</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   thumb: #&lt;Shrine::UploadedFile&gt;,</span>&#x000A;<span class="ruby-comment">#   cropped: #&lt;Shrine::UploadedFile&gt;,</span>&#x000A;<span class="ruby-comment"># }</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   thumb: #&lt;Shrine::UploadedFile&gt;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>({ <span class="ruby-value">cropped:</span> <span class="ruby-identifier">cropped</span> })&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   thumb: #&lt;Shrine::UploadedFile&gt;,</span>&#x000A;<span class="ruby-comment">#   cropped: #&lt;Shrine::UploadedFile&gt;,</span>&#x000A;<span class="ruby-comment"># }</span></pre>
 
 </div>
 <div class='source'>
@@ -196,7 +196,7 @@ Shrine::Plugins::Derivatives::AttacherMethods
 
 <p>Adds derivative data into the hash.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>(<span class="ruby-value">thumb:</span> <span class="ruby-identifier">thumb</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">data</span>&#x000A;<span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;id&quot; =&gt; &quot;...&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;storage&quot; =&gt; &quot;store&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;metadata&quot; =&gt; { ... },</span>&#x000A;<span class="ruby-comment">#   &quot;derivatives&quot; =&gt; {</span>&#x000A;<span class="ruby-comment">#     &quot;thumb&quot; =&gt; {</span>&#x000A;<span class="ruby-comment">#       &quot;id&quot; =&gt; &quot;...&quot;,</span>&#x000A;<span class="ruby-comment">#       &quot;storage&quot; =&gt; &quot;store&quot;,</span>&#x000A;<span class="ruby-comment">#       &quot;metadata&quot; =&gt; { ... },</span>&#x000A;<span class="ruby-comment">#     }</span>&#x000A;<span class="ruby-comment">#   }</span>&#x000A;<span class="ruby-comment"># }</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>({ <span class="ruby-value">thumb:</span> <span class="ruby-identifier">thumb</span> })&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">data</span>&#x000A;<span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;id&quot; =&gt; &quot;...&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;storage&quot; =&gt; &quot;store&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;metadata&quot; =&gt; { ... },</span>&#x000A;<span class="ruby-comment">#   &quot;derivatives&quot; =&gt; {</span>&#x000A;<span class="ruby-comment">#     &quot;thumb&quot; =&gt; {</span>&#x000A;<span class="ruby-comment">#       &quot;id&quot; =&gt; &quot;...&quot;,</span>&#x000A;<span class="ruby-comment">#       &quot;storage&quot; =&gt; &quot;store&quot;,</span>&#x000A;<span class="ruby-comment">#       &quot;metadata&quot; =&gt; { ... },</span>&#x000A;<span class="ruby-comment">#     }</span>&#x000A;<span class="ruby-comment">#   }</span>&#x000A;<span class="ruby-comment"># }</span></pre>
 
 </div>
 <div class='source'>
@@ -216,7 +216,7 @@ Shrine::Plugins::Derivatives::AttacherMethods
 
 <p>Deletes given hash of uploaded files.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">delete_derivatives</span>(<span class="ruby-value">thumb:</span> <span class="ruby-identifier">uploaded_file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">delete_derivatives</span>({ <span class="ruby-value">thumb:</span> <span class="ruby-identifier">uploaded_file</span> })&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span></pre>
 
 </div>
 <div class='source'>
@@ -256,7 +256,7 @@ Shrine::Plugins::Derivatives::AttacherMethods
 
 <p>In addition to deleting the main file it also deletes any derivatives.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>(<span class="ruby-value">thumb:</span> <span class="ruby-identifier">thumb</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:thumb</span>].<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:thumb</span>].<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>({ <span class="ruby-value">thumb:</span> <span class="ruby-identifier">thumb</span> })&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:thumb</span>].<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:thumb</span>].<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span></pre>
 
 </div>
 <div class='source'>
@@ -356,7 +356,7 @@ Shrine::Plugins::Derivatives::AttacherMethods
 
 <p>Deep merges given uploaded derivatives with current derivatives.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt; }</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">merge_derivatives</span>(<span class="ruby-value">two:</span> <span class="ruby-identifier">uploaded_file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt;, two: #&lt;Shrine::UploadedFile&gt; }</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt; }</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">merge_derivatives</span>({ <span class="ruby-value">two:</span> <span class="ruby-identifier">uploaded_file</span> })&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt;, two: #&lt;Shrine::UploadedFile&gt; }</span></pre>
 
 </div>
 <div class='source'>
@@ -490,7 +490,7 @@ Shrine::Plugins::Derivatives::AttacherMethods
 
 <p>Sets the given hash of uploaded files as derivatives.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set_derivatives</span>(<span class="ruby-value">thumb:</span> <span class="ruby-identifier">uploaded_file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set_derivatives</span>({ <span class="ruby-value">thumb:</span> <span class="ruby-identifier">uploaded_file</span> })&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</span></pre>
 
 </div>
 <div class='source'>
@@ -530,7 +530,7 @@ Shrine::Plugins::Derivatives::AttacherMethods
 
 <p>Uploads given hash of files.</p>
 
-<pre class="ruby"><span class="ruby-identifier">hash</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload_derivatives</span>(<span class="ruby-value">thumb:</span> <span class="ruby-identifier">thumb</span>)&#x000A;<span class="ruby-identifier">hash</span>[<span class="ruby-value">:thumb</span>] <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">hash</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload_derivatives</span>({ <span class="ruby-value">thumb:</span> <span class="ruby-identifier">thumb</span> })&#x000A;<span class="ruby-identifier">hash</span>[<span class="ruby-value">:thumb</span>] <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
 
 </div>
 <div class='source'>
@@ -550,7 +550,7 @@ Shrine::Plugins::Derivatives::AttacherMethods
 
 <p>Allows generating a URL to the derivative by passing the derivative name.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>(<span class="ruby-value">thumb:</span> <span class="ruby-identifier">thumb</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span>(<span class="ruby-value">:thumb</span>) <span class="ruby-comment">#=&gt; &quot;https://example.org/thumb.jpg&quot;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>({ <span class="ruby-value">thumb:</span> <span class="ruby-identifier">thumb</span> })&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span>(<span class="ruby-value">:thumb</span>) <span class="ruby-comment">#=&gt; &quot;https://example.org/thumb.jpg&quot;</span></pre>
 
 </div>
 <div class='source'>
