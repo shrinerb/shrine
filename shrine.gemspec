@@ -67,10 +67,17 @@ direct uploads for fully asynchronous user experience.
 
   # for instrumentation plugin
   gem.add_development_dependency "dry-monitor"
-  gem.add_development_dependency "activesupport", RUBY_VERSION >= "2.5" ? "~> 7.0" : "~> 5.2"
+  activesupport_version, activerecord_version = if RUBY_VERSION >= "2.7"
+                                                  "~> 7.0"
+                                                elsif RUBY_VERSION >= "2.5"
+                                                  "~> 6.0"
+                                                else
+                                                  "~> 5.2"
+                                                end
+  gem.add_development_dependency "activesupport", activesupport_version
 
   # for ORM plugins
   gem.add_development_dependency "sequel"
-  gem.add_development_dependency "activerecord", RUBY_VERSION >= "2.5" ? "~> 7.0" : "~> 5.2"
+  gem.add_development_dependency "activerecord", activerecord_version
   gem.add_development_dependency "sqlite3", "~> 1.4" unless RUBY_ENGINE == "jruby"
 end
