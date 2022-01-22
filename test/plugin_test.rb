@@ -43,7 +43,7 @@ describe "plugin system" do
         assert_equal :foo, Shrine::Attacher.foo
         assert_equal :foo, Shrine::Attacher.allocate.foo
         assert_equal :foo, Shrine::Attachment.foo
-        assert_equal :foo, Shrine::Attachment.allocate.foo
+        assert_equal :foo, Shrine::Attachment.new(:bar).foo
 
         Shrine.plugin TestPlugin
 
@@ -54,7 +54,7 @@ describe "plugin system" do
         assert_equal :plugin_foo, Shrine::Attacher.foo
         assert_equal :plugin_foo, Shrine::Attacher.allocate.foo
         assert_equal :plugin_foo, Shrine::Attachment.foo
-        assert_equal :plugin_foo, Shrine::Attachment.allocate.foo
+        assert_equal :plugin_foo, Shrine::Attachment.new(:bar).foo
       end
     end
   end
