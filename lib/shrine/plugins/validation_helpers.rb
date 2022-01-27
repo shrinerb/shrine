@@ -171,7 +171,7 @@ class Shrine
         #     validate_mime_type_inclusion %w[audio/mp3 audio/flac]
         def validate_mime_type_inclusion(types, message: nil)
           validate_result(
-            types.include?(file.mime_type),
+            contains_mime_type?(types, file.mime_type),
             :mime_type_inclusion, message, types
           )
         end
@@ -183,7 +183,7 @@ class Shrine
         #     validate_mime_type_exclusion %w[text/x-php]
         def validate_mime_type_exclusion(types, message: nil)
           validate_result(
-            !types.include?(file.mime_type),
+            !contains_mime_type?(types, file.mime_type),
             :mime_type_exclusion, message, types
           )
         end
@@ -233,6 +233,17 @@ class Shrine
         def error_message(type, message, object)
           message ||= self.class.default_validation_messages.fetch(type)
           message.is_a?(String) ? message : message.call(object)
+        end
+
+        # Check if mime type is included, considering wildcards
+        def contains_mime_type?(types, file_type)
+          return false unless file_type
+          types.each do |pattern|
+            if pattern == file_type || (pattern.match(/\/\*$/) && file_type.index(pattern.sub(/\*$/, '')) == 0)
+              return true
+            end
+          end
+          false
         end
       end
     end
