@@ -201,6 +201,14 @@ describe Shrine::Storage::S3 do
         assert_equal "REPLACE",    @s3.client.api_requests[0][:params][:metadata_directive]
       end
 
+      it "adds directive for replacing object tagging" do
+        uploaded_file = @shrine.uploaded_file(id: "bar", storage: "s3", metadata: { "size" => 10 })
+        @s3.upload(uploaded_file, "foo")
+        assert_equal :copy_object, @s3.client.api_requests[0][:operation_name]
+        assert_equal "REPLACE",    @s3.client.api_requests[0][:params][:tagging_directive]
+      end
+
+
       it "forwards any upload options" do
         uploaded_file = @shrine.uploaded_file(id: "bar", storage: "s3", metadata: { "size" => 10 })
         @s3.upload(uploaded_file, "foo", acl: "public-read")
