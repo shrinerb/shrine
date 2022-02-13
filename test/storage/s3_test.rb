@@ -134,6 +134,17 @@ describe Shrine::Storage::S3 do
         ], @s3.client.api_requests.map { |r| r[:operation_name] }
       end unless RUBY_ENGINE == "jruby" # randomly fails on JRuby
 
+      it "limits upload part when max multipart part is set" do
+        @s3 = s3(multipart_threshold: { upload: 5*1024*1024 }, max_multipart_parts: 1)
+        @s3.upload(fakeio("a" * 6*1024*1024), "foo")
+
+        assert_equal [
+          :create_multipart_upload,
+          :upload_part,
+          :complete_multipart_upload,
+        ], @s3.client.api_requests.map { |r| r[:operation_name] }
+      end unless RUBY_ENGINE == "jruby" # randomly fails on JRuby
+
       it "respects :prefix" do
         @s3 = s3(multipart_threshold: { upload: 1}, prefix: "prefix")
         @s3.upload(fakeio, "foo")
