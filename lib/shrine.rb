@@ -252,7 +252,7 @@ class Shrine
     def extract_filename(io)
       if io.respond_to?(:original_filename)
         io.original_filename
-      elsif io.respond_to?(:path)
+      elsif io.respond_to?(:path) && io.path
         File.basename(io.path)
       end
     end

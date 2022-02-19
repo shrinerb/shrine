@@ -434,6 +434,13 @@ describe Shrine do
 
       @uploader.upload(io)
     end
+
+    it "supports unlinked tempfiles" do
+      tempfile = Tempfile.new
+      tempfile.unlink
+
+      assert_kind_of Shrine::UploadedFile, @uploader.upload(tempfile)
+    end
   end
 
   describe "#generate_location" do
