@@ -649,7 +649,8 @@ attacher.copy(other_attacher)
 with
 
 ```rb
-attacher.set attacher.upload(other_attacher.file)
+attacher.set nil # clear original attachment
+attacher.attach other_attacher.file, storage: other_attacher.file.storage_key
 attacher.add_derivatives other_attacher.derivatives # if using derivatives
 ```
 
