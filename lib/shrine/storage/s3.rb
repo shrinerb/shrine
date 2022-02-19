@@ -47,6 +47,10 @@ class Shrine
       #   `{upload: 15*1024*1024, copy: 100*1024*1024}` (15MB for upload
       #   requests, 100MB for copy requests).
       #
+      # :max_multipart_parts
+      # : Limits the number of parts if parellized multipart upload/copy is used.
+      # Defaults to 10_000.
+      #
       # In addition to specifying the `:bucket`, you'll also need to provide
       # AWS credentials. The most common way is to provide them directly via
       # `:access_key_id`, `:secret_access_key`, and `:region` options. But you
@@ -58,7 +62,7 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method
       # [configuring AWS SDK]: https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html
-      def initialize(bucket:, client: nil, prefix: nil, upload_options: {}, multipart_threshold: {}, signer: nil, public: nil, **s3_options)
+      def initialize(bucket:, client: nil, prefix: nil, upload_options: {}, multipart_threshold: {}, max_multipart_parts: nil, signer: nil, public: nil, **s3_options)
         raise ArgumentError, "the :bucket option is nil" unless bucket
 
         @client = client || Aws::S3::Client.new(**s3_options)
@@ -66,6 +70,7 @@ class Shrine
         @prefix = prefix
         @upload_options = upload_options
         @multipart_threshold = MULTIPART_THRESHOLD.merge(multipart_threshold)
+        @max_multipart_parts = max_multipart_parts || MAX_MULTIPART_PARTS
         @signer = signer
         @public = public
       end
@@ -277,10 +282,10 @@ class Shrine
       def part_size(io)
         return unless io.respond_to?(:size) && io.size
 
-        if io.size <= MIN_PART_SIZE * MAX_MULTIPART_PARTS # <= 50 GB
+        if io.size <= MIN_PART_SIZE * @max_multipart_parts # <= 50 GB
           MIN_PART_SIZE
         else # > 50 GB
-          (io.size.to_f / MAX_MULTIPART_PARTS).ceil
+          (io.size.to_f / @max_multipart_parts).ceil
         end
       end
 
