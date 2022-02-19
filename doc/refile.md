@@ -458,7 +458,7 @@ Shrine.plugin :cached_attachment_data
 ```
 ```rb
 form_for @user do |form|
-  form.hidden_field :profile_image, value: @user.cached_profile_image_data
+  form.hidden_field :profile_image, value: @user.cached_profile_image_data, id: nil
   form.file_field :profile_image
 end
 ```
@@ -475,7 +475,7 @@ Shrine.plugin :remove_attachment
 ```
 ```rb
 form_for @user do |form|
-  form.hidden_field :profile_image, value: @user.cached_profile_image_data
+  form.hidden_field :profile_image, value: @user.cached_profile_image_data, id: nil
   form.file_field :profile_image
   form.check_box :remove_profile_image
 end
@@ -491,7 +491,7 @@ Shrine.plugin :remote_url
 ```
 ```rb
 form_for @user do |form|
-  form.hidden_field :profile_image, value: @user.cached_profile_image_data
+  form.hidden_field :profile_image, value: @user.cached_profile_image_data, id: nil
   form.file_field :profile_image
   form.text_field :profile_image_remote_url
 end

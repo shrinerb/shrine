@@ -180,7 +180,7 @@ album/photos as well (they will be submitted under the
 form_for @album, html: { enctype: "multipart/form-data" } do |f|
   f.text_field :title
   f.fields_for :photos do |p| # adds new `album[photos_attributes]` parameter
-    p.hidden_field :image, value: p.object.cached_image_data
+    p.hidden_field :image, value: p.object.cached_image_data, id: nil
     p.file_field   :image
     p.check_box    :_destroy unless p.object.new_record?
   end

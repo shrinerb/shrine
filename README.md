@@ -80,7 +80,7 @@ allow users to upload files:
 
 ```erb
 <%= form_for @photo do |f| %>
-  <%= f.hidden_field :image, value: @photo.cached_image_data %>
+  <%= f.hidden_field :image, value: @photo.cached_image_data, id: nil %>
   <%= f.file_field :image %>
   <%= f.submit %>
 <% end %>
