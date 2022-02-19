@@ -1414,6 +1414,20 @@ describe Shrine::Plugins::Derivatives do
         end
       end
     end
+
+    it "can be marshalled without mutex" do
+      Object.const_set(:TestShrine, @shrine)
+      assert_raises(TypeError) { Marshal.dump(@attacher) }
+
+      @shrine.plugin :derivatives, mutex: false
+
+      attacher = @attacher.class.new
+      attacher.add_derivatives({ one: StringIO.new })
+      assert_kind_of Shrine::UploadedFile, attacher.derivatives[:one]
+
+      Marshal.dump(attacher)
+      Object.send(:remove_const, :TestShrine)
+    end
   end
 
   describe "Shrine" do

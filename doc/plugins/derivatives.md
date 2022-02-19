@@ -778,6 +778,16 @@ derivatives #=>
 Like `Shrine.uploaded_file`, the `Shrine.derivatives` method accepts data as a
 hash (stringified or symbolized) or a JSON string.
 
+### Marshalling
+
+The `Attacher` instance uses a mutex to make `Attacher#merge_derivatives`
+thread-safe, which is not marshallable. If you want to be able to marshal the
+attacher instance, you can skip mutex usage:
+
+```rb
+plugin :derivatives, mutex: false
+```
+
 ## Instrumentation
 
 If the `instrumentation` plugin has been loaded, the `derivatives` plugin adds

@@ -19,7 +19,7 @@ class Shrine
       end
 
       def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
-        uploader.opts[:derivatives] ||= { processors: {}, processor_settings: {}, storage: proc { store_key } }
+        uploader.opts[:derivatives] ||= { processors: {}, processor_settings: {}, storage: proc { store_key }, mutex: true }
         uploader.opts[:derivatives].merge!(opts)
 
         # instrumentation plugin integration
@@ -109,7 +109,7 @@ class Shrine
           super(**options)
 
           @derivatives       = derivatives
-          @derivatives_mutex = Mutex.new
+          @derivatives_mutex = Mutex.new if shrine_class.derivatives_options[:mutex]
         end
 
         # Convenience method for accessing derivatives.
@@ -301,7 +301,7 @@ class Shrine
         #     attacher.merge_derivatives({ two: uploaded_file })
         #     attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
         def merge_derivatives(new_derivatives)
-          @derivatives_mutex.synchronize do
+          derivatives_synchronize do
             merged_derivatives = deep_merge_derivatives(derivatives, new_derivatives)
             set_derivatives(merged_derivatives)
           end
@@ -543,6 +543,14 @@ class Shrine
         # Whether to automatically create derivatives on promotion
         def create_derivatives_on_promote?
           shrine_class.derivatives_options[:create_on_promote]
+        end
+
+        def derivatives_synchronize
+          if @derivatives_mutex
+            @derivatives_mutex.synchronize { yield }
+          else
+            yield
+          end
         end
       end
 
