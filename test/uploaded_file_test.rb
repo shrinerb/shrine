@@ -125,6 +125,9 @@ describe Shrine::UploadedFile do
       uploaded_file = uploaded_file(id: "http://example.com/path.html?key=value", storage: :cache)
       assert_equal "html", uploaded_file.extension
 
+      uploaded_file = uploaded_file(id: "http://example.com/path.jpg?test.w23fs", storage: :cache)
+      assert_equal "jpg", uploaded_file.extension
+
       uploaded_file = uploaded_file(id: "http://example.com/path?key=value", storage: :cache)
       assert_nil uploaded_file.extension
     end
