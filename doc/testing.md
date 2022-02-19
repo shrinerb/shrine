@@ -201,6 +201,15 @@ app.post "/photos", multipart: {
 ```
 <!--END_DOCUSAURUS_CODE_TABS-->
 
+If you want to test requests with cached attachment data, you can do so as
+follows:
+
+```rb
+cached_file = Shrine.upload(file, :cache)
+
+post "/photos", photo: { image: cached_file.to_json }
+```
+
 ## Background jobs
 
 If you're using background jobs with Shrine, you probably want to make them
