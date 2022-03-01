@@ -46,7 +46,7 @@ Then, in your initializer, you can configure all uploaders to use these jobs:
 
 ```rb
 Shrine::Attacher.promote_block do
-  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name.to_s, file_data)
 end
 Shrine::Attacher.destroy_block do
   DestroyJob.perform_async(self.class.name, data)
@@ -58,7 +58,7 @@ Alternatively, you can setup backgrounding only for specific uploaders:
 ```rb
 class MyUploader < Shrine
   Attacher.promote_block do
-    PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+    PromoteJob.perform_async(self.class.name, record.class.name, record.id, name.to_s, file_data)
   end
   Attacher.destroy_block do
     DestroyJob.perform_async(self.class.name, data)
@@ -121,7 +121,7 @@ Shrine::Attacher.promote_block do |attacher|
     attacher.class.name,
     attacher.record.class.name,
     attacher.record.id,
-    attacher.name,
+    attacher.name.to_s,
     attacher.file_data,
   )
 end
@@ -143,7 +143,7 @@ photo.image_attacher.promote_block do |attacher|
     attacher.class.name,
     attacher.record.class.name,
     attacher.record.id,
-    attacher.name,
+    attacher.name.to_s,
     attacher.file_data,
     current_user.id, # pass arguments known at the controller level
   )
