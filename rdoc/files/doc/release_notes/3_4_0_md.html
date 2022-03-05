@@ -30,7 +30,7 @@ doc/release_notes/3.4.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -48,14 +48,14 @@ Last Update:
 </li><li>
 <p>The <code>Shrine::Attacher#read</code> method provided by the <code>entity</code> plugin is now  public. This is consistent with <code>Shrine::Attacher#write</code> from <code>model</code> plugin  being public as well.</p>
 </li><li>
-<p>The <code>Shrine::Attacher#reload</code> method now resets attachment&#39;s dirty state.  This means that for a model whose <code>Attacher#changed?</code> returns <code>true</code>, calling  <code>#reload</code> on the model will make <code>Attacher#changed?</code> return <code>false</code>. This was  the behaviour before <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.3.0.</p>
+<p>The <code>Shrine::Attacher#reload</code> method now resets attachment's dirty state.  This means that for a model whose <code>Attacher#changed?</code> returns <code>true</code>, calling  <code>#reload</code> on the model will make <code>Attacher#changed?</code> return <code>false</code>. This was  the behaviour before <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.3.0.</p>
 </li></ul>
 
-<p>“`rb  # before  model.file_attacher.changed? #=&gt; true  model.reload  model.file_attacher.changed? #=&gt; true</p>
+<p>“‘rb  # before  model.file_attacher.changed? #=&gt; true  model.reload  model.file_attacher.changed? #=&gt; true</p>
 
-<p># after  model.file_attacher.changed? #=&gt; true  model.reload  model.file_attacher.changed? #=&gt; false  “`</p>
+<p># after  model.file_attacher.changed? #=&gt; true  model.reload  model.file_attacher.changed? #=&gt; false  “‘</p>
 <ul><li>
-<p>Calling <code>#reload</code> on the model will not initialize a <code>Shrine::Attacher</code>  instance anymore if one hasn&#39;t previously been initialized.</p>
+<p>Calling <code>#reload</code> on the model will not initialize a <code>Shrine::Attacher</code>  instance anymore if one hasn’t previously been initialized.</p>
 </li></ul>
 </div>
 <div id='context'>

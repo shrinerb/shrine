@@ -30,7 +30,7 @@ doc/release_notes/1.3.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -55,7 +55,7 @@ Last Update:
 <ul><li>
 <p>Fixed uploading an S3 file making an additional unneeded GET request in  addition to the S3 COPY request.</p>
 </li><li>
-<p>When the model with an attachment is namespaced, the namespace isn&#39;t included  in the location anymore when using the pretty_location plugin.</p>
+<p>When the model with an attachment is namespaced, the namespace isn't included  in the location anymore when using the pretty_location plugin.</p>
 </li><li>
 <p>Dumped Down version to <a href="2_0_0_md.html">2.0.0</a> to fix downloading files from URLs which have  "[]" characters in them.</p>
 </li><li>
@@ -65,7 +65,7 @@ Last Update:
 </li><li>
 <p>When uploading a <code>Shrine::UploadedFile</code>, the default location generator will  first look for the extension in <code>#id</code> before looking at <code>#original_filename</code>.</p>
 </li><li>
-<p>The remote_url plugin now returns separate error messsages when file wasn&#39;t  found and when the file was too large.</p>
+<p>The remote_url plugin now returns separate error messsages when file wasn't  found and when the file was too large.</p>
 </li><li>
 <p>Fixed promoting raising an error if the record got deleted before  promoting finished</p>
 </li><li>
@@ -73,17 +73,17 @@ Last Update:
 </li><li>
 <p>Fixed errors being able to accumulate on the record object when errors occur  in data_uri and remote_url plugins.</p>
 </li><li>
-<p>The "metadata" key isn&#39;t required anymore when instantiating a  <code>Shrine::UploadedFile</code>.</p>
+<p>The "metadata" key isn't required anymore when instantiating a  <code>Shrine::UploadedFile</code>.</p>
 </li><li>
-<p>The top-level key-values aren&#39;t cached anymore when instantiating a  <code>Shrine::UploadedFile</code>, which means that <code>#id</code>, <code>#storage_key</code> and  <code>#metadata</code> will now pick up any mutations on the data hash.</p>
+<p>The top-level key-values aren't cached anymore when instantiating a  <code>Shrine::UploadedFile</code>, which means that <code>#id</code>, <code>#storage_key</code> and  <code>#metadata</code> will now pick up any mutations on the data hash.</p>
 </li><li>
 <p>Removed a deprecation warning in the S3 storage which occurs when AWS  credentials are inferred implicitly.</p>
 </li><li>
 <p>The extracted metadata is now accessible inside <code>Shrine#generate_location</code>  via the <code>:metadata</code> key in the <code>context</code> hash.</p>
 </li><li>
-<p><code>Shrine#upload</code> doesn&#39;t mutate the given context hash anymore.</p>
+<p><code>Shrine#upload</code> doesn’t mutate the given context hash anymore.</p>
 </li><li>
-<p><code>Shrine::Attacher#backup_file</code> from the backup plugin doesn&#39;t modify the  input <code>UploadedFile</code> anymore.</p>
+<p><code>Shrine::Attacher#backup_file</code> from the backup plugin doesn’t modify the  input <code>UploadedFile</code> anymore.</p>
 </li></ul>
 
 <h1 id="label-Deprecations">Deprecations<span><a href="#label-Deprecations">&para;</a> <a href="#top">&uarr;</a></span></h1>

@@ -30,7 +30,7 @@ doc/refile.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2022-03-05 17:09:59 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -46,12 +46,12 @@ Last Update:
 </li><li>
 <p>Instructions how to migrate an existing app that uses Refile to <a href="../../classes/Shrine.html"><code>Shrine</code></a></p>
 </li><li>
-<p>Extensive reference of Refile&#39;s interface with <a href="../../classes/Shrine.html"><code>Shrine</code></a> equivalents</p>
+<p>Extensive reference of Refile’s interface with <a href="../../classes/Shrine.html"><code>Shrine</code></a> equivalents</p>
 </li></ol>
 
 <h2 id="label-Overview">Overview<span><a href="#label-Overview">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> borrows many great concepts from Refile: Refile&#39;s “backends” are here named “storages”, it uses the same IO abstraction for uploading and representing uploaded files, similar attachment logic, and direct uploads are supported as well.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> borrows many great concepts from Refile: Refile’s “backends” are here named “storages”, it uses the same IO abstraction for uploading and representing uploaded files, similar attachment logic, and direct uploads are supported as well.</p>
 
 <h3 id="label-Uploader">Uploader<span><a href="#label-Uploader">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -59,7 +59,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:store</span>]&#x000A;<span class="ruby-identifier">storage</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Storage::S3&gt;</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>, <span class="ruby-value">:store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">storage</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Storage::S3&gt;</span></pre>
 
-<p>This way, <a href="../../classes/Shrine.html"><code>Shrine</code></a> can perform tasks like generating location, extracting metadata, processing, and logging, which are all storage-agnostic, and leave storages to deal only with actual file storage. And these tasks can be configured differently depending on the types of files you&#39;re uploading:</p>
+<p>This way, <a href="../../classes/Shrine.html"><code>Shrine</code></a> can perform tasks like generating location, extracting metadata, processing, and logging, which are all storage-agnostic, and leave storages to deal only with actual file storage. And these tasks can be configured differently depending on the types of files you’re uploading:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:exif</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>).<span class="ruby-identifier">exif</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -73,7 +73,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-ivar">@photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;https://my-bucket.s3.amazonaws.com/cache/50dfl833lfs0gfh.jpg&quot;</span></pre>
 
-<p>If you&#39;re using storage which don&#39;t expose files over URL (e.g. a database storage), or you want to secure your downloads, you can also serve files through your app using the {<code>download_endpoint</code><a href="https://shrinerb.com/docs/plugins/download_endpoint">}</a> plugin.</p>
+<p>If you’re using storage which don’t expose files over URL (e.g. a database storage), or you want to secure your downloads, you can also serve files through your app using the {<code>download_endpoint</code><a href="https://shrinerb.com/docs/plugins/download_endpoint">}</a> plugin.</p>
 
 <h3 id="label-Persistence">Persistence<span><a href="#label-Persistence">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -94,7 +94,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">id</span>          <span class="ruby-comment">#=&gt; &quot;path/to/image.jpg&quot;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :store</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">metadata</span>    <span class="ruby-comment">#=&gt; { &quot;filename&quot; =&gt; &quot;...&quot;, &quot;size&quot; =&gt; ..., &quot;mime_type&quot; =&gt; &quot;...&quot; }</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;nature.jpg&quot;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 4739472</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span></pre>
 
-<p>This column can be queried if it&#39;s made a JSON column. Alternatively, you can use the {<code>metadata_attributes</code><a href="https://shrinerb.com/docs/plugins/metadata_attributes">}</a> plugin to save metadata into separate columns.</p>
+<p>This column can be queried if it’s made a JSON column. Alternatively, you can use the {<code>metadata_attributes</code><a href="https://shrinerb.com/docs/plugins/metadata_attributes">}</a> plugin to save metadata into separate columns.</p>
 
 <h3 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -120,7 +120,7 @@ Last Update:
 
 <h3 id="label-Direct+uploads">Direct uploads<span><a href="#label-Direct+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> borrows Refile&#39;s idea of direct uploads, and ships with <code>upload_endpoint</code> and <code>presign_endpoint</code> plugins which provide endpoints for uploading files and generating presigns.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> borrows Refile’s idea of direct uploads, and ships with <code>upload_endpoint</code> and <code>presign_endpoint</code> plugins which provide endpoints for uploading files and generating presigns.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-comment"># Rack app that uploads files to specified storage</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-comment"># Rack app that generates presigns for specified storage</span></pre>
 
@@ -128,11 +128,11 @@ Last Update:
 
 <h3 id="label-Multiple+uploads">Multiple uploads<span><a href="#label-Multiple+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> doesn&#39;t have support for multiple uploads out-of-the-box like Refile does. Instead, you can implement them using a separate table with a one-to-many relationship to which the files will be attached. The <a href="https://shrinerb.com/docs/multiple-files">Multiple Files</a> guide explains this setup in more detail.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> doesn’t have support for multiple uploads out-of-the-box like Refile does. Instead, you can implement them using a separate table with a one-to-many relationship to which the files will be attached. The <a href="https://shrinerb.com/docs/multiple-files">Multiple Files</a> guide explains this setup in more detail.</p>
 
 <h2 id="label-Migrating+from+Refile">Migrating from Refile<span><a href="#label-Migrating+from+Refile">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>You have an existing app using Refile and you want to transfer it to <a href="../../classes/Shrine.html"><code>Shrine</code></a>. Let&#39;s assume we have a <code>Photo</code> model with the “image” attachment.</p>
+<p>You have an existing app using Refile and you want to transfer it to <a href="../../classes/Shrine.html"><code>Shrine</code></a>. Let’s assume we have a <code>Photo</code> model with the “image” attachment.</p>
 
 <h3 id="label-1.+Add+Shrine+column">1. Add <a href="../../classes/Shrine.html"><code>Shrine</code></a> column<span><a href="#label-1.+Add+Shrine+column">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -172,7 +172,7 @@ Last Update:
 
 <h4 id="label-.cache-2C+.store-2C+.backends"><code>.cache</code>, <code>.store</code>, <code>.backends</code><span><a href="#label-.cache-2C+.store-2C+.backends">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> calles these “storages”, and it doesn&#39;t have special accessors for <code>:cache</code> and <code>:store</code>:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> calles these “storages”, and it doesn’t have special accessors for <code>:cache</code> and <code>:store</code>:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Foo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Bar</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>),&#x000A;}</pre>
 
@@ -202,7 +202,7 @@ Last Update:
 
 <h4 id="label-.extract_filename"><code>.extract_filename</code><span><a href="#label-.extract_filename">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>Shrine&#39;s equivalent is a <code>Shrine#extract_filename</code> private method. You can instead use the <code>Shrine#extract_metadata</code> public method.</p>
+<p>Shrine’s equivalent is a <code>Shrine#extract_filename</code> private method. You can instead use the <code>Shrine#extract_metadata</code> public method.</p>
 
 <h4 id="label-.extract_content_type"><code>.extract_content_type</code><span><a href="#label-.extract_content_type">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
@@ -226,7 +226,7 @@ Last Update:
 
 <h3 id="label-Attachment"><code>Attachment</code><span><a href="#label-Attachment">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>Shrine&#39;s equivalent to calling the attachment is including an attachment module of an uploader:</p>
+<p>Shrine’s equivalent to calling the attachment is including an attachment module of an uploader:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 

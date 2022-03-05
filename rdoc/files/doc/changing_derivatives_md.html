@@ -30,7 +30,7 @@ doc/changing_derivatives.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -42,7 +42,7 @@ Last Update:
 
 <p>This guide shows how to add, create, update, and remove <a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a> for an app in production already handling file attachments, with zero downtime.</p>
 
-<p>Let&#39;s assume we have a <code>Photo</code> model with an <code>image</code> file attachment. The examples will be showing image thumbnails, but the advice applies to any kind of derivatives.</p>
+<p>Let’s assume we have a <code>Photo</code> model with an <code>image</code> file attachment. The examples will be showing image thumbnails, but the advice applies to any kind of derivatives.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivatives</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:activerecord</span></pre>
 
@@ -54,7 +54,7 @@ Last Update:
 
 <p><em>Scenario: Your app is currently working only with original files, and you want to introduce derivatives.</em></p>
 
-<p>You&#39;ll first want to start creating the derivatives in production, without yet generating URLs for them (because existing attachments won&#39;t yet have derivatives generated). Let&#39;s assume you&#39;re generating image thumbnails:</p>
+<p>You’ll first want to start creating the derivatives in production, without yet generating URLs for them (because existing attachments won’t yet have derivatives generated). Let’s assume you’re generating image thumbnails:</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;image_processing&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.8&quot;</span></pre>
 
@@ -62,7 +62,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo_params</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives!</span> <span class="ruby-comment"># generate derivatives</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span></pre>
 
-<p>Once we&#39;ve deployed this to production, we can run the following script to generate derivatives for all existing attachments in production. It fetches the records in batches, downloads attachments on permanent storage, creates derivatives, and persists the changes.</p>
+<p>Once we’ve deployed this to production, we can run the following script to generate derivatives for all existing attachments in production. It fetches the records in batches, downloads attachments on permanent storage, creates derivatives, and persists the changes.</p>
 
 <pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>&#x000A;&#x000A;  <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">create_derivatives</span>&#x000A;&#x000A;  <span class="ruby-keyword">begin</span>&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">atomic_persist</span>            <span class="ruby-comment"># persist changes if attachment has not changed in the meantime</span>&#x000A;  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>,    <span class="ruby-comment"># attachment has changed</span>&#x000A;         <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">RecordNotFound</span>  <span class="ruby-comment"># record has been deleted</span>&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">delete_derivatives</span>        <span class="ruby-comment"># delete now orphaned derivatives</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -72,7 +72,7 @@ Last Update:
 
 <p><em>Scenario: The processing logic has changed for all or most derivatives, and now you want to reprocess them for existing attachments.</em></p>
 
-<p>Let&#39;s assume we&#39;ve made the following change and have deployed it to production:</p>
+<p>Let’s assume we’ve made the following change and have deployed it to production:</p>
 
 <pre>Attacher.derivatives do |original|&#x000A;   magick = ImageProcessing::MiniMagick.source(original)&#x000A;+   .saver(quality: 85)&#x000A;   {&#x000A;     small:  magick.resize_to_limit!(300, 300),&#x000A;     medium: magick.resize_to_limit!(500, 500),&#x000A;     large:  magick.resize_to_limit!(800, 800),&#x000A;   }&#x000A; end</pre>
 
@@ -84,7 +84,7 @@ Last Update:
 
 <p><em>Scenario: The processing logic has changed for specific derivatives, and now you want to reprocess them for existing attachments.</em></p>
 
-<p>Let&#39;s assume we&#39;ve made a following change and have deployed it to production:</p>
+<p>Let’s assume we’ve made a following change and have deployed it to production:</p>
 
 <pre>Attacher.derivatives do |original|&#x000A;   magick = ImageProcessing::MiniMagick.source(original)&#x000A;   {&#x000A;     small:  magick.resize_to_limit!(300, 300),&#x000A;-    medium: magick.resize_to_limit!(500, 500),&#x000A;+    medium: magick.resize_to_limit!(600, 600),&#x000A;     large:  magick.resize_to_limit!(800, 800),&#x000A;   }&#x000A; end</pre>
 
@@ -96,7 +96,7 @@ Last Update:
 
 <p><em>Scenario: A new derivative has been added to the processor, and now you want to add it to existing attachments.</em></p>
 
-<p>Let&#39;s assume we&#39;ve made a following change and have deployed it to production:</p>
+<p>Let’s assume we’ve made a following change and have deployed it to production:</p>
 
 <pre>Attacher.derivatives do |original|&#x000A;   magick = ImageProcessing::MiniMagick.source(original)&#x000A;   {&#x000A;+    square: magick.resize_to_fill!(150, 150),&#x000A;     small:  magick.resize_to_limit!(300, 300),&#x000A;     medium: magick.resize_to_limit!(600, 600),&#x000A;     large:  magick.resize_to_limit!(800, 800),&#x000A;   }&#x000A; end</pre>
 
@@ -108,9 +108,9 @@ Last Update:
 
 <h2 id="label-Removing+derivatives">Removing derivatives<span><a href="#label-Removing+derivatives">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p><em>Scenario: A derivative isn&#39;t being used anymore, so we want to delete it for existing attachments.</em></p>
+<p><em>Scenario: A derivative isn’t being used anymore, so we want to delete it for existing attachments.</em></p>
 
-<p>Let&#39;s assume we&#39;ve made the following change and have deployed it to production:</p>
+<p>Let’s assume we’ve made the following change and have deployed it to production:</p>
 
 <pre>Attacher.derivatives do |original|&#x000A;   magick = ImageProcessing::MiniMagick.source(original)&#x000A;   {&#x000A;-    square: magick.resize_to_fill!(150, 150),&#x000A;     small:  magick.resize_to_limit!(300, 300),&#x000A;     medium: magick.resize_to_limit!(600, 600),&#x000A;     large:  magick.resize_to_limit!(800, 800),&#x000A;   }&#x000A; end</pre>
 

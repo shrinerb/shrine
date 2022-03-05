@@ -30,7 +30,7 @@ doc/release_notes/2.0.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -47,7 +47,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-value">shrine_metadata:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">upload_options</span>)&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">move</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-value">shrine_metadata:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">upload_options</span>)&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
-<p>The <code>Shrine::Confirm</code> functionality has been removed from storages&#39;  specification, storages should update <code>clear!</code> to remove the confirmation.</p>
+<p>The <code>Shrine::Confirm</code> functionality has been removed from storages'  specification, storages should update <code>clear!</code> to remove the confirmation.</p>
 </li><li>
 <p>The <code>:delegate</code> option in migration_helpers now defaults to false.</p>
 </li><li>
@@ -59,7 +59,7 @@ Last Update:
 </li><li>
 <p><code>Shrine::Attacher.promote</code> and <code>Shrine::Attacher.delete</code> from backgrounding  plugin now return a <code>Shrine::Attacher</code> instance instead of the model  instance.</p>
 </li><li>
-<p>The moving plugin doesn&#39;t delete files that aren&#39;t movable anymore. You should  use delete_raw and/or delete_promoted plugins for this functionality.</p>
+<p>The moving plugin doesn't delete files that aren't movable anymore. You should  use delete_raw and/or delete_promoted plugins for this functionality.</p>
 </li><li>
 <p>The deprecated "delete_uploaded" alias for delete_raw plugin has been removed.</p>
 </li><li>
@@ -75,13 +75,13 @@ Last Update:
 </li><li>
 <p>The <code>:presign</code> option in direct_upload plugin cannot be used for specifying  presign options anymore; <code>:presign_options</code> should be used instead.</p>
 </li><li>
-<p><code>Shrine::Attacher#set</code> and <code>#assign</code> methods don&#39;t return the assigned  uploaded file anymore.</p>
+<p><code>Shrine::Attacher#set</code> and <code>#assign</code> methods don’t return the assigned  uploaded file anymore.</p>
 </li><li>
-<p><code>Shrine::Attacher#delete!</code> doesn&#39;t spawn a background job anymore with  backgrounding plugin, plugin writers should switch to <code>#_delete</code> instead.</p>
+<p><code>Shrine::Attacher#delete!</code> doesn’t spawn a background job anymore with  backgrounding plugin, plugin writers should switch to <code>#_delete</code> instead.</p>
 </li><li>
 <p>The phases when files are internally deleted have been renamed.</p>
 </li><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn&#39;t officially support Rubinius anymore.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn’t officially support Rubinius anymore.</p>
 </li></ul>
 
 <h1 id="label-New+plugins">New plugins<span><a href="#label-New+plugins">&para;</a> <a href="#top">&uarr;</a></span></h1>
@@ -115,9 +115,9 @@ Last Update:
 
 <h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now prints a security warning when determine_mime_type plugin isn&#39;t  loaded.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now prints a security warning when determine_mime_type plugin isn’t  loaded.</p>
 </li><li>
-<p>Don&#39;t error in determine_mime_type with <code>:mimemagic</code> analyzer when MimeMagic  cannot determine MIME of the file.</p>
+<p>Don't error in determine_mime_type with <code>:mimemagic</code> analyzer when MimeMagic  cannot determine MIME of the file.</p>
 </li><li>
 <p>When <code>:host</code> is given to S3 storage, URLs will now include the query  parameters, unless <code>:public</code> is given, just like without <code>:host</code>.</p>
 </li><li>
@@ -125,9 +125,9 @@ Last Update:
 </li><li>
 <p>The <code>Shrine::Attacher#_promote</code> and <code>Shrine::Attacher#promote</code> now have the  same generalized method signature.</p>
 </li><li>
-<p>The restore_cached_data plugin functionality won&#39;t get triggered anymore when  form is submitted with already saved cached attachmnet (e.g. due to  background processing).</p>
+<p>The restore_cached_data plugin functionality won't get triggered anymore when  form is submitted with already saved cached attachmnet (e.g. due to  background processing).</p>
 </li><li>
-<p>The restore_cached_data plugin now doesn&#39;t check anymore if the cached file  exists (which saves an HTTP request with remote storages).</p>
+<p>The restore_cached_data plugin now doesn't check anymore if the cached file  exists (which saves an HTTP request with remote storages).</p>
 </li><li>
 <p>The download_endpoint now makes only one HTTP request when downloading files  from remote storages.</p>
 </li><li>
@@ -140,9 +140,9 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:download_endpoint</span>, <span class="ruby-value">storages:</span> [<span class="ruby-value">:store</span>], <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;/downloads&quot;</span>, <span class="ruby-value">disposition:</span> <span class="ruby-string">&quot;inline&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">DocumentUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># all other options above will be persisted</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:download_endpoint</span>, <span class="ruby-value">disposition:</span> <span class="ruby-string">&quot;attachment&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
-<p>The <code>:include_error</code> has been removed from remote_url plugin, the error will  now be included in the second argument depending on lambda&#39;s arity.</p>
+<p>The <code>:include_error</code> has been removed from remote_url plugin, the error will  now be included in the second argument depending on lambda's arity.</p>
 </li><li>
-<p>The dynamic_storage plugin doesn&#39;t cache the instantiated storages anymore,  which enables use cases like storing storage definitions in the database.</p>
+<p>The dynamic_storage plugin doesn't cache the instantiated storages anymore,  which enables use cases like storing storage definitions in the database.</p>
 </li><li>
 <p>The determine_mime_type plugin with <code>:file</code> analyzer now handles filenames  that start with a dash ("-").</p>
 </li><li>

@@ -30,17 +30,12 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2022-03-05 17:09:59 +0100</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h2 id="label-HEAD">HEAD<span><a href="#label-HEAD">&para;</a> <a href="#top">&uarr;</a></span></h2>
-<ul><li>
-<p><code>model</code> – When duplicating a record, make the duplicated attacher reference the duplicated record (@janko)</p>
-</li></ul>
-
 <h2 id="label-3.4.0+-282021-06-14-29"><a href="doc/release_notes/3_4_0_md.html">3.4.0</a> (2021-06-14)<span><a href="#label-3.4.0+-282021-06-14-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><code>base</code> – Fix passing options to <code>Shrine.Attachment</code> on Ruby 3.0 (@lucianghinda)</p>
@@ -53,9 +48,9 @@ Last Update:
 </li><li>
 <p><code>entity</code> – Reset attachment dirty tracking in <code>Attacher#reload</code> (@janko)</p>
 </li><li>
-<p><code>activerecord</code> – Don&#39;t load the attacher on <code>ActiveRecord::Base#reload</code> if it hasn&#39;t yet been initialized (@janko)</p>
+<p><code>activerecord</code> – Don’t load the attacher on <code>ActiveRecord::Base#reload</code> if it hasn’t yet been initialized (@janko)</p>
 </li><li>
-<p><code>sequel</code> – Don&#39;t load the attacher on <code>Sequel::Model#reload</code> if it hasn&#39;t yet been initialized (@janko)</p>
+<p><code>sequel</code> – Don’t load the attacher on <code>Sequel::Model#reload</code> if it hasn’t yet been initialized (@janko)</p>
 </li></ul>
 
 <h2 id="label-3.3.0+-282020-10-04-29"><a href="doc/release_notes/3_3_0_md.html">3.3.0</a> (2020-10-04)<span><a href="#label-3.3.0+-282020-10-04-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -234,7 +229,7 @@ Last Update:
 </li><li>
 <p><code>derivation_endpoint</code> – Remove extra <code>Storage#exists?</code> check when <code>:upload</code> is enabled but not <code>:upload_redirect</code> (@janko)</p>
 </li><li>
-<p><code>derivation_endpoint</code> - Don&#39;t pass source <code>UploadedFile</code> object when <code>:download</code> is <code>false</code> (@janko)</p>
+<p><code>derivation_endpoint</code> - Don’t pass source <code>UploadedFile</code> object when <code>:download</code> is <code>false</code> (@janko)</p>
 </li><li>
 <p><code>derivation_endpoint</code> – Remove <code>:include_uploaded_file</code> option (@janko)</p>
 </li><li>
@@ -376,11 +371,11 @@ Last Update:
 </li><li>
 <p><code>core</code> – Remove <code>Shrine#processed</code>, <code>Shrine#process</code> (@janko)</p>
 </li><li>
-<p><code>core</code> – Don&#39;t pass <code>:phase</code> anymore on uploads (@janko)</p>
+<p><code>core</code> – Don’t pass <code>:phase</code> anymore on uploads (@janko)</p>
 </li><li>
 <p><code>core</code> – Read attachment from the record attribute only on initialization (@janko)</p>
 </li><li>
-<p><code>core</code> – Don&#39;t require a temporary storage (@janko)</p>
+<p><code>core</code> – Don’t require a temporary storage (@janko)</p>
 </li><li>
 <p><code>core</code> – Add <code>Attacher#data</code> and <code>Attacher.from_data</code> for dumping to and loading from a Hash (@janko)</p>
 </li><li>
@@ -432,7 +427,7 @@ Last Update:
 </li><li>
 <p><code>validation_helpers</code> – Remove support for regexes in MIME type or extension validations (@janko)</p>
 </li><li>
-<p><code>validation_helpers</code> – Don&#39;t require <code>#width</code> and <code>#height</code> methods to be defined on <code>UploadedFile</code> (@janko)</p>
+<p><code>validation_helpers</code> – Don’t require <code>#width</code> and <code>#height</code> methods to be defined on <code>UploadedFile</code> (@janko)</p>
 </li><li>
 <p><code>validation_helpers</code> – Fail dimensions validations when <code>width</code> or <code>height</code> metadata is missing (@janko)</p>
 </li><li>
@@ -464,7 +459,7 @@ Last Update:
 </li><li>
 <p><code>file_system</code> – Remove deprecated <code>:older_than</code> option in <code>FileSystem#clear!</code> (@janko)</p>
 </li><li>
-<p><code>file_system</code> – Don&#39;t accept a block anymore in <code>FileSystem#open</code> (@janko)</p>
+<p><code>file_system</code> – Don’t accept a block anymore in <code>FileSystem#open</code> (@janko)</p>
 </li><li>
 <p><code>file_system</code> – Remove deprecated <code>FileSystem#download</code> method (@janko)</p>
 </li><li>
@@ -494,7 +489,7 @@ Last Update:
 </li><li>
 <p><code>s3</code> – Remove deprecated <code>S3#stream</code> method (@janko)</p>
 </li><li>
-<p><code>presign_endpoint</code> – Drop support for presign objects that don&#39;t respond to <code>#to_h</code> (@janko)</p>
+<p><code>presign_endpoint</code> – Drop support for presign objects that don’t respond to <code>#to_h</code> (@janko)</p>
 </li><li>
 <p><code>s3</code> – Return a Hash in <code>S3#presign</code> when method is POST (@janko)</p>
 </li><li>
@@ -527,7 +522,7 @@ Last Update:
 </li><li>
 <p><code>file_system</code> – Add <code>:move</code> option for <code>FileSystem#upload</code> (@janko)</p>
 </li><li>
-<p><code>file_system</code> – Don&#39;t fill <code>size</code> metadata if missing in <code>FileSystem#upload</code> (@janko)</p>
+<p><code>file_system</code> – Don’t fill <code>size</code> metadata if missing in <code>FileSystem#upload</code> (@janko)</p>
 </li><li>
 <p><code>logging</code> – Deprecate plugin in favour of <code>instrumentation</code> (@janko)</p>
 </li><li>
@@ -574,7 +569,7 @@ Last Update:
 <ul><li>
 <p><code>core</code> – Add <code>Shrine.upload</code> method as a shorthand for <code>Shrine.new(...).upload(...)</code> (@janko)</p>
 </li><li>
-<p><code>upload_endpoint</code> – Accept file uploads from Uppy&#39;s default <code>files[]</code> array (@janko)</p>
+<p><code>upload_endpoint</code> – Accept file uploads from Uppy’s default <code>files[]</code> array (@janko)</p>
 </li><li>
 <p><code>core</code> – Add <code>Shrine::Attachment()</code> shorthand for <code>Shrine::Attachment.new</code> (@janko)</p>
 </li><li>
@@ -603,7 +598,7 @@ Last Update:
 </li><li>
 <p><code>download_endpoint</code> – Allow passing options to <code>Shrine.download_endpoint</code> (@janko)</p>
 </li><li>
-<p><code>download_endpoint</code> – Fix <code>Shrine.download_endpoint</code> not being accepted by Rails&#39; <code>#mount</code> (@janko)</p>
+<p><code>download_endpoint</code> – Fix <code>Shrine.download_endpoint</code> not being accepted by Rails’ <code>#mount</code> (@janko)</p>
 </li><li>
 <p><code>download_endpoint</code> – Remove Roda dependency (@janko)</p>
 </li><li>
@@ -658,15 +653,15 @@ Last Update:
 </li><li>
 <p><code>derivation_endpoint</code> – Fix <code>Derivation#processed</code> breaking when derivation result is a <code>File</code> object (@janko)</p>
 </li><li>
-<p><code>derivation_endpoint</code> – Don&#39;t close input file on <code>Derivation#upload</code> (@janko)</p>
+<p><code>derivation_endpoint</code> – Don’t close input file on <code>Derivation#upload</code> (@janko)</p>
 </li><li>
 <p>Add <code>:delete</code> parameter for skipping delete when <code>delete_raw</code> plugin is loaded (@janko)</p>
 </li><li>
-<p>Don&#39;t return <code>Content-Type</code> when it couldn&#39;t be determined from file extension in <code>derivation_endpoint</code> (@janko)</p>
+<p>Don't return <code>Content-Type</code> when it couldn't be determined from file extension in <code>derivation_endpoint</code> (@janko)</p>
 </li><li>
 <p>Add <code>:download_options</code> option to <code>download_endpoint</code> plugin for specifying options for <code>Storage#open</code> (@janko)</p>
 </li><li>
-<p>Don&#39;t return <code>Content-Type</code> header in <code>rack_response</code> when MIME type could not be determined (@janko)</p>
+<p>Don't return <code>Content-Type</code> header in <code>rack_response</code> when MIME type could not be determined (@janko)</p>
 </li><li>
 <p>Open the <code>UploadedFile</code> object in <code>#to_rack_response</code> in <code>rack_response</code> plugin (@janko)</p>
 </li><li>
@@ -679,7 +674,7 @@ Last Update:
 </li><li>
 <p>Allow Marcel to fall back to the file extension in <code>determine_mime_type</code> plugin (@skarlcf)</p>
 </li><li>
-<p>Don&#39;t return cached app instance in <code>Shrine.download_endpoint</code> in <code>download_endpoint</code> plugin (@janko)</p>
+<p>Don't return cached app instance in <code>Shrine.download_endpoint</code> in <code>download_endpoint</code> plugin (@janko)</p>
 </li><li>
 <p>Yield a new File object on <code>Shrine.with_file</code> when <code>tempfile</code> plugin is loaded (@janko)</p>
 </li></ul>
@@ -688,15 +683,15 @@ Last Update:
 <ul><li>
 <p>Add <code>tempfile</code> plugin for easier reusing of the same uploaded file copy on disk (@janko)</p>
 </li><li>
-<p>Don&#39;t re-open the uploaded file if it&#39;s already open in <code>refresh_metadata</code> plugin (@janko)</p>
+<p>Don't re-open the uploaded file if it's already open in <code>refresh_metadata</code> plugin (@janko)</p>
 </li><li>
 <p>Drop support for MRI 2.1 and 2.2 (@janko)</p>
 </li><li>
 <p>Fix <code>backgrounding</code> not working when default storage was changed with <code>Attachment.new</code> (@janko)</p>
 </li><li>
-<p>Don&#39;t clear existing metadata definitions when loading <code>add_metadata</code> plugin (@janko)</p>
+<p>Don't clear existing metadata definitions when loading <code>add_metadata</code> plugin (@janko)</p>
 </li><li>
-<p>Don&#39;t clear existing processing blocks when loading <code>processing</code> plugin (@janko)</p>
+<p>Don't clear existing processing blocks when loading <code>processing</code> plugin (@janko)</p>
 </li><li>
 <p>Deprecate automatic escaping of <code>:content_disposition</code> in <code>Shrine::Storage::S3</code> (@janko)</p>
 </li><li>
@@ -704,9 +699,9 @@ Last Update:
 </li><li>
 <p>Make <code>FileSystem#clear!</code> work correctly when the storage directory is a symlink (@janko)</p>
 </li><li>
-<p>Don&#39;t abort promotion in <code>backgrounding</code> plugin when original metadata was updated (@janko)</p>
+<p>Don't abort promotion in <code>backgrounding</code> plugin when original metadata was updated (@janko)</p>
 </li><li>
-<p>Don&#39;t mutate the <code>UploadedFile</code> data hash in <code>refresh_metadata</code> plugin (@janko)</p>
+<p>Don't mutate the <code>UploadedFile</code> data hash in <code>refresh_metadata</code> plugin (@janko)</p>
 </li><li>
 <p>Deprecate <code>Storage::S3#download</code> (@janko)</p>
 </li><li>
@@ -730,19 +725,19 @@ Last Update:
 </li><li>
 <p>Add support for client-side encryption to S3 storage (@janko)</p>
 </li><li>
-<p>Don&#39;t look up the attachment class in each new model instance (@printercu)</p>
+<p>Don't look up the attachment class in each new model instance (@printercu)</p>
 </li><li>
 <p>Allow <code>Attacher#cached?</code> and <code>Attacher#stored?</code> to take an <code>UploadedFile</code> object (@jrochkind)</p>
 </li><li>
 <p>Allow assigning a filename to the <code>DataFile</code> object in <code>Shrine.data_uri</code> (@janko)</p>
 </li><li>
-<p>Don&#39;t strip media type parameters for the <code>DataFile</code> object in <code>data_uri</code> plugin (@janko)</p>
+<p>Don't strip media type parameters for the <code>DataFile</code> object in <code>data_uri</code> plugin (@janko)</p>
 </li><li>
 <p>Add <code>:content_type</code> analyzer to <code>Shrine.mime_type_analyzers</code> in <code>determine_mime_type</code> plugin (@janko)</p>
 </li><li>
 <p>Rename <code>:default</code> analyzer to <code>:content_type</code> in <code>determine_mime_type</code> plugin (@janko)</p>
 </li><li>
-<p>Don&#39;t display a warning when <code>determine_mime_type</code> plugin is loaded with <code>:default</code> analyzer (@janko)</p>
+<p>Don't display a warning when <code>determine_mime_type</code> plugin is loaded with <code>:default</code> analyzer (@janko)</p>
 </li><li>
 <p>Exclude media type parameters when copying <code>IO#content_type</code> into <code>mime_type</code> metadata (@janko)</p>
 </li><li>
@@ -761,7 +756,7 @@ Last Update:
 </li><li>
 <p>Specify UTF-8 charset in <code>Content-Type</code> response header in <code>upload_endpoint</code> plugin (@janko)</p>
 </li><li>
-<p>Force UTF-8 encoding on filenames coming from Rack&#39;s multipart request params in <code>rack_file</code> plugin (@janko)</p>
+<p>Force UTF-8 encoding on filenames coming from Rack's multipart request params in <code>rack_file</code> plugin (@janko)</p>
 </li><li>
 <p>Raise <code>Shrine::Error</code> if <code>file</code> command returns error in stdout in <code>determine_mime_type</code> plugin (@janko)</p>
 </li><li>
@@ -833,13 +828,13 @@ Last Update:
 </li><li>
 <p>Add ability to specify upload checksum in <code>upload_endpoint</code> plugin (@janko)</p>
 </li><li>
-<p>Don&#39;t raise exception in <code>:mini_magick</code> and <code>:ruby_vips</code> dimensions analyzers when image is invalid (@janko)</p>
+<p>Don't raise exception in <code>:mini_magick</code> and <code>:ruby_vips</code> dimensions analyzers when image is invalid (@janko)</p>
 </li><li>
-<p>Don&#39;t remove bucket name from S3 URL path with <code>:host</code> when <code>:force_path_style</code> is set (@janko)</p>
+<p>Don't remove bucket name from S3 URL path with <code>:host</code> when <code>:force_path_style</code> is set (@janko)</p>
 </li><li>
 <p>Correctly determine MIME type from extension of empty files (@janko)</p>
 </li><li>
-<p>Modify <code>UploadedFile#download</code> not to reopen the uploaded file if it&#39;s already open (@janko)</p>
+<p>Modify <code>UploadedFile#download</code> not to reopen the uploaded file if it's already open (@janko)</p>
 </li><li>
 <p>Add <code>UploadedFile#stream</code> for streaming content into a writable object (@janko)</p>
 </li><li>
@@ -864,7 +859,7 @@ Last Update:
 </li><li>
 <p>Deprecate <code>Shrine::IO_METHODS</code> constant (@janko)</p>
 </li><li>
-<p>Don&#39;t require IO size to be known on upload (@janko)</p>
+<p>Don't require IO size to be known on upload (@janko)</p>
 </li><li>
 <p>Inherit the logger on subclassing <code>Shrine</code> and make it shared across subclasses (@hmistry)</p>
 </li></ul>
@@ -957,13 +952,13 @@ Last Update:
 </li><li>
 <p>Return <code>Cache-Control</code> header in <code>download_endpoint</code> to permanently cache responses (@janko)</p>
 </li><li>
-<p>Return <code>404 Not Found</code> when uploaded file doesn&#39;t exist in <code>download_endpoint</code> (@janko)</p>
+<p>Return <code>404 Not Found</code> when uploaded file doesn’t exist in <code>download_endpoint</code> (@janko)</p>
 </li><li>
 <p>Utilize uploaded file metadata when generating response in <code>download_endpoint</code> (@janko)</p>
 </li><li>
 <p>Fix deprecation warning when generating fake presign with query parameters (@janko)</p>
 </li><li>
-<p>Don&#39;t raise error in <code>file</code> and <code>filemagic</code> MIME type analyzer on empty IO (@ypresto)</p>
+<p>Don't raise error in <code>file</code> and <code>filemagic</code> MIME type analyzer on empty IO (@ypresto)</p>
 </li><li>
 <p>Require <code>down</code> in <code>remote_url</code> plugin even when a custom downloader is given (@janko)</p>
 </li><li>
@@ -979,7 +974,7 @@ Last Update:
 </li><li>
 <p>Raise <code>ArgumentError</code> when <code>:bucket</code> option is nil in <code>Shrine::Storage::S3#initialize</code> (@janko)</p>
 </li><li>
-<p>Don&#39;t wrap base64-encoded content into 60 columns in <code>UploadedFile#base64</code> and <code>#data_uri</code> (@janko)</p>
+<p>Don't wrap base64-encoded content into 60 columns in <code>UploadedFile#base64</code> and <code>#data_uri</code> (@janko)</p>
 </li><li>
 <p>Add <code>:mini_mime</code> option to <code>determine_mime_type</code> plugin for using the <a href="https://github.com/discourse/mini_mime">mini_mime</a> gem (@janko)</p>
 </li><li>
@@ -989,9 +984,9 @@ Last Update:
 </li><li>
 <p>Un-deprecate <code>Shrine.uploaded_file</code> accepting file data as JSON string (@janko)</p>
 </li><li>
-<p>Don&#39;t wrap base64-formatted signatures to 60 columns (@janko)</p>
+<p>Don't wrap base64-formatted signatures to 60 columns (@janko)</p>
 </li><li>
-<p>Don&#39;t add a newline at the end of the base64-formatted signature (@janko)</p>
+<p>Don't add a newline at the end of the base64-formatted signature (@janko)</p>
 </li></ul>
 
 <h2 id="label-2.6.1+-282017-04-12-29+-5Brelease+notes-5D"><a href="doc/release_notes/2_6_1_md.html">2.6.1</a> (2017-04-12) <a href="https://shrinerb.com/docs/release_notes/2.6.1">[release notes]</a><span><a href="#label-2.6.1+-282017-04-12-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -1053,17 +1048,17 @@ Last Update:
 </li><li>
 <p>Deprecate passing regexes to type/extension whitelists/blacklists in <code>validation_helpers</code> (@janko)</p>
 </li><li>
-<p>Don&#39;t include list of blacklisted types and extensions in default <code>validation_helpers</code> messages (@janko)</p>
+<p>Don't include list of blacklisted types and extensions in default <code>validation_helpers</code> messages (@janko)</p>
 </li><li>
 <p>Improve default error messages in <code>validation_helpers</code> plugin (@janko)</p>
 </li><li>
-<p>Don&#39;t require the <code>benchmark</code> standard library in <code>logging</code> plugin (@janko)</p>
+<p>Don't require the <code>benchmark</code> standard library in <code>logging</code> plugin (@janko)</p>
 </li><li>
-<p>Don&#39;t dirty the attacher in <code>Attacher#set</code> when attachment hasn&#39;t changed (@janko)</p>
+<p>Don't dirty the attacher in <code>Attacher#set</code> when attachment hasn't changed (@janko)</p>
 </li><li>
 <p>Rename <code>Attacher#attached?</code> to a more accurate <code>Attacher#changed?</code> (@janko)</p>
 </li><li>
-<p>Allow calling <code>Attacher#finalize</code> if attachment hasn&#39;t changed, instead of raising an error (@janko)</p>
+<p>Allow calling <code>Attacher#finalize</code> if attachment hasn’t changed, instead of raising an error (@janko)</p>
 </li><li>
 <p>Make <code>Shrine::Storage::S3#object</code> method public (@janko)</p>
 </li><li>
@@ -1088,7 +1083,7 @@ Last Update:
 </li><li>
 <p>Make <code>remove_invalid</code> plugin remove dirty state on attacher after removing invalid file (@janko)</p>
 </li><li>
-<p>Raise error if <code>Shrine::UploadedFile</code> isn&#39;t initialized with valid data (@janko)</p>
+<p>Raise error if <code>Shrine::UploadedFile</code> isn’t initialized with valid data (@janko)</p>
 </li><li>
 <p>Accept <code>extension</code> parameter without the dot in presign endpoint of <code>direct_upload</code> plugin (@jonasheinrich)</p>
 </li><li>
@@ -1107,7 +1102,7 @@ Last Update:
 </li><li>
 <p>Deprecate <code>Storage::FileSystem#download</code> (@janko)</p>
 </li><li>
-<p>In <code>UploadedFile#download</code> use extension from <code>#original_filename</code> if <code>#id</code> doesn&#39;t have it (@janko)</p>
+<p>In <code>UploadedFile#download</code> use extension from <code>#original_filename</code> if <code>#id</code> doesn’t have it (@janko)</p>
 </li></ul>
 
 <h2 id="label-2.4.0+-282016-10-11-29+-5Brelease+notes-5D"><a href="doc/release_notes/2_4_0_md.html">2.4.0</a> (2016-10-11) <a href="https://shrinerb.com/docs/release_notes/2.4.0">[release notes]</a><span><a href="#label-2.4.0+-282016-10-11-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -1124,21 +1119,21 @@ Last Update:
 </li><li>
 <p>Allow dynamically generating URL options in <code>default_url_options</code> plugin (@janko)</p>
 </li><li>
-<p>Don&#39;t run file validations when duplicating the record in <code>copy</code> plugin (@janko)</p>
+<p>Don't run file validations when duplicating the record in <code>copy</code> plugin (@janko)</p>
 </li><li>
-<p>Don&#39;t use <code>Storage#stream</code> in download_endpoint plugin anymore, rely on <code>Storage#open</code> (@janko)</p>
+<p>Don't use <code>Storage#stream</code> in download_endpoint plugin anymore, rely on <code>Storage#open</code> (@janko)</p>
 </li><li>
 <p>Remove explicitly unlinking Tempfiles returned by <code>Storage#open</code> (@janko)</p>
 </li><li>
 <p>Move <code>:host</code> from first-class storage option to <code>#url</code> option on FileSystem and S3 storage (@janko)</p>
 </li><li>
-<p>Don&#39;t fail in FileSystem storage when attempting to delete a file that doesn&#39;t exist (@janko)</p>
+<p>Don't fail in FileSystem storage when attempting to delete a file that doesn't exist (@janko)</p>
 </li><li>
 <p>In <code>UploadedFile#open</code> handle the case when <code>Storage#open</code> raises an error (@janko)</p>
 </li><li>
 <p>Make the <code>sequel</code> plugin use less memory during transactions (@janko)</p>
 </li><li>
-<p>Use Roda&#39;s streaming plugin in <code>download_endpoint</code> for better EventMachine integration (@janko)</p>
+<p>Use Roda’s streaming plugin in <code>download_endpoint</code> for better EventMachine integration (@janko)</p>
 </li><li>
 <p>Deprecate accepting a JSON string in <code>Shrine.uploaded_file</code> (@janko)</p>
 </li><li>
@@ -1149,7 +1144,7 @@ Last Update:
 
 <h2 id="label-2.3.1+-282016-09-01-29+-5Brelease+notes-5D"><a href="doc/release_notes/2_3_1_md.html">2.3.1</a> (2016-09-01) <a href="https://shrinerb.com/docs/release_notes/2.3.1">[release notes]</a><span><a href="#label-2.3.1+-282016-09-01-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Don&#39;t change permissions of existing directories in FileSystem storage (@janko)</p>
+<p>Don’t change permissions of existing directories in FileSystem storage (@janko)</p>
 </li></ul>
 
 <h2 id="label-2.3.0+-282016-08-27-29+-5Brelease+notes-5D"><a href="doc/release_notes/2_3_0_md.html">2.3.0</a> (2016-08-27) <a href="https://shrinerb.com/docs/release_notes/2.3.0">[release notes]</a><span><a href="#label-2.3.0+-282016-08-27-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -1168,9 +1163,9 @@ Last Update:
 </li><li>
 <p>Make <code>Attacher#read</code> for reading the attachment column public (@janko)</p>
 </li><li>
-<p>Don&#39;t rely on the <code>#id</code> writer on a model instance in backgrounding plugin (@janko)</p>
+<p>Don't rely on the <code>#id</code> writer on a model instance in backgrounding plugin (@janko)</p>
 </li><li>
-<p>Don&#39;t make <code>Attacher#swap</code> private in sequel and activerecord plugins (@janko)</p>
+<p>Don't make <code>Attacher#swap</code> private in sequel and activerecord plugins (@janko)</p>
 </li><li>
 <p>Set default UNIX permissions to 0644 for files and 0755 for directories (@janko)</p>
 </li><li>
@@ -1187,21 +1182,21 @@ Last Update:
 </li><li>
 <p>The direct_upload endpoint now always includes both upload and presign routes (@janko)</p>
 </li><li>
-<p>Don&#39;t let the combination for delete_raw and moving plugins trigger any errors (@janko)</p>
+<p>Don't let the combination for delete_raw and moving plugins trigger any errors (@janko)</p>
 </li><li>
 <p>Add <code>UploadedFile#open</code> that mimics <code>File.open</code> with a block (@janko)</p>
 </li><li>
-<p>In the storage linter don&#39;t require <code>#clear!</code> to be implemented (@janko)</p>
+<p>In the storage linter don’t require <code>#clear!</code> to be implemented (@janko)</p>
 </li><li>
-<p>In backgrounding plugin don&#39;t require model to have attachment module included (@janko)</p>
+<p>In backgrounding plugin don’t require model to have attachment module included (@janko)</p>
 </li><li>
 <p>Add add_metadata plugin for defining additional metadata values to be extracted (@janko)</p>
 </li><li>
-<p>In determine_mime_type plugin raise error when file command wasn&#39;t found or errored (@janko)</p>
+<p>In determine_mime_type plugin raise error when file command wasn’t found or errored (@janko)</p>
 </li><li>
 <p>Add processing plugin for simpler and more declarative definition of processing (@janko)</p>
 </li><li>
-<p>Storage classes don&#39;t need to implement the <code>#read</code> method anymore (@janko)</p>
+<p>Storage classes don't need to implement the <code>#read</code> method anymore (@janko)</p>
 </li><li>
 <p>Use aws-sdk in <code>S3#download</code>, which will automatically retry failed downloads (@janko)</p>
 </li><li>
@@ -1214,7 +1209,7 @@ Last Update:
 
 <h2 id="label-2.1.1+-282016-07-14-29+-5Brelease+notes-5D"><a href="doc/release_notes/2_1_1_md.html">2.1.1</a> (2016-07-14) <a href="https://shrinerb.com/docs/release_notes/2.1.1">[release notes]</a><span><a href="#label-2.1.1+-282016-07-14-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Fix <code>S3#open</code> throwing a NameError if <code>net/http</code> isn&#39;t required (@janko)</p>
+<p>Fix <code>S3#open</code> throwing a NameError if <code>net/http</code> isn’t required (@janko)</p>
 </li></ul>
 
 <h2 id="label-2.1.0+-282016-06-27-29+-5Brelease+notes-5D"><a href="doc/release_notes/2_1_0_md.html">2.1.0</a> (2016-06-27) <a href="https://shrinerb.com/docs/release_notes/2.1.0">[release notes]</a><span><a href="#label-2.1.0+-282016-06-27-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -1229,14 +1224,14 @@ Last Update:
 </li><li>
 <p>Make logging and parallelize plugins work properly when loaded in this order (@janko)</p>
 </li><li>
-<p>Don&#39;t assert arity of IO methods, so that objects like <code>Rack::Test::UploadedFile</code> are allowed (@janko)</p>
+<p>Don't assert arity of IO methods, so that objects like <code>Rack::Test::UploadedFile</code> are allowed (@janko)</p>
 </li><li>
 <p>Deprecate <code>#cached_&lt;attachment&gt;_data=</code> over using <code>&lt;attachment&gt;</code> for the hidden field (@janko)</p>
 </li></ul>
 
 <h2 id="label-2.0.1+-282016-05-30-29+-5Brelease+notes-5D"><a href="doc/release_notes/2_0_1_md.html">2.0.1</a> (2016-05-30) <a href="https://shrinerb.com/docs/release_notes/2.0.1">[release notes]</a><span><a href="#label-2.0.1+-282016-05-30-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Don&#39;t override previously set default_url in versions plugin (@janko)</p>
+<p>Don’t override previously set default_url in versions plugin (@janko)</p>
 </li></ul>
 
 <h2 id="label-2.0.0+-282016-05-19-29+-5Brelease+notes-5D"><a href="doc/release_notes/2_0_0_md.html">2.0.0</a> (2016-05-19) <a href="https://shrinerb.com/docs/release_notes/2.0.0">[release notes]</a><span><a href="#label-2.0.0+-282016-05-19-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -1247,21 +1242,21 @@ Last Update:
 </li><li>
 <p>Make previous plugin options persist when reapplying the plugin (@janko)</p>
 </li><li>
-<p>Improve how upload options and metadata are passed to storage&#39;s <code>#upload</code> and <code>#move</code> (@janko)</p>
+<p>Improve how upload options and metadata are passed to storage's <code>#upload</code> and <code>#move</code> (@janko)</p>
 </li><li>
 <p>Remove <code>Shrine::Confirm</code> and confirming <code>Storage#clear!</code> in general (@janko)</p>
 </li><li>
 <p>Allow implementing a custom dimensions analyzer using built-in ones (@janko)</p>
 </li><li>
-<p>Don&#39;t error in determine_mime_type when MimeMagic cannot determine the MIME (@janko)</p>
+<p>Don't error in determine_mime_type when MimeMagic cannot determine the MIME (@janko)</p>
 </li><li>
 <p>Allow implementing a custom MIME type analyzer using built-in ones (@janko)</p>
 </li><li>
-<p>Don&#39;t check that the cached file exists in restore_cached_data plugin (@janko)</p>
+<p>Don't check that the cached file exists in restore_cached_data plugin (@janko)</p>
 </li><li>
 <p>Deprecate migration_helpers plugin and move <code>Attacher#cached?</code> and <code>Attacher#stored?</code> to base (@janko)</p>
 </li><li>
-<p>Don&#39;t trigger restore_cached_data plugin functionality when assigning the same cached attachment (@janko)</p>
+<p>Don't trigger restore_cached_data plugin functionality when assigning the same cached attachment (@janko)</p>
 </li><li>
 <p>Give <code>Attacher#_promote</code> and <code>Attacher#promote</code> the same method signature (@janko)</p>
 </li><li>
@@ -1269,7 +1264,7 @@ Last Update:
 </li><li>
 <p>Make <code>Attacher#cache!</code>, <code>Attacher#store!</code>, and <code>Attacher#delete!</code> public (@janko)</p>
 </li><li>
-<p>Don&#39;t cache storages in dynamic_storage plugin (@janko)</p>
+<p>Don't cache storages in dynamic_storage plugin (@janko)</p>
 </li><li>
 <p>Make only one HTTP request in download_endpoint plugin (@janko)</p>
 </li><li>
@@ -1291,9 +1286,9 @@ Last Update:
 </li><li>
 <p>Make the <code>:delegate</code> option in migration_helpers default to <code>false</code> (@janko)</p>
 </li><li>
-<p>Don&#39;t require <code>:storages</code> option anymore in moving plugin (@janko)</p>
+<p>Don't require <code>:storages</code> option anymore in moving plugin (@janko)</p>
 </li><li>
-<p>Don&#39;t delete uploaded IO if storage doesn&#39;t support moving in moving plugin (@janko)</p>
+<p>Don't delete uploaded IO if storage doesn't support moving in moving plugin (@janko)</p>
 </li><li>
 <p>Rename delete phases to be shorter and consistent in naming with upload phases (@janko)</p>
 </li><li>
@@ -1301,7 +1296,7 @@ Last Update:
 </li><li>
 <p>Remove deprecated <code>:subdirectory</code> on FileSystem storage (@janko)</p>
 </li><li>
-<p>Don&#39;t return the uploaded file in <code>Attacher#set</code> and <code>Attacher#assign</code> (@janko)</p>
+<p>Don't return the uploaded file in <code>Attacher#set</code> and <code>Attacher#assign</code> (@janko)</p>
 </li><li>
 <p>Return the attacher instance in <code>Attacher.promote</code> and <code>Attacher.delete</code> in backgrounding plugin (@janko)</p>
 </li><li>
@@ -1322,9 +1317,9 @@ Last Update:
 
 <h2 id="label-1.4.2+-282016-04-19-29+-5Brelease+notes-5D"><a href="doc/release_notes/1_4_2_md.html">1.4.2</a> (2016-04-19) <a href="https://shrinerb.com/docs/release_notes/1.4.2">[release notes]</a><span><a href="#label-1.4.2+-282016-04-19-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Removed ActiveRecord&#39;s automatic support for optimistic locking as it wasn&#39;t stable (@janko)</p>
+<p>Removed ActiveRecord’s automatic support for optimistic locking as it wasn’t stable (@janko)</p>
 </li><li>
-<p>Fixed record&#39;s dataset being modified after promoting preventing further updates with the same instance (@janko)</p>
+<p>Fixed record's dataset being modified after promoting preventing further updates with the same instance (@janko)</p>
 </li></ul>
 
 <h2 id="label-1.4.1+-282016-04-18-29+-5Brelease+notes-5D"><a href="doc/release_notes/1_4_1_md.html">1.4.1</a> (2016-04-18) <a href="https://shrinerb.com/docs/release_notes/1.4.1">[release notes]</a><span><a href="#label-1.4.1+-282016-04-18-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -1354,7 +1349,7 @@ Last Update:
 </li><li>
 <p>Add separate <code>:presign_options</code> option for receiving presign options in direct_upload plugin (@janko)</p>
 </li><li>
-<p>Add ability to generate fake presigns for storages which don&#39;t support them for testing (@janko)</p>
+<p>Add ability to generate fake presigns for storages which don’t support them for testing (@janko)</p>
 </li><li>
 <p>Change the <code>/:storage/:name</code> route to <code>/:storage/upload</code> in direct_upload plugin (@janko)</p>
 </li><li>
@@ -1384,7 +1379,7 @@ Last Update:
 </li><li>
 <p>Make storing backup happen <em>after</em> promoting instead of before (@janko)</p>
 </li><li>
-<p>Add <code>:fallbacks</code> to versions plugin for fallback URLs for versions which haven&#39;t finished processing (@janko)</p>
+<p>Add <code>:fallbacks</code> to versions plugin for fallback URLs for versions which haven’t finished processing (@janko)</p>
 </li><li>
 <p>Fix keep_files not to spawn a background job when file will not be deleted (@janko)</p>
 </li></ul>
@@ -1395,19 +1390,19 @@ Last Update:
 </li><li>
 <p>Fix <code>Attacher#backup_file</code> from backup plugin not to modify the given uploaded file (@janko)</p>
 </li><li>
-<p>Allow modifying UploadedFile&#39;s data hash after it&#39;s instantiated to change the UploadedFile (@janko)</p>
+<p>Allow modifying UploadedFile’s data hash after it’s instantiated to change the UploadedFile (@janko)</p>
 </li><li>
 <p>Deprecate the keep_location plugin (@janko)</p>
 </li><li>
-<p>Don&#39;t mutate context hash inside the uploader (@janko)</p>
+<p>Don't mutate context hash inside the uploader (@janko)</p>
 </li><li>
 <p>Make extracted metadata accessible in <code>#generate_location</code> through <code>:metadata</code> in context hash (@janko)</p>
 </li><li>
-<p>Don&#39;t require the "metadata" key when instantiating a <code>Shrine::UploadedFile</code> (@janko)</p>
+<p>Don't require the "metadata" key when instantiating a <code>Shrine::UploadedFile</code> (@janko)</p>
 </li><li>
 <p>Add <code>:include_error</code> option to remote_url for accessing download error in <code>:error_message</code> block (@janko)</p>
 </li><li>
-<p>Give different error message when file wasn&#39;t found or was too large in remote_url (@janko)</p>
+<p>Give different error message when file wasn't found or was too large in remote_url (@janko)</p>
 </li><li>
 <p>Rewind the IO after extracting MIME type with MimeMagic (@janko)</p>
 </li><li>
@@ -1421,13 +1416,13 @@ Last Update:
 </li><li>
 <p>Add <code>:namespace</code> option to pretty_location for including class namespace in location (@janko)</p>
 </li><li>
-<p>Don&#39;t include the namespace of the class in the location with the pretty_location plugin (@janko)</p>
+<p>Don't include the namespace of the class in the location with the pretty_location plugin (@janko)</p>
 </li><li>
-<p>Remove aws-sdk deprecation warning when storage isn&#39;t instantiated with credentials (@reidab)</p>
+<p>Remove aws-sdk deprecation warning when storage isn’t instantiated with credentials (@reidab)</p>
 </li><li>
-<p>Don&#39;t make uploaded file&#39;s metadata methods error when the corresponding key-value pair is missing (@janko)</p>
+<p>Don't make uploaded file's metadata methods error when the corresponding key-value pair is missing (@janko)</p>
 </li><li>
-<p>Close the <code>UploadedFile</code> on upload only if it was previously opened, which doesn&#39;t happen on S3 COPY (@reidab)</p>
+<p>Close the <code>UploadedFile</code> on upload only if it was previously opened, which doesn’t happen on S3 COPY (@reidab)</p>
 </li><li>
 <p>Fix <code>NameError</code> when silencing “missing record” errors in backgrounding (@janko)</p>
 </li></ul>
@@ -1440,9 +1435,9 @@ Last Update:
 </li><li>
 <p>Use a transaction when checking if attachment has changed after storing during promotion (@janko)</p>
 </li><li>
-<p>Don&#39;t attempt to start promoting in background if attachment has already changed (@janko)</p>
+<p>Don't attempt to start promoting in background if attachment has already changed (@janko)</p>
 </li><li>
-<p>Don&#39;t error in backgrounding when record is missing (@janko)</p>
+<p>Don't error in backgrounding when record is missing (@janko)</p>
 </li><li>
 <p>Prevent multiline content type spoof attempts in validation_helpers (@xzo)</p>
 </li><li>
@@ -1477,7 +1472,7 @@ Last Update:
 </li><li>
 <p>Allow adding S3 upload options dynamically per upload (@janko)</p>
 </li><li>
-<p>Add delete_uploaded plugin for automatically deleting files after they&#39;re uploaded (@janko)</p>
+<p>Add delete_uploaded plugin for automatically deleting files after they’re uploaded (@janko)</p>
 </li><li>
 <p>Close an open file descriptor left after downloading a FileSystem file (@janko)</p>
 </li><li>
@@ -1489,7 +1484,7 @@ Last Update:
 </li><li>
 <p>Allow the data_uri plugin to accept “+” symbols in MIME type names (@janko)</p>
 </li><li>
-<p>Make the data_uri plugin accept data URIs which aren&#39;t base64 encoded (@janko)</p>
+<p>Make the data_uri plugin accept data URIs which aren’t base64 encoded (@janko)</p>
 </li><li>
 <p>Close all IOs after uploading them (@janko)</p>
 </li><li>
@@ -1507,7 +1502,7 @@ Last Update:
 </li><li>
 <p>Add the backup plugin for backing up stored files (@janko)</p>
 </li><li>
-<p>Storages don&#39;t need to rewind the files after upload anymore (@janko)</p>
+<p>Storages don't need to rewind the files after upload anymore (@janko)</p>
 </li><li>
 <p>Make S3 presigns work when the <code>:endpoint</code> option is given (@NetsoftHoldings)</p>
 </li><li>
@@ -1544,19 +1539,19 @@ Last Update:
 </li><li>
 <p>Add module_include plugin for easily extending core classes for given uploader (@janko)</p>
 </li><li>
-<p>Add support for Sequel&#39;s Postgres JSON column support (@janko)</p>
+<p>Add support for Sequel’s Postgres JSON column support (@janko)</p>
 </li><li>
 <p>Fix migration_helpers plugin not detecting when column changed (@janko)</p>
 </li><li>
-<p>Add the <code>:public</code> option to S3 storage for retrieving public URLs which aren&#39;t signed (@janko)</p>
+<p>Add the <code>:public</code> option to S3 storage for retrieving public URLs which aren’t signed (@janko)</p>
 </li><li>
 <p>Remove the delete_invalid plugin, as it could cause lame errors (@janko)</p>
 </li><li>
-<p>Don&#39;t delete cached files anymore, as it can cause errors with backgrounding (@janko)</p>
+<p>Don't delete cached files anymore, as it can cause errors with backgrounding (@janko)</p>
 </li><li>
 <p>Add a <code>:host</code> option to the S3 storage for specifying CDNs (@janko)</p>
 </li><li>
-<p>Don&#39;t allow same attachment to be promoted multiple times with backgrounding (@janko)</p>
+<p>Don't allow same attachment to be promoted multiple times with backgrounding (@janko)</p>
 </li><li>
 <p>Fix recache plugin causing an infinite loop (@janko)</p>
 </li><li>
@@ -1568,7 +1563,7 @@ Last Update:
 </li><li>
 <p>Make determine_mime_type able to accept non-files when using :file (@janko)</p>
 </li><li>
-<p>Make logging plugin accept PORO instance which don&#39;t have an id (@janko)</p>
+<p>Make logging plugin accept PORO instance which don’t have an id (@janko)</p>
 </li><li>
 <p>Add rack_file plugin for attaching Rack file hashes to models (@janko)</p>
 </li></ul>

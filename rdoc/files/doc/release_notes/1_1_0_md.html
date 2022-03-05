@@ -30,7 +30,7 @@ doc/release_notes/1.1.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -51,7 +51,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">create</span>(<span class="ruby-value">avatar:</span> <span class="ruby-identifier">image</span>) <span class="ruby-comment"># uploads to :store and :backup_store</span></pre>
 <ul><li>
-<p>The <code>delete_uploaded</code> plugin has been added for automatically deleting files  after they&#39;re uploaded (useful for removing temporary files in versions).</p>
+<p>The <code>delete_uploaded</code> plugin has been added for automatically deleting files  after they're uploaded (useful for removing temporary files in versions).</p>
 </li><li>
 <p>The <code>upload_options</code> plugin has been added, for dynamically generating  storage-specific upload options.</p>
 </li></ul>
@@ -108,7 +108,7 @@ Last Update:
 </li><li>
 <p>The upload endpoint now returns the Roda class itself. This makes the endpoint  customizable, inheritable and inspectable.</p>
 </li><li>
-<p>All files are now closed after they&#39;re uploaded, which should minimize the  number of open file descriptors in the system.</p>
+<p>All files are now closed after they're uploaded, which should minimize the  number of open file descriptors in the system.</p>
 </li><li>
 <p>Closed a temporary open file descriptor after downloading from FileSystem.</p>
 </li><li>
@@ -116,7 +116,7 @@ Last Update:
 </li><li>
 <p>The S3 storage now properly copies files larger than 5 GB, by switching to  multipart copy.</p>
 </li><li>
-<p>The S3 storage can now multi-delete more than 1000 files, by internally  batching deletes in groups of 1000 (which is S3&#39;s maximum).</p>
+<p>The S3 storage can now multi-delete more than 1000 files, by internally  batching deletes in groups of 1000 (which is S3's maximum).</p>
 </li><li>
 <p>The S3 storage now accepts additonal per-upload options through the  <code>upload_options</code> plugin.</p>
 </li><li>
@@ -130,7 +130,7 @@ Last Update:
 </li><li>
 <p>The <code>data_uri</code> plugin now accepts MIME types with "+" symbols inside (e.g.  "application/vnd.api+json")</p>
 </li><li>
-<p>Downloading file from a URL doesn&#39;t do an unnecessary copy of the file anymore.</p>
+<p>Downloading file from a URL doesn't do an unnecessary copy of the file anymore.</p>
 </li><li>
 <p>Avoid an additional string allocation in <code>S3#read</code>.</p>
 </li><li>
@@ -142,14 +142,14 @@ Last Update:
 </li><li>
 <p>The <code>context</code> hash can now be modified.</p>
 </li><li>
-<p>Storages aren&#39;t required to rewind the uploaded file anymore, since these  files are now closed.</p>
+<p>Storages aren't required to rewind the uploaded file anymore, since these  files are now closed.</p>
 </li><li>
-<p>Improved storage linter to test the "special" storage methods as well if  they&#39;re available.</p>
+<p>Improved storage linter to test the "special" storage methods as well if  they're available.</p>
 </li></ul>
 
 <h1 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>Files are now closed after they&#39;re uploaded by <code>Shrine#upload</code>, if you were  relying on the previous behaviour you need to update your code.</p>
+<p>Files are now closed after they're uploaded by <code>Shrine#upload</code>, if you were  relying on the previous behaviour you need to update your code.</p>
 </li><li>
 <p>The default URL functionality has been extracted into the <code>default_url</code>  plugin, and overriding <code>Shrine#default_url</code> is now deprecated.</p>
 </li><li>

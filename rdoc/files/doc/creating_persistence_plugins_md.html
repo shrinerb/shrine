@@ -30,7 +30,7 @@ doc/creating_persistence_plugins.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -40,15 +40,15 @@ Last Update:
 
 <h2 id="label-title-3A+Writing+a+Persistence+Plugin">title: Writing a Persistence Plugin<span><a href="#label-title-3A+Writing+a+Persistence+Plugin">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>This guide explains some conventions for writing <a href="../../classes/Shrine.html"><code>Shrine</code></a> plugins that integrate with persistence libraries such as Active Record, Sequel, ROM and Mongoid. It assumes you&#39;ve read the <a href="https://shrinerb.com/docs/creating-plugins">Writing a Plugin</a> guide.</p>
+<p>This guide explains some conventions for writing <a href="../../classes/Shrine.html"><code>Shrine</code></a> plugins that integrate with persistence libraries such as Active Record, Sequel, ROM and Mongoid. It assumes you’ve read the <a href="https://shrinerb.com/docs/creating-plugins">Writing a Plugin</a> guide.</p>
 
-<p>Let&#39;s say we&#39;re writing a plugin for a persistence library called “Raptor”:</p>
+<p>Let’s say we’re writing a plugin for a persistence library called “Raptor”:</p>
 
 <pre class="ruby"><span class="ruby-comment"># lib/shrine/plugins/raptor.rb</span>&#x000A;&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;raptor&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Plugins</span>&#x000A;    <span class="ruby-keyword">module</span> <span class="ruby-constant">Raptor</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">register_plugin</span>(<span class="ruby-value">:raptor</span>, <span class="ruby-constant">Raptor</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Attachment">Attachment<span><a href="#label-Attachment">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>If your database library uses the <a href="https://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record pattern</a>, it&#39;s recommended to load the {<code>model</code><a href="https://shrinerb.com/docs/plugins/model">}</a> plugin as a dependency.</p>
+<p>If your database library uses the <a href="https://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record pattern</a>, it’s recommended to load the {<code>model</code><a href="https://shrinerb.com/docs/plugins/model">}</a> plugin as a dependency.</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">Raptor</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:model</span> <span class="ruby-comment"># for Active Record pattern</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -56,7 +56,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">Raptor</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:entity</span> <span class="ruby-comment"># for Repository pattern</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>If you want to add library-specific integration when <code>Shrine::Attachment</code> is included into a model/entity, it&#39;s recommended to do this in the <code>included</code> hook, so that you can perform this logic only for models/entities that belong to that persistence library.</p>
+<p>If you want to add library-specific integration when <code>Shrine::Attachment</code> is included into a model/entity, it’s recommended to do this in the <code>included</code> hook, so that you can perform this logic only for models/entities that belong to that persistence library.</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">Raptor</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">AttachmentMethods</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">klass</span>)&#x000A;      <span class="ruby-keyword">super</span>&#x000A;&#x000A;      <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">klass</span> <span class="ruby-operator">&lt;</span> <span class="ruby-operator">::</span><span class="ruby-constant">Raptor</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;&#x000A;      <span class="ruby-comment"># library specific integration</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -75,7 +75,7 @@ Last Update:
 <p><code>Attacher#atomic_promote</code></p>
 </li></ul>
 
-<p>For those methods to work, we&#39;ll need to implement the following methods:</p>
+<p>For those methods to work, we’ll need to implement the following methods:</p>
 <ul><li>
 <p><code>Attacher#&lt;library&gt;_persist</code></p>
 </li><li>

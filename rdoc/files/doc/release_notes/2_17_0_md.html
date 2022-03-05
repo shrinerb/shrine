@@ -30,7 +30,7 @@ doc/release_notes/2.17.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -60,9 +60,9 @@ Last Update:
 <p>The <code>default_url</code> plugin now accepts a <code>:host</code> option for specifying the URL  host.</p>
 </li></ul>
 
-<p>“`rb  plugin :default_url, host: “<a href="https://example.com">example.com</a>”</p>
+<p>“‘rb  plugin :default_url, host: “<a href="https://example.com">example.com</a>”</p>
 
-<p>Attacher.default_url { “/#{name}/missing.png” }  <code> </code>rb  user.avatar_url #=&gt; “<img src="https://example.com/avatar/missing.png" />”  “`</p>
+<p>Attacher.default_url { “/#{name}/missing.png” }  <code> </code>rb  user.avatar_url #=&gt; “<img src="https://example.com/avatar/missing.png" />”  “‘</p>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
@@ -76,7 +76,7 @@ Last Update:
 </li><li>
 <p>The <code>derivation_endpoint</code>, <code>rack_response</code>, and <code>download_endpoint</code> plugins  now include <code>ETag</code> in the headers of responses, preventing the <code>Rack::ETag</code>  middleware from buffering the response body.</p>
 </li><li>
-<p>Fixed inheritance of <code>process</code> blocks in the <code>processing</code> plugin. Now adding  <code>process</code> blocks in the <code>Shrine</code> subclass won&#39;t affect the superclass.</p>
+<p>Fixed inheritance of <code>process</code> blocks in the <code>processing</code> plugin. Now adding  <code>process</code> blocks in the <code>Shrine</code> subclass won't affect the superclass.</p>
 </li><li>
 <p>Improved performance of <code>Shrine::Storage::FileSystem#delete</code> by switching  from <code>Dir.foreach</code> to <code>Dir.empty?</code>.</p>
 </li><li>
@@ -86,14 +86,14 @@ Last Update:
 </li><li>
 <p>The <code>versions</code> plugin now supports returning a hash of versions with string  names inside the <code>process</code> block.</p>
 </li><li>
-<p>The <code>download_endpoint</code> plugin has been rewritten to use plain Rack, so Roda  isn&#39;t a dependency anymore.</p>
+<p>The <code>download_endpoint</code> plugin has been rewritten to use plain Rack, so Roda  isn’t a dependency anymore.</p>
 </li><li>
-<p>The endpoint&#39;s <code>#inspect</code> and <code>#to_s</code> outputs in <code>upload_endpoint</code>,  <code>presign_endpoint</code>, <code>download_endpoint</code>, and <code>derivation_endpoint</code> plugins  have been simplified. Now the <code>rake routes</code> command output in Rails apps  should be much more compact.</p>
+<p>The endpoint’s <code>#inspect</code> and <code>#to_s</code> outputs in <code>upload_endpoint</code>,  <code>presign_endpoint</code>, <code>download_endpoint</code>, and <code>derivation_endpoint</code> plugins  have been simplified. Now the <code>rake routes</code> command output in Rails apps  should be much more compact.</p>
 </li></ul>
 
-<p>“`rb  # BEFORE:  ImageUploader.upload_endpoint(:cache) #=&gt; #&lt;Shrine::Plugins::UploadEndpoint::App:0x00007f91bec17dc8 @max_size=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache, @upload=nil, @upload_context=nil&gt;  ImageUploader.presign_endpoint(:cache) #=&gt; #&lt;Shrine::Plugins::PresignEndpoint::App:0x00007f91beca4ea8 @presign=nil, @presign_location=nil, @presign_options=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache&gt;  ImageUploader.download_endpoint #=&gt; #&lt;Class:0x00007f91bed1fa90&gt;  ImageUploader.derivation_endpoint #=&gt; #&lt;Shrine::DerivationEndpoint:0x00007f91bed4c900 @options={}, @shrine_class=ImageUploader&gt;</p>
+<p>“‘rb  # BEFORE:  ImageUploader.upload_endpoint(:cache) #=&gt; #&lt;Shrine::Plugins::UploadEndpoint::App:0x00007f91bec17dc8 @max_size=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache, @upload=nil, @upload_context=nil&gt;  ImageUploader.presign_endpoint(:cache) #=&gt; #&lt;Shrine::Plugins::PresignEndpoint::App:0x00007f91beca4ea8 @presign=nil, @presign_location=nil, @presign_options=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache&gt;  ImageUploader.download_endpoint #=&gt; #&lt;Class:0x00007f91bed1fa90&gt;  ImageUploader.derivation_endpoint #=&gt; #&lt;Shrine::DerivationEndpoint:0x00007f91bed4c900 @options={}, @shrine_class=ImageUploader&gt;</p>
 
-<p># AFTER:  ImageUploader.upload_endpoint(:cache) #=&gt; #&lt;ImageUploader::UploadEndpoint(:cache)&gt;  ImageUploader.presign_endpoint(:cache) #=&gt; #&lt;ImageUploader::PresignEndpoint(:cache)&gt;  ImageUploader.download_endpoint #=&gt; #&lt;ImageUploader::DownloadEndpoint&gt;  ImageUploader.derivation_endpoint #=&gt; #&lt;ImageUploader::DerivationEndpoint&gt;  “`</p>
+<p># AFTER:  ImageUploader.upload_endpoint(:cache) #=&gt; #&lt;ImageUploader::UploadEndpoint(:cache)&gt;  ImageUploader.presign_endpoint(:cache) #=&gt; #&lt;ImageUploader::PresignEndpoint(:cache)&gt;  ImageUploader.download_endpoint #=&gt; #&lt;ImageUploader::DownloadEndpoint&gt;  ImageUploader.derivation_endpoint #=&gt; #&lt;ImageUploader::DerivationEndpoint&gt;  “‘</p>
 <ul><li>
 <p>The <code>derivation_endpoint</code> plugin is now compatible with Rack 1.6.</p>
 </li><li>
@@ -113,11 +113,11 @@ Last Update:
 </li><li>
 <p>The <code>Shrine::Plugins::PresignEndpoint::App</code> class from the <code>presign_endpoint</code>  plugin has been renamed to <code>Shrine::PresignEndpoint</code>. The old constant will  be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li><li>
-<p>The <code>Shrine::Plugins::DownloadEndpoint::App</code> class is not a <code>Roda</code> subclass  anymore, it&#39;s now a PORO whose instance responds to <code>#call</code>. This shouldn&#39;t  affect your code unless you were calling Roda methods on that class.</p>
+<p>The <code>Shrine::Plugins::DownloadEndpoint::App</code> class is not a <code>Roda</code> subclass  anymore, it’s now a PORO whose instance responds to <code>#call</code>. This shouldn’t  affect your code unless you were calling Roda methods on that class.</p>
 </li><li>
-<p>The plugin options of <code>upload_endpoint</code>, <code>presign_endpoint</code>, and  <code>download_endpoint</code> are now internally stored in a different place in  <code>Shrine.opts</code>. This shouldn&#39;t affect your code unless you were accessing  these options directly.</p>
+<p>The plugin options of <code>upload_endpoint</code>, <code>presign_endpoint</code>, and  <code>download_endpoint</code> are now internally stored in a different place in  <code>Shrine.opts</code>. This shouldn’t affect your code unless you were accessing  these options directly.</p>
 </li><li>
-<p>The <code>Shrine::UrlSigner</code> internal class in <code>derivation_endpoint</code> plugin has  been updated. This shouldn&#39;t affect your code unless you were  using/overriding that class.</p>
+<p>The <code>Shrine::UrlSigner</code> internal class in <code>derivation_endpoint</code> plugin has  been updated. This shouldn’t affect your code unless you were  using/overriding that class.</p>
 </li></ul>
 </div>
 <div id='context'>

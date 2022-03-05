@@ -30,7 +30,7 @@ doc/release_notes/1.0.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -48,7 +48,7 @@ Last Update:
 </li><li>
 <p>The <code>:max_size</code> option was removed from <code>direct_upload</code> plugin. It was  redundant since it can still be bypassed by uploading the file without the  plugin, the proper solution is limiting the request body size in  (nginx/apache), or using the <code>hooks</code> plugin to raise an error when file is  too big. For presigned uploads you should limit the filesize by passing a  block to <code>:presign</code>.</p>
 </li><li>
-<p>The <code>direct_upload</code> doesn&#39;t detect the <code>content_type</code> query parameter anymore  with presigned uploads, instead it should be implemented directly by passing  a block to <code>:presign</code>.</p>
+<p>The <code>direct_upload</code> doesn't detect the <code>content_type</code> query parameter anymore  with presigned uploads, instead it should be implemented directly by passing  a block to <code>:presign</code>.</p>
 </li><li>
 <p>The <code>Shrine.delete</code> method has been removed, as it was redundant, instead  <code>Shrine#delete</code> should always be used.</p>
 </li><li>
@@ -59,7 +59,7 @@ Last Update:
 
 <h1 id="label-New+plugins">New plugins<span><a href="#label-New+plugins">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>A <code>rack_file</code> plugin has been added, which gives models the ability to accept  Rack&#39;s uploaded file hashes (useful in non-Rails web frameworks):</p>
+<p>A <code>rack_file</code> plugin has been added, which gives models the ability to accept  Rack’s uploaded file hashes (useful in non-Rails web frameworks):</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">User</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:resume</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">rack_file</span> <span class="ruby-comment"># a Rack file received with the request</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   :tempfile =&gt; #&lt;File:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0&gt;,</span>&#x000A;<span class="ruby-comment">#   :filename =&gt; &quot;resume.pdf&quot;,</span>&#x000A;<span class="ruby-comment">#   :type =&gt; &quot;application/pdf&quot;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span> = <span class="ruby-identifier">rack_file</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;resume.pdf&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;application/pdf&quot;</span></pre>
@@ -92,17 +92,17 @@ Last Update:
 <ul><li>
 <p>Fixed the <code>recache</code> plugin not working at all when used with an ORM plugin.</p>
 </li><li>
-<p>Fixed the <code>logging</code> plugin not working with PORO models (which don&#39;t have an  <code>#id</code>).</p>
+<p>Fixed the <code>logging</code> plugin not working with PORO models (which don't have an  <code>#id</code>).</p>
 </li><li>
-<p>The inspect output of <code>UploadedFile</code> is now cleaner and doesn&#39;t show  duplicated info anymore.</p>
+<p>The inspect output of <code>UploadedFile</code> is now cleaner and doesn't show  duplicated info anymore.</p>
 </li><li>
-<p>Cached files aren&#39;t automatically deleted anymore. This removes issues which  can happen with background promoting when cached file is deleted while it&#39;s  being promoted, and it also required a monkey patch for the <code>moving</code> plugin  to not attempt to delete the cached file twice.</p>
+<p>Cached files aren't automatically deleted anymore. This removes issues which  can happen with background promoting when cached file is deleted while it's  being promoted, and it also required a monkey patch for the <code>moving</code> plugin  to not attempt to delete the cached file twice.</p>
 </li><li>
 <p>Fixed a DoS vulnerability with background promoting where the job would get  triggered each time the record is saved with the cached attachment, until  the first job finishes.</p>
 </li><li>
 <p>Fixed <code>migration_helpers</code> plugin to properly detect when attachment has  changed while executing the block, and aborting the update in that case.</p>
 </li><li>
-<p>Added the ability to use Postgres&#39; JSON/JSONB columns for the attachment  column when using Sequel.</p>
+<p>Added the ability to use Postgres' JSON/JSONB columns for the attachment  column when using Sequel.</p>
 </li><li>
 <p>Fixed files with nested paths (generated either manually or using the  <code>pretty_location</code> plugin) raising errors when trying to download them.</p>
 </li><li>

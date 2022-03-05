@@ -30,7 +30,7 @@ doc/release_notes/2.1.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2022-03-05 17:09:59 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -42,17 +42,17 @@ Last Update:
 
 <h1 id="label-Improvements">Improvements<span><a href="#label-Improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>The versions plugin doesn&#39;t require the <code>:names</code> option anymore.</p>
+<p>The versions plugin doesn't require the <code>:names</code> option anymore.</p>
 </li><li>
 <p>The restore_cached_data plugin will now download only a small portion of the  file needed for extracting metadata (after which it will terminate the  connection). Previously the whole file was always downloaded. To get this  you need to update your storage gem.</p>
 </li><li>
-<p>When enforcing that the input is an IO-like object <a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn&#39;t check  method arity anymore, only if the object responds to that method. This means  that <a href="../../../classes/Shrine.html"><code>Shrine</code></a> now properly works with objects like <code>Rack::Test::UploadedFile</code>,  which use <code>#method_missing</code> to delegate to the underlying object.</p>
+<p>When enforcing that the input is an IO-like object <a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn't check  method arity anymore, only if the object responds to that method. This means  that <a href="../../../classes/Shrine.html"><code>Shrine</code></a> now properly works with objects like <code>Rack::Test::UploadedFile</code>,  which use <code>#method_missing</code> to delegate to the underlying object.</p>
 </li><li>
 <p>Fixed a load order bug with parallelize and logging plugins, where loading  them in this order would make the thread pool join <em>outside</em> of the logging  block, making the logs show an instantaneous duration instead of the actual  duration.</p>
 </li><li>
 <p>The <code>file</code> command from the determine_mime_type plugin is now executed in the  same way for files as for other IO objects.</p>
 </li><li>
-<p>Increase the amount of bytes read from the IO in determine_mime_type when  using <code>:file</code> or <code>:filemagic</code> analyzers, which might make the recognize some  MIME types that they haven&#39;t before.</p>
+<p>Increase the amount of bytes read from the IO in determine_mime_type when  using <code>:file</code> or <code>:filemagic</code> analyzers, which might make the recognize some  MIME types that they haven't before.</p>
 </li></ul>
 
 <h1 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h1>

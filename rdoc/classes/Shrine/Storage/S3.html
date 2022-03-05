@@ -173,7 +173,7 @@ Superclass:
 <p>If the input file is larger than the specified size, a parallelized  multipart will be used for the upload/copy. Defaults to  <code>{upload: 15*1024*1024, copy: 100*1024*1024}</code> (15MB for upload  requests, 100MB for copy requests).</p>
 </td></tr></tbody></table>
 
-<p>In addition to specifying the <code>:bucket</code>, you&#39;ll also need to provide AWS credentials. The most common way is to provide them directly via <code>:access_key_id</code>, <code>:secret_access_key</code>, and <code>:region</code> options. But you can also use any other way of authentication specified in the <a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html">AWS SDK documentation</a>.</p>
+<p>In addition to specifying the <code>:bucket</code>, you’ll also need to provide AWS credentials. The most common way is to provide them directly via <code>:access_key_id</code>, <code>:secret_access_key</code>, and <code>:region</code> options. But you can also use any other way of authentication specified in the <a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html">AWS SDK documentation</a>.</p>
 
 </div>
 <div class='source'>
@@ -286,7 +286,7 @@ Superclass:
 </div>
 <div class='description'>
 
-<p>Returns a <code>Down::ChunkedIO</code> object that downloads <a href="S3.html"><code>S3</code></a> object content on-demand. By default, read content will be cached onto disk so that it can be rewinded, but if you don&#39;t need that you can pass <code>rewindable: false</code>.</p>
+<p>Returns a <code>Down::ChunkedIO</code> object that downloads <a href="S3.html"><code>S3</code></a> object content on-demand. By default, read content will be cached onto disk so that it can be rewinded, but if you don’t need that you can pass <code>rewindable: false</code>.</p>
 
 <p>Any additional options are forwarded to {<code>Aws::S3::Object#get</code><a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method">}</a>.</p>
 

@@ -30,7 +30,7 @@ doc/release_notes/3.1.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -45,9 +45,9 @@ Last Update:
 <p>The <code>Attacher#create_derivatives</code> method now accepts a <code>:storage</code> option for  specifying the storage to which derivatives should be uploaded.</p>
 </li></ul>
 
-<p>“`rb  # with attachment module  photo.image_derivatives!(storage: :other_store)</p>
+<p>“‘rb  # with attachment module  photo.image_derivatives!(storage: :other_store)</p>
 
-<p># with attacher  attacher.create_derivatives(storage: :other_store)  “`</p>
+<p># with attacher  attacher.create_derivatives(storage: :other_store)  “‘</p>
 <ul><li>
 <p>The <code>Shrine.calculate_signature</code> now accepts a <code>:rewind</code> boolean option for  choosing whether the IO object should be rewinded after reading. This is  useful if you want to calculate signature from non-rewindable IO objects,  such as <code>IO.pipe</code>, <code>Socket</code>, non-rewindable <code>Down::ChunkedIO</code> etc.</p>
 </li></ul>
@@ -59,11 +59,11 @@ Last Update:
 <p>The derivatives processor can now be registered with <code>Attacher.derivatives</code>,  which is just an alias for <code>Attacher.derivatives_processor</code>.</p>
 </li></ul>
 
-<p>“`rb  class ImageUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  Attacher.derivatives_processor do |original|  # …  end  end</p>
+<p>“‘rb  class ImageUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  Attacher.derivatives_processor do |original|  # …  end  end</p>
 
 <p># can now be written as</p>
 
-<p>class ImageUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  Attacher.derivatives do |original|  # …  end  end  “`</p>
+<p>class ImageUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  Attacher.derivatives do |original|  # …  end  end  “‘</p>
 <ul><li>
 <p>The <code>Attacher#cached?</code> and <code>Attacher#stored?</code> methods now work correctly if  temporary/permanent storage identifiers were specified as strings.</p>
 </li><li>
@@ -79,7 +79,7 @@ Last Update:
 
 <p><code>rb   attacher = Shrine::Attacher.new(cache: &quot;cache&quot;, store: &quot;store&quot;)   attacher.cache_key #=&gt; :cache (previously &quot;cache&quot;)   attacher.store_key #=&gt; :store (previously &quot;store&quot;) </code></p>
 <ul><li>
-<p>The <code>add_metadata</code> plugin now defines metadata methods directly on the  <code>UploadedFile</code> class, which means that if you happen to have been overriding  these metadata methods and calling <code>super</code>, this won&#39;t work anymore.</p>
+<p>The <code>add_metadata</code> plugin now defines metadata methods directly on the  <code>UploadedFile</code> class, which means that if you happen to have been overriding  these metadata methods and calling <code>super</code>, this won’t work anymore.</p>
 </li></ul>
 </div>
 <div id='context'>

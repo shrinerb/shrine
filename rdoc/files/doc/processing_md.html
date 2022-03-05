@@ -30,7 +30,7 @@ doc/processing.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -40,9 +40,9 @@ Last Update:
 
 <h2 id="label-title-3A+File+Processing">title: File Processing<span><a href="#label-title-3A+File+Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> allows you to process attached files eagerly or on-the-fly. For example, if your app is accepting image uploads, you can generate a predefined set of of thumbnails when the image is attached to a record, or you can have thumbnails generated dynamically as they&#39;re needed.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> allows you to process attached files eagerly or on-the-fly. For example, if your app is accepting image uploads, you can generate a predefined set of of thumbnails when the image is attached to a record, or you can have thumbnails generated dynamically as they’re needed.</p>
 
-<p>How you&#39;re going to implement processing is entirely up to you. For images it&#39;s recommended to use the <strong>{ImageProcessing}[https://github.com/janko/image_processing]</strong> gem, which provides wrappers for processing with <a href="https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme">MiniMagick</a> and <a href="https://github.com/janko/image_processing/blob/master/doc/vips.md#readme">libvips</a>. Here is an example of generating a thumbnail with ImageProcessing:</p>
+<p>How you’re going to implement processing is entirely up to you. For images it’s recommended to use the <strong>{ImageProcessing}[https://github.com/janko/image_processing]</strong> gem, which provides wrappers for processing with <a href="https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme">MiniMagick</a> and <a href="https://github.com/janko/image_processing/blob/master/doc/vips.md#readme">libvips</a>. Here is an example of generating a thumbnail with ImageProcessing:</p>
 
 <pre>$ brew install imagemagick</pre>
 
@@ -52,7 +52,7 @@ Last Update:
 
 <h2 id="label-Eager+processing">Eager processing<span><a href="#label-Eager+processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Let&#39;s say we&#39;re handling images, and want to generate a predefined set of thumbnails with various dimensions. We can use the <strong>{<code>derivatives</code>}[https://shrinerb.com/docs/plugins/derivatives]</strong> plugin to upload and save the processed files:</p>
+<p>Let’s say we’re handling images, and want to generate a predefined set of thumbnails with various dimensions. We can use the <strong>{<code>derivatives</code>}[https://shrinerb.com/docs/plugins/derivatives]</strong> plugin to upload and save the processed files:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivatives</span></pre>
 
@@ -78,7 +78,7 @@ Last Update:
 
 <h3 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>Since file processing can be time consuming, it&#39;s recommended to move it into a background job.</p>
+<p>Since file processing can be time consuming, it’s recommended to move it into a background job.</p>
 
 <h4 id="label-A-29+Creating+derivatives+with+promotion">A) Creating derivatives with promotion<span><a href="#label-A-29+Creating+derivatives+with+promotion">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
@@ -90,7 +90,7 @@ Last Update:
 
 <h4 id="label-B-29+Creating+derivatives+separately+from+promotion">B) Creating derivatives separately from promotion<span><a href="#label-B-29+Creating+derivatives+separately+from+promotion">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>Derivatives don&#39;t need to be created as part of the attachment flow, you can create them at any point after promotion:</p>
+<p>Derivatives don’t need to be created as part of the attachment flow, you can create them at any point after promotion:</p>
 
 <pre class="ruby"><span class="ruby-constant">DerivativesJob</span>.<span class="ruby-identifier">perform_async</span>(&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>,&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>,&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>,&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">name</span>,&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file_data</span>,&#x000A;)</pre>
 
@@ -108,7 +108,7 @@ Last Update:
 
 <h3 id="label-URL+fallbacks">URL fallbacks<span><a href="#label-URL+fallbacks">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>If you&#39;re creating derivatives in a background job, you&#39;ll likely want to use some fallbacks for derivative URLs while the background job is still processing. You can do that with the {<code>default_url</code><a href="https://shrinerb.com/docs/plugins/default_url">}</a> plugin.</p>
+<p>If you’re creating derivatives in a background job, you’ll likely want to use some fallbacks for derivative URLs while the background job is still processing. You can do that with the {<code>default_url</code><a href="https://shrinerb.com/docs/plugins/default_url">}</a> plugin.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span></pre>
 
@@ -140,7 +140,7 @@ Last Update:
 
 <p>Having eagerly created image thumbnails can be a pain to maintain, because whenever you need to add a new version or change an existing one, you need to retroactively apply it to all existing attachments (see the <a href="https://shrinerb.com/docs/changing-derivatives">Managing Derivatives</a> guide for more details).</p>
 
-<p>Sometimes it makes more sense to generate thumbnails dynamically as they&#39;re requested, and then cache them for future requests. This strategy is known as processing “<strong>on-the-fly</strong>” or “<strong>on-demand</strong>”, and it&#39;s suitable for short-running processing such as creating image thumbnails or document previews.</p>
+<p>Sometimes it makes more sense to generate thumbnails dynamically as they’re requested, and then cache them for future requests. This strategy is known as processing “<strong>on-the-fly</strong>” or “<strong>on-demand</strong>”, and it’s suitable for short-running processing such as creating image thumbnails or document previews.</p>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> provides on-the-fly processing functionality via the <strong>{<code>derivation_endpoint</code>}[https://shrinerb.com/docs/plugins/derivation_endpoint]</strong> plugin. You set it up by loading the plugin with a secret key (you generate this yourself, maybe via something like <code>SecureRandom.hex</code>) and a path prefix, mount its Rack app in your routes on the configured path prefix, and define processing you want to perform:</p>
 
@@ -158,7 +158,7 @@ Last Update:
 
 <h3 id="label-Dynamic+derivation">Dynamic derivation<span><a href="#label-Dynamic+derivation">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>If you have multiple types of transformations and don&#39;t want to have a derivation for each one, you can set up a single derivation that applies any series of transformations:</p>
+<p>If you have multiple types of transformations and don’t want to have a derivation for each one, you can set up a single derivation that applies any series of transformations:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">derivation</span> <span class="ruby-value">:transform</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span>, <span class="ruby-identifier">transformations</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">transformations</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">urlsafe_deserialize</span>(<span class="ruby-identifier">transformations</span>)&#x000A;&#x000A;    <span class="ruby-identifier">vips</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">Vips</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;    <span class="ruby-identifier">vips</span>.<span class="ruby-identifier">apply!</span>(<span class="ruby-identifier">transformations</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -172,7 +172,7 @@ Last Update:
 
 <h2 id="label-Processing+other+filetypes">Processing other filetypes<span><a href="#label-Processing+other+filetypes">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>So far we&#39;ve only been talking about processing images. However, there is nothing image-specific in Shrine&#39;s processing API, you can just as well process any other types of files. The processing tool doesn&#39;t need to have any special <a href="../../classes/Shrine.html"><code>Shrine</code></a> integration, the ImageProcessing gem that we saw earlier is a completely generic gem.</p>
+<p>So far we’ve only been talking about processing images. However, there is nothing image-specific in Shrine’s processing API, you can just as well process any other types of files. The processing tool doesn’t need to have any special <a href="../../classes/Shrine.html"><code>Shrine</code></a> integration, the ImageProcessing gem that we saw earlier is a completely generic gem.</p>
 
 <p>To demonstrate, here is an example of transcoding videos using <a href="https://github.com/streamio/streamio-ffmpeg">streamio-ffmpeg</a>:</p>
 
@@ -182,7 +182,7 @@ Last Update:
 
 <h3 id="label-Polymorphic+uploader">Polymorphic uploader<span><a href="#label-Polymorphic+uploader">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>Sometimes you might want an attachment attribute to accept multiple types of files, and apply different processing depending on the type. Since Shrine&#39;s processing blocks are evaluated dynamically, you can use conditional logic:</p>
+<p>Sometimes you might want an attachment attribute to accept multiple types of files, and apply different processing depending on the type. Since Shrine’s processing blocks are evaluated dynamically, you can use conditional logic:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">PolymorphicUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">IMAGE_TYPES</span> = <span class="ruby-node">%w[image/jpeg image/png image/webp]</span>&#x000A;  <span class="ruby-constant">VIDEO_TYPES</span> = <span class="ruby-node">%w[video/mp4 video/quicktime]</span>&#x000A;  <span class="ruby-constant">PDF_TYPES</span>   = <span class="ruby-node">%w[application/pdf]</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_mime_type</span> <span class="ruby-constant">IMAGE_TYPES</span> <span class="ruby-operator">+</span> <span class="ruby-constant">VIDEO_TYPES</span> <span class="ruby-operator">+</span> <span class="ruby-constant">PDF_TYPES</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-keyword">case</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">mime_type</span>&#x000A;    <span class="ruby-keyword">when</span> <span class="ruby-operator">*</span><span class="ruby-constant">IMAGE_TYPES</span> <span class="ruby-keyword">then</span> <span class="ruby-identifier">process_derivatives</span>(<span class="ruby-value">:image</span>, <span class="ruby-identifier">original</span>)&#x000A;    <span class="ruby-keyword">when</span> <span class="ruby-operator">*</span><span class="ruby-constant">VIDEO_TYPES</span> <span class="ruby-keyword">then</span> <span class="ruby-identifier">process_derivatives</span>(<span class="ruby-value">:video</span>, <span class="ruby-identifier">original</span>)&#x000A;    <span class="ruby-keyword">when</span> <span class="ruby-operator">*</span><span class="ruby-constant">PDF_TYPES</span>   <span class="ruby-keyword">then</span> <span class="ruby-identifier">process_derivatives</span>(<span class="ruby-value">:pdf</span>,   <span class="ruby-identifier">original</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-value">:image</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-value">:video</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-value">:pdf</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -194,11 +194,11 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivatives</span>, <span class="ruby-value">create_on_promote:</span> <span class="ruby-keyword">true</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>This shouldn&#39;t be needed if you&#39;re processing in the <a href="#backgrounding">background</a>, as in that case you have a background worker that will be called for each attachment, so you can call <code>Attacher#create_derivatives</code> there.</p>
+<p>This shouldn’t be needed if you’re processing in the <a href="#backgrounding">background</a>, as in that case you have a background worker that will be called for each attachment, so you can call <code>Attacher#create_derivatives</code> there.</p>
 
 <h3 id="label-libvips">libvips<span><a href="#label-libvips">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>As mentioned, ImageProcessing gem also has an alternative backend for processing images with <strong>{libvips}[https://libvips.github.io/libvips/]</strong>. libvips is a full-featured image processing library like ImageMagick, with impressive performance characteristics – it&#39;s often <strong>multiple times faster</strong> than ImageMagick and has low memory usage (see <a href="https://github.com/libvips/libvips/wiki/Why-is-libvips-quick">Why is libvips quick</a>).</p>
+<p>As mentioned, ImageProcessing gem also has an alternative backend for processing images with <strong>{libvips}[https://libvips.github.io/libvips/]</strong>. libvips is a full-featured image processing library like ImageMagick, with impressive performance characteristics – it’s often <strong>multiple times faster</strong> than ImageMagick and has low memory usage (see <a href="https://github.com/libvips/libvips/wiki/Why-is-libvips-quick">Why is libvips quick</a>).</p>
 
 <p>Using libvips is as easy as installing it and switching to the {<code>ImageProcessing::Vips</code><a href="https://github.com/janko/image_processing/blob/master/doc/vips.md#readme">}</a> backend:</p>
 
@@ -210,7 +210,7 @@ Last Update:
 
 <h3 id="label-Parallelize+uploads">Parallelize uploads<span><a href="#label-Parallelize+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>If you&#39;re generating derivatives, you can parallelize the uploads using the <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a> gem:</p>
+<p>If you’re generating derivatives, you can parallelize the uploads using the <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a> gem:</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;concurrent-ruby&quot;</span></pre>
 
@@ -218,7 +218,7 @@ Last Update:
 
 <h3 id="label-External+processing">External processing<span><a href="#label-External+processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>You can also integrate <a href="../../classes/Shrine.html"><code>Shrine</code></a> with 3rd-party processing services such as <a href="https://cloudinary.com/">Cloudinary</a> and <a href="https://www.imgix.com/">Imgix</a>. In the most common case, you&#39;d serve images directly from these services, see the corresponding plugin docs for more details (<a href="https://github.com/shrinerb/shrine-cloudinary">shrine-cloudinary</a>, <a href="https://github.com/shrinerb/shrine-imgix">shrine-imgix</a> and <a href="https://shrinerb.com/docs/external/extensions#storages">others</a>)</p>
+<p>You can also integrate <a href="../../classes/Shrine.html"><code>Shrine</code></a> with 3rd-party processing services such as <a href="https://cloudinary.com/">Cloudinary</a> and <a href="https://www.imgix.com/">Imgix</a>. In the most common case, you’d serve images directly from these services, see the corresponding plugin docs for more details (<a href="https://github.com/shrinerb/shrine-cloudinary">shrine-cloudinary</a>, <a href="https://github.com/shrinerb/shrine-imgix">shrine-imgix</a> and <a href="https://shrinerb.com/docs/external/extensions#storages">others</a>)</p>
 
 <p>You can also choose to use these services as an implementation detail of your application, by downloading the processed images and saving them to your storage. Here is how you might store files processed by Imgix as derivatives:</p>
 

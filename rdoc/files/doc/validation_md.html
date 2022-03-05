@@ -30,7 +30,7 @@ doc/validation.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -58,7 +58,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_size</span>      <span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>&#x000A;    <span class="ruby-identifier">validate_mime_type</span> <span class="ruby-node">%w[image/jpeg image/png image/webp image/tiff]</span>&#x000A;    <span class="ruby-identifier">validate_extension</span> <span class="ruby-node">%w[jpg jpeg png webp tiff tif]</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Note that for secure MIME type validation it&#39;s recommended to also load <code>determine_mime_type</code> and <code>restore_cached_data</code> plugins.</p>
+<p>Note that for secure MIME type validation it’s recommended to also load <code>determine_mime_type</code> and <code>restore_cached_data</code> plugins.</p>
 
 <p>See the {<code>validation_helpers</code><a href="https://shrinerb.com/docs/plugins/validation_helpers">}</a> plugin documentation for more details.</p>
 

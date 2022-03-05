@@ -30,7 +30,7 @@ doc/design.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -95,7 +95,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-constant">MyUploader</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Shrine</span>)&#x000A;<span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">superclass</span> <span class="ruby-comment">#=&gt; Shrine::UploadedFile</span>&#x000A;<span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">superclass</span>     <span class="ruby-comment">#=&gt; Shrine::Attacher</span>&#x000A;<span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">superclass</span>   <span class="ruby-comment">#=&gt; Shrine::Attachment</span></pre>
 
-<p>See <a href="https://shrinerb.com/docs/creating-plugins">Creating a New Plugin</a> guide and the <a href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">Plugin system of Sequel and Roda</a> article for more details on the design of Shrine&#39;s plugin system.</p>
+<p>See <a href="https://shrinerb.com/docs/creating-plugins">Creating a New Plugin</a> guide and the <a href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">Plugin system of Sequel and Roda</a> article for more details on the design of Shrine’s plugin system.</p>
 
 <h2 id="label-Shrine-3A-3AUploadedFile"><code>Shrine::UploadedFile</code><span><a href="#label-Shrine-3A-3AUploadedFile">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -117,7 +117,7 @@ Last Update:
 
 <p>We usually want to treat uploaded files as <em>attachments</em> to records, saving their data into a database column. This is done by <code>Shrine::Attacher</code>, which internally uses <code>Shrine</code> and <code>Shrine::UploadedFile</code> classes.</p>
 
-<p>The attaching process requires a temporary and a permanent storage to be registered (by default that&#39;s <code>:cache</code> and <code>:store</code>):</p>
+<p>The attaching process requires a temporary and a permanent storage to be registered (by default that’s <code>:cache</code> and <code>:store</code>):</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;}</pre>
 
@@ -145,7 +145,7 @@ Last Update:
 
 <p>When a persistence plugin is loaded ({<code>activerecord</code><a href="https://shrinerb.com/docs/plugins/activerecord">}</a>, {<code>sequel</code><a href="https://shrinerb.com/docs/plugins/sequel">}</a>), the <code>Shrine::Attachment</code> module also automatically:</p>
 <ul><li>
-<p>syncs Shrine&#39;s validation errors with the record</p>
+<p>syncs Shrine’s validation errors with the record</p>
 </li><li>
 <p>triggers promoting after record is saved</p>
 </li><li>

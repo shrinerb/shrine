@@ -30,7 +30,7 @@ doc/release_notes/2.16.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -54,13 +54,13 @@ Last Update:
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>rack_response</code> and <code>derivation_endpoint</code> plugins now don&#39;t return any  <code>Content-Type</code> response header if the MIME type could not be determined from  the file extension. Previously it the <code>Content-Type</code> header would default to  <code>application/octet-stream</code>, which would force the browser to view the file  as generic binary content, as opposed to doing its own MIME type sniffing.</p>
+<p>The <code>rack_response</code> and <code>derivation_endpoint</code> plugins now don’t return any  <code>Content-Type</code> response header if the MIME type could not be determined from  the file extension. Previously it the <code>Content-Type</code> header would default to  <code>application/octet-stream</code>, which would force the browser to view the file  as generic binary content, as opposed to doing its own MIME type sniffing.</p>
 </li><li>
 <p>Fixed <code>delete_raw</code> plugin breaking <code>derivation_endpoint</code> when <code>:upload</code> was  enabled.</p>
 </li><li>
 <p>Fixed a few things in the <code>Shrine::Derivation</code> API:</p>
 </li><li>
-<p><code>Derivation#upload</code> doesn&#39;t close the input file anymore</p>
+<p><code>Derivation#upload</code> doesn’t close the input file anymore</p>
 </li><li>
 <p><code>Derivation#upload</code> now requires input file to respond to <code>#path</code></p>
 </li><li>

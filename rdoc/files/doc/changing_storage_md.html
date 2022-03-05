@@ -30,7 +30,7 @@ doc/changing_storage.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -42,7 +42,7 @@ Last Update:
 
 <p>This guides shows how to move file attachments to a different storage in production, with zero downtime.</p>
 
-<p>Let&#39;s assume we have a <code>Photo</code> model with an <code>image</code> file attachment stored in AWS S3 storage:</p>
+<p>Let’s assume we have a <code>Photo</code> model with an <code>image</code> file attachment stored in AWS S3 storage:</p>
 
 <pre>Shrine.storages = {&#x000A;  cache: Shrine::Storage::S3.new(...),&#x000A;  store: Shrine::Storage::S3.new(...),&#x000A;}&#x000A;Shrine.plugin :activerecord</pre>
 
@@ -50,7 +50,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Let&#39;s also assume that we&#39;re migrating from AWS S3 to Google Cloud Storage, and we&#39;ve added the new storage to <code>Shrine.storages</code>:</p>
+<p>Let’s also assume that we’re migrating from AWS S3 to Google Cloud Storage, and we’ve added the new storage to <code>Shrine.storages</code>:</p>
 
 <pre>Shrine.storages = {&#x000A;  ...&#x000A;  store: Shrine::Storage::S3.new(...),&#x000A;  gcs:   Shrine::Storage::GoogleCloudStorage.new(...),&#x000A;}</pre>
 

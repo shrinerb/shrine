@@ -30,7 +30,7 @@ doc/release_notes/2.11.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -59,11 +59,11 @@ Last Update:
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p><code>Shrine::UploadedFile#download</code> will now reuse an already opened file, and  in this case will simply rewind it after it&#39;s finished.</p>
+<p><code>Shrine::UploadedFile#download</code> will now reuse an already opened file, and  in this case will simply rewind it after it’s finished.</p>
 </li><li>
 <p>The <code>:mini_magick</code> and <code>:ruby_vips</code> dimensions analyzers now silently fail  on processing errors, to allow validations to be reached when invalid file  is attached.</p>
 </li><li>
-<p>The <code>#presign</code> storage method can now return a Hash. This means it&#39;s not  required for result to be wrapped in a <code>Struct</code> or <code>OpenStruct</code> anymore.</p>
+<p>The <code>#presign</code> storage method can now return a Hash. This means it's not  required for result to be wrapped in a <code>Struct</code> or <code>OpenStruct</code> anymore.</p>
 </li><li>
 <p>The <code>Shrine::Storage::S3#presign</code> now also returns a <code>:method</code> value  indicating the HTTP verb that needs to be used for the direct upload.</p>
 </li><li>
@@ -79,7 +79,7 @@ Last Update:
 <ul><li>
 <p>The <code>direct_upload</code> plugin has been deprecated in favour of <code>upload_endpoint</code>  and <code>presign_endpoint</code> plugins. The <code>direct_upload</code> plugin will be removed in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li><li>
-<p><code>Storage#presign</code> returning an object that doesn&#39;t respond to <code>#to_h</code> is now  deprecated, the support for these objects will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
+<p><code>Storage#presign</code> returning an object that doesn’t respond to <code>#to_h</code> is now  deprecated, the support for these objects will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li><li>
 <p><code>Shrine::Storage::S3#presign</code> now returns a <code>Struct</code> instead of an  <code>Aws::S3::PresignedPost</code> object. Any applications relying on any methods  other than <code>#url</code> and <code>#fields</code> will have to update their code.</p>
 </li></ul>

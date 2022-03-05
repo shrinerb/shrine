@@ -30,7 +30,7 @@ doc/creating_plugins.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -40,7 +40,7 @@ Last Update:
 
 <h2 id="label-title-3A+Writing+a+Plugin">title: Writing a Plugin<span><a href="#label-title-3A+Writing+a+Plugin">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> has a lot of plugins built-in, but you can use Shrine&#39;s plugin system to create your own.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> has a lot of plugins built-in, but you can use Shrine’s plugin system to create your own.</p>
 
 <h2 id="label-Definition">Definition<span><a href="#label-Definition">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -56,7 +56,7 @@ Last Update:
 
 <h2 id="label-Methods">Methods<span><a href="#label-Methods">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>The way to make plugins actually extend Shrine&#39;s core classes is by defining special modules inside the plugin. Here&#39;s a list of all “special” modules:</p>
+<p>The way to make plugins actually extend Shrine’s core classes is by defining special modules inside the plugin. Here’s a list of all “special” modules:</p>
 
 <pre class="ruby"><span class="ruby-constant">InstanceMethods</span>        <span class="ruby-comment"># gets included into `Shrine`</span>&#x000A;<span class="ruby-constant">ClassMethods</span>           <span class="ruby-comment"># gets extended into `Shrine`</span>&#x000A;<span class="ruby-constant">AttachmentMethods</span>      <span class="ruby-comment"># gets included into `Shrine::Attachment`</span>&#x000A;<span class="ruby-constant">AttachmentClassMethods</span> <span class="ruby-comment"># gets extended into `Shrine::Attachment`</span>&#x000A;<span class="ruby-constant">AttacherMethods</span>        <span class="ruby-comment"># gets included into `Shrine::Attacher`</span>&#x000A;<span class="ruby-constant">AttacherClassMethods</span>   <span class="ruby-comment"># gets extended into `Shrine::Attacher`</span>&#x000A;<span class="ruby-constant">FileMethods</span>            <span class="ruby-comment"># gets included into `Shrine::UploadedFile`</span>&#x000A;<span class="ruby-constant">FileClassMethods</span>       <span class="ruby-comment"># gets extended into `Shrine::UploadedFile`</span></pre>
 
@@ -68,7 +68,7 @@ Last Update:
 
 <h2 id="label-Configuration">Configuration<span><a href="#label-Configuration">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>You&#39;ll likely want to make your plugin configurable. You can do that by overriding the <code>.configure</code> class method and storing received options into <code>Shrine.opts</code>:</p>
+<p>You’ll likely want to make your plugin configurable. You can do that by overriding the <code>.configure</code> class method and storing received options into <code>Shrine.opts</code>:</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:my_plugin</span>] <span class="ruby-operator">||=</span> {}&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:my_plugin</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">InstanceMethods</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;      <span class="ruby-identifier">opts</span>[<span class="ruby-value">:my_plugin</span>] <span class="ruby-comment">#=&gt; { ... }</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 

@@ -30,7 +30,7 @@ doc/release_notes/2.14.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -45,14 +45,14 @@ Last Update:
 <p><code>Shrine::Storage::S3</code> now accepts a <code>:client</code> option for specifying an AWS  SDK client object. This allows the user to configure client-side encryption by  passing a <code>Aws::S3::Encryption::Client</code> object:</p>
 </li></ul>
 
-<p>“`rb  client = Aws::S3::Encryption::Client.new(  kms_key_id: “alias/my-key”,  **options  )</p>
+<p>“‘rb  client = Aws::S3::Encryption::Client.new(  kms_key_id: “alias/my-key”,  **options  )</p>
 
-<p><a href="../../../classes/Shrine/Storage/S3.html#method-c-new"><code>Shrine::Storage::S3.new</code></a>(client: client, bucket: “my-bucket”)  “`</p>
+<p><a href="../../../classes/Shrine/Storage/S3.html#method-c-new"><code>Shrine::Storage::S3.new</code></a>(client: client, bucket: “my-bucket”)  “‘</p>
 <ul><li>
 <p>The metadata blocks in the <code>add_metadata</code> plugin now have previous metadata  available to them in <code>context[:metadata]</code> (thanks to @jrochkind).</p>
 </li></ul>
 
-<p>“`rb  add_metadata :foo do |io, context|  <a href=":metadata">context</a> #=&gt;  # {  # “filename” =&gt; “nature.jpg”,  # “size” =&gt; 123,  # “mime_type” =&gt; “image/jpeg”  # }</p>
+<p>“‘rb  add_metadata :foo do |io, context|  <a href=":metadata">context</a> #=&gt;  # {  # “filename” =&gt; “nature.jpg”,  # “size” =&gt; 123,  # “mime_type” =&gt; “image/jpeg”  # }</p>
 
 <pre class="ruby"><span class="ruby-string">&quot;foo&quot;</span></pre>
 
@@ -62,14 +62,14 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-string">&quot;bar&quot;</span></pre>
 
-<p>end  “`</p>
+<p>end  “‘</p>
 <ul><li>
 <p><code>UploadedFile#to_rack_response</code> from <code>rack_response</code> plugin now accepts  <code>:type</code> and <code>:filename</code> options for overriding the values in metadata that  would otherwise be used for the <code>Content-Type</code> and <code>Content-Disposition</code>  response headers.</p>
 </li></ul>
 
-<p>“`rb  status, headers, body = uploaded_file.to_rack_response(  type: “text/csv; charset=utf-8”,  filename: “export.csv”,  )</p>
+<p>“‘rb  status, headers, body = uploaded_file.to_rack_response(  type: “text/csv; charset=utf-8”,  filename: “export.csv”,  )</p>
 
-<p><a href=""Content-Type"">headers</a> #=&gt; “text/csv; charset=utf-8”  <a href=""Content-Disposition"">headers</a> #=&gt; “inline; filename=&quot;export.csv&quot;”  “`</p>
+<p><a href=""Content-Type"">headers</a> #=&gt; “text/csv; charset=utf-8”  <a href=""Content-Disposition"">headers</a> #=&gt; “inline; filename=&quot;export.csv&quot;”  “‘</p>
 <ul><li>
 <p><code>Shrine.data_uri</code> from <code>data_uri</code> plugin now accepts a <code>:filename</code> string,  which will be returned in  <code>Shrine::Plugins::DataUri::DataFile#original_filename</code>.</p>
 </li></ul>
@@ -86,25 +86,25 @@ Last Update:
 
 <h2 id="label-Performance+improvements">Performance improvements<span><a href="#label-Performance+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p><code>UploadedFile#download</code> doesn&#39;t call <code>Storage#download</code> anymore (only  <code>Storage#open</code>). This improves performance when the uploaded file is  already opened, e.g. when using <code>refresh_metadata</code> plugin and  <code>Shrine.with_file</code> during metadata extraction. Instead of performing  a new download request, <code>UploadedFile#download</code> will in this case reuse the  already opened IO object.</p>
+<p><code>UploadedFile#download</code> doesn’t call <code>Storage#download</code> anymore (only  <code>Storage#open</code>). This improves performance when the uploaded file is  already opened, e.g. when using <code>refresh_metadata</code> plugin and  <code>Shrine.with_file</code> during metadata extraction. Instead of performing  a new download request, <code>UploadedFile#download</code> will in this case reuse the  already opened IO object.</p>
 </li><li>
 <p>Added <code>tempfile</code> plugin that makes it easier to avoid copying the  <code>UploadedFile</code> to disk multiple times during promotion. For example, in the  following code the uploaded file will be downloaded to disk only once  instead of three times.</p>
 </li></ul>
 
-<p><code>rb   Shrine.plugin :tempfile </code>  “`rb  class MyUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  plugin :processing  plugin :add_metadata  plugin :refresh_metadata</p>
+<p><code>rb   Shrine.plugin :tempfile </code>  “‘rb  class MyUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  plugin :processing  plugin :add_metadata  plugin :refresh_metadata</p>
 
 <pre class="ruby"><span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">refresh_metadata!</span>&#x000A;&#x000A;    <span class="ruby-identifier">processor</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">Vips</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">tempfile</span>)&#x000A;    <span class="ruby-comment"># ... processing ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:foo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">with_file</span>(<span class="ruby-identifier">io</span>) { <span class="ruby-string">&quot;...&quot;</span> } <span class="ruby-keyword">unless</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:action</span>] <span class="ruby-operator">==</span> <span class="ruby-value">:store</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:bar</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">with_file</span>(<span class="ruby-identifier">io</span>) { <span class="ruby-string">&quot;...&quot;</span> } <span class="ruby-keyword">unless</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:action</span>] <span class="ruby-operator">==</span> <span class="ruby-value">:store</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>end  “`</p>
+<p>end  “‘</p>
 <ul><li>
-<p><code>UploadedFile#refresh_metadata!</code> from <code>refresh_metadata</code> plugin now detects  when the uploaded file is already opened and in that case doesn&#39;t re-open the  file. This makes code like this faster:</p>
+<p><code>UploadedFile#refresh_metadata!</code> from <code>refresh_metadata</code> plugin now detects  when the uploaded file is already opened and in that case doesn’t re-open the  file. This makes code like this faster:</p>
 </li></ul>
 
 <p><code>rb   uploaded_file.open do     uploaded_file.refresh_metadata! # doesn&#39;t re-open the file anymore   end </code></p>
 <ul><li>
 <p>The <code>rack_response</code> plugin now integrates with <code>Rack::Sendfile</code> middleware  when <code>Shrine::Storage::FileSystem</code> is used. It does so by making the response  body respond to <code>#to_path</code>.</p>
 </li><li>
-<p><code>#&lt;name&gt;_attacher</code> doesn&#39;t look up the attachment class every time it&#39;s  called with a new model instance anymore, making it slightly faster (thanks  to @printercu).</p>
+<p><code>#&lt;name&gt;_attacher</code> doesn’t look up the attachment class every time it’s  called with a new model instance anymore, making it slightly faster (thanks  to @printercu).</p>
 </li></ul>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -160,16 +160,16 @@ Last Update:
 
 <p><code>rb   Shrine::Plugins::Base::InstanceMethods        =&gt; Shrine::InstanceMethods   Shrine::Plugins::Base::ClassMethods           =&gt; Shrine::ClassMethods   Shrine::Plugins::Base::FileMethods            =&gt; Shrine::UploadedFile::InstanceMethods   Shrine::Plugins::Base::FileClassMethods       =&gt; Shrine::UploadedFile::ClassMethods   Shrine::Plugins::Base::AttacherMethods        =&gt; Shrine::Attacher::InstanceMethods   Shrine::Plugins::Base::AttacherClassMethods   =&gt; Shrine::Attacher::ClassMethods   Shrine::Plugins::Base::AttachmentMethods      =&gt; Shrine::Attachment::InstanceMethods   Shrine::Plugins::Base::AttachmentClassMethods =&gt; Shrine::Attachment::ClassMethods </code></p>
 <ul><li>
-<p><code>UploadedFile#download</code> doesn&#39;t call <code>Storage#download</code> anymore, it now  always calls <code>Storage#open</code>. Since <code>Storage#download</code> is not used anywhere  else in <a href="../../../classes/Shrine.html"><code>Shrine</code></a>, storages can remove the <code>#download</code> method.</p>
+<p><code>UploadedFile#download</code> doesn’t call <code>Storage#download</code> anymore, it now  always calls <code>Storage#open</code>. Since <code>Storage#download</code> is not used anywhere  else in <a href="../../../classes/Shrine.html"><code>Shrine</code></a>, storages can remove the <code>#download</code> method.</p>
 </li><li>
 <p><code>Shrine::Storage::S3#download</code> has been deprecated and will be removed in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li><li>
-<p>In <code>Shrine::Storage::S3#upload</code>, <code>#open</code>, and <code>#presign</code> it&#39;s now deprecated  to pass the <code>Content-Disposition</code> header value with non-ASCII characters.  Starting with <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3 these characters won&#39;t be escaped anymore. You should  now use the <a href="https://github.com/shrinerb/content_disposition">content_disposition</a> gem to properly format the  <code>Content-Disposition</code> header value.</p>
+<p>In <code>Shrine::Storage::S3#upload</code>, <code>#open</code>, and <code>#presign</code> it's now deprecated  to pass the <code>Content-Disposition</code> header value with non-ASCII characters.  Starting with <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3 these characters won't be escaped anymore. You should  now use the <a href="https://github.com/shrinerb/content_disposition">content_disposition</a> gem to properly format the  <code>Content-Disposition</code> header value.</p>
 </li></ul>
 
-<p>“`rb  # BAD:  plugin :default_url_options, store: -&gt; (io, **options) do  { response_content_disposition: “attachment; filename=&quot;#{io.original_filename}&quot;” }  end</p>
+<p>“‘rb  # BAD:  plugin :default_url_options, store: -&gt; (io, **options) do  { response_content_disposition: “attachment; filename=&quot;#{io.original_filename}&quot;” }  end</p>
 
-<p># GOOD:  plugin :default_url_options, store: -&gt; (io, **options) do  { response_content_disposition: ContentDisposition.attachment(io.original_filename) }  end  “`</p>
+<p># GOOD:  plugin :default_url_options, store: -&gt; (io, **options) do  { response_content_disposition: ContentDisposition.attachment(io.original_filename) }  end  “‘</p>
 <ul><li>
 <p>The <code>mime_type</code> metadata value will now strip any additional media type  parameters such as <code>charset</code> from <code>io.content_type</code>. If you were relying on  this behaviour, you will need to update your code.</p>
 </li><li>
@@ -178,9 +178,9 @@ Last Update:
 
 <p><code>rb   plugin :determine_mime_type, analyzer: :default   # should be changed to   plugin :determine_mime_type, analyzer: :content_type </code></p>
 <ul><li>
-<p>The <code>UploadedFile</code> private methods that were added by the <code>rack_response</code>  plugin have now been moved to an internal class (leaving only  <code>#to_rack_response</code>). If you&#39;ve are currently overriding any of these private  methods, you&#39;ll need to update your code.</p>
+<p>The <code>UploadedFile</code> private methods that were added by the <code>rack_response</code>  plugin have now been moved to an internal class (leaving only  <code>#to_rack_response</code>). If you’ve are currently overriding any of these private  methods, you’ll need to update your code.</p>
 </li><li>
-<p>The <code>UploadedFile</code> private methods that were added by the <code>download_endpoint</code>  plugin have now been moved to an internal class (leaving only  <code>#download_url</code>). If you&#39;ve are currently overriding any of these private  methods, you&#39;ll need to update your code.</p>
+<p>The <code>UploadedFile</code> private methods that were added by the <code>download_endpoint</code>  plugin have now been moved to an internal class (leaving only  <code>#download_url</code>). If you’ve are currently overriding any of these private  methods, you’ll need to update your code.</p>
 </li></ul>
 </div>
 <div id='context'>

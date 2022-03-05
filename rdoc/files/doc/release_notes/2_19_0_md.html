@@ -30,7 +30,7 @@ doc/release_notes/2.19.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -45,15 +45,15 @@ Last Update:
 <p>A new <code>instrumentation</code> plugin has been added. It sends and logs events for  various <a href="../../../classes/Shrine.html"><code>Shrine</code></a> operations, and provides an API for other plugins to send and  log their own events.</p>
 </li></ul>
 
-<p>“`rb  Shrine.plugin :instrumentation</p>
+<p>“‘rb  Shrine.plugin :instrumentation</p>
 
-<p>uploaded_file = <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>(io, :store)  uploaded_file.exists?  uploaded_file.download  uploaded_file.delete  <code> </code>  Metadata (32ms) – {:storage=&gt;:store, :io=&gt;StringIO, :uploader=&gt;Shrine}  Upload (1523ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :io=&gt;StringIO, :upload_options=&gt;{}, :uploader=&gt;Shrine}  Exists (755ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :uploader=&gt;Shrine}  Download (1002ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :download_options=&gt;{}, :uploader=&gt;Shrine}  Delete (700ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :uploader=&gt;Shrine}  “`</p>
+<p>uploaded_file = <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>(io, :store)  uploaded_file.exists?  uploaded_file.download  uploaded_file.delete  <code> </code>  Metadata (32ms) – {:storage=&gt;:store, :io=&gt;StringIO, :uploader=&gt;Shrine}  Upload (1523ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :io=&gt;StringIO, :upload_options=&gt;{}, :uploader=&gt;Shrine}  Exists (755ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :uploader=&gt;Shrine}  Download (1002ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :download_options=&gt;{}, :uploader=&gt;Shrine}  Delete (700ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :uploader=&gt;Shrine}  “‘</p>
 
 <p>It supports <a href="https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html">ActiveSupport::Notifications</a> (default) and <a href="https://github.com/dry-rb/dry-monitor">dry-monitor</a>  notification backends out of the box.</p>
 
-<p>“`rb  require “dry-monitor”</p>
+<p>“‘rb  require “dry-monitor”</p>
 
-<p>Shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)  “`</p>
+<p>Shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)  “‘</p>
 <ul><li>
 <p>Metadata extraction can now be skipped during the upload by passing  <code>metadata: false</code> to the uploader. This is useful in tests, where you might  want to skip any potentially expensive metadata extraction while creating  test data.</p>
 </li></ul>
@@ -68,9 +68,9 @@ Last Update:
 <p>The <code>pretty_location</code> plugin now supports specifying a different identifier.</p>
 </li></ul>
 
-<p>“`rb  plugin :pretty_location, identifier: “uuid”  # “user/aa357797-5845-451b-8662-08eecdc9f762/profile_picture/493g82jf23.jpg”</p>
+<p>“‘rb  plugin :pretty_location, identifier: “uuid”  # “user/aa357797-5845-451b-8662-08eecdc9f762/profile_picture/493g82jf23.jpg”</p>
 
-<p>plugin :pretty_location, identifier: :email  # “user/foo@bar.com/profile_picture/493g82jf23.jpg”  “`</p>
+<p>plugin :pretty_location, identifier: :email  # “user/foo@bar.com/profile_picture/493g82jf23.jpg”  “‘</p>
 <ul><li>
 <p>The <code>store_dimensions</code> plugin has gained an <code>:on_error</code> option for specifying  how to react when an error occurrs while extracting dimensions.</p>
 </li></ul>
@@ -121,7 +121,7 @@ Last Update:
 <p>The <code>#validate_{max,min}_dimensions</code> validators have been added to the  <code>validation_helpers</code> plugin.</p>
 </li></ul>
 
-<p>“`rb  validate_min_width 10  validate_min_height 10  validate_max_width 5000  validate_max_height 5000</p>
+<p>“‘rb  validate_min_width 10  validate_min_height 10  validate_max_width 5000  validate_max_height 5000</p>
 
 <p># can now be written as</p>
 
@@ -129,12 +129,12 @@ Last Update:
 
 <p># which can be additionally shortened to</p>
 
-<p>validate_dimensions [10..5000, 10..5000]  “`</p>
+<p>validate_dimensions [10..5000, 10..5000]  “‘</p>
 <ul><li>
 <p>The <code>#validate_size</code>, <code>#validate_width</code>, and <code>#validate_height</code> shorthands  have been added to the <code>validation_helpers</code> plugin.</p>
 </li></ul>
 
-<p>“`rb  validate_min_size 1024  validate_max_size 10_1024_1024</p>
+<p>“‘rb  validate_min_size 1024  validate_max_size 10_1024_1024</p>
 
 <p># can now be shortned to</p>
 
@@ -146,7 +146,7 @@ Last Update:
 
 <p># can now be shortened to</p>
 
-<p>validate_height 10..5000  “`</p>
+<p>validate_height 10..5000  “‘</p>
 <ul><li>
 <p>The <code>#validate_mime_type</code> and <code>#validate_extension</code> shorthands have been  added to the <code>validation_helpers</code> plugin.</p>
 </li></ul>
@@ -179,7 +179,7 @@ Last Update:
 <ul><li>
 <p>The <code>FileSystem#upload</code> method deprecates ignoring unrecognized upload  options.</p>
 </li><li>
-<p>The <code>FileSystem#upload</code> method doesn&#39;t backfill <code>size</code> metadata anymore if an  IO with unknown size is being uploaded via <code>Shrine#upload</code>.</p>
+<p>The <code>FileSystem#upload</code> method doesn’t backfill <code>size</code> metadata anymore if an  IO with unknown size is being uploaded via <code>Shrine#upload</code>.</p>
 </li><li>
 <p>Several plugins have changed how they store configuration options internally.  If you were accessing these options directly, you will need to update your  code.</p>
 </li></ul>

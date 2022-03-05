@@ -30,7 +30,7 @@ doc/release_notes/2.4.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -52,13 +52,13 @@ Last Update:
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The FileSystem storage doesn&#39;t raise an error when attempting to delete a  file that doesn&#39;t exist anymore. This behaviour has also been added to the  storage linter.</p>
+<p>The FileSystem storage doesn’t raise an error when attempting to delete a  file that doesn’t exist anymore. This behaviour has also been added to the  storage linter.</p>
 </li><li>
 <p>Fixed <code>copy</code> plugin running file validations when assigning copied file,  which makes it not work with <code>versions</code> plugin.</p>
 </li><li>
 <p>The S3 storage automatically sets the <code>Content-Disposition</code> header with the  original filename when uploading files.</p>
 </li><li>
-<p>The <code>&lt;attachment&gt;_data</code> attribute name has been extracted into  <code>Attacher#data_attribute</code>, so that it&#39;s possible to override.</p>
+<p>The <code>&lt;attachment&gt;_data</code> attribute name has been extracted into  <code>Attacher#data_attribute</code>, so that it’s possible to override.</p>
 </li><li>
 <p>The value conversion around the data attribute has been refactored into  <code>#convert_before_write</code> and <code>#convert_after_read</code> on the Attacher, so that  it can be easily overriden in ORM plugins.</p>
 </li><li>
@@ -66,20 +66,20 @@ Last Update:
 </li><li>
 <p>The previous change also makes the <code>Content-Disposition</code> option handle  properly filenames with double quotes.</p>
 </li><li>
-<p><code>UploadedFile#open</code> and <code>UploadedFile#download</code> don&#39;t swallow errors raised  by <code>Storage#open</code> anymore.</p>
+<p><code>UploadedFile#open</code> and <code>UploadedFile#download</code> don’t swallow errors raised  by <code>Storage#open</code> anymore.</p>
 </li><li>
 <p>The <code>sequel</code> plugin now uses less memory when creating large amount of  records (see the <a href="https://github.com/jeremyevans/sequel/commit/ead5e5e09e647f3089ea9e161e99b608c2c6ee02">Sequel commit</a> for more details).</p>
 </li><li>
-<p>The <code>download_endpoint</code> plugin uses Roda&#39;s streaming endpoint, which  integrates better with EventMachine.</p>
+<p>The <code>download_endpoint</code> plugin uses Roda’s streaming endpoint, which  integrates better with EventMachine.</p>
 </li><li>
 <p><code>Shrine::Attachment#to_s</code> has been added for better introspection when listing  model ancestors with <code>puts</code>.</p>
 </li></ul>
 
 <h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>download_endpoint</code> plugin doesn&#39;t use the obsolete <code>Storage#stream</code>  method anymore, and instead relies on <code>Storage#open</code> to implement streaming.  All of the public <a href="../../../classes/Shrine.html"><code>Shrine</code></a> storages plugins already support streaming <code>#open</code>  for some time, by using <code>Down::ChunkedIO</code>.</p>
+<p>The <code>download_endpoint</code> plugin doesn’t use the obsolete <code>Storage#stream</code>  method anymore, and instead relies on <code>Storage#open</code> to implement streaming.  All of the public <a href="../../../classes/Shrine.html"><code>Shrine</code></a> storages plugins already support streaming <code>#open</code>  for some time, by using <code>Down::ChunkedIO</code>.</p>
 </li><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn&#39;t anymore explicitly unlink Tempfiles returned by <code>Storage#open</code>  after closing them. All external storages already use <code>Down::ChunkedIO</code> for  quite some time, which automatically unlinks the underlying Tempfile when  <code>#close</code> is called. But even if your storage returns Tempfiles, these should  be automatically unlinked on garbage collection by your Ruby implementation.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn’t anymore explicitly unlink Tempfiles returned by <code>Storage#open</code>  after closing them. All external storages already use <code>Down::ChunkedIO</code> for  quite some time, which automatically unlinks the underlying Tempfile when  <code>#close</code> is called. But even if your storage returns Tempfiles, these should  be automatically unlinked on garbage collection by your Ruby implementation.</p>
 </li><li>
 <p>The <code>:host</code> option on FileSystem and S3 storage has been moved from a  first-class storage option passed on <code>#initialize</code> to an URL option. The  original <code>:host</code> option still works, but will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li></ul>

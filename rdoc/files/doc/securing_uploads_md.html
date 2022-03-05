@@ -30,7 +30,7 @@ doc/securing_uploads.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -40,13 +40,13 @@ Last Update:
 
 <h2 id="label-title-3A+Securing+Uploads">title: Securing Uploads<span><a href="#label-title-3A+Securing+Uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> does a lot to make your file uploads secure, but there are still a lot of security measures that could be added by the user on the application&#39;s side. This guide will try to cover some well-known security issues, ranging from the obvious ones to not-so-obvious ones, and try to provide solutions.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> does a lot to make your file uploads secure, but there are still a lot of security measures that could be added by the user on the application’s side. This guide will try to cover some well-known security issues, ranging from the obvious ones to not-so-obvious ones, and try to provide solutions.</p>
 
 <h2 id="label-Validate+file+type">Validate file type<span><a href="#label-Validate+file+type">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Almost always you will be accepting certain types of files, and it&#39;s a good idea to create a whitelist (or a blacklist) of extensions and MIME types.</p>
+<p>Almost always you will be accepting certain types of files, and it’s a good idea to create a whitelist (or a blacklist) of extensions and MIME types.</p>
 
-<p>By default <a href="../../classes/Shrine.html"><code>Shrine</code></a> stores the MIME type derived from the extension, which means it&#39;s not guaranteed to hold the actual MIME type of the the file. However, you can load the <code>determine_mime_type</code> plugin to determine MIME type from magic file headers.</p>
+<p>By default <a href="../../classes/Shrine.html"><code>Shrine</code></a> stores the MIME type derived from the extension, which means it’s not guaranteed to hold the actual MIME type of the the file. However, you can load the <code>determine_mime_type</code> plugin to determine MIME type from magic file headers.</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;marcel&quot;</span>, <span class="ruby-string">&quot;~&gt; 0.3&quot;</span></pre>
 
@@ -54,25 +54,25 @@ Last Update:
 
 <h2 id="label-Limit+filesize">Limit filesize<span><a href="#label-Limit+filesize">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>It&#39;s a good idea to generally limit the filesize of uploaded files, so that attackers cannot easily flood your storage. There are various layers at which you can apply filesize limits, depending on how you&#39;re accepting uploads. For starters you can add a filesize validation to prevent large files from being uploaded to <code>:store</code>:</p>
+<p>It’s a good idea to generally limit the filesize of uploaded files, so that attackers cannot easily flood your storage. There are various layers at which you can apply filesize limits, depending on how you’re accepting uploads. For starters you can add a filesize validation to prevent large files from being uploaded to <code>:store</code>:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">100</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 100 MB</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>In the following sections we talk about various strategies to prevent files from being uploaded to Shrine&#39;s temporary storage and the system&#39;s temporary directory.</p>
+<p>In the following sections we talk about various strategies to prevent files from being uploaded to Shrine’s temporary storage and the system’s temporary directory.</p>
 
 <h3 id="label-Limiting+filesize+in+direct+uploads">Limiting filesize in direct uploads<span><a href="#label-Limiting+filesize+in+direct+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>If you&#39;re doing direct uploads with the <code>upload_endpoint</code> plugin, you can pass in the <code>:max_size</code> option to reject files that are larger than the specified limit:</p>
+<p>If you’re doing direct uploads with the <code>upload_endpoint</code> plugin, you can pass in the <code>:max_size</code> option to reject files that are larger than the specified limit:</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span>, <span class="ruby-value">max_size:</span> <span class="ruby-value">100</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 100 MB</span></pre>
 
-<p>If you&#39;re doing direct uploads to Amazon S3 using the <code>presign_endpoint</code> plugin, you can pass in the <code>:content_length_range</code> presign option:</p>
+<p>If you’re doing direct uploads to Amazon S3 using the <code>presign_endpoint</code> plugin, you can pass in the <code>:content_length_range</code> presign option:</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>, <span class="ruby-value">presign_options:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  { <span class="ruby-value">content_length_range:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">100</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h3 id="label-Limiting+filesize+at+application+level">Limiting filesize at application level<span><a href="#label-Limiting+filesize+at+application+level">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>If your application is accepting file uploads, it&#39;s good practice to limit the maximum allowed <code>Content-Length</code> before calling <code>params</code> for the first time, to avoid Rack parsing the multipart request parameters and creating a Tempfile for uploads that are obviously attempts of attacks.</p>
+<p>If your application is accepting file uploads, it’s good practice to limit the maximum allowed <code>Content-Length</code> before calling <code>params</code> for the first time, to avoid Rack parsing the multipart request parameters and creating a Tempfile for uploads that are obviously attempts of attacks.</p>
 
 <pre class="ruby"><span class="ruby-keyword">if</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">content_length</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">100</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 100MB</span>&#x000A;  <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-value">413</span> <span class="ruby-comment"># Request Entity Too Large</span>&#x000A;  <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> = <span class="ruby-string">&quot;The uploaded file was too large (maximum is 100MB)&quot;</span>&#x000A;  <span class="ruby-identifier">request</span>.<span class="ruby-identifier">halt</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span> <span class="ruby-comment"># Rack parses the multipart request params</span></pre>
 
@@ -82,13 +82,13 @@ Last Update:
 
 <h3 id="label-Failsafe+filesize+limiting">Failsafe filesize limiting<span><a href="#label-Failsafe+filesize+limiting">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>If you want to make sure that no large files ever get to your storages, and you don&#39;t really care about the error message, you can override <code>Shrine#upload</code>:</p>
+<p>If you want to make sure that no large files ever get to your storages, and you don’t really care about the error message, you can override <code>Shrine#upload</code>:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-identifier">fail</span> <span class="ruby-constant">FileTooLarge</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">100</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>&#x000A;&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Limit+image+dimensions">Limit image dimensions<span><a href="#label-Limit+image+dimensions">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>It&#39;s possible to create so-called <a href="https://www.bamsoftware.com/hacks/deflate.html">image bombs</a>, which are images that have a small filesize but very large dimensions. These are dangerous if you&#39;re doing image processing, since processing them can take a lot of time and memory. This makes it trivial to DoS the application which doesn&#39;t have any protection against them.</p>
+<p>It’s possible to create so-called <a href="https://www.bamsoftware.com/hacks/deflate.html">image bombs</a>, which are images that have a small filesize but very large dimensions. These are dangerous if you’re doing image processing, since processing them can take a lot of time and memory. This makes it trivial to DoS the application which doesn’t have any protection against them.</p>
 
 <p>So, in addition to validating filesize, we should also validate image dimensions:</p>
 
@@ -102,17 +102,17 @@ Last Update:
 
 <h2 id="label-Prevent+metadata+tampering">Prevent metadata tampering<span><a href="#label-Prevent+metadata+tampering">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>When cached file is retained on validation errors or it was direct uploaded, the uploaded file representation is assigned to the attacher. This also includes any file metadata. By default <a href="../../classes/Shrine.html"><code>Shrine</code></a> won&#39;t attempt to re-extract metadata, because for remote storages that requires an additional HTTP request, which might not be feasible depending on the application requirements.</p>
+<p>When cached file is retained on validation errors or it was direct uploaded, the uploaded file representation is assigned to the attacher. This also includes any file metadata. By default <a href="../../classes/Shrine.html"><code>Shrine</code></a> won’t attempt to re-extract metadata, because for remote storages that requires an additional HTTP request, which might not be feasible depending on the application requirements.</p>
 
-<p>However, this means that the attacker can directly upload a malicious file (because direct uploads aren&#39;t validated), and then modify the metadata hash so that it passes <a href="../../classes/Shrine.html"><code>Shrine</code></a> validations, before submitting the cached file to your app. To guard yourself from such attacks, you can load the <code>restore_cached_data</code> plugin, which will automatically re-extract metadata from cached files on assignment and override the received metadata.</p>
+<p>However, this means that the attacker can directly upload a malicious file (because direct uploads aren’t validated), and then modify the metadata hash so that it passes <a href="../../classes/Shrine.html"><code>Shrine</code></a> validations, before submitting the cached file to your app. To guard yourself from such attacks, you can load the <code>restore_cached_data</code> plugin, which will automatically re-extract metadata from cached files on assignment and override the received metadata.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:restore_cached_data</span></pre>
 
 <h2 id="label-Limit+number+of+files">Limit number of files<span><a href="#label-Limit+number+of+files">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>When doing direct uploads, it&#39;s a good idea to apply some kind of throttling to the endpoint, to ensure the attacker cannot upload an unlimited number files, because even with a filesize limit it would allow flooding the storage. A good library for throttling requests is <a href="https://github.com/kickstarter/rack-attack">rack-attack</a>.</p>
+<p>When doing direct uploads, it’s a good idea to apply some kind of throttling to the endpoint, to ensure the attacker cannot upload an unlimited number files, because even with a filesize limit it would allow flooding the storage. A good library for throttling requests is <a href="https://github.com/kickstarter/rack-attack">rack-attack</a>.</p>
 
-<p>Also, it&#39;s generally a good idea to limit the <em>minimum</em> filesize as well as maximum, to prevent uploading large amounts of small files:</p>
+<p>Also, it’s generally a good idea to limit the <em>minimum</em> filesize as well as maximum, to prevent uploading large amounts of small files:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_min_size</span> <span class="ruby-value">10</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 10 KB</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 

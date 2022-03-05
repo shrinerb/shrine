@@ -73,11 +73,11 @@ Shrine::Plugins::Derivatives::AttacherClassMethods
 
 <pre class="ruby"><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-value">:thumbnails</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>By default, <a href="../../../Shrine.html"><code>Shrine</code></a> will convert the source IO object into a file before it&#39;s passed to the processor block. You can set <code>download: false</code> to pass the source IO object to the processor block as is.</p>
+<p>By default, <a href="../../../Shrine.html"><code>Shrine</code></a> will convert the source IO object into a file before it’s passed to the processor block. You can set <code>download: false</code> to pass the source IO object to the processor block as is.</p>
 
 <pre class="ruby"><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-value">:thumbnails</span>, <span class="ruby-value">download:</span> <span class="ruby-keyword">false</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>This can be useful if you&#39;d like to defer or avoid a possibly expensive download operation for processor logic that does not require it.</p>
+<p>This can be useful if you’d like to defer or avoid a possibly expensive download operation for processor logic that does not require it.</p>
 
 </div>
 <div class='source'>

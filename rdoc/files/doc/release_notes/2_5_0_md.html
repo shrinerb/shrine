@@ -30,7 +30,7 @@ doc/release_notes/2.5.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -80,13 +80,13 @@ Last Update:
 <ul><li>
 <p>The <code>validation_helpers</code> plugin will now match the file extension in a case  insensitive way, so if you do <code>validate_extension_inclusion [&quot;jpg&quot;]</code>, that  will now also pass for a file named <code>nature.JPG</code>.</p>
 </li><li>
-<p>The <code>backgrounding</code> plugin now also works for plain models, without an ORM.  Specifically, it doesn&#39;t depend on <code>Attacher.find_record</code> being defined  anymore.</p>
+<p>The <code>backgrounding</code> plugin now also works for plain models, without an ORM.  Specifically, it doesn’t depend on <code>Attacher.find_record</code> being defined  anymore.</p>
 </li><li>
 <p>The presign endpoint in the <code>direct_upload</code> plugin now allows the <code>extension</code>  query parameter to be passed without a dot.</p>
 </li><li>
 <p>If the data hash used for instantiating a <code>Shrine::UploadedFile</code> is not  valid, an explanatory <code>Shrine::Error</code> will now be raised. Previously <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  would raise a <code>KeyError</code> for a key that was missing.</p>
 </li><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now detects whether two versions point to the same IO object, and  raises a <code>Shrine::Error</code>. Previously the upload would fail with an <code>IOError</code>  when the same IO object would attempt to be uploaded the second time, which  wasn&#39;t very descriptive.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now detects whether two versions point to the same IO object, and  raises a <code>Shrine::Error</code>. Previously the upload would fail with an <code>IOError</code>  when the same IO object would attempt to be uploaded the second time, which  wasn’t very descriptive.</p>
 </li><li>
 <p>When <code>remove_invalid</code> plugin removes an invalid cached file, it now also  removes the dirty state from the attacher.</p>
 </li></ul>

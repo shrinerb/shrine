@@ -30,7 +30,7 @@ doc/release_notes/2.9.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -42,14 +42,14 @@ Last Update:
 
 <h2 id="label-New+Plugins">New Plugins<span><a href="#label-New+Plugins">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>infer_extension</code> plugin has been added, which automatically infers  the upload location extension from the MIME type if it&#39;s unknown. This is  useful when using the <code>data_uri</code> plugin (where the extension is always  unknown), or the <code>remote_url</code> plugin (where the extension might not be  known).</p>
+<p>The <code>infer_extension</code> plugin has been added, which automatically infers  the upload location extension from the MIME type if it’s unknown. This is  useful when using the <code>data_uri</code> plugin (where the extension is always  unknown), or the <code>remote_url</code> plugin (where the extension might not be  known).</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span></pre>
 
 <h2 id="label-New+Features">New Features<span><a href="#label-New+Features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>determine_mime_type</code> plugin has gained built-in support for the <a href="https://github.com/basecamp/marcel">Marcel</a>  gem, Basecamp&#39;s wrapper around the existing <a href="https://github.com/minad/mimemagic">MimeMagic</a>.</p>
+<p>The <code>determine_mime_type</code> plugin has gained built-in support for the <a href="https://github.com/basecamp/marcel">Marcel</a>  gem, Basecamp’s wrapper around the existing <a href="https://github.com/minad/mimemagic">MimeMagic</a>.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:marcel</span></pre>
@@ -73,7 +73,7 @@ Last Update:
 <ul><li>
 <p>Fixed <code>backgrounding</code> plugin not detecting options passed to  <code>Shrine::Attachment.new</code>.</p>
 </li><li>
-<p>Fixed S3 storage replacing whitespace with <code>+</code> symbols in original filename  when assigning object&#39;s <code>:content_disposition</code> on upload.</p>
+<p>Fixed S3 storage replacing whitespace with <code>+</code> symbols in original filename  when assigning object's <code>:content_disposition</code> on upload.</p>
 </li><li>
 <p>If an error occurs when downloading the file in <code>UploadedFile#download</code> and  <code>Storage::S3#download</code>, the tempfile with partially downloaded content will  now automatically be deleted.</p>
 </li><li>
@@ -84,7 +84,7 @@ Last Update:
 <ul><li>
 <p>The <code>:filename</code> option of the <code>data_uri</code> plugin has been deprecated in favour  of the new <code>infer_extension</code> plugin.</p>
 </li><li>
-<p>The <code>multi_delete</code> plugin has been deprecated, and the <code>versions</code> plugin isn&#39;t  loading it by default anymore.</p>
+<p>The <code>multi_delete</code> plugin has been deprecated, and the <code>versions</code> plugin isn’t  loading it by default anymore.</p>
 </li></ul>
 </div>
 <div id='context'>

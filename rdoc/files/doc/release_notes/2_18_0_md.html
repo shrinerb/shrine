@@ -30,7 +30,7 @@ doc/release_notes/2.18.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -45,20 +45,20 @@ Last Update:
 <p>Added <code>Shrine.upload_response</code> to <code>upload_endpoint</code> plugin for handling  uploads inside a custom controller. This allows authenticating uploads on the  controller level:</p>
 </li></ul>
 
-<p><code>rb   # config/routes.rb (Rails)   Rails.application.routes.draw do     # ...     post &quot;/images/upload&quot; =&gt; &quot;uploads#image&quot;   end </code>  “`rb  # app/controllers/uploads_controller.rb (Rails)  class UploadsController &lt; ApplicationController  def image  authenticate_user!</p>
+<p><code>rb   # config/routes.rb (Rails)   Rails.application.routes.draw do     # ...     post &quot;/images/upload&quot; =&gt; &quot;uploads#image&quot;   end </code>  “‘rb  # app/controllers/uploads_controller.rb (Rails)  class UploadsController &lt; ApplicationController  def image  authenticate_user!</p>
 
 <pre>  set_rack_response ImageUploader.upload_response(:cache, request.env)&#x000A;end&#x000A;private&#x000A;&#x000A;def set_rack_response((status, headers, body))&#x000A;  self.status = status&#x000A;  self.headers.merge!(headers)&#x000A;  self.response_body = body&#x000A;end</pre>
 
-<p>end  “`</p>
+<p>end  “‘</p>
 <ul><li>
 <p>Added <code>Shrine.presign_response</code> to <code>presign_endpoint</code> plugin for handling  uploads inside a custom controller. This allows authenticating uploads on the  controller level:</p>
 </li></ul>
 
-<p><code>rb   # config/routes.rb (Rails)   Rails.application.routes.draw do     # ...     post &quot;/images/presign&quot;, to: &quot;presigns#image&quot;   end </code>  “`rb  # app/controllers/presigns_controller.rb (Rails)  class PresignsController &lt; ApplicationController  def image  authenticate_user!</p>
+<p><code>rb   # config/routes.rb (Rails)   Rails.application.routes.draw do     # ...     post &quot;/images/presign&quot;, to: &quot;presigns#image&quot;   end </code>  “‘rb  # app/controllers/presigns_controller.rb (Rails)  class PresignsController &lt; ApplicationController  def image  authenticate_user!</p>
 
 <pre>  set_rack_response ImageUploader.presign_response(:cache, request.env)&#x000A;end&#x000A;private&#x000A;&#x000A;def set_rack_response((status, headers, body))&#x000A;  self.status = status&#x000A;  self.headers.merge!(headers)&#x000A;  self.response_body = body&#x000A;end</pre>
 
-<p>end  “`</p>
+<p>end  “‘</p>
 <ul><li>
 <p>The <code>:url</code> option has been added to the <code>upload_endpoint</code> plugin for  returning the uploaded file URL in the response.</p>
 </li></ul>
@@ -71,21 +71,21 @@ Last Update:
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>upload_endpoint</code> now accepts the <code>files[]</code> array that Uppy&#39;s XHR Upload  plugin sends by default. This means the <code>fieldName</code> parameter can now be  omitted.</p>
+<p>The <code>upload_endpoint</code> now accepts the <code>files[]</code> array that Uppy’s XHR Upload  plugin sends by default. This means the <code>fieldName</code> parameter can now be  omitted.</p>
 </li></ul>
 
-<p>“`js  // BEFORE  uppy.use(Uppy.XHRUpload, {  endpoint: &#39;/upload&#39;,  fieldName: &#39;file&#39;,  })</p>
+<p>“‘js  // BEFORE  uppy.use(Uppy.XHRUpload, {  endpoint: ’/upload’,  fieldName: ‘file’,  })</p>
 
-<p>// AFTER  uppy.use(Uppy.XHRUpload, {  endpoint: &#39;/upload&#39;,  })  “`</p>
+<p>// AFTER  uppy.use(Uppy.XHRUpload, {  endpoint: ‘/upload’,  })  “‘</p>
 <ul><li>
-<p>The <code>Shrine.upload</code> convenience method has been added, which is a bit shorter  when you don&#39;t need the uploader instance.</p>
+<p>The <code>Shrine.upload</code> convenience method has been added, which is a bit shorter  when you don’t need the uploader instance.</p>
 </li></ul>
 
-<p>“`rb  <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>(io, :storage)</p>
+<p>“‘rb  <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>(io, :storage)</p>
 
 <p># expands to</p>
 
-<p>uploader = <a href="../../../classes/Shrine/InstanceMethods.html#method-c-new"><code>Shrine.new</code></a>(:storage)  uploader.upload(io)  “`</p>
+<p>uploader = <a href="../../../classes/Shrine/InstanceMethods.html#method-c-new"><code>Shrine.new</code></a>(:storage)  uploader.upload(io)  “‘</p>
 <ul><li>
 <p>The <code>Shrine.Attachment(...)</code> shorthand for <code>Shrine::Attachment.new(...)</code> has  been added.</p>
 </li></ul>
@@ -102,11 +102,11 @@ Last Update:
 <p>The <code>:download</code> option in <code>Shrine::Storage::S3#url</code> has been deprecated and  will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3. The <code>:response_content_disposition</code> option  should be used instead.</p>
 </li></ul>
 
-<p>“`rb  # This is deprecated:  uploaded_file.url(download: true)</p>
+<p>“‘rb  # This is deprecated:  uploaded_file.url(download: true)</p>
 
-<p># Use this:  uploaded_file.url(response_content_disposition: “attachment”)  “`</p>
+<p># Use this:  uploaded_file.url(response_content_disposition: “attachment”)  “‘</p>
 <ul><li>
-<p><code>Shrine::Storage::S3#upload</code> doesn&#39;t backfill the <code>size</code> metadata value for  input IOs with unknown size (e.g. pipes, sockets). This behaviour was not  documented and added unnecessary complexity. Moreover, this functionality  should be storage agnostic, so if someone requests it we can add it back in  form of a plugin.</p>
+<p><code>Shrine::Storage::S3#upload</code> doesn’t backfill the <code>size</code> metadata value for  input IOs with unknown size (e.g. pipes, sockets). This behaviour was not  documented and added unnecessary complexity. Moreover, this functionality  should be storage agnostic, so if someone requests it we can add it back in  form of a plugin.</p>
 </li></ul>
 </div>
 <div id='context'>

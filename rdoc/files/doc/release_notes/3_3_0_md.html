@@ -30,7 +30,7 @@ doc/release_notes/3.3.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -57,7 +57,7 @@ Last Update:
 
 <p><code>rb   class PdfUploader &lt; Shrine     add_metadata :pages, skip_nil: true do |io|       if is_pdf?(io)         reader = PDF::Reader.new(io)         reader.page_count       else         # If this is not a PDF, then the pages metadata will not be stored         nil       end     end   end </code></p>
 <ul><li>
-<p>The <code>:download</code> option has been added to derivatives processors in  <code>derivatives</code> plugin for skipping converting the source IO object into a  file. This can be used to avoid a potentially expensive download/copy when  the derivatives processor doesn&#39;t need the file.</p>
+<p>The <code>:download</code> option has been added to derivatives processors in  <code>derivatives</code> plugin for skipping converting the source IO object into a  file. This can be used to avoid a potentially expensive download/copy when  the derivatives processor doesn’t need the file.</p>
 </li></ul>
 
 <p><code>rb   Attacher.derivatives :my_processor, download: false do |source|     source #=&gt; Could be File, Shrine::UploadedFile, or other IO-like object     shrine_class.with_file(source) do |file|       # can force download/copy if necessary with `with_file`,     end   end </code></p>
@@ -79,22 +79,22 @@ Last Update:
 </li><li>
 <p>The <code>sequel</code> and <code>activerecord</code> plugins now call <code>Attacher#reload</code> when  reloading the model, which reloads the attached files but keeps other  attacher state.</p>
 </li><li>
-<p>The <code>derivatives</code> plugin doesn&#39;t download the attached file anymore if  attempting to process derivatives when no derivatives processor was defined.</p>
+<p>The <code>derivatives</code> plugin doesn’t download the attached file anymore if  attempting to process derivatives when no derivatives processor was defined.</p>
 </li><li>
 <p>The <code>mirroring</code> plugin now forwards attacher options when uploading to mirror  storages.</p>
 </li><li>
 <p>The <code>presign_endpoint</code> plugin now handles the <code>OPTIONS</code> HTTP verb, which  newer versions of Uppy are requesting.</p>
 </li><li>
-<p><code>Shrine::Storage::Memory#open</code> now always returns a <code>StringIO</code> in the file  content&#39;s original encoding, instead of the encoding set by  <code>Encoding.default_internal</code>. This works around a <a href="https://bugs.ruby-lang.org/issues/16497">bug</a>  in <code>StringIO</code> introduced in Ruby 2.7.0.</p>
+<p><code>Shrine::Storage::Memory#open</code> now always returns a <code>StringIO</code> in the file  content’s original encoding, instead of the encoding set by  <code>Encoding.default_internal</code>. This works around a <a href="https://bugs.ruby-lang.org/issues/16497">bug</a>  in <code>StringIO</code> introduced in Ruby 2.7.0.</p>
 </li><li>
 <p>The <code>remove_attachment</code> plugin now deletes the removed file if a new file was  attached right after removal.</p>
 </li></ul>
 
 <h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>If you were passing a non-file IO object to the derivatives processor, <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  will now convert it into a file beforehand. If you&#39;re currently doing this  and are converting the IO object into a file inside the processor, you can  now remove the conversion code to avoid doubling the amount of disk writes.</p>
+<p>If you were passing a non-file IO object to the derivatives processor, <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  will now convert it into a file beforehand. If you're currently doing this  and are converting the IO object into a file inside the processor, you can  now remove the conversion code to avoid doubling the amount of disk writes.</p>
 </li><li>
-<p>When reloading a Sequel/ActiveRecord model, any attacher state other than  uploaded files will now be retained after the reload. If you were relying on  all the attacher state being re-initialized, you&#39;ll need to update your code.</p>
+<p>When reloading a Sequel/ActiveRecord model, any attacher state other than  uploaded files will now be retained after the reload. If you were relying on  all the attacher state being re-initialized, you'll need to update your code.</p>
 </li></ul>
 </div>
 <div id='context'>

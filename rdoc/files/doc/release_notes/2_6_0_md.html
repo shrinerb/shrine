@@ -30,7 +30,7 @@ doc/release_notes/2.6.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -85,22 +85,22 @@ Last Update:
 
 <h2 id="label-Performance+improvements">Performance improvements<span><a href="#label-Performance+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Improved performance of parsing data URIs up to 10x by switching from regex  matching to <code>StringScanner</code>, and the intermediary base64-encoded content  string is now deallocated after it&#39;s decoded.</p>
+<p>Improved performance of parsing data URIs up to 10x by switching from regex  matching to <code>StringScanner</code>, and the intermediary base64-encoded content  string is now deallocated after it's decoded.</p>
 </li><li>
 <p><code>UploadedFile#base64</code> now deallocates the intermediary binary content string  after converting it to base64 format in <code>data_uri</code> plugin.</p>
 </li><li>
 <p>The default multipart copy threshold for <code>Shrine::Storage::S3</code> has been  bumped from 15MB to 100MB, which is about the size where parallelized  multipart copy starts being faster.</p>
 </li><li>
-<p>Uploading files from <code>FileSystem</code> storage to <code>S3</code> storage will now utilize  aws-sdk&#39;s parallelized multipart upload on files with 15MB or above, which is  the scenario when your temporary storage is <code>FileSystem</code> and permanent  storage is <code>S3</code>.</p>
+<p>Uploading files from <code>FileSystem</code> storage to <code>S3</code> storage will now utilize  aws-sdk's parallelized multipart upload on files with 15MB or above, which is  the scenario when your temporary storage is <code>FileSystem</code> and permanent  storage is <code>S3</code>.</p>
 </li><li>
 <p><code>Shrine::Storage::S3#download</code> now uses only one file descriptor.</p>
 </li><li>
-<p>The <code>logging</code> plugin doesn&#39;t require the <code>benchmark</code> standard library anymore,  which reduces the memory footprint.</p>
+<p>The <code>logging</code> plugin doesn't require the <code>benchmark</code> standard library anymore,  which reduces the memory footprint.</p>
 </li></ul>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Fixed wrong implementation of <code>FileSystem#clear!(older_than:   expiration_date)</code>, where in common scenarios it wouldn&#39;t delete old files, or  it would incorrectly delete files which still didn&#39;t pass the expiration  date.</p>
+<p>Fixed wrong implementation of <code>FileSystem#clear!(older_than:   expiration_date)</code>, where in common scenarios it wouldn't delete old files, or  it would incorrectly delete files which still didn't pass the expiration  date.</p>
 </li><li>
 <p>The <code>delete_raw</code> plugin now deletes any uploaded IO objects that respond to  <code>#path</code>, not just <code>Tempfile</code> objects (this includes <code>File</code>,  <code>ActionDispatch::Http::UploadedFile</code>, and  <code>Shrine::Plugins::RackFile::UploadedFile</code> objects).</p>
 </li><li>
@@ -128,7 +128,7 @@ Last Update:
 <ul><li>
 <p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now checks whether <code>Shrine#generate_location</code> happened to return nil,  and raises <code>Shrine::Error</code>.</p>
 </li><li>
-<p><code>Attacher#finalize</code> can now be called even when the attachment hasn&#39;t changed.</p>
+<p><code>Attacher#finalize</code> can now be called even when the attachment hasn’t changed.</p>
 </li><li>
 <p>Added <code>Attacher#changed?</code> alias to <code>Attacher#attached?</code>.</p>
 </li><li>
@@ -167,7 +167,7 @@ Last Update:
 </li><li>
 <p>Deprecated <code>Shrine::Storage::S3#s3</code> in favour of  <code>Shrine::Storage::S3#client</code>.</p>
 </li><li>
-<p>The <code>Shrine::Plugins::DataUri::DataFile</code> isn&#39;t a subclass of <code>StringIO</code>  anymore, instead it uses composition to delegate only a subset of IO methods  to the underlying <code>StringIO</code> object. This shouldn&#39;t cause any backwards  compatibility unless the user was relying on it to be a subclass of  <code>StringIO</code>.</p>
+<p>The <code>Shrine::Plugins::DataUri::DataFile</code> isn't a subclass of <code>StringIO</code>  anymore, instead it uses composition to delegate only a subset of IO methods  to the underlying <code>StringIO</code> object. This shouldn't cause any backwards  compatibility unless the user was relying on it to be a subclass of  <code>StringIO</code>.</p>
 </li></ul>
 </div>
 <div id='context'>

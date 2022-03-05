@@ -30,7 +30,7 @@ doc/release_notes/2.2.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -61,18 +61,18 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># closes the IO</span></pre>
 <ul><li>
-<p>Add <code>:multipart_threshold</code> to <code>Storage::S3</code> for specifying the filesize in  bytes for when the storage should use aws-sdk&#39;s parallelized multipart  upload/copy. Defaults to 15MB.</p>
+<p>Add <code>:multipart_threshold</code> to <code>Storage::S3</code> for specifying the filesize in  bytes for when the storage should use aws-sdk’s parallelized multipart  upload/copy. Defaults to 15MB.</p>
 </li></ul>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Aws-sdk&#39;s parallelized multipart S3 upload/copy is now automatically used for  files larger than 15MB. Previously multipart upload was never used, while  multipart copy would only be used for files larger than 5GB.</p>
+<p>Aws-sdk's parallelized multipart S3 upload/copy is now automatically used for  files larger than 15MB. Previously multipart upload was never used, while  multipart copy would only be used for files larger than 5GB.</p>
 </li><li>
-<p>In <code>Storage::S3#download</code> aws-sdk&#39;s downloading is now used, which retries on  failed downloads.</p>
+<p>In <code>Storage::S3#download</code> aws-sdk's downloading is now used, which retries on  failed downloads.</p>
 </li><li>
 <p>A <code>:content_length</code> option is now passed to multipart S3 copy request, which  avoids an additional HEAD request.</p>
 </li><li>
-<p>The backgrounding plugin doesn&#39;t require anymore that the model has the  attachment module included. Previously it relied on the  <code>&lt;attachment&gt;_attacher</code> method.</p>
+<p>The backgrounding plugin doesn’t require anymore that the model has the  attachment module included. Previously it relied on the  <code>&lt;attachment&gt;_attacher</code> method.</p>
 </li><li>
 <p>The restore_cached_data plugin previously still downloaded the whole file,  once the opened IO was closed. This has been fixed in the Down gem.</p>
 </li><li>
@@ -87,11 +87,11 @@ Last Update:
 
 <h2 id="label-Storage+changes">Storage changes<span><a href="#label-Storage+changes">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>UploadedFile#download</code> will now use <code>#open</code> in case <code>Storage#download</code>  isn&#39;t implemented, which means that storage implementers don&#39;t need to  implement this method anymore.</p>
+<p>The <code>UploadedFile#download</code> will now use <code>#open</code> in case <code>Storage#download</code>  isn’t implemented, which means that storage implementers don’t need to  implement this method anymore.</p>
 </li><li>
-<p>The <code>Storage#read</code> method isn&#39;t used in the data_uri plugin anymore, which  means storage implementers don&#39;t need to implement this method anymore.</p>
+<p>The <code>Storage#read</code> method isn’t used in the data_uri plugin anymore, which  means storage implementers don’t need to implement this method anymore.</p>
 </li><li>
-<p>The <code>Storage#clear!</code> method has been made optional in the storage linter,  since it was just a convention and isn&#39;t actually used by <a href="../../../classes/Shrine.html"><code>Shrine</code></a>.</p>
+<p>The <code>Storage#clear!</code> method has been made optional in the storage linter,  since it was just a convention and isn’t actually used by <a href="../../../classes/Shrine.html"><code>Shrine</code></a>.</p>
 </li></ul>
 
 <h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>

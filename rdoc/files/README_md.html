@@ -30,7 +30,7 @@ README.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2022-03-05 17:09:59 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -61,7 +61,7 @@ Last Update:
 <p><strong>Background jobs</strong> – built-in support for <a href="https://shrinerb.com/docs/plugins/backgrounding">background processing</a> that supports <a href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">any backgrounding library</a></p>
 </li></ul>
 
-<p>If you&#39;re curious how it compares to other file attachment libraries, see the <a href="https://shrinerb.com/docs/advantages">Advantages of Shrine</a>. Otherwise, follow along with the <strong>{Getting Started guide}[https://shrinerb.com/docs/getting-started]</strong>.</p>
+<p>If you’re curious how it compares to other file attachment libraries, see the <a href="https://shrinerb.com/docs/advantages">Advantages of Shrine</a>. Otherwise, follow along with the <strong>{Getting Started guide}[https://shrinerb.com/docs/getting-started]</strong>.</p>
 
 <h2 id="label-Links">Links<span><a href="#label-Links">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -89,7 +89,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>) <span class="ruby-comment"># adds an `image` virtual attribute</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>In our views let&#39;s now add form fields for our attachment attribute that will allow users to upload files:</p>
+<p>In our views let’s now add form fields for our attachment attribute that will allow users to upload files:</p>
 
 <pre>&lt;%= form_for @photo do |f| %&gt;&#x000A;  &lt;%= f.hidden_field :image, value: @photo.cached_image_data %&gt;&#x000A;  &lt;%= f.file_field :image %&gt;&#x000A;  &lt;%= f.submit %&gt;&#x000A;&lt;% end %&gt;</pre>
 
@@ -122,7 +122,7 @@ Last Update:
 
 <h2 id="label-Contributing">Contributing<span><a href="#label-Contributing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Please refer to the <a href="https://github_com/shrinerb/shrine/blob/master/CONTRIBUTING_md.html">contributing page</a>.</p>
+<p>Please refer to the <a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md">contributing page</a>.</p>
 
 <h2 id="label-Code+of+Conduct">Code of Conduct<span><a href="#label-Code+of+Conduct">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

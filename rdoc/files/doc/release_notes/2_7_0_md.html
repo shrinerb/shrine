@@ -30,7 +30,7 @@ doc/release_notes/2.7.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -97,19 +97,19 @@ Last Update:
 </li><li>
 <p>The <code>download_endpoint</code> now returns <code>Cache-Control: max-age=31536000</code> header  which tells clients to cache the response for 1 year.</p>
 </li><li>
-<p>The <code>download_endpoint</code> now uses <code>Rack::BodyProxy</code> instead of Roda&#39;s  <code>streaming</code> plugin, which means the <code>download_endpoint</code> plugin loads less  code in total.</p>
+<p>The <code>download_endpoint</code> now uses <code>Rack::BodyProxy</code> instead of Roda’s  <code>streaming</code> plugin, which means the <code>download_endpoint</code> plugin loads less  code in total.</p>
 </li><li>
 <p>Fixed <code>determine_mime_type</code> plugin raising an exception when empty files are  given to <code>file</code> or <code>filemagic</code> analyzers.</p>
 </li><li>
 <p>Un-deprecated <code>Shrine.uploaded_file</code> accepting file data as JSON string.</p>
 </li><li>
-<p>The <code>Shrine::UploadedFile#base64</code> and <code>Shrine::UploadedFile#data_uri</code> methods  from the <code>data_uri</code> plugin don&#39;t wrap the base64-encoded content to 60  columns anymore.</p>
+<p>The <code>Shrine::UploadedFile#base64</code> and <code>Shrine::UploadedFile#data_uri</code> methods  from the <code>data_uri</code> plugin don’t wrap the base64-encoded content to 60  columns anymore.</p>
 </li><li>
-<p>The <code>signature</code> plugin doesn&#39;t wrap base64-formatted signatures to 60 columns  anymore.</p>
+<p>The <code>signature</code> plugin doesn’t wrap base64-formatted signatures to 60 columns  anymore.</p>
 </li><li>
-<p>The <code>signature</code> plugin doesn&#39;t add a newline at the end of the base64-formatted  signature anymore.</p>
+<p>The <code>signature</code> plugin doesn’t add a newline at the end of the base64-formatted  signature anymore.</p>
 </li><li>
-<p>The <code>data_uri</code> plugin doesn&#39;t raise an exception on Ruby <a href="2_4_1_md.html">2.4.1</a> on raw data URIs  anymore.</p>
+<p>The <code>data_uri</code> plugin doesn’t raise an exception on Ruby <a href="2_4_1_md.html">2.4.1</a> on raw data URIs  anymore.</p>
 </li><li>
 <p>Reduce model pollution by eliminating the need for an internal  <code>@@&lt;attachment&gt;_attacher_class</code> class variable.</p>
 </li><li>
@@ -122,12 +122,12 @@ Last Update:
 <ul><li>
 <p>With the release of <code>upload_endpoint</code> and <code>presign_endpoint</code> plugins, the  <code>direct_upload</code> plugin should now be considered deprecated. It will be  officially deprecated in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3, and removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 4.</p>
 </li><li>
-<p>The <code>Shrine::DownloadEndpoint</code> constant has been deprecated over the  <code>Shrine.download_endpoint</code> method, and it will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3. In  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3 the returned app won&#39;t be a <code>Roda</code> subclass anymore, instead it will  be a pure Rack class. If you are relying on this, you should update your code.  For example, if you were using <code>Roda.use</code> to add middlewares, you can instead  wrap the endpoint in the middlewares directly:</p>
+<p>The <code>Shrine::DownloadEndpoint</code> constant has been deprecated over the  <code>Shrine.download_endpoint</code> method, and it will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3. In  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3 the returned app won’t be a <code>Roda</code> subclass anymore, instead it will  be a pure Rack class. If you are relying on this, you should update your code.  For example, if you were using <code>Roda.use</code> to add middlewares, you can instead  wrap the endpoint in the middlewares directly:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/attachments&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">use</span> <span class="ruby-constant">MyMiddleware</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">download_endpoint</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
-<p>The <code>download_endpoint</code> doesn&#39;t generate URLs which end with uploaded file ID  anymore; instead it generates URLs with base64-encoded uploaded file data.  The old URLs will remain supported indefinitely. If you were relying on URLs  including uploaded file ID, you&#39;ll need to update your code. If this was  becase you wanted to authenticate <code>download_endpoint</code> requests, you should  probably use the new <code>rack_response</code> plugin instead of <code>download_endpoint</code>.</p>
+<p>The <code>download_endpoint</code> doesn’t generate URLs which end with uploaded file ID  anymore; instead it generates URLs with base64-encoded uploaded file data.  The old URLs will remain supported indefinitely. If you were relying on URLs  including uploaded file ID, you’ll need to update your code. If this was  becase you wanted to authenticate <code>download_endpoint</code> requests, you should  probably use the new <code>rack_response</code> plugin instead of <code>download_endpoint</code>.</p>
 </li></ul>
 </div>
 <div id='context'>

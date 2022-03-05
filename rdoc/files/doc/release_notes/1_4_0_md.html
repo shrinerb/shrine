@@ -30,7 +30,7 @@ doc/release_notes/1.4.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:06:43 +0200</span>
+<span class='datetime'>2021-09-30 20:09:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -44,7 +44,7 @@ Last Update:
 <ul><li>
 <p>Added delete_promoted plugin for deleting files that have been promoted, which  applies to any cached files that have been uploaded to store.</p>
 </li><li>
-<p>Added <code>:fallbacks</code> option to versions plugin, which allows specifying  fallback URLs for versions which haven&#39;t finished processing yet.</p>
+<p>Added <code>:fallbacks</code> option to versions plugin, which allows specifying  fallback URLs for versions which haven't finished processing yet.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>, <span class="ruby-value">fallbacks:</span> {<span class="ruby-value">:thumb_2x</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:thumb</span>, <span class="ruby-value">:large_2x</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:large</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
@@ -63,7 +63,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:direct_upload</span>, <span class="ruby-value">presign:</span> <span class="ruby-keyword">true</span>, <span class="ruby-value">presign_location:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">r</span>) { <span class="ruby-string">&quot;${filename}&quot;</span> }</pre>
 <ul><li>
-<p>Added <code>:filename</code> to data_uri for generating filenames based on content type  of the data URI, in order for filename&#39;s extension to be automatically used  in uploaded file&#39;s location.</p>
+<p>Added <code>:filename</code> to data_uri for generating filenames based on content type  of the data URI, in order for filename's extension to be automatically used  in uploaded file's location.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;mime/types&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> <span class="ruby-value">:data_uri</span>, <span class="ruby-value">filename:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">content_type</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">extension</span> = <span class="ruby-constant">MIME</span><span class="ruby-operator">::</span><span class="ruby-constant">Types</span>[<span class="ruby-identifier">content_type</span>].<span class="ruby-identifier">first</span>.<span class="ruby-identifier">preferred_extension</span>&#x000A;  <span class="ruby-node">&quot;data_uri.#{extension}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
@@ -72,13 +72,13 @@ Last Update:
 <ul><li>
 <p>The download_endpoint now sets the <code>Content-Length</code> response header, if the  size of the uploaded file is available (S3 now supports it).</p>
 </li><li>
-<p>It&#39;s now possible to swap S3 storage with FileSystem when using presigns in  direct_upload plugin, without changing any code, which is very useful in  tests.</p>
+<p>It's now possible to swap S3 storage with FileSystem when using presigns in  direct_upload plugin, without changing any code, which is very useful in  tests.</p>
 </li><li>
 <p>The backup plugin now waits for the record to be saved with stored files  before it starts uploading to backup storage.</p>
 </li><li>
 <p>The logging plugin now logs both number of input and output files for  processing.</p>
 </li><li>
-<p>The migration_helpers now has a <code>:delegate</code> option, which when set to false  doesn&#39;t add any additional methods to the model.</p>
+<p>The migration_helpers now has a <code>:delegate</code> option, which when set to false  doesn't add any additional methods to the model.</p>
 </li><li>
 <p>In restore_cached_data plugin the cached file is now closed after the  metadata has been extracted.</p>
 </li><li>
@@ -90,7 +90,7 @@ Last Update:
 </li><li>
 <p>The user-defined hooks will now happen outside logging, regardless of the  load order of logging and hooks plugins.</p>
 </li><li>
-<p>The parallelize plugin doesn&#39;t depend on the <a href="https://github.com/meh/ruby-thread">thread</a> gem anymore, it now  uses threads directly.</p>
+<p>The parallelize plugin doesn't depend on the <a href="https://github.com/meh/ruby-thread">thread</a> gem anymore, it now  uses threads directly.</p>
 </li><li>
 <p>Improved the storage linter; it now accounts for some subtleties which could  potentially make some storages error, it fails fast, and it tests the content  length in streaming.</p>
 </li><li>
@@ -103,9 +103,9 @@ Last Update:
 <ul><li>
 <p>Fixed logger not being inherited in the logging plugin.</p>
 </li><li>
-<p>In validation_helpers plugin the dimensions validations now don&#39;t do anything  when dimensions are missing from metadata (previously they were erroring).</p>
+<p>In validation_helpers plugin the dimensions validations now don't do anything  when dimensions are missing from metadata (previously they were erroring).</p>
 </li><li>
-<p>The keep_files plugin doesn&#39;t spawn delete background jobs anymore for files  that are to be kept.</p>
+<p>The keep_files plugin doesn't spawn delete background jobs anymore for files  that are to be kept.</p>
 </li><li>
 <p>Deleting backed up files now actually works with backgrounding plugin.</p>
 </li><li>
@@ -124,13 +124,13 @@ Last Update:
 </li><li>
 <p>In direct_upload presign options are now accepted via <code>:presign_options</code>  (instead of <code>:presign</code>). Accepting them via <code>:presign</code> will stop working in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.</p>
 </li><li>
-<p>The direct_upload&#39;s endpoint has now been changed from <code>/:storage/:name</code> to  <code>/:storage/upload</code>. The old endpoint is still accessible and will stay in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2, but will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
+<p>The direct_upload's endpoint has now been changed from <code>/:storage/:name</code> to  <code>/:storage/upload</code>. The old endpoint is still accessible and will stay in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2, but will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li><li>
 <p>The <code>:delegate</code> option is now mandatory to pass for migration_helpers,  until <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2 where it will default to false.</p>
 </li><li>
-<p>The delete_uploaded plugin has been renamed to "delete_raw". The plugin can  still be loaded via "delete_uploaded", but this won&#39;t be possible anymore in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.</p>
+<p>The delete_uploaded plugin has been renamed to "delete_raw". The plugin can  still be loaded via "delete_uploaded", but this won't be possible anymore in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.</p>
 </li><li>
-<p>The moving plugin now deprecates "fake" moving, where in case the storage  didn&#39;t support moving the file would be uploaded and deleted. In <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2  the file won&#39;t be deleted anymore (you can use the delete_raw plugin for  this functionality).</p>
+<p>The moving plugin now deprecates "fake" moving, where in case the storage  didn't support moving the file would be uploaded and deleted. In <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2  the file won't be deleted anymore (you can use the delete_raw plugin for  this functionality).</p>
 </li><li>
 <p>The <code>Shrine.versions!</code> and <code>Shrine.versions</code> methods have been removed, as  they were part of internal API of versions plugin, but accidentally made  public.</p>
 </li></ul>
