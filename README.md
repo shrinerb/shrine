@@ -29,11 +29,10 @@ guide]**.
 
 ## Setup
 
-Add the gem to your Gemfile:
+Run:
 
-```rb
-# Gemfile
-gem "shrine", "~> 3.0"
+```sh
+bundle add shrine
 ```
 
 Then add `config/initializers/shrine.rb` which sets up the storage and loads
