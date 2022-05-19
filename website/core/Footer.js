@@ -31,18 +31,24 @@ class Footer extends React.Component {
             <a href={`${config.githubUrl}/blob/master/CONTRIBUTING.md#readme`}>Contributing</a>
           </div>
           <div>
-            <h5>Community</h5>
+            <h5>Help</h5>
             <a
-              href={config.discourseUrl}
+              href={config.githubDiscussionsUrl}
               target="_blank"
               rel="noreferrer noopener">
-              Discourse
+              Github Discussions
             </a>
             <a
               href={config.stackOverflowUrl}
               target="_blank"
               rel="noreferrer noopener">
               Stack Overflow
+            </a>
+            <a
+              href={config.discourseUrl}
+              target="_blank"
+              rel="noreferrer noopener">
+              Discourse
             </a>
           </div>
           <div>

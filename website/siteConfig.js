@@ -35,7 +35,7 @@ const siteConfig = {
     {doc: 'getting-started', label: 'Guides'},
     {doc: 'plugins/activerecord', label: 'Plugins'},
     {doc: 'external/extensions', label: 'External'},
-    {href: 'https://discourse.shrinerb.com', label: 'Discourse', external: true},
+    {href: 'https://github.com/shrinerb/shrine/discussions', label: 'Help', external: true},    
     {href: 'https://github.com/shrinerb/shrine', label: 'GitHub', external: true},
     {href: 'https://github.com/shrinerb/shrine/wiki', label: 'Wiki', external: true},
   ],
@@ -109,6 +109,7 @@ const siteConfig = {
   editUrl: 'https://github.com/shrinerb/shrine/edit/master/doc/',
   blogUrl: 'https://janko.io',
   discourseUrl: 'https://discourse.shrinerb.com',
+  githubDiscussionsUrl: 'https://github.com/shrinerb/shrine/discussions',
   stackOverflowUrl: 'https://stackoverflow.com/questions/tagged/shrine',
 
   twitterUsername: 'shrine_rb',

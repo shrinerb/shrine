@@ -1,5 +1,5 @@
 - Issues are for bug reports only.
-- Have a question or unsure if it's a bug, then please inquire on the [forum](https://discourse.shrinerb.com).
+- Have a question or unsure if it's a bug, then please inquire on [Github Discussions](https://github.com/shrinerb/shrine/discussions) or on the [forum](https://discourse.shrinerb.com).
 ---
 
 ### Brief Description

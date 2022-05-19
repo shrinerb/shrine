@@ -148,6 +148,7 @@ If you would like to debug or step through Shrine's code using the above templat
 
 8. Run `ruby template_name.rb`. 
 
+[Github Discussions]: https://github.com/shrinerb/shrine/discussions
 [forum]: https://discourse.shrinerb.com
 [Shrine code of conduct]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
 [libmagic]: https://github.com/threatstack/libmagic
