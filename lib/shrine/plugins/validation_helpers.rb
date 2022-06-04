@@ -145,7 +145,7 @@ class Shrine
 
         # Validates that the dimensions are not smaller than specified.
         #
-        #     validate_max_dimensions [100, 100]
+        #     validate_min_dimensions [100, 100]
         def validate_min_dimensions((min_width, min_height), message: nil)
           fail Error, "width and/or height metadata is missing" unless file["width"] && file["height"]
 
