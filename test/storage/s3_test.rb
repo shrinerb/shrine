@@ -328,6 +328,12 @@ describe Shrine::Storage::S3 do
       assert_raises(IOError) { io.rewind }
     end
 
+    it "accepts :encoding option" do
+      @s3.client.stub_responses(:get_object, status_code: 200, headers: { "content-length" => "7" }, body: "content")
+      io = @s3.open("foo", encoding: 'UTF-8')
+      assert_equal Encoding::UTF_8, io.read().encoding
+    end
+
     it "returns Shrine::FileNotFound when object was not found" do
       @s3.client.stub_responses(:get_object, "NoSuchKey")
       assert_raises(Shrine::FileNotFound) { @s3.open("nonexisting") }
