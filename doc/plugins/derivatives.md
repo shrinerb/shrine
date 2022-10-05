@@ -133,7 +133,7 @@ Attacher.default_url do |derivative: nil, **|
 end
 ```
 ```rb
-photo.image_url(:medium) #=> "https://example.com/fallbacks.com/medium.jpg"
+photo.image_url(:medium) #=> "https://example.com/fallbacks/medium.jpg"
 ```
 
 Any additional URL options passed to `#<name>_url` will be forwarded to the
