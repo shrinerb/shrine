@@ -138,6 +138,16 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal url1, url2
   end
 
+  it "returns 400 on invalid serialized file" do
+    response = app.get("/dontwork")
+    assert_equal 400, response.status
+    assert_equal "Invalid serialized file", response.body_binary
+
+    response = app.get("/dont%20work")
+    assert_equal 400, response.status
+    assert_equal "Invalid serialized file", response.body_binary
+  end
+
   describe "Shrine.download_response" do
     it "works in the main app" do
       @shrine.plugin :download_endpoint, prefix: "attachments"

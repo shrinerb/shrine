@@ -182,10 +182,17 @@ class Shrine
       @shrine_class::UploadedFile.urlsafe_load(serialized)
     rescue Shrine::Error # storage not found
       not_found!
+    rescue JSON::ParserError, ArgumentError => error # invalid serialized component
+      raise if error.is_a?(ArgumentError) && error.message != "invalid base64"
+      bad_request!("Invalid serialized file")
     end
 
     def not_found!
       error!(404, "File Not Found")
+    end
+
+    def bad_request!(message)
+      error!(400, message)
     end
 
     # Halts the request with the error message.
