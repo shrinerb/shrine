@@ -36,8 +36,14 @@ class Shrine
           attachment = self
 
           # Returns the attached file.
-          define_method :"#{name}" do |*args|
-            send(:"#{name}_attacher").get(*args)
+          if shrine_class::Attacher.instance_method(:get).arity == 0
+            define_method :"#{name}" do
+              send(:"#{name}_attacher").get
+            end
+          else # derivatives
+            define_method :"#{name}" do |*args|
+              send(:"#{name}_attacher").get(*args)
+            end
           end
 
           # Returns the URL to the attached file.

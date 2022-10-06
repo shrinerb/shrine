@@ -95,6 +95,16 @@ describe Shrine::Plugins::Entity do
 
         assert_nil entity.file
       end
+
+      it "doesn't accept arguments by default" do
+        @entity_class.include @shrine::Attachment.new(:file)
+
+        entity = @entity_class.new
+
+        error = assert_raises(ArgumentError) { entity.file(:foo) }
+        assert_equal "wrong number of arguments (given 1, expected 0)", error.message
+        assert_includes error.backtrace[0], "shrine/plugins/entity.rb"
+      end
     end
 
     describe "#<name>_url" do
