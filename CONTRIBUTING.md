@@ -2,7 +2,7 @@ Issue Guidelines
 ================
 
 1. Issues should only be created for things that are definitely bugs.  If you
-   are not sure that the behavior is a bug, ask about it on the [forum] or on [Github Discussions]. Otherwise Github gets overwhelmed with issues and it is very difficult for the maintainers to manage.
+   are not sure that the behavior is a bug, ask about it on [Github Discussions] or [Discourse]. Otherwise Github gets overwhelmed with issues and it is very difficult for the maintainers to manage.
 
 2. If you are sure it is a bug, then post a complete description of the issue,
    the simplest possible [self-contained example] showing the problem (please do review the link), and the full backtrace of any exception.
@@ -60,7 +60,7 @@ Everyone interacting in the Shrine project’s codebases, issue trackers, chat
 rooms, and mailing lists is expected to follow the [Shrine code of conduct].
 
 [Github Discussions]: https://github.com/shrinerb/shrine/discussions
-[forum]: https://discourse.shrinerb.com
+[Discourse]: https://discourse.shrinerb.com
 [Shrine code of conduct]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
 [libmagic]: https://github.com/threatstack/libmagic
 [libvips]: https://github.com/libvips/libvips/wiki

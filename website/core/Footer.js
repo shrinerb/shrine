@@ -39,16 +39,16 @@ class Footer extends React.Component {
               Github Discussions
             </a>
             <a
-              href={config.stackOverflowUrl}
-              target="_blank"
-              rel="noreferrer noopener">
-              Stack Overflow
-            </a>
-            <a
               href={config.discourseUrl}
               target="_blank"
               rel="noreferrer noopener">
               Discourse
+            </a>
+            <a
+              href={config.stackOverflowUrl}
+              target="_blank"
+              rel="noreferrer noopener">
+              Stack Overflow
             </a>
           </div>
           <div>
