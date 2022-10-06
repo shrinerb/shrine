@@ -25,6 +25,7 @@ guide]**.
 | Website & Documentation | [shrinerb.com](https://shrinerb.com)                                           |
 | Demo code               | [Roda][roda demo] / [Rails][rails demo]                                        |
 | Wiki                    | [github.com/shrinerb/shrine/wiki](https://github.com/shrinerb/shrine/wiki)     |
+| Help   (Preferred)      | [Github Discussions](https://github.com/shrinerb/shrine/discussions)                       |
 | Help & Discussion       | [discourse.shrinerb.com](https://discourse.shrinerb.com)                       |
 
 ## Setup

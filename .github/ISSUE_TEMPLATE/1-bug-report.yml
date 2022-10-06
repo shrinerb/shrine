@@ -11,7 +11,7 @@ body:
         Before you make a bug report, please check our existing resources to see if it has already been discussed/reported:
         - [Reported bugs](https://github.com/shrinerb/shrine/issues)
         - [GitHub Discussions](https://github.com/shrinerb/shrine/discussions/)
-        - [Shrine Discourse (A Question / Answer Forum)](https://discourse.shrinerb.com/)        
+        - [Discourse](https://discourse.shrinerb.com/) (alternative forum)
 
   - type: textarea
     attributes:
