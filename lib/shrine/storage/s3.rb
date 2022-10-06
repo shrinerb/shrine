@@ -112,10 +112,7 @@ class Shrine
       def open(id, rewindable: true, encoding: nil, **options)
         chunks, length = get(id, **options)
 
-        down_options = {chunks: chunks, rewindable: rewindable, size: length}
-        down_options[:encoding] = encoding unless encoding.nil?
-
-        Down::ChunkedIO.new(**down_options)
+        Down::ChunkedIO.new(chunks: chunks, rewindable: rewindable, size: length, encoding: encoding)
       rescue Aws::S3::Errors::NoSuchKey
         raise Shrine::FileNotFound, "file #{id.inspect} not found on storage"
       end
