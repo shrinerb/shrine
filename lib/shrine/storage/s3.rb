@@ -103,15 +103,19 @@ class Shrine
       # Returns a `Down::ChunkedIO` object that downloads S3 object content
       # on-demand. By default, read content will be cached onto disk so that
       # it can be rewinded, but if you don't need that you can pass
-      # `rewindable: false`.
+      # `rewindable: false`. A required character encoding can be passed in
+      # `encoding`; the default is `Encoding::BINARY` via `Down::ChunkedIO`.
       #
       # Any additional options are forwarded to [`Aws::S3::Object#get`].
       #
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
-      def open(id, rewindable: true, **options)
+      def open(id, rewindable: true, encoding: nil, **options)
         chunks, length = get(id, **options)
 
-        Down::ChunkedIO.new(chunks: chunks, rewindable: rewindable, size: length)
+        down_options = {chunks: chunks, rewindable: rewindable, size: length}
+        down_options[:encoding] = encoding unless encoding.nil?
+
+        Down::ChunkedIO.new(**down_options)
       rescue Aws::S3::Errors::NoSuchKey
         raise Shrine::FileNotFound, "file #{id.inspect} not found on storage"
       end

@@ -35,7 +35,7 @@ title: Extensions
 | [shrine-content_addressable](https://github.com/SleeplessByte/shrine-content_addressable)   | Plugin for generating content addressable locations                   |
 | [shrine-imgix](https://github.com/shrinerb/shrine-imgix)                                    | Plugin for [Imgix](https://www.imgix.com/)                            |
 | [shrine-transloadit](https://github.com/shrinerb/shrine-transloadit)                        | Plugin for [Transloadit](https://transloadit.com/)                    |
-| [shrine-lambda](https://github.com/texpert/shrine-lambda)                                   | Plugin for [AWS Lambda](https://aws.amazon.com/lambda/)               |
+| [shrine-aws-lambda](https://github.com/texpert/shrine-aws-lambda)                           | Plugin for [AWS Lambda](https://aws.amazon.com/lambda/)               |
 | [hanami-shrine](https://github.com/katafrakt/hanami-shrine)                                 | Plugin for [Hanami](https://hanamirb.org/)                            |
 | [shrine-mongoid](https://github.com/shrinerb/shrine-mongoid)                                | Plugin for [Mongoid](https://mongoid.org)                             |
 | [shrine-rails](https://github.com/abepetrillo/shrine-rails)                                 | Plugin for [Rails](https://rubyonrails.org/)                          |
