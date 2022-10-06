@@ -50,7 +50,7 @@ class Shrine
       # The extension derived from #id if present, otherwise it's derived
       # from #original_filename.
       def extension
-        identifier = id =~ URI.regexp ? id.sub(/\?.+$/, "") : id # strip query params for shrine-url
+        identifier = id =~ URI::DEFAULT_PARSER.make_regexp ? id.sub(/\?.+$/, "") : id # strip query params for shrine-url
         result = File.extname(identifier)[1..-1]
         result ||= File.extname(original_filename.to_s)[1..-1]
         result.downcase if result
