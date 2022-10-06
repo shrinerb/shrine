@@ -12,7 +12,11 @@ class Shrine
       def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
         uploader.opts[:instrumentation] ||= { log_events: EVENTS, subscribers: {} }
         uploader.opts[:instrumentation].merge!(opts)
-        uploader.opts[:instrumentation][:notifications] ||= ::ActiveSupport::Notifications
+        begin
+          uploader.opts[:instrumentation][:notifications] ||= ::ActiveSupport::Notifications
+        rescue NameError
+          fail Error, "default notifications library is ActiveSupport::Notifications, but activesupport gem is not installed"
+        end
 
         uploader.opts[:instrumentation][:log_events].each do |event_name|
           uploader.subscribe(event_name, &log_subscriber)
