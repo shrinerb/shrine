@@ -4,22 +4,22 @@ title: Articles
 
 ## Official articles
 
-| Article                                                                                                                      | Published             |
-| :-------                                                                                                                     | --------:             |
-| [Better File Uploads with Shrine: Eager Processing](https://janko.io/better-file-uploads-with-shrine-eager-processing/)      | 12&nbsp;Dec&nbsp;2019 |
-| [Shrine 3.0 Released](https://janko.io/shrine-3-0-released/)                                                           | 14&nbsp;Oct&nbsp;2019 |
-| [Upcoming Features in Shrine 3.0](https://janko.io/upcoming-features-in-shrine-3-0/)                                   | 29&nbsp;Aug&nbsp;2019 |
-| [Better File Uploads with Shrine: Direct Uploads](https://janko.io/better-file-uploads-with-shrine-direct-uploads/)    | 08&nbsp;Jan&nbsp;2018 |
-| [Better File Uploads with Shrine: Metadata](https://janko.io/better-file-uploads-with-shrine-metadata/)                | 07&nbsp;Nov&nbsp;2016 |
-| [Better File Uploads with Shrine: Processing](https://janko.io/better-file-uploads-with-shrine-processing/)            | 31&nbsp;Oct&nbsp;2016 |
-| [Better File Uploads with Shrine: Attachment](https://janko.io/better-file-uploads-with-shrine-attachment/)            | 17&nbsp;Sep&nbsp;2016 |
-| [Better File Uploads with Shrine: Uploader](https://janko.io/better-file-uploads-with-shrine-uploader/)                | 16&nbsp;Sep&nbsp;2016 |
-| [Better File Uploads with Shrine: Motivation](https://janko.io/better-file-uploads-with-shrine-motivation/)            | 11&nbsp;Sep&nbsp;2016 |
-| [Resumable File Uploads in Ruby](https://janko.io/resumable-file-uploads-in-ruby/)                                     | 04&nbsp;Sep&nbsp;2016 |
-| [Shrine meets Transloadit](https://janko.io/shrine-meets-transloadit/)                                                 | 11&nbsp;Jul&nbsp;2016 |
-| [Shrine 2.0 Released](https://janko.io/shrine-2-0-released/)                                                           | 20&nbsp;May&nbsp;2016 |
-| [Asynchronous File Uploads](http://janko.io/file-uploads-asynchronous-world)                                           | 18&nbsp;Jan&nbsp;2016 |
-| [Introducing Shrine](http://janko.io/introducing-shrine)                                                               | 04&nbsp;Oct&nbsp;2015 |
+| Article                                                                                                                 | Published             |
+| :-------                                                                                                                | --------:             |
+| [Better File Uploads with Shrine: Eager Processing](https://janko.io/better-file-uploads-with-shrine-eager-processing/) | 12&nbsp;Dec&nbsp;2019 |
+| [Shrine 3.0 Released](https://janko.io/shrine-3-0-released/)                                                            | 14&nbsp;Oct&nbsp;2019 |
+| [Upcoming Features in Shrine 3.0](https://janko.io/upcoming-features-in-shrine-3-0/)                                    | 29&nbsp;Aug&nbsp;2019 |
+| [Better File Uploads with Shrine: Direct Uploads](https://janko.io/better-file-uploads-with-shrine-direct-uploads/)     | 08&nbsp;Jan&nbsp;2018 |
+| [Better File Uploads with Shrine: Metadata](https://janko.io/better-file-uploads-with-shrine-metadata/)                 | 07&nbsp;Nov&nbsp;2016 |
+| [Better File Uploads with Shrine: Processing](https://janko.io/better-file-uploads-with-shrine-processing/)             | 31&nbsp;Oct&nbsp;2016 |
+| [Better File Uploads with Shrine: Attachment](https://janko.io/better-file-uploads-with-shrine-attachment/)             | 17&nbsp;Sep&nbsp;2016 |
+| [Better File Uploads with Shrine: Uploader](https://janko.io/better-file-uploads-with-shrine-uploader/)                 | 16&nbsp;Sep&nbsp;2016 |
+| [Better File Uploads with Shrine: Motivation](https://janko.io/better-file-uploads-with-shrine-motivation/)             | 11&nbsp;Sep&nbsp;2016 |
+| [Resumable File Uploads in Ruby](https://janko.io/resumable-file-uploads-in-ruby/)                                      | 04&nbsp;Sep&nbsp;2016 |
+| [Shrine meets Transloadit](https://janko.io/shrine-meets-transloadit/)                                                  | 11&nbsp;Jul&nbsp;2016 |
+| [Shrine 2.0 Released](https://janko.io/shrine-2-0-released/)                                                            | 20&nbsp;May&nbsp;2016 |
+| [Asynchronous File Uploads](http://janko.io/file-uploads-asynchronous-world)                                            | 18&nbsp;Jan&nbsp;2016 |
+| [Introducing Shrine](http://janko.io/introducing-shrine)                                                                | 04&nbsp;Oct&nbsp;2015 |
 
 ## Community articles
 
