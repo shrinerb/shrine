@@ -124,7 +124,7 @@ end # underlying IO object is closed
 ```
 
 `Shrine::UploadedFile#open` will return the result of a given block.
-block. We can use that to safely retrieve the whole content of a file, without
+We can use that to safely retrieve the whole content of a file, without
 leaving any temporary files lying around.
 
 ```rb
