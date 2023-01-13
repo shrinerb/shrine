@@ -62,6 +62,14 @@ describe Shrine::Plugins::RemoveAttachment do
         assert @attacher.changed?
       end
 
+      it "deassigns the attached file on true" do
+        @attacher.file = @attacher.upload(fakeio)
+        @attacher.remove = true
+
+        assert_nil @attacher.file
+        assert @attacher.changed?
+      end
+
       it "keeps the file on falsy value" do
         @attacher.file = @attacher.upload(fakeio)
 
@@ -72,6 +80,9 @@ describe Shrine::Plugins::RemoveAttachment do
         refute_nil @attacher.file
 
         @attacher.remove = "false"
+        refute_nil @attacher.file
+
+        @attacher.remove = false
         refute_nil @attacher.file
       end
     end

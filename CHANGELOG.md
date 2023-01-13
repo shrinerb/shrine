@@ -1,5 +1,7 @@
 ## HEAD
 
+* `remove_attachment` – Fix passing boolean values being broken in Ruby 3.2 (@janko)
+
 * `model` – When duplicating a record, make the duplicated attacher reference the duplicated record (@janko)
 
 ## 3.4.0 (2021-06-14)
