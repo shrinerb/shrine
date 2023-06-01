@@ -3,6 +3,9 @@ id: multiple-files
 title: Multiple Files
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 There are times when you want to allow users to attach multiple files to a
 single resource, like an album having many photos or a playlist having many
 songs. Some file attachment libraries provide a special interface for multiple
@@ -67,8 +70,9 @@ files (or attachments) table will be the photos table.
 Let's create a table for the main resource and attachments, and add a foreign
 key in the attachment table for the main table:
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Sequel-->
+<Tabs>
+<TabItem value="sequel" label="Sequel">
+
 ```rb
 Sequel.migration do
   change do
@@ -87,7 +91,10 @@ Sequel.migration do
   end
 end
 ```
-<!--ActiveRecord-->
+
+</TabItem>
+<TabItem value="activerecord" label="Active Record">
+
 ```rb
 class CreateAlbumsAndPhotos < ActiveRecord::Migration
   def change
@@ -104,25 +111,33 @@ class CreateAlbumsAndPhotos < ActiveRecord::Migration
   end
 end
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 In the Photo model, create a Shrine attachment attribute named `image`
 (`:image` matches the `_data` column prefix above):
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Sequel-->
+<Tabs>
+<TabItem value="sequel" label="Sequel">
+
 ```rb
 class Photo < Sequel::Model
   include ImageUploader::Attachment(:image)
 end
 ```
-<!--ActiveRecord-->
+
+</TabItem>
+<TabItem value="activerecord" label="Active Record">
+
 ```rb
 class Photo < ActiveRecord::Base
   include ImageUploader::Attachment(:image)
 end
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 ### 2. Declare nested attributes
 
@@ -131,8 +146,9 @@ Using nested attributes is the easiest way to implement any dynamic
 relationship to the photos table, and allow it to directly accept attributes
 for the associated photo records by enabling nested attributes:
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Sequel-->
+<Tabs>
+<TabItem value="sequel" label="Sequel">
+
 ```rb
 class Album < Sequel::Model
   one_to_many :photos
@@ -142,14 +158,20 @@ class Album < Sequel::Model
   nested_attributes :photos, destroy: true
 end
 ```
-<!--ActiveRecord-->
+
+</TabItem>
+<TabItem value="activerecord" label="Active Record">
+
 ```rb
 class Album < ActiveRecord::Base
   has_many :photos, dependent: :destroy
   accepts_nested_attributes_for :photos, allow_destroy: true
 end
 ```
-<!--Mongoid-->
+
+</TabItem>
+<TabItem value="mongoid" label="Mongoid">
+
 ```rb
 class Album
   include Mongoid::Document
@@ -157,7 +179,9 @@ class Album
   accepts_nested_attributes_for :photos
 end
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 Documentation on nested attributes:
 
@@ -174,8 +198,9 @@ already created photos, so that the same form can be used for updating the
 album/photos as well (they will be submitted under the
 `album[photos_attributes]` parameter).
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Rails form builder-->
+<Tabs>
+<TabItem value="rails" label="Rails form builder">
+
 ```rb
 form_for @album, html: { enctype: "multipart/form-data" } do |f|
   f.text_field :title
@@ -188,7 +213,10 @@ form_for @album, html: { enctype: "multipart/form-data" } do |f|
   f.submit "Create"
 end
 ```
-<!--Forme-->
+
+</TabItem>
+<TabItem value="forme" label="Forme">
+
 ```rb
 form @album, action: "/photos", enctype: "multipart/form-data" do |f|
   f.input :title
@@ -201,7 +229,9 @@ form @album, action: "/photos", enctype: "multipart/form-data" do |f|
   f.button "Create"
 end
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 In your controller you should still be able to assign all the attributes to the
 album, just remember to whitelist the new parameter for the nested attributes,
@@ -286,21 +316,26 @@ class ImageUploader < Shrine
   end
 end
 ```
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Sequel-->
+<Tabs>
+<TabItem value="sequel" label="Sequel">
+
 ```rb
 class Album < Sequel::Model
   # ... (nested_attributes already enables validating associated photos) ...
 end
 ```
-<!--ActiveRecord-->
+
+</TabItem>
+<TabItem value="activerecord" label="Active Record">
+
 ```rb
 class Album < ActiveRecord::Base
   # ...
   validates_associated :photos
 end
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+</TabItem>
+</Tabs>
 
 Note that by default only metadata set on the client side will be available for
 validations. Shrine will not automatically run metadata extraction for directly

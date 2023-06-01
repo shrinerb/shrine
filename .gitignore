@@ -4,3 +4,4 @@ pkg/
 website/build
 coverage/
 node_modules
+.docusaurus

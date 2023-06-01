@@ -3,6 +3,9 @@ id: getting-started
 title: Getting Started
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 ## Quick start
 
 Add Shrine to the Gemfile and write an initializer which sets up the storage
@@ -32,32 +35,39 @@ Next decide how you will name the attachment attribute on your model, and run a
 migration that adds an `<attachment>_data` text or JSON column, which Shrine
 will use to store all information about the attachment:
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Sequel-->
+<Tabs>
+<TabItem value="sequel" label="Sequel">
+
 ```rb
 Sequel.migration do
   change do
-    add_column :photos, :image_data, :text # or :jsonb   
+    add_column :photos, :image_data, :text # or :jsonb
   end
 end
 ```
 
-<!--ActiveRecord-->
+</TabItem>
+<TabItem value="activerecord" label="Active Record">
+
 ```rb
 class AddImageDataToPhotos < ActiveRecord::Migration
   def change
-    add_column :photos, :image_data, :text # or :jsonb   
+    add_column :photos, :image_data, :text # or :jsonb
   end
 end
 ```
 
-<!--Rails-->
-```rb
-$ rails generate migration add_image_data_to_photos image_data:text  # or image_data:jsonb 
-```
-If using `jsonb` consider adding a [gin index] for fast key-value pair searchability within `image_data`.
+</TabItem>
+<TabItem value="rails" label="Rails">
 
-<!--END_DOCUSAURUS_CODE_TABS-->
+```rb
+$ rails generate migration add_image_data_to_photos image_data:text # or image_data:jsonb
+```
+
+</TabItem>
+</Tabs>
+
+If using `jsonb` consider adding a [gin index] for fast key-value pair searchability within `image_data`.
 
 Now you can create an uploader class for the type of files you want to upload,
 and add a virtual attribute for handling attachments using this uploader to
@@ -69,28 +79,36 @@ class ImageUploader < Shrine
   # plugins and uploading logic
 end
 ```
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Sequel-->
+
+<Tabs>
+<TabItem value="sequel" label="Sequel">
+
 ```rb
 class Photo < Sequel::Model
   include ImageUploader::Attachment(:image) # adds an `image` virtual attribute
 end
 ```
-<!--ActiveRecord-->
+
+</TabItem>
+<TabItem value="activerecord" label="Active Record">
+
 ```rb
 class Photo < ActiveRecord::Base
   include ImageUploader::Attachment(:image) # adds an `image` virtual attribute
 end
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 Let's now add the form fields which will use this virtual attribute (NOT the
 `<attachment>_data` column attribute). We need (1) a file field for choosing
 files, and (2) a hidden field for retaining the uploaded file in case of
 validation errors and for potential [direct uploads].
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Rails form builder-->
+<Tabs>
+<TabItem value="rails" label="Rails form builder">
+
 ```rb
 form_for @photo do |f|
   f.hidden_field :image, value: @photo.cached_image_data, id: nil
@@ -98,7 +116,10 @@ form_for @photo do |f|
   f.submit
 end
 ```
-<!--Simple Form-->
+
+</TabItem>
+<TabItem value="simple_form" label="Simple Form">
+
 ```rb
 simple_form_for @photo do |f|
   f.input :image, as: :hidden, input_html: { value: @photo.cached_image_data }
@@ -106,7 +127,10 @@ simple_form_for @photo do |f|
   f.button :submit
 end
 ```
-<!--Forme-->
+
+</TabItem>
+<TabItem value="form" label="Forme">
+
 ```rb
 form @photo, action: "/photos", enctype: "multipart/form-data" do |f|
   f.input :image, type: :hidden, value: @photo.cached_image_data
@@ -114,7 +138,10 @@ form @photo, action: "/photos", enctype: "multipart/form-data" do |f|
   f.button "Create"
 end
 ```
-<!--HTML-->
+
+</TabItem>
+<TabItem value="html" label="HTML">
+
 ```erb
 <form action="/photos" method="post" enctype="multipart/form-data">
   <input name="photo[image]" type="hidden" value="<%= @photo.cached_image_data %>" />
@@ -122,7 +149,9 @@ end
   <input type="submit" value="Create" />
 </form>
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 Note that the file field needs to go *after* the hidden field, so that
 selecting a new file can always override the cached file in the hidden field.
@@ -133,8 +162,9 @@ will automatically generate this for you).
 When the form is submitted, in your router/controller you can assign the file
 from request params to the attachment attribute on the model.
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Rails-->
+<Tabs>
+<TabItem value="rails" label="Rails">
+
 ```rb
 class PhotosController < ApplicationController
   def create
@@ -149,28 +179,39 @@ class PhotosController < ApplicationController
   end
 end
 ```
-<!--Sinatra-->
+
+</TabItem>
+<TabItem value="sinatra" label="Sinatra">
+
 ```rb
 post "/photos" do
   Photo.create(params[:photo])
   # ...
 end
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 Once a file is uploaded and attached to the record, you can retrieve a URL to
 the uploaded file with `#<attachment>_url` and display it on the page:
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Rails-->
+<Tabs>
+<TabItem value="rails" label="Rails">
+
 ```erb
 <%= image_tag @photo.image_url %>
 ```
-<!--HTML-->
+
+</TabItem>
+<TabItem value="html" label="HTML">
+
 ```erb
 <img src="<%= @photo.image_url %>" />
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 ## Storage
 

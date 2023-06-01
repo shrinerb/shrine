@@ -2,6 +2,9 @@
 title: Testing with Shrine
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 The goal of this guide is to provide some useful tips for testing file
 attachments implemented with Shrine in your application.
 
@@ -137,19 +140,26 @@ module TestData
   end
 end
 ```
-<!--DOCUSAURUS_CODE_TABS-->
-<!--FactoryBot-->
+
+<Tabs>
+<TabItem value="factory_bot" label="FactoryBot">
+
 ```rb
 factory :photo do
   image_data { TestData.image_data }
 end
 ```
-<!--Rails YAML fixtures-->
+
+</TabItem>
+<TabItem value="fixtures" label="Rails YAML fixtures">
+
 ```erb
 photo:
   image_data: <%= TestData.image_data %>
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 ## Unit tests
 
@@ -182,24 +192,24 @@ end
 In acceptance tests you're testing your app end-to-end, and you likely want to
 also test file attachments here. Here are examples for some common use cases:
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Capybara-->
+<Tabs>
+<TabItem value="capybara" label="Capybara">
+
 ```rb
 attach_file("#image-field", "test/files/image.jpg")
 ```
-<!--Rack::Test-->
+
+</TabItem>
+<TabItem value="rack-test" label="rack-test">
+
 ```rb
 post "/photos", photo: {
   image: Rack::Test::UploadedFile.new("test/files/image.jpg", "image/jpeg")
 }
 ```
-<!--Rack::TestApp-->
-```rb
-app.post "/photos", multipart: {
-  "photo[image]" => File.open("test/files/image.jpg")
-}
-```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 If you want to test requests with cached attachment data, you can do so as
 follows:
@@ -216,21 +226,30 @@ If you're using background jobs with Shrine, you probably want to make them
 synchronous in tests. See your backgrounding library docs for how to make jobs
 synchronous.
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--ActiveJob-->
+<Tabs>
+<TabItem value="activejob" label="Active Job">
+
 ```rb
 ActiveJob::Base.queue_adapter = :inline
 ```
-<!--Sidekiq-->
+
+</TabItem>
+<TabItem value="sidekiq" label="Sidekiq">
+
 ```rb
 require "sidekiq/testing"
 Sidekiq::Testing.inline!
 ```
-<!--SuckerPunch-->
+
+</TabItem>
+<TabItem value="sucker_punch" label="SuckerPunch">
+
 ```rb
 require "sucker_punch/testing/inline"
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+</TabItem>
+</Tabs>
 
 ## Processing
 

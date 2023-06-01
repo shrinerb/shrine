@@ -1,0 +1,20 @@
+:root {
+  --ifm-color-primary-lightest: #D50A13;
+  --ifm-color-primary-lighter: #BD0911;
+  --ifm-color-primary-light: #B40910;
+  --ifm-color-primary: #A4080F;
+  --ifm-color-primary-dark: #94070D;
+  --ifm-color-primary-darker: #8B070D;
+  --ifm-color-primary-darkest: #73060A;
+
+  --ifm-color-danger: var(--ifm-color-primary);
+}
+
+pre {
+  background: #282A36 !important;
+  color: #f6f6f4 !important;
+}
+
+pre span {
+  font-style: normal !important;
+}
