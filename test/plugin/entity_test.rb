@@ -101,9 +101,7 @@ describe Shrine::Plugins::Entity do
 
         entity = @entity_class.new
 
-        error = assert_raises(ArgumentError) { entity.file(:foo) }
-        assert_equal "wrong number of arguments (given 1, expected 0)", error.message
-        assert_includes error.backtrace[0], "shrine/plugins/entity.rb"
+        assert_equal 0, entity.method(:file).arity
       end
     end
 
