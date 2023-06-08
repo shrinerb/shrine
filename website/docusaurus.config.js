@@ -32,6 +32,11 @@ module.exports = {
             [require("rehype-pretty-code"), { theme: "dracula-soft" }]
           ]
         },
+        pages: {
+          rehypePlugins: [
+            [require("rehype-pretty-code"), { theme: "dracula-soft" }]
+          ]
+        },
         theme: {
           customCss: "src/css/customTheme.css"
         }
@@ -94,6 +99,7 @@ module.exports = {
     image: "img/logo.png",
     footer: {
       copyright: `Copyright © ${new Date().getFullYear()} Janko Marohnić`,
+      style: "dark",
     },
     algolia: {
       appId: "KBFWBJ5DPX",

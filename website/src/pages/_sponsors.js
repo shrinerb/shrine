@@ -57,7 +57,7 @@ export default () => {
   ]
 
   return (
-    <div style={{ backgroundColor: "#fef2f2", paddingTop: "2rem", paddingBottom: "2rem" }}>
+    <div style={{ paddingTop: "2rem", paddingBottom: "3rem" }}>
       <div className="container" style={{ maxWidth: "900px", marginLeft: "auto", marginRight: "auto" }}>
         <h2 style={{ marginBottom: "2rem" }}>Sponsors <img src={heartEmoji} height="20" className="heartEmoji" /></h2>
 

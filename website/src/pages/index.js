@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import Sponsors from './_sponsors';
+import Demo from './_demo.md';
 
 export default () => {
   return (
@@ -18,6 +19,12 @@ export default () => {
               Advantages
             </a>
           </div>
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: "#f7f7f7", paddingTop: "2rem", paddingBottom: "2rem" }}>
+        <div className="container" style={{ maxWidth: "900px", marginLeft: "auto", marginRight: "auto" }}>
+          <Demo />
         </div>
       </div>
 
