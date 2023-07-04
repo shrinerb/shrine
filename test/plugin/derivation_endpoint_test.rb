@@ -180,6 +180,20 @@ describe Shrine::Plugins::DerivationEndpoint do
       derivation_url = @uploaded_file.derivation_url(:other)
       assert_match %r{/other/\w+\?}, derivation_url
     end
+
+    it "uses a custom signer" do
+      @shrine.plugin :derivation_endpoint,
+        secret_key: nil,
+        signer: -> (url, **options) { "#{url}?#{options.map{|k,v|"#{k}=#{v}"}.join("&")}" }
+      derivation_url = @uploaded_file.derivation_url(:gray, host: "https://123.cloudfront.net", bar: "baz")
+      assert_match %r{https://123\.cloudfront\.net/gray/\w+\?.*bar=baz}, derivation_url
+    end
+
+    it "requires secret key when no customer signer present" do
+      assert_raises(Shrine::Error, 'must provide :secret_key option to derivation_endpoint plugin when no custom signer is set') do
+        @shrine.plugin :derivation_endpoint, secret_key: nil
+      end
+    end
   end
 
   describe "Shrine.derivation_endpoint" do
@@ -355,6 +369,16 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_equal 403,                              response.status
       assert_match "signature does not match",       response.body_binary
       assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
+    end
+
+    it "skips signature verifcation when secret_key is nil" do
+      @shrine.plugin :derivation_endpoint,
+        secret_key: nil,
+        signer: -> (url, **options) { url }
+      derivation_url = @uploaded_file.derivation_url(:gray).sub(/signature=\w+$/, "")
+      response = app.get(derivation_url)
+      assert_equal 200,  response.status
+      assert_equal "12", response.headers["Content-Length"]
     end
 
     it "accepts HEAD requests" do
