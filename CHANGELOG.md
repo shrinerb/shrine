@@ -1,5 +1,7 @@
 ## HEAD
 
+* `derivatives` – Don't leak `versions_compatibility: true` setting into other uploaders (@janko)
+
 * `remove_attachment` – Fix passing boolean values being broken in Ruby 3.2 (@janko)
 
 * `model` – When duplicating a record, make the duplicated attacher reference the duplicated record (@janko)

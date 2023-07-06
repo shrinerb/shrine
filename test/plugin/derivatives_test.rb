@@ -1413,6 +1413,12 @@ describe Shrine::Plugins::Derivatives do
           assert_equal Hash.new, @attacher.derivatives
         end
       end
+
+      it "doesn't affect other uploaders" do
+        @attacher = attacher { plugin :derivatives }
+
+        refute_includes @attacher.class.ancestors, Shrine::Plugins::Derivatives::VersionsCompatibility
+      end
     end
 
     it "can be marshalled without mutex" do

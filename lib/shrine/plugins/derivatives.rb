@@ -12,18 +12,18 @@ class Shrine
         }.inspect}"
       end
 
-      def self.load_dependencies(uploader, versions_compatibility: false, **)
+      def self.load_dependencies(uploader, **)
         uploader.plugin :default_url
-
-        AttacherMethods.prepend(VersionsCompatibility) if versions_compatibility
       end
 
-      def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
+      def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, versions_compatibility: false, **opts)
         uploader.opts[:derivatives] ||= { processors: {}, processor_settings: {}, storage: proc { store_key }, mutex: true }
         uploader.opts[:derivatives].merge!(opts)
 
         # instrumentation plugin integration
         uploader.subscribe(:derivatives, &log_subscriber) if uploader.respond_to?(:subscribe)
+
+        uploader::Attacher.include(VersionsCompatibility) if versions_compatibility
       end
 
       module AttachmentMethods
