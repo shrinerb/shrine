@@ -35,7 +35,7 @@ jobs:
           - "jruby-9.4"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
