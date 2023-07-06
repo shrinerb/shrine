@@ -7,7 +7,7 @@ class Shrine
 
   module VERSION
     MAJOR = 3
-    MINOR = 4
+    MINOR = 5
     TINY  = 0
     PRE   = nil
 

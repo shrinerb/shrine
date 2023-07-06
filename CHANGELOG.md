@@ -1,12 +1,8 @@
-## HEAD
+## 3.5.0 (2023-07-06)
 
 * Migrate website to Docusaurus v2 (@janko)
 
-* `instrumentation` – Raise explicit error message when using Active Support but it's not installed (@janko)
-
 * `download_endpoint` – Return `400 Bad Request` response when serialized file component is invalid (@janko)
-
-* `base` – Improve error backtrace on passing argument to `Attacher#file` when `derivatives` plugin is not loaded  (@janko)
 
 * `base` – Stop using obsolete `URI.regexp` in `UploadedFile#extension` (@y-yagi)
 
