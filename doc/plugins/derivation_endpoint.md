@@ -331,6 +331,29 @@ uploaded_file.derivation_url(:thumbnail, expires_in: 90)
 #=> ".../thumbnail/eyJpZCI6ImZvbyIsInN?expires_at=1547843568&signature=..."
 ```
 
+## Custom signer
+
+The derivation URLs are signed by default, and the signature is checked when
+the URLs are requested, which prevents tampering. If you have URL expiration
+turned on, this may prevent your CDN from caching the response.
+
+In this case, you may need to do custom CDN-specific URL signing. You can
+bypass Shrine's default signing by passing a custom signer:
+
+```rb
+require "aws-sdk-cloudfront"
+signer = Aws::CloudFront::UrlSigner.new(key_pair_id: "...", private_key: "...")
+
+plugin :derivation_endpoint,
+  expires_in: 90,
+  signer: -> (url, expires_in:) do
+    signer.signed_url(url, expires: Time.now.to_i + expires_in)
+  end
+```
+
+When `:signer` option is used, the `:secret_key` option is not required, as
+that secret is only used for default signing.
+
 ## Response headers
 
 ### Content Type
@@ -796,6 +819,7 @@ derivation.option(:upload_location)
 | `:metadata`                    | List of metadata keys the source uploaded file should include in the derivation block                                                 | `[]`                                                 |
 | `:prefix`                      | Path prefix added to the URLs                                                                                                         | `nil`                                                |
 | `:secret_key`                  | Key used to sign derivation URLs in order to prevent tampering                                                                        | required                                             |
+| `:signer`                      | Proc accepting URL and query params used for custom signing of URLs.                                                                  | `nil`                                                |
 | `:type`                        | Media type returned in the `Content-Type` response header in the derivation response                                                  | determined from derivative's extension when possible |
 | `:upload`                      | Whether the generated derivatives will be cached on the storage                                                                       | `false`                                              |
 | `:upload_location`             | Location to which the derivatives will be uploaded on the storage                                                                     | `<source id>/<name>-<args>`                          |
