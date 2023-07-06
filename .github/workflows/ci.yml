@@ -42,7 +42,7 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
-        rubygems: latest
+        rubygems: ${{ matrix.ruby >= "2.6" ? "latest" : "3.3.26" }}
 
     - name: Set up Minio
       run: |
