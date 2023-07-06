@@ -1,8 +1,28 @@
 ## HEAD
 
-* `derivation_endpoint` – Add new `:signer` option for providing a custom URL signer (@thibaudgg)
+* Migrate website to Docusaurus v2 (@janko)
+
+* `instrumentation` – Raise explicit error message when using Active Support but it's not installed (@janko)
+
+* `download_endpoint` – Return `400 Bad Request` response when serialized file component is invalid (@janko)
+
+* `base` – Improve error backtrace on passing argument to `Attacher#file` when `derivatives` plugin is not loaded  (@janko)
+
+* `base` – Stop using obsolete `URI.regexp` in `UploadedFile#extension` (@y-yagi)
+
+* `s3` – Add `:encoding` option to `S3#open` to be passed to `Down::ChunkedIO#initialize` (@pond)
+
+* `s3` – Add `:max_multipart_parts` option for changing default limit of 10,000 parts (@jpl)
+
+* `s3` – Don't inherit S3 object tags when copying from temporary to permanent storage (@jrochkind)
+
+* `infer_extension` – Add `infer_extension` instance method to the uploader for convenience (@aried3r)
+
+* `derivation_endpoint` – Add `:signer` plugin option for providing a custom URL signer (@thibaudgg)
 
 * `derivatives` – Don't leak `versions_compatibility: true` setting into other uploaders (@janko)
+
+* `derivatives` – Add `:mutex` plugin option for skipping mutex and making attacher marshallable (@janko)
 
 * `remove_attachment` – Fix passing boolean values being broken in Ruby 3.2 (@janko)
 
