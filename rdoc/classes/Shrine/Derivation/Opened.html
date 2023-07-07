@@ -66,7 +66,13 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">680</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>&#x000A;<span class="line-num">681</span>   <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">upload_storage</span>, <span class="ruby-value">id:</span> <span class="ruby-identifier">upload_location</span>)&#x000A;<span class="line-num">682</span>   <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">upload_open_options</span>)&#x000A;<span class="line-num">683</span>   <span class="ruby-identifier">uploaded_file</span>&#x000A;<span class="line-num">684</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">FileNotFound</span>&#x000A;<span class="line-num">685</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
+<span class="line-num">681</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>
+<span class="line-num">682</span>   <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">upload_storage</span>, <span class="ruby-value">id:</span> <span class="ruby-identifier">upload_location</span>)
+<span class="line-num">683</span>   <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">upload_open_options</span>)
+<span class="line-num">684</span>   <span class="ruby-identifier">uploaded_file</span>
+<span class="line-num">685</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">FileNotFound</span>
+<span class="line-num">686</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -78,7 +84,7 @@ Superclass:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

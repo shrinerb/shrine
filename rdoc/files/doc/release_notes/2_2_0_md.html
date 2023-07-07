@@ -30,7 +30,7 @@ doc/release_notes/2.2.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -45,21 +45,41 @@ Last Update:
 <p>The processing plugin has been added for declaratively defining processing  for a specific action, and is now the idiomatic way to define processing in  Shrine:</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>
+
+  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>
+    <span class="ruby-comment"># ...</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>The add_metadata plugin has been added for simpler extraction and addition of  new metadata:</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>&#x000A;&#x000A;  <span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:exif</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">exif</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>
 
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;exif&quot;</span>]&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exif</span></pre>
+  <span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:exif</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>
+    <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">exif</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;exif&quot;</span>]
+<span class="ruby-comment"># or</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exif</span>
+</pre>
 
 <h2 id="label-Other+features">Other features<span><a href="#label-Other+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>The <code>UploadedFile#open</code> method has been added to mimic <code>File.open</code>, which  opens the underlying IO only for the duration of the block:</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># closes the IO</span></pre>
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span>
+  <span class="ruby-comment"># ...</span>
+<span class="ruby-keyword">end</span> <span class="ruby-comment"># closes the IO</span>
+</pre>
 <ul><li>
 <p>Add <code>:multipart_threshold</code> to <code>Storage::S3</code> for specifying the filesize in  bytes for when the storage should use aws-sdk’s parallelized multipart  upload/copy. Defaults to 15MB.</p>
 </li></ul>
@@ -108,7 +128,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -57,14 +57,25 @@ Shrine::Plugins::DataUri::ClassMethods
 
 <p>Parses the given data URI and creates an IO object from it.</p>
 
-<pre class="ruby"><span class="ruby-identifier">io</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">data_uri</span>(<span class="ruby-string">&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA&quot;</span>)&#x000A;<span class="ruby-identifier">io</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Plugins::DataUri::DataFile&gt;</span>&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">content_type</span> <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span>&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span>         <span class="ruby-comment">#=&gt; 21</span>&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span>         <span class="ruby-comment"># decoded content</span></pre>
+<pre class="ruby"><span class="ruby-identifier">io</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">data_uri</span>(<span class="ruby-string">&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA&quot;</span>)
+<span class="ruby-identifier">io</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Plugins::DataUri::DataFile&gt;</span>
+<span class="ruby-identifier">io</span>.<span class="ruby-identifier">content_type</span> <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span>
+<span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span>         <span class="ruby-comment">#=&gt; 21</span>
+<span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span>         <span class="ruby-comment"># decoded content</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-data_uri-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-data_uri-source'>   <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>&#x000A;<span class="line-num">61</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data_uri</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-value">filename:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">62</span>   <span class="ruby-identifier">instrument_data_uri</span>(<span class="ruby-identifier">uri</span>) <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">63</span>     <span class="ruby-identifier">info</span> = <span class="ruby-identifier">parse_data_uri</span>(<span class="ruby-identifier">uri</span>)&#x000A;<span class="line-num">64</span>     <span class="ruby-identifier">create_data_file</span>(<span class="ruby-identifier">info</span>, <span class="ruby-value">filename:</span> <span class="ruby-identifier">filename</span>)&#x000A;<span class="line-num">65</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">66</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-data_uri-source'>   <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
+<span class="line-num">61</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data_uri</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-value">filename:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">62</span>   <span class="ruby-identifier">instrument_data_uri</span>(<span class="ruby-identifier">uri</span>) <span class="ruby-keyword">do</span>
+<span class="line-num">63</span>     <span class="ruby-identifier">info</span> = <span class="ruby-identifier">parse_data_uri</span>(<span class="ruby-identifier">uri</span>)
+<span class="line-num">64</span>     <span class="ruby-identifier">create_data_file</span>(<span class="ruby-identifier">info</span>, <span class="ruby-value">filename:</span> <span class="ruby-identifier">filename</span>)
+<span class="line-num">65</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">66</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -76,7 +87,7 @@ Shrine::Plugins::DataUri::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

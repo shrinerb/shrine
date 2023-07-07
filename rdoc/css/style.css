@@ -128,6 +128,10 @@ table {
     padding: 0.4em 0.5em; }
     #index ol li {
       white-space: nowrap; }
+  #index #index-entries li.hide {
+    display: none; }
+  #index #index-entries.all li.hide {
+    display: block; }
   #index #index-entries li a {
     padding: 1px 2px; }
   #index #index-entries.classes {
@@ -148,6 +152,12 @@ table {
       color: #666666; }
     #index #index-entries.methods li a:hover .module_name, #index #search-results.methods li a:hover .module_name {
       color: #dddddd; }
+
+#index div#index-entries.classes details > summary { list-style: none; white-space: nowrap; }
+#index div#index-entries.classes details > summary::marker { content: none; }
+#index div#index-entries.classes details > summary:after { content: "  \25B6"; }
+#index div#index-entries.classes details[open] > summary:after { content: "  \25BC"; }
+#index div#index-entries.classes span.class-link { display: block; white-space: nowrap; }
 
 #attribute-list .context-item-name {
   font-weight: bold; }

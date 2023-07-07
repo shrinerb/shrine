@@ -89,14 +89,21 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the dimensions are in the given range.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_dimensions</span> [<span class="ruby-value">100</span><span class="ruby-operator">..</span><span class="ruby-value">5000</span>, <span class="ruby-value">100</span><span class="ruby-operator">..</span><span class="ruby-value">5000</span>]</pre>
+<pre class="ruby"><span class="ruby-identifier">validate_dimensions</span> [<span class="ruby-value">100</span><span class="ruby-operator">..</span><span class="ruby-value">5000</span>, <span class="ruby-value">100</span><span class="ruby-operator">..</span><span class="ruby-value">5000</span>]
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_dimensions-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_dimensions-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">161</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_dimensions</span>((<span class="ruby-identifier">width_range</span>, <span class="ruby-identifier">height_range</span>))&#x000A;<span class="line-num">162</span>   <span class="ruby-identifier">min_dims</span> = <span class="ruby-identifier">width_range</span>.<span class="ruby-identifier">begin</span>, <span class="ruby-identifier">height_range</span>.<span class="ruby-identifier">begin</span>&#x000A;<span class="line-num">163</span>   <span class="ruby-identifier">max_dims</span> = <span class="ruby-identifier">width_range</span>.<span class="ruby-identifier">end</span>,   <span class="ruby-identifier">height_range</span>.<span class="ruby-identifier">end</span>&#x000A;<span class="line-num">164</span> &#x000A;<span class="line-num">165</span>   <span class="ruby-identifier">validate_min_dimensions</span>(<span class="ruby-identifier">min_dims</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">validate_max_dimensions</span>(<span class="ruby-identifier">max_dims</span>)&#x000A;<span class="line-num">166</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_dimensions-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">161</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_dimensions</span>((<span class="ruby-identifier">width_range</span>, <span class="ruby-identifier">height_range</span>))
+<span class="line-num">162</span>   <span class="ruby-identifier">min_dims</span> = <span class="ruby-identifier">width_range</span>.<span class="ruby-identifier">begin</span>, <span class="ruby-identifier">height_range</span>.<span class="ruby-identifier">begin</span>
+<span class="line-num">163</span>   <span class="ruby-identifier">max_dims</span> = <span class="ruby-identifier">width_range</span>.<span class="ruby-identifier">end</span>,   <span class="ruby-identifier">height_range</span>.<span class="ruby-identifier">end</span>
+<span class="line-num">164</span> 
+<span class="line-num">165</span>   <span class="ruby-identifier">validate_min_dimensions</span>(<span class="ruby-identifier">min_dims</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">validate_max_dimensions</span>(<span class="ruby-identifier">max_dims</span>)
+<span class="line-num">166</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_extension_exclusion'>
@@ -109,14 +116,21 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the extension is not included in the given list. Comparison is case insensitive.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_extension_exclusion</span> <span class="ruby-string">%[php jar]</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_extension_exclusion</span> <span class="ruby-string">%[php jar]</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_extension_exclusion-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_extension_exclusion-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">207</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_extension_exclusion</span>(<span class="ruby-identifier">extensions</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">208</span>   <span class="ruby-identifier">validate_result</span>(&#x000A;<span class="line-num">209</span>     <span class="ruby-identifier">extensions</span>.<span class="ruby-identifier">none?</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">extension</span><span class="ruby-operator">|</span> <span class="ruby-identifier">extension</span>.<span class="ruby-identifier">casecmp</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">extension</span>.<span class="ruby-identifier">to_s</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> },&#x000A;<span class="line-num">210</span>     <span class="ruby-value">:extension_exclusion</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">extensions</span>&#x000A;<span class="line-num">211</span>   )&#x000A;<span class="line-num">212</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_extension_exclusion-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">207</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_extension_exclusion</span>(<span class="ruby-identifier">extensions</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">208</span>   <span class="ruby-identifier">validate_result</span>(
+<span class="line-num">209</span>     <span class="ruby-identifier">extensions</span>.<span class="ruby-identifier">none?</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">extension</span><span class="ruby-operator">|</span> <span class="ruby-identifier">extension</span>.<span class="ruby-identifier">casecmp</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">extension</span>.<span class="ruby-identifier">to_s</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> },
+<span class="line-num">210</span>     <span class="ruby-value">:extension_exclusion</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">extensions</span>
+<span class="line-num">211</span>   )
+<span class="line-num">212</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_extension_inclusion'>
@@ -129,14 +143,21 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the extension is included in the given list. Comparison is case insensitive.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif]</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif]</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_extension_inclusion-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_extension_inclusion-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">195</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_extension_inclusion</span>(<span class="ruby-identifier">extensions</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">196</span>   <span class="ruby-identifier">validate_result</span>(&#x000A;<span class="line-num">197</span>     <span class="ruby-identifier">extensions</span>.<span class="ruby-identifier">any?</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">extension</span><span class="ruby-operator">|</span> <span class="ruby-identifier">extension</span>.<span class="ruby-identifier">casecmp</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">extension</span>.<span class="ruby-identifier">to_s</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> },&#x000A;<span class="line-num">198</span>     <span class="ruby-value">:extension_inclusion</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">extensions</span>&#x000A;<span class="line-num">199</span>   )&#x000A;<span class="line-num">200</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_extension_inclusion-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">195</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_extension_inclusion</span>(<span class="ruby-identifier">extensions</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">196</span>   <span class="ruby-identifier">validate_result</span>(
+<span class="line-num">197</span>     <span class="ruby-identifier">extensions</span>.<span class="ruby-identifier">any?</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">extension</span><span class="ruby-operator">|</span> <span class="ruby-identifier">extension</span>.<span class="ruby-identifier">casecmp</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">extension</span>.<span class="ruby-identifier">to_s</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> },
+<span class="line-num">198</span>     <span class="ruby-value">:extension_inclusion</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">extensions</span>
+<span class="line-num">199</span>   )
+<span class="line-num">200</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_height'>
@@ -149,14 +170,20 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>height</code> metadata is in the given range.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_height</span> <span class="ruby-value">100</span><span class="ruby-operator">..</span><span class="ruby-value">5000</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_height</span> <span class="ruby-value">100</span><span class="ruby-operator">..</span><span class="ruby-value">5000</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_height-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_height-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">128</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_height</span>(<span class="ruby-identifier">height_range</span>)&#x000A;<span class="line-num">129</span>   <span class="ruby-identifier">min_height</span>, <span class="ruby-identifier">max_height</span> = <span class="ruby-identifier">height_range</span>.<span class="ruby-identifier">begin</span>, <span class="ruby-identifier">height_range</span>.<span class="ruby-identifier">end</span>&#x000A;<span class="line-num">130</span> &#x000A;<span class="line-num">131</span>   <span class="ruby-identifier">validate_min_height</span>(<span class="ruby-identifier">min_height</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">validate_max_height</span>(<span class="ruby-identifier">max_height</span>)&#x000A;<span class="line-num">132</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_height-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">128</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_height</span>(<span class="ruby-identifier">height_range</span>)
+<span class="line-num">129</span>   <span class="ruby-identifier">min_height</span>, <span class="ruby-identifier">max_height</span> = <span class="ruby-identifier">height_range</span>.<span class="ruby-identifier">begin</span>, <span class="ruby-identifier">height_range</span>.<span class="ruby-identifier">end</span>
+<span class="line-num">130</span> 
+<span class="line-num">131</span>   <span class="ruby-identifier">validate_min_height</span>(<span class="ruby-identifier">min_height</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">validate_max_height</span>(<span class="ruby-identifier">max_height</span>)
+<span class="line-num">132</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_max_dimensions'>
@@ -169,14 +196,23 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the dimensions are not larger than specified.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_max_dimensions</span> [<span class="ruby-value">5000</span>, <span class="ruby-value">5000</span>]</pre>
+<pre class="ruby"><span class="ruby-identifier">validate_max_dimensions</span> [<span class="ruby-value">5000</span>, <span class="ruby-value">5000</span>]
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_max_dimensions-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_max_dimensions-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">137</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_max_dimensions</span>((<span class="ruby-identifier">max_width</span>, <span class="ruby-identifier">max_height</span>), <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">138</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;width and/or height metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>]&#x000A;<span class="line-num">139</span> &#x000A;<span class="line-num">140</span>   <span class="ruby-identifier">validate_result</span>(&#x000A;<span class="line-num">141</span>     <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">max_width</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">max_height</span>,&#x000A;<span class="line-num">142</span>     <span class="ruby-value">:max_dimensions</span>, <span class="ruby-identifier">message</span>, [<span class="ruby-identifier">max_width</span>, <span class="ruby-identifier">max_height</span>]&#x000A;<span class="line-num">143</span>   )&#x000A;<span class="line-num">144</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_max_dimensions-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">137</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_max_dimensions</span>((<span class="ruby-identifier">max_width</span>, <span class="ruby-identifier">max_height</span>), <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">138</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;width and/or height metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>]
+<span class="line-num">139</span> 
+<span class="line-num">140</span>   <span class="ruby-identifier">validate_result</span>(
+<span class="line-num">141</span>     <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">max_width</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">max_height</span>,
+<span class="line-num">142</span>     <span class="ruby-value">:max_dimensions</span>, <span class="ruby-identifier">message</span>, [<span class="ruby-identifier">max_width</span>, <span class="ruby-identifier">max_height</span>]
+<span class="line-num">143</span>   )
+<span class="line-num">144</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_max_height'>
@@ -189,14 +225,20 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>height</code> metadata is not larger than <code>max</code>. Requires the <code>store_dimensions</code> plugin.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_max_height</span> <span class="ruby-value">5000</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_max_height</span> <span class="ruby-value">5000</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_max_height-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_max_height-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">109</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_max_height</span>(<span class="ruby-identifier">max</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">110</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;height metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>]&#x000A;<span class="line-num">111</span> &#x000A;<span class="line-num">112</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">max</span>, <span class="ruby-value">:max_height</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">max</span>)&#x000A;<span class="line-num">113</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_max_height-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">109</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_max_height</span>(<span class="ruby-identifier">max</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">110</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;height metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>]
+<span class="line-num">111</span> 
+<span class="line-num">112</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">max</span>, <span class="ruby-value">:max_height</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">max</span>)
+<span class="line-num">113</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_max_size'>
@@ -209,14 +251,18 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>size</code> metadata is not larger than <code>max</code>.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_max_size-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_max_size-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">54</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_max_size</span>(<span class="ruby-identifier">max</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">55</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">max</span>, <span class="ruby-value">:max_size</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">max</span>)&#x000A;<span class="line-num">56</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_max_size-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">54</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_max_size</span>(<span class="ruby-identifier">max</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">55</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">max</span>, <span class="ruby-value">:max_size</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">max</span>)
+<span class="line-num">56</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_max_width'>
@@ -229,14 +275,20 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>width</code> metadata is not larger than <code>max</code>. Requires the <code>store_dimensions</code> plugin.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_max_width</span> <span class="ruby-value">5000</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_max_width</span> <span class="ruby-value">5000</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_max_width-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_max_width-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">79</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_max_width</span>(<span class="ruby-identifier">max</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">80</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;width metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>]&#x000A;<span class="line-num">81</span> &#x000A;<span class="line-num">82</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">max</span>, <span class="ruby-value">:max_width</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">max</span>)&#x000A;<span class="line-num">83</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_max_width-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">79</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_max_width</span>(<span class="ruby-identifier">max</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">80</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;width metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>]
+<span class="line-num">81</span> 
+<span class="line-num">82</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">max</span>, <span class="ruby-value">:max_width</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">max</span>)
+<span class="line-num">83</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_mime_type_exclusion'>
@@ -249,14 +301,21 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>mime_type</code> metadata is not included in the given list.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_mime_type_exclusion</span> <span class="ruby-node">%w[text/x-php]</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_mime_type_exclusion</span> <span class="ruby-node">%w[text/x-php]</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_mime_type_exclusion-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_mime_type_exclusion-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">184</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_mime_type_exclusion</span>(<span class="ruby-identifier">types</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">185</span>   <span class="ruby-identifier">validate_result</span>(&#x000A;<span class="line-num">186</span>     <span class="ruby-operator">!</span><span class="ruby-identifier">types</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">mime_type</span>),&#x000A;<span class="line-num">187</span>     <span class="ruby-value">:mime_type_exclusion</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">types</span>&#x000A;<span class="line-num">188</span>   )&#x000A;<span class="line-num">189</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_mime_type_exclusion-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">184</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_mime_type_exclusion</span>(<span class="ruby-identifier">types</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">185</span>   <span class="ruby-identifier">validate_result</span>(
+<span class="line-num">186</span>     <span class="ruby-operator">!</span><span class="ruby-identifier">types</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">mime_type</span>),
+<span class="line-num">187</span>     <span class="ruby-value">:mime_type_exclusion</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">types</span>
+<span class="line-num">188</span>   )
+<span class="line-num">189</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_mime_type_inclusion'>
@@ -269,14 +328,21 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>mime_type</code> metadata is included in the given list.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[audio/mp3 audio/flac]</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[audio/mp3 audio/flac]</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_mime_type_inclusion-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_mime_type_inclusion-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">172</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_mime_type_inclusion</span>(<span class="ruby-identifier">types</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">173</span>   <span class="ruby-identifier">validate_result</span>(&#x000A;<span class="line-num">174</span>     <span class="ruby-identifier">types</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">mime_type</span>),&#x000A;<span class="line-num">175</span>     <span class="ruby-value">:mime_type_inclusion</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">types</span>&#x000A;<span class="line-num">176</span>   )&#x000A;<span class="line-num">177</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_mime_type_inclusion-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">172</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_mime_type_inclusion</span>(<span class="ruby-identifier">types</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">173</span>   <span class="ruby-identifier">validate_result</span>(
+<span class="line-num">174</span>     <span class="ruby-identifier">types</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">mime_type</span>),
+<span class="line-num">175</span>     <span class="ruby-value">:mime_type_inclusion</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">types</span>
+<span class="line-num">176</span>   )
+<span class="line-num">177</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_min_dimensions'>
@@ -289,14 +355,23 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the dimensions are not smaller than specified.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_max_dimensions</span> [<span class="ruby-value">100</span>, <span class="ruby-value">100</span>]</pre>
+<pre class="ruby"><span class="ruby-identifier">validate_min_dimensions</span> [<span class="ruby-value">100</span>, <span class="ruby-value">100</span>]
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_min_dimensions-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_min_dimensions-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">149</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_min_dimensions</span>((<span class="ruby-identifier">min_width</span>, <span class="ruby-identifier">min_height</span>), <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">150</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;width and/or height metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>]&#x000A;<span class="line-num">151</span> &#x000A;<span class="line-num">152</span>   <span class="ruby-identifier">validate_result</span>(&#x000A;<span class="line-num">153</span>     <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">min_width</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">min_height</span>,&#x000A;<span class="line-num">154</span>     <span class="ruby-value">:min_dimensions</span>, <span class="ruby-identifier">message</span>, [<span class="ruby-identifier">min_width</span>, <span class="ruby-identifier">min_height</span>]&#x000A;<span class="line-num">155</span>   )&#x000A;<span class="line-num">156</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_min_dimensions-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">149</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_min_dimensions</span>((<span class="ruby-identifier">min_width</span>, <span class="ruby-identifier">min_height</span>), <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">150</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;width and/or height metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>]
+<span class="line-num">151</span> 
+<span class="line-num">152</span>   <span class="ruby-identifier">validate_result</span>(
+<span class="line-num">153</span>     <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">min_width</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">min_height</span>,
+<span class="line-num">154</span>     <span class="ruby-value">:min_dimensions</span>, <span class="ruby-identifier">message</span>, [<span class="ruby-identifier">min_width</span>, <span class="ruby-identifier">min_height</span>]
+<span class="line-num">155</span>   )
+<span class="line-num">156</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_min_height'>
@@ -309,14 +384,20 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>height</code> metadata is not smaller than <code>min</code>. Requires the <code>store_dimensions</code> plugin.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_min_height</span> <span class="ruby-value">100</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_min_height</span> <span class="ruby-value">100</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_min_height-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_min_height-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">119</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_min_height</span>(<span class="ruby-identifier">min</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">120</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;height metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>]&#x000A;<span class="line-num">121</span> &#x000A;<span class="line-num">122</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">min</span>, <span class="ruby-value">:min_height</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">min</span>)&#x000A;<span class="line-num">123</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_min_height-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">119</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_min_height</span>(<span class="ruby-identifier">min</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">120</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;height metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>]
+<span class="line-num">121</span> 
+<span class="line-num">122</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">min</span>, <span class="ruby-value">:min_height</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">min</span>)
+<span class="line-num">123</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_min_size'>
@@ -329,14 +410,18 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>size</code> metadata is not smaller than <code>min</code>.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_min_size</span> <span class="ruby-value">1024</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_min_size</span> <span class="ruby-value">1024</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_min_size-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_min_size-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">61</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_min_size</span>(<span class="ruby-identifier">min</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">62</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">min</span>, <span class="ruby-value">:min_size</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">min</span>)&#x000A;<span class="line-num">63</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_min_size-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">61</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_min_size</span>(<span class="ruby-identifier">min</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">62</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">min</span>, <span class="ruby-value">:min_size</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">min</span>)
+<span class="line-num">63</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_min_width'>
@@ -349,14 +434,20 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>width</code> metadata is not smaller than <code>min</code>. Requires the <code>store_dimensions</code> plugin.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_min_width</span> <span class="ruby-value">100</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_min_width</span> <span class="ruby-value">100</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_min_width-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_min_width-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">89</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_min_width</span>(<span class="ruby-identifier">min</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">90</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;width metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>]&#x000A;<span class="line-num">91</span> &#x000A;<span class="line-num">92</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">min</span>, <span class="ruby-value">:min_width</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">min</span>)&#x000A;<span class="line-num">93</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_min_width-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">89</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_min_width</span>(<span class="ruby-identifier">min</span>, <span class="ruby-value">message:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">90</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;width metadata is missing&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>]
+<span class="line-num">91</span> 
+<span class="line-num">92</span>   <span class="ruby-identifier">validate_result</span>(<span class="ruby-identifier">file</span>[<span class="ruby-string">&quot;width&quot;</span>] <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">min</span>, <span class="ruby-value">:min_width</span>, <span class="ruby-identifier">message</span>, <span class="ruby-identifier">min</span>)
+<span class="line-num">93</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_size'>
@@ -369,14 +460,20 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>size</code> metadata is in the given range.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_size</span> <span class="ruby-value">1024</span><span class="ruby-operator">..</span><span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_size</span> <span class="ruby-value">1024</span><span class="ruby-operator">..</span><span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_size-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_size-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">68</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_size</span>(<span class="ruby-identifier">size_range</span>)&#x000A;<span class="line-num">69</span>   <span class="ruby-identifier">min_size</span>, <span class="ruby-identifier">max_size</span> = <span class="ruby-identifier">size_range</span>.<span class="ruby-identifier">begin</span>, <span class="ruby-identifier">size_range</span>.<span class="ruby-identifier">end</span>&#x000A;<span class="line-num">70</span> &#x000A;<span class="line-num">71</span>   <span class="ruby-identifier">validate_min_size</span>(<span class="ruby-identifier">min_size</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">validate_max_size</span>(<span class="ruby-identifier">max_size</span>)&#x000A;<span class="line-num">72</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_size-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num">68</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_size</span>(<span class="ruby-identifier">size_range</span>)
+<span class="line-num">69</span>   <span class="ruby-identifier">min_size</span>, <span class="ruby-identifier">max_size</span> = <span class="ruby-identifier">size_range</span>.<span class="ruby-identifier">begin</span>, <span class="ruby-identifier">size_range</span>.<span class="ruby-identifier">end</span>
+<span class="line-num">70</span> 
+<span class="line-num">71</span>   <span class="ruby-identifier">validate_min_size</span>(<span class="ruby-identifier">min_size</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">validate_max_size</span>(<span class="ruby-identifier">max_size</span>)
+<span class="line-num">72</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate_width'>
@@ -389,14 +486,20 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 
 <p>Validates that the <code>width</code> metadata is in the given range.</p>
 
-<pre class="ruby"><span class="ruby-identifier">validate_width</span> <span class="ruby-value">100</span><span class="ruby-operator">..</span><span class="ruby-value">5000</span></pre>
+<pre class="ruby"><span class="ruby-identifier">validate_width</span> <span class="ruby-value">100</span><span class="ruby-operator">..</span><span class="ruby-value">5000</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate_width-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate_width-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num"> 98</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_width</span>(<span class="ruby-identifier">width_range</span>)&#x000A;<span class="line-num"> 99</span>   <span class="ruby-identifier">min_width</span>, <span class="ruby-identifier">max_width</span> = <span class="ruby-identifier">width_range</span>.<span class="ruby-identifier">begin</span>, <span class="ruby-identifier">width_range</span>.<span class="ruby-identifier">end</span>&#x000A;<span class="line-num">100</span> &#x000A;<span class="line-num">101</span>   <span class="ruby-identifier">validate_min_width</span>(<span class="ruby-identifier">min_width</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">validate_max_width</span>(<span class="ruby-identifier">max_width</span>)&#x000A;<span class="line-num">102</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate_width-source'>    <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>
+<span class="line-num"> 98</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate_width</span>(<span class="ruby-identifier">width_range</span>)
+<span class="line-num"> 99</span>   <span class="ruby-identifier">min_width</span>, <span class="ruby-identifier">max_width</span> = <span class="ruby-identifier">width_range</span>.<span class="ruby-identifier">begin</span>, <span class="ruby-identifier">width_range</span>.<span class="ruby-identifier">end</span>
+<span class="line-num">100</span> 
+<span class="line-num">101</span>   <span class="ruby-identifier">validate_min_width</span>(<span class="ruby-identifier">min_width</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">validate_max_width</span>(<span class="ruby-identifier">max_width</span>)
+<span class="line-num">102</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -408,7 +511,7 @@ Shrine::Plugins::ValidationHelpers::AttacherMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

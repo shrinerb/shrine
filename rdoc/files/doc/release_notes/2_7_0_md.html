@@ -30,7 +30,7 @@ doc/release_notes/2.7.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -45,40 +45,69 @@ Last Update:
 <p>The <code>direct_upload</code> plugin has been split into <code>upload_endpoint</code> and  <code>presign_endpoint</code> plugins. These plugins provide respective endpoints that  accept requests to the root URL, allowing users to fully choose the URL. They  also drop the Roda dependency.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span>&#x000A;&#x000A;<span class="ruby-comment"># config.ru</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/images/upload&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># creates a `POST /images/upload` endpoint</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>&#x000A;&#x000A;<span class="ruby-comment"># config.ru</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># creates a `GET /presign` endpoint</span></pre>
+<span class="ruby-comment"># config.ru</span>
+<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/images/upload&quot;</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-identifier">run</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(<span class="ruby-value">:cache</span>)
+<span class="ruby-keyword">end</span> <span class="ruby-comment"># creates a `POST /images/upload` endpoint</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>
+
+<span class="ruby-comment"># config.ru</span>
+<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>)
+<span class="ruby-keyword">end</span> <span class="ruby-comment"># creates a `GET /presign` endpoint</span>
+</pre>
 <ul><li>
 <p>The <code>rack_response</code> plugin has been extracted from <code>download_endpoint</code>. It  gives the ability to convert a <code>Shrine::UploadedFile</code> object into a Rack  response triple.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_response</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_response</span>
+</pre>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">FilesController</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-identifier">file_response</span> = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">to_rack_response</span> <span class="ruby-comment"># returns a Rack response triple</span>&#x000A;&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">0</span>]&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">headers</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">file_response</span>[<span class="ruby-value">1</span>])&#x000A;    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">response_body</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">2</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">FilesController</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download</span>
+    <span class="ruby-comment"># ...</span>
+    <span class="ruby-identifier">file_response</span> = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">to_rack_response</span> <span class="ruby-comment"># returns a Rack response triple</span>
+
+    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">0</span>]
+    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">headers</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">file_response</span>[<span class="ruby-value">1</span>])
+    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">response_body</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">2</span>]
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 <h2 id="label-New+Features">New Features<span><a href="#label-New+Features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>determine_mime_type</code> plugin now supports the <a href="https://github.com/discourse/mini_mime">mini_mime</a> gem for  determining the MIME type from file extension. The mini_mime gem is aimed to  be a lightweight replacement for the <a href="https://github.com/mime-types/ruby-mime-types">mime-types</a> gem.</p>
+<p>The <code>determine_mime_type</code> plugin now supports the <a target="_top" href="https://github.com/discourse/mini_mime">mini_mime</a> gem for  determining the MIME type from file extension. The mini_mime gem is aimed to  be a lightweight replacement for the <a target="_top" href="https://github.com/mime-types/ruby-mime-types">mime-types</a> gem.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:mini_mime</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:mini_mime</span>
+</pre>
 <ul><li>
 <p><code>Shrine::Attachment.new</code> now accepts additional options that are forwarded to  <code>Shrine::Attacher.new</code>. This allows for overriding temporary and permanent  storages per attachment declaration.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>, <span class="ruby-value">cache:</span> <span class="ruby-value">:other_cache</span>, <span class="ruby-value">store:</span> <span class="ruby-value">:other_store</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>, <span class="ruby-value">cache:</span> <span class="ruby-value">:other_cache</span>, <span class="ruby-value">store:</span> <span class="ruby-value">:other_store</span>)
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>The <code>activerecord</code> plugin now allows validation error messages to be an  array, which is passed as arguments to <code>record.errors.add</code>. This allows users  to delegate validation error message generation and i18n to ActiveRecord.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">256</span> <span class="ruby-operator">*</span> <span class="ruby-value">1024</span><span class="ruby-operator">**</span><span class="ruby-value">2</span>, <span class="ruby-value">message:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">max</span>) { [<span class="ruby-value">:too_large</span>, <span class="ruby-value">max:</span> <span class="ruby-identifier">max</span>] }</pre>
+<pre class="ruby"><span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">256</span> <span class="ruby-operator">*</span> <span class="ruby-value">1024</span><span class="ruby-operator">**</span><span class="ruby-value">2</span>, <span class="ruby-value">message:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">max</span>) { [<span class="ruby-value">:too_large</span>, <span class="ruby-value">max:</span> <span class="ruby-identifier">max</span>] }
+</pre>
 
 <h2 id="label-Other+Improvements">Other Improvements<span><a href="#label-Other+Improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p><code>Shrine::Storage::S3</code> now supports the new <code>aws-sdk-s3</code> gem. See the <a href="https://aws.amazon.com/blogs/developer/aws-sdk-for-ruby-modularization-version-3-2/">AWS announcement</a> for more details on the modularization of the <code>aws-sdk</code> gem.</p>
+<p><code>Shrine::Storage::S3</code> now supports the new <code>aws-sdk-s3</code> gem. See the <a target="_top" href="https://aws.amazon.com/blogs/developer/aws-sdk-for-ruby-modularization-version-3-2/">AWS announcement</a> for more details on the modularization of the <code>aws-sdk</code> gem.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;aws-sdk-s3&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.2&quot;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;aws-sdk-s3&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.2&quot;</span>
+</pre>
 <ul><li>
 <p><code>Shrine::Storage::S3#open</code> now uses streaming with the <code>aws-sdk-s3</code> gem  instead of <code>Down</code>. Previously this discrepancy would cause <code>aws-sdk-s3</code>  options like <code>:proxy</code> to not have any effect in <code>Shrine::Storage::S3#open</code>.</p>
 </li><li>
@@ -87,9 +116,20 @@ Last Update:
 <p>A <a href="../../../classes/Shrine.html"><code>Shrine</code></a> uploader can now call file validations from its superclass.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-comment"># ...</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ProfileImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-keyword">super</span>() <span class="ruby-comment"># empty parentheses are required</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ProfileImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ImageUploader</span>
+  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-keyword">super</span>() <span class="ruby-comment"># empty parentheses are required</span>
+    <span class="ruby-comment"># ...</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>The <code>download_endpoint</code> now encodes uploaded file metadata in the URL,  allowing it to use them when generating a file response. Now the <code>filename</code>  metadata will be used for <code>Content-Disposition</code> if available. Also, the  <code>mime_type</code> metadata will be used for <code>Content-Type</code> instead of <code>Rack::Mime</code>  when available.</p>
 </li><li>
@@ -125,7 +165,11 @@ Last Update:
 <p>The <code>Shrine::DownloadEndpoint</code> constant has been deprecated over the  <code>Shrine.download_endpoint</code> method, and it will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3. In  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3 the returned app won’t be a <code>Roda</code> subclass anymore, instead it will  be a pure Rack class. If you are relying on this, you should update your code.  For example, if you were using <code>Roda.use</code> to add middlewares, you can instead  wrap the endpoint in the middlewares directly:</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/attachments&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">use</span> <span class="ruby-constant">MyMiddleware</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">download_endpoint</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/attachments&quot;</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-identifier">use</span> <span class="ruby-constant">MyMiddleware</span>
+  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">download_endpoint</span>
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>The <code>download_endpoint</code> doesn’t generate URLs which end with uploaded file ID  anymore; instead it generates URLs with base64-encoded uploaded file data.  The old URLs will remain supported indefinitely. If you were relying on URLs  including uploaded file ID, you’ll need to update your code. If this was  becase you wanted to authenticate <code>download_endpoint</code> requests, you should  probably use the new <code>rack_response</code> plugin instead of <code>download_endpoint</code>.</p>
 </li></ul>
@@ -139,7 +183,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

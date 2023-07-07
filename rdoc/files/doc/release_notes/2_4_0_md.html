@@ -30,7 +30,7 @@ doc/release_notes/2.4.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -45,7 +45,10 @@ Last Update:
 <p>The <code>default_url_options</code> plugin accepts a block for dynamically generating options.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">do</span>&#x000A;  {<span class="ruby-value">response_content_disposition:</span> <span class="ruby-node">&quot;attachment; filename=\&quot;#{io.original_filename}\&quot;&quot;</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">do</span>
+  {<span class="ruby-value">response_content_disposition:</span> <span class="ruby-node">&quot;attachment; filename=\&quot;#{io.original_filename}\&quot;&quot;</span>}
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>The <code>activerecord</code> plugin supports JSON and JSONB PostgreSQL columns.</p>
 </li></ul>
@@ -68,7 +71,7 @@ Last Update:
 </li><li>
 <p><code>UploadedFile#open</code> and <code>UploadedFile#download</code> don’t swallow errors raised  by <code>Storage#open</code> anymore.</p>
 </li><li>
-<p>The <code>sequel</code> plugin now uses less memory when creating large amount of  records (see the <a href="https://github.com/jeremyevans/sequel/commit/ead5e5e09e647f3089ea9e161e99b608c2c6ee02">Sequel commit</a> for more details).</p>
+<p>The <code>sequel</code> plugin now uses less memory when creating large amount of  records (see the <a target="_top" href="https://github.com/jeremyevans/sequel/commit/ead5e5e09e647f3089ea9e161e99b608c2c6ee02">Sequel commit</a> for more details).</p>
 </li><li>
 <p>The <code>download_endpoint</code> plugin uses Roda’s streaming endpoint, which  integrates better with EventMachine.</p>
 </li><li>
@@ -84,7 +87,16 @@ Last Update:
 <p>The <code>:host</code> option on FileSystem and S3 storage has been moved from a  first-class storage option passed on <code>#initialize</code> to an URL option. The  original <code>:host</code> option still works, but will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-comment"># now deprecated</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;&#x000A;<span class="ruby-comment"># can be passed to #url</span>&#x000A;<span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>)&#x000A;&#x000A;<span class="ruby-comment"># or can be set automatically using `default_url_options` plugin</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> {<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>}</pre>
+<pre class="ruby"><span class="ruby-comment"># now deprecated</span>
+<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)
+
+<span class="ruby-comment"># can be passed to #url</span>
+<span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)
+<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>)
+
+<span class="ruby-comment"># or can be set automatically using `default_url_options` plugin</span>
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> {<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>}
+</pre>
 <ul><li>
 <p>Accepting data in form of a JSON string by <code>Shrine.uploaded_file</code> has been  deprecated, <code>Attacher#uploaded_file</code> should be used for it instead. Note that  <code>Shrine.uploaded_file</code> will still continue to accept Hash or <code>UploadedFile</code>  objects.</p>
 </li></ul>
@@ -98,7 +110,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

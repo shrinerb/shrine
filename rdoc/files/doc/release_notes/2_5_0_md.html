@@ -30,7 +30,7 @@ doc/release_notes/2.5.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -45,38 +45,80 @@ Last Update:
 <p>The <code>add_metadata</code> plugin has been extended to enable extracting and saving  multiple metadata values at once. This is useful when you have tools which  extract various metadata in a single command.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">movie</span> = <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>)&#x000A;&#x000A;  { <span class="ruby-string">&quot;duration&quot;</span>   <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;    <span class="ruby-string">&quot;bitrate&quot;</span>    <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;    <span class="ruby-string">&quot;resolution&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;    <span class="ruby-string">&quot;frame_rate&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># You can also optionally add metadata reader methods to the UploadedFile</span>&#x000A;<span class="ruby-identifier">metadata_method</span> <span class="ruby-value">:duration</span>, <span class="ruby-value">:bitrate</span>, <span class="ruby-value">:resolution</span>, <span class="ruby-value">:frame_rate</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>
+
+<span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">movie</span> = <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>)
+
+  { <span class="ruby-string">&quot;duration&quot;</span>   <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,
+    <span class="ruby-string">&quot;bitrate&quot;</span>    <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,
+    <span class="ruby-string">&quot;resolution&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,
+    <span class="ruby-string">&quot;frame_rate&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }
+<span class="ruby-keyword">end</span>
+
+<span class="ruby-comment"># You can also optionally add metadata reader methods to the UploadedFile</span>
+<span class="ruby-identifier">metadata_method</span> <span class="ruby-value">:duration</span>, <span class="ruby-value">:bitrate</span>, <span class="ruby-value">:resolution</span>, <span class="ruby-value">:frame_rate</span>
+</pre>
 <ul><li>
 <p>The <code>UploadedFile#dimensions</code> method will now be added when loading the  <code>store_dimensions</code> plugin, which returns a two-element array of width and  height.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>
+</pre>
 
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>)&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">width</span>      <span class="ruby-comment">#=&gt; 500</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">height</span>     <span class="ruby-comment">#=&gt; 400</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">dimensions</span> <span class="ruby-comment">#=&gt; [500, 400] (new)</span></pre>
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>)
+
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">width</span>      <span class="ruby-comment">#=&gt; 500</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">height</span>     <span class="ruby-comment">#=&gt; 400</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">dimensions</span> <span class="ruby-comment">#=&gt; [500, 400] (new)</span>
+</pre>
 <ul><li>
 <p>The <code>:fallback_original_option</code> has been added to <code>versions</code> plugin, allowing  you to disable automatic fallback to the cached file when using backgrounding,  so that you can use a default URL instead.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>, <span class="ruby-value">fallback_to_original:</span> <span class="ruby-keyword">false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>, <span class="ruby-value">fallback_to_original:</span> <span class="ruby-keyword">false</span>
+</pre>
 <ul><li>
 <p>The <code>rack_file</code> plugin now enables the uploaders themselves to accept Rack  uploaded file hashes for upload, in addition to attachers.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>
+</pre>
 
-<pre class="ruby"><span class="ruby-identifier">params</span>[<span class="ruby-value">:file</span>] <span class="ruby-comment">#=&gt; {:tempfile=&gt;#&lt;Tempfile&gt;, :name=&gt;&quot;file&quot;, ...}</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:file</span>])&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;nature.jpg&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">params</span>[<span class="ruby-value">:file</span>] <span class="ruby-comment">#=&gt; {:tempfile=&gt;#&lt;Tempfile&gt;, :name=&gt;&quot;file&quot;, ...}</span>
+
+<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:file</span>])
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;nature.jpg&quot;</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>
+</pre>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>The validation helper methods now also return whether the validation  suceeded, which makes it much easier to do conditional validation.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>&#x000A;&#x000A;<span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif]</span>&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>
+
+<span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif]</span>
+    <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>A <code>Attacher.default_url</code> method has been added to <code>default_url</code> plugin, as a  new idiomatic way of declaring the default URL. This API better communicates  that the default URL functionality is tied only to the attacher. This block  is now also evaluated in the context of a <code>Shrine::Attacher</code> instance.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>&#x000A;&#x000A;<span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">options</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-keyword">self</span>   <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>&#x000A;  <span class="ruby-identifier">name</span>   <span class="ruby-comment">#=&gt; :image</span>&#x000A;  <span class="ruby-identifier">record</span> <span class="ruby-comment">#=&gt; #&lt;Photo&gt;</span>&#x000A;&#x000A;  <span class="ruby-node">&quot;/images/missing/#{name}.jpg&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>
+
+<span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">options</span><span class="ruby-operator">|</span>
+  <span class="ruby-keyword">self</span>   <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>
+  <span class="ruby-identifier">name</span>   <span class="ruby-comment">#=&gt; :image</span>
+  <span class="ruby-identifier">record</span> <span class="ruby-comment">#=&gt; #&lt;Photo&gt;</span>
+
+  <span class="ruby-node">&quot;/images/missing/#{name}.jpg&quot;</span>
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>The <code>validation_helpers</code> plugin will now match the file extension in a case  insensitive way, so if you do <code>validate_extension_inclusion [&quot;jpg&quot;]</code>, that  will now also pass for a file named <code>nature.JPG</code>.</p>
 </li><li>
@@ -96,7 +138,11 @@ Last Update:
 <p>Passing a block when loading the <code>default_url</code> plugin is now deprecated over  the new <code>Attacher.default_url</code>.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-comment"># deprecated</span>&#x000A;<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-node">&quot;/images/missing/#{context[:name]}.jpg&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-comment"># deprecated</span>
+<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span>
+  <span class="ruby-node">&quot;/images/missing/#{context[:name]}.jpg&quot;</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 <h2 id="label-Documentation">Documentation<span><a href="#label-Documentation">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
@@ -112,7 +158,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

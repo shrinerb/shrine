@@ -64,7 +64,19 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">305</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-value">host:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">prefix:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">306</span>   [<span class="ruby-identifier">host</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">prefix</span>, <span class="ruby-identifier">identifier</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)&#x000A;<span class="line-num">307</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
+<span class="line-num">306</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-value">host:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">prefix:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">307</span>   <span class="ruby-identifier">base_url</span> = [<span class="ruby-identifier">host</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">prefix</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)
+<span class="line-num">308</span>   <span class="ruby-identifier">path</span> = <span class="ruby-identifier">path_identifier</span>(<span class="ruby-value">metadata:</span> <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:metadata</span>))
+<span class="line-num">309</span> 
+<span class="line-num">310</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">signer</span>
+<span class="line-num">311</span>     <span class="ruby-identifier">url</span> = [<span class="ruby-identifier">base_url</span>, <span class="ruby-identifier">path</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)
+<span class="line-num">312</span>     <span class="ruby-identifier">signer</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">url</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">313</span>   <span class="ruby-keyword">else</span>
+<span class="line-num">314</span>     <span class="ruby-identifier">signed_part</span> = <span class="ruby-identifier">signed_url</span>(<span class="ruby-node">&quot;#{path}?#{query(**options)}&quot;</span>)
+<span class="line-num">315</span>     [<span class="ruby-identifier">base_url</span>, <span class="ruby-identifier">signed_part</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)
+<span class="line-num">316</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">317</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -76,7 +88,7 @@ Superclass:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

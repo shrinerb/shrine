@@ -30,7 +30,7 @@ doc/release_notes/2.1.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2022-03-05 17:09:59 +0100</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -62,11 +62,19 @@ Last Update:
 <p>The <code>#cached_&lt;attachment&gt;_data=</code> method that comes from the  cached_attachment_data plugin is now deprecated. The reason for this is that  the following "recommended" usage actually produces bugs when image is  invalid:</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@photo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:cached_image_data</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">file_filed</span> <span class="ruby-value">:image</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@photo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:cached_image_data</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">file_filed</span> <span class="ruby-value">:image</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 <p>The recommended and correct way now to build forms is by keeping the  <code>#&lt;attachment&gt;=</code> setter:</p>
 
-<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@photo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:image</span>, <span class="ruby-value">value:</span> <span class="ruby-ivar">@photo</span>.<span class="ruby-identifier">cached_image_data</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">file_filed</span> <span class="ruby-value">:image</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@photo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:image</span>, <span class="ruby-value">value:</span> <span class="ruby-ivar">@photo</span>.<span class="ruby-identifier">cached_image_data</span>, <span class="ruby-value">id:</span> <span class="ruby-keyword">nil</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">file_filed</span> <span class="ruby-value">:image</span>
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>The restore_cached_data now sends the <code>Shrine::UploadedFile</code> to  <code>#extract_metadata</code>, instead of the result of <code>Storage#open</code>.</p>
 </li><li>
@@ -82,7 +90,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

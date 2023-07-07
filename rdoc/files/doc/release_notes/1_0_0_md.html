@@ -30,7 +30,7 @@ doc/release_notes/1.0.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -62,12 +62,44 @@ Last Update:
 <p>A <code>rack_file</code> plugin has been added, which gives models the ability to accept  Rack’s uploaded file hashes (useful in non-Rails web frameworks):</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">User</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:resume</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">rack_file</span> <span class="ruby-comment"># a Rack file received with the request</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   :tempfile =&gt; #&lt;File:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0&gt;,</span>&#x000A;<span class="ruby-comment">#   :filename =&gt; &quot;resume.pdf&quot;,</span>&#x000A;<span class="ruby-comment">#   :type =&gt; &quot;application/pdf&quot;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span> = <span class="ruby-identifier">rack_file</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;resume.pdf&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;application/pdf&quot;</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>
+<span class="ruby-keyword">end</span>
+
+<span class="ruby-keyword">class</span> <span class="ruby-constant">User</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:resume</span>)
+<span class="ruby-keyword">end</span>
+
+<span class="ruby-identifier">rack_file</span> <span class="ruby-comment"># a Rack file received with the request</span>
+<span class="ruby-comment"># {</span>
+<span class="ruby-comment">#   :tempfile =&gt; #&lt;File:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0&gt;,</span>
+<span class="ruby-comment">#   :filename =&gt; &quot;resume.pdf&quot;,</span>
+<span class="ruby-comment">#   :type =&gt; &quot;application/pdf&quot;,</span>
+<span class="ruby-comment"># }</span>
+
+<span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span> = <span class="ruby-identifier">rack_file</span>
+
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;resume.pdf&quot;</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;application/pdf&quot;</span>
+</pre>
 <ul><li>
 <p>A <code>module_include</code> plugin has been which adds the ability to extend core  classes for the current uploader or all uploaders.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:module_include</span>&#x000A;&#x000A;  <span class="ruby-identifier">file_methods</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">base64</span>&#x000A;      <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">encode64</span>(<span class="ruby-identifier">read</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">MyUploader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:storage</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">some_file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">base64</span> <span class="ruby-comment">#=&gt; &quot;sd93K4230sDfsk0POd9...&quot;</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:module_include</span>
+
+  <span class="ruby-identifier">file_methods</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">base64</span>
+      <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">encode64</span>(<span class="ruby-identifier">read</span>)
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+
+<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">MyUploader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:storage</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">some_file</span>)
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">base64</span> <span class="ruby-comment">#=&gt; &quot;sd93K4230sDfsk0POd9...&quot;</span>
+</pre>
 <ul><li>
 <p>A <code>default_url_options</code> plugin has been added which allows you to provide  default options for file URLs.</p>
 </li></ul>
@@ -83,7 +115,10 @@ Last Update:
 <p>The <code>direct_upload</code> plugin now accepts a block for the <code>:presign</code> option,  which can be used to return additional presign options (passed directly to  <code>Storage::S3#presign</code>):</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:direct_upload</span>, <span class="ruby-value">presign:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span> <span class="ruby-comment"># yields a Roda request object</span>&#x000A;  {<span class="ruby-value">content_length_range:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)} <span class="ruby-comment"># limit filesize to 5 MB</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:direct_upload</span>, <span class="ruby-value">presign:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span> <span class="ruby-comment"># yields a Roda request object</span>
+  {<span class="ruby-value">content_length_range:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)} <span class="ruby-comment"># limit filesize to 5 MB</span>
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>Added the <code>(before|around|after)_upload</code> hook to the <code>hooks</code> plugin, which  is wrapped around both processing and storing.</p>
 </li></ul>
@@ -128,7 +163,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -30,7 +30,7 @@ doc/release_notes/2.18.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -47,7 +47,16 @@ Last Update:
 
 <p><code>rb   # config/routes.rb (Rails)   Rails.application.routes.draw do     # ...     post &quot;/images/upload&quot; =&gt; &quot;uploads#image&quot;   end </code>  “‘rb  # app/controllers/uploads_controller.rb (Rails)  class UploadsController &lt; ApplicationController  def image  authenticate_user!</p>
 
-<pre>  set_rack_response ImageUploader.upload_response(:cache, request.env)&#x000A;end&#x000A;private&#x000A;&#x000A;def set_rack_response((status, headers, body))&#x000A;  self.status = status&#x000A;  self.headers.merge!(headers)&#x000A;  self.response_body = body&#x000A;end</pre>
+<pre>  set_rack_response ImageUploader.upload_response(:cache, request.env)
+end
+
+private
+
+def set_rack_response((status, headers, body))
+  self.status = status
+  self.headers.merge!(headers)
+  self.response_body = body
+end</pre>
 
 <p>end  “‘</p>
 <ul><li>
@@ -56,7 +65,16 @@ Last Update:
 
 <p><code>rb   # config/routes.rb (Rails)   Rails.application.routes.draw do     # ...     post &quot;/images/presign&quot;, to: &quot;presigns#image&quot;   end </code>  “‘rb  # app/controllers/presigns_controller.rb (Rails)  class PresignsController &lt; ApplicationController  def image  authenticate_user!</p>
 
-<pre>  set_rack_response ImageUploader.presign_response(:cache, request.env)&#x000A;end&#x000A;private&#x000A;&#x000A;def set_rack_response((status, headers, body))&#x000A;  self.status = status&#x000A;  self.headers.merge!(headers)&#x000A;  self.response_body = body&#x000A;end</pre>
+<pre>  set_rack_response ImageUploader.presign_response(:cache, request.env)
+end
+
+private
+
+def set_rack_response((status, headers, body))
+  self.status = status
+  self.headers.merge!(headers)
+  self.response_body = body
+end</pre>
 
 <p>end  “‘</p>
 <ul><li>
@@ -118,7 +136,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

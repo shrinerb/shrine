@@ -35,7 +35,7 @@ Shrine::Plugins::Instrumentation
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<p>Documentation can be found on <a href="https://shrinerb.com/docs/plugins/instrumentation">shrinerb.com/docs/plugins/instrumentation</a></p>
+<p>Documentation can be found on <a target="_top" href="https://shrinerb.com/docs/plugins/instrumentation">shrinerb.com/docs/plugins/instrumentation</a></p>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -96,7 +96,20 @@ Shrine::Plugins::Instrumentation
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">log_subscriber:</span> <span class="ruby-constant">LOG_SUBSCRIBER</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">13</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:instrumentation</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">log_events:</span> <span class="ruby-constant">EVENTS</span>, <span class="ruby-value">subscribers:</span> {} }&#x000A;<span class="line-num">14</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:instrumentation</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">15</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:instrumentation</span>][<span class="ruby-value">:notifications</span>] <span class="ruby-operator">||=</span> <span class="ruby-operator">::</span><span class="ruby-constant">ActiveSupport</span><span class="ruby-operator">::</span><span class="ruby-constant">Notifications</span>&#x000A;<span class="line-num">16</span> &#x000A;<span class="line-num">17</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:instrumentation</span>][<span class="ruby-value">:log_events</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">event_name</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">18</span>     <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-identifier">event_name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">log_subscriber</span>)&#x000A;<span class="line-num">19</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">20</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>
+<span class="line-num">12</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">log_subscriber:</span> <span class="ruby-constant">LOG_SUBSCRIBER</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)
+<span class="line-num">13</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:instrumentation</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">log_events:</span> <span class="ruby-constant">EVENTS</span>, <span class="ruby-value">subscribers:</span> {} }
+<span class="line-num">14</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:instrumentation</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)
+<span class="line-num">15</span>   <span class="ruby-keyword">begin</span>
+<span class="line-num">16</span>     <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:instrumentation</span>][<span class="ruby-value">:notifications</span>] <span class="ruby-operator">||=</span> <span class="ruby-operator">::</span><span class="ruby-constant">ActiveSupport</span><span class="ruby-operator">::</span><span class="ruby-constant">Notifications</span>
+<span class="line-num">17</span>   <span class="ruby-keyword">rescue</span> <span class="ruby-constant">NameError</span>
+<span class="line-num">18</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;default notifications library is ActiveSupport::Notifications, but activesupport gem is not installed&quot;</span>
+<span class="line-num">19</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">20</span> 
+<span class="line-num">21</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:instrumentation</span>][<span class="ruby-value">:log_events</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">event_name</span><span class="ruby-operator">|</span>
+<span class="line-num">22</span>     <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-identifier">event_name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">log_subscriber</span>)
+<span class="line-num">23</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">24</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -108,7 +121,7 @@ Shrine::Plugins::Instrumentation
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

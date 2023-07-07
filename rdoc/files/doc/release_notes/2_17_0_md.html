@@ -30,7 +30,7 @@ doc/release_notes/2.17.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -60,7 +60,7 @@ Last Update:
 <p>The <code>default_url</code> plugin now accepts a <code>:host</code> option for specifying the URL  host.</p>
 </li></ul>
 
-<p>“‘rb  plugin :default_url, host: “<a href="https://example.com">example.com</a>”</p>
+<p>“‘rb  plugin :default_url, host: “<a target="_top" href="https://example.com">example.com</a>”</p>
 
 <p>Attacher.default_url { “/#{name}/missing.png” }  <code> </code>rb  user.avatar_url #=&gt; “<img src="https://example.com/avatar/missing.png" />”  “‘</p>
 
@@ -91,9 +91,9 @@ Last Update:
 <p>The endpoint’s <code>#inspect</code> and <code>#to_s</code> outputs in <code>upload_endpoint</code>,  <code>presign_endpoint</code>, <code>download_endpoint</code>, and <code>derivation_endpoint</code> plugins  have been simplified. Now the <code>rake routes</code> command output in Rails apps  should be much more compact.</p>
 </li></ul>
 
-<p>“‘rb  # BEFORE:  ImageUploader.upload_endpoint(:cache) #=&gt; #&lt;Shrine::Plugins::UploadEndpoint::App:0x00007f91bec17dc8 @max_size=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache, @upload=nil, @upload_context=nil&gt;  ImageUploader.presign_endpoint(:cache) #=&gt; #&lt;Shrine::Plugins::PresignEndpoint::App:0x00007f91beca4ea8 @presign=nil, @presign_location=nil, @presign_options=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache&gt;  ImageUploader.download_endpoint #=&gt; #&lt;Class:0x00007f91bed1fa90&gt;  ImageUploader.derivation_endpoint #=&gt; #&lt;Shrine::DerivationEndpoint:0x00007f91bed4c900 @options={}, @shrine_class=ImageUploader&gt;</p>
+<p>“‘rb  # BEFORE:  ImageUploader.upload_endpoint(:cache) #=&gt; <Shrine::Plugins::UploadEndpoint::App:0x00007f91bec17dc8 @max_size=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache, @upload=nil, @upload_context=nil&gt;  ImageUploader.presign_endpoint(:cache) #=&gt; <Shrine::Plugins::PresignEndpoint::App:0x00007f91beca4ea8 @presign=nil, @presign_location=nil, @presign_options=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache&gt;  ImageUploader.download_endpoint #=&gt; <Class:0x00007f91bed1fa90&gt;  ImageUploader.derivation_endpoint #=&gt; <Shrine::DerivationEndpoint:0x00007f91bed4c900 @options={}, @shrine_class=ImageUploader&gt;</p>
 
-<p># AFTER:  ImageUploader.upload_endpoint(:cache) #=&gt; #&lt;ImageUploader::UploadEndpoint(:cache)&gt;  ImageUploader.presign_endpoint(:cache) #=&gt; #&lt;ImageUploader::PresignEndpoint(:cache)&gt;  ImageUploader.download_endpoint #=&gt; #&lt;ImageUploader::DownloadEndpoint&gt;  ImageUploader.derivation_endpoint #=&gt; #&lt;ImageUploader::DerivationEndpoint&gt;  “‘</p>
+<p># AFTER:  ImageUploader.upload_endpoint(:cache) #=&gt; <ImageUploader::UploadEndpoint(:cache)&gt;  ImageUploader.presign_endpoint(:cache) #=&gt; <ImageUploader::PresignEndpoint(:cache)&gt;  ImageUploader.download_endpoint #=&gt; <ImageUploader::DownloadEndpoint&gt;  ImageUploader.derivation_endpoint #=&gt; <ImageUploader::DerivationEndpoint&gt;  “‘</p>
 <ul><li>
 <p>The <code>derivation_endpoint</code> plugin is now compatible with Rack 1.6.</p>
 </li><li>
@@ -129,7 +129,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

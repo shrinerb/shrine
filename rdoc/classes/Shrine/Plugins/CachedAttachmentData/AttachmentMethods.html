@@ -60,7 +60,14 @@ Shrine::Plugins::CachedAttachmentData::AttachmentMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-define_model_methods-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-define_model_methods-source'>   <span class="ruby-comment"># File lib/shrine/plugins/cached_attachment_data.rb</span>&#x000A;<span class="line-num"> 8</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">define_model_methods</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num"> 9</span>   <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-keyword">super</span>)&#x000A;<span class="line-num">10</span> &#x000A;<span class="line-num">11</span>   <span class="ruby-identifier">define_method</span> <span class="ruby-value">:&quot;cached_#{name}_data&quot;</span> <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">12</span>     <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">cached_data</span>&#x000A;<span class="line-num">13</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-define_model_methods-source'>   <span class="ruby-comment"># File lib/shrine/plugins/cached_attachment_data.rb</span>
+<span class="line-num"> 8</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">define_model_methods</span>(<span class="ruby-identifier">name</span>)
+<span class="line-num"> 9</span>   <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-keyword">super</span>)
+<span class="line-num">10</span> 
+<span class="line-num">11</span>   <span class="ruby-identifier">define_method</span> <span class="ruby-value">:&quot;cached_#{name}_data&quot;</span> <span class="ruby-keyword">do</span>
+<span class="line-num">12</span>     <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">cached_data</span>
+<span class="line-num">13</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">14</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -72,7 +79,7 @@ Shrine::Plugins::CachedAttachmentData::AttachmentMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

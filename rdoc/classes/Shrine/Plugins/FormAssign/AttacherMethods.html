@@ -57,18 +57,38 @@ Shrine::Plugins::FormAssign::AttacherMethods
 
 <p>Helper for setting the attachment from form fields. Returns normalized fields.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_entity</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">form_assign</span>({ <span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>, <span class="ruby-value">title:</span> <span class="ruby-string">&quot;Title&quot;</span> })&#x000A;<span class="ruby-comment">#=&gt; { image: &#39;{...}&#39;, title: &quot;Title&quot; }</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">form_assign</span>({ <span class="ruby-value">image:</span> <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-value">image_remote_url:</span> <span class="ruby-string">&quot;...&quot;</span>, <span class="ruby-value">title:</span> <span class="ruby-string">&quot;Title&quot;</span> })&#x000A;<span class="ruby-comment">#=&gt; { image: &#39;{...}&#39;, title: &quot;Title&quot; }</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">form_assign</span>({ <span class="ruby-value">image:</span> <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-value">title:</span> <span class="ruby-string">&quot;Title&quot;</span> })&#x000A;<span class="ruby-comment">#=&gt; { title: &quot;Title&quot; }</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_entity</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">form_assign</span>({ <span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>, <span class="ruby-value">title:</span> <span class="ruby-string">&quot;Title&quot;</span> })
+<span class="ruby-comment">#=&gt; { image: &#39;{...}&#39;, title: &quot;Title&quot; }</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">form_assign</span>({ <span class="ruby-value">image:</span> <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-value">image_remote_url:</span> <span class="ruby-string">&quot;...&quot;</span>, <span class="ruby-value">title:</span> <span class="ruby-string">&quot;Title&quot;</span> })
+<span class="ruby-comment">#=&gt; { image: &#39;{...}&#39;, title: &quot;Title&quot; }</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">form_assign</span>({ <span class="ruby-value">image:</span> <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-value">title:</span> <span class="ruby-string">&quot;Title&quot;</span> })
+<span class="ruby-comment">#=&gt; { title: &quot;Title&quot; }</span>
+</pre>
 
 <p>You can also return the result in form of attributes to be used for database record creation.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">form_assign</span>({ <span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>, <span class="ruby-value">title:</span> <span class="ruby-string">&quot;Title&quot;</span> }, <span class="ruby-value">result:</span> <span class="ruby-value">:attributes</span>)&#x000A;<span class="ruby-comment">#=&gt; { image_data: &#39;{...}&#39;, title: &quot;Title&quot; }</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">form_assign</span>({ <span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>, <span class="ruby-value">title:</span> <span class="ruby-string">&quot;Title&quot;</span> }, <span class="ruby-value">result:</span> <span class="ruby-value">:attributes</span>)
+<span class="ruby-comment">#=&gt; { image_data: &#39;{...}&#39;, title: &quot;Title&quot; }</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-form_assign-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-form_assign-source'>   <span class="ruby-comment"># File lib/shrine/plugins/form_assign.rb</span>&#x000A;<span class="line-num">36</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">form_assign</span>(<span class="ruby-identifier">fields</span>, <span class="ruby-value">result:</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:form_assign</span>][<span class="ruby-value">:result</span>])&#x000A;<span class="line-num">37</span>   <span class="ruby-identifier">form</span>   = <span class="ruby-identifier">create_form_object</span>&#x000A;<span class="line-num">38</span>   <span class="ruby-identifier">fields</span> = <span class="ruby-identifier">form_write</span>(<span class="ruby-identifier">form</span>, <span class="ruby-identifier">fields</span>)&#x000A;<span class="line-num">39</span> &#x000A;<span class="line-num">40</span>   <span class="ruby-identifier">form_attach</span>(<span class="ruby-identifier">form</span>)&#x000A;<span class="line-num">41</span> &#x000A;<span class="line-num">42</span>   <span class="ruby-identifier">form_result</span>(<span class="ruby-identifier">fields</span>, <span class="ruby-identifier">result</span>)&#x000A;<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-form_assign-source'>   <span class="ruby-comment"># File lib/shrine/plugins/form_assign.rb</span>
+<span class="line-num">36</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">form_assign</span>(<span class="ruby-identifier">fields</span>, <span class="ruby-value">result:</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:form_assign</span>][<span class="ruby-value">:result</span>])
+<span class="line-num">37</span>   <span class="ruby-identifier">form</span>   = <span class="ruby-identifier">create_form_object</span>
+<span class="line-num">38</span>   <span class="ruby-identifier">fields</span> = <span class="ruby-identifier">form_write</span>(<span class="ruby-identifier">form</span>, <span class="ruby-identifier">fields</span>)
+<span class="line-num">39</span> 
+<span class="line-num">40</span>   <span class="ruby-identifier">form_attach</span>(<span class="ruby-identifier">form</span>)
+<span class="line-num">41</span> 
+<span class="line-num">42</span>   <span class="ruby-identifier">form_result</span>(<span class="ruby-identifier">fields</span>, <span class="ruby-identifier">result</span>)
+<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -80,7 +100,7 @@ Shrine::Plugins::FormAssign::AttacherMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

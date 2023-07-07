@@ -75,14 +75,20 @@ Shrine::Attacher::ClassMethods
 
 <p>Initializes the attacher from a data hash generated from <code>Attacher#data</code>.</p>
 
-<pre>attacher = Attacher.from_data({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... } })&#x000A;attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
+<pre>attacher = Attacher.from_data({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... } })
+attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-from_data-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-from_data-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">25</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">from_data</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">26</span>   <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">27</span>   <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">load_data</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="line-num">28</span>   <span class="ruby-identifier">attacher</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-from_data-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">25</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">from_data</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">26</span>   <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">27</span>   <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">load_data</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">28</span>   <span class="ruby-identifier">attacher</span>
+<span class="line-num">29</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-inspect'>
@@ -100,7 +106,10 @@ Shrine::Attacher::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inspect-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-inspect-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>&#x000A;<span class="line-num">18</span>   <span class="ruby-node">&quot;#{shrine_class.inspect}::Attacher&quot;</span>&#x000A;<span class="line-num">19</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-inspect-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">17</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>
+<span class="line-num">18</span>   <span class="ruby-node">&quot;#{shrine_class.inspect}::Attacher&quot;</span>
+<span class="line-num">19</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -112,7 +121,7 @@ Shrine::Attacher::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -60,7 +60,18 @@ Shrine::Plugins::RemoteUrl::AttachmentMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-define_model_methods-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-define_model_methods-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">38</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">define_model_methods</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">39</span>   <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-keyword">super</span>)&#x000A;<span class="line-num">40</span> &#x000A;<span class="line-num">41</span>   <span class="ruby-identifier">define_method</span> <span class="ruby-value">:&quot;#{name}_remote_url=&quot;</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">url</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">42</span>     <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">remote_url</span> = <span class="ruby-identifier">url</span>&#x000A;<span class="line-num">43</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">44</span> &#x000A;<span class="line-num">45</span>   <span class="ruby-identifier">define_method</span> <span class="ruby-value">:&quot;#{name}_remote_url&quot;</span> <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">46</span>     <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">remote_url</span>&#x000A;<span class="line-num">47</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">48</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-define_model_methods-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>
+<span class="line-num">38</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">define_model_methods</span>(<span class="ruby-identifier">name</span>)
+<span class="line-num">39</span>   <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-keyword">super</span>)
+<span class="line-num">40</span> 
+<span class="line-num">41</span>   <span class="ruby-identifier">define_method</span> <span class="ruby-value">:&quot;#{name}_remote_url=&quot;</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">url</span><span class="ruby-operator">|</span>
+<span class="line-num">42</span>     <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">remote_url</span> = <span class="ruby-identifier">url</span>
+<span class="line-num">43</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">44</span> 
+<span class="line-num">45</span>   <span class="ruby-identifier">define_method</span> <span class="ruby-value">:&quot;#{name}_remote_url&quot;</span> <span class="ruby-keyword">do</span>
+<span class="line-num">46</span>     <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">remote_url</span>
+<span class="line-num">47</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">48</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -72,7 +83,7 @@ Shrine::Plugins::RemoteUrl::AttachmentMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

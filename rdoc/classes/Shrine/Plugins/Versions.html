@@ -35,7 +35,7 @@ Shrine::Plugins::Versions
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<p>Documentation can be found on <a href="https://shrinerb.com/docs/plugins/versions">shrinerb.com/docs/plugins/versions</a></p>
+<p>Documentation can be found on <a target="_top" href="https://shrinerb.com/docs/plugins/versions">shrinerb.com/docs/plugins/versions</a></p>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -72,7 +72,11 @@ Shrine::Plugins::Versions
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/versions.rb</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">15</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:versions</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">fallbacks:</span> {}, <span class="ruby-value">fallback_to_original:</span> <span class="ruby-keyword">true</span> }&#x000A;<span class="line-num">16</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:versions</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/versions.rb</span>
+<span class="line-num">14</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)
+<span class="line-num">15</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:versions</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">fallbacks:</span> {}, <span class="ruby-value">fallback_to_original:</span> <span class="ruby-keyword">true</span> }
+<span class="line-num">16</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:versions</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)
+<span class="line-num">17</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-load_dependencies'>
@@ -88,7 +92,11 @@ Shrine::Plugins::Versions
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins/versions.rb</span>&#x000A;<span class="line-num"> 9</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)&#x000A;<span class="line-num">10</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;<span class="line-num">11</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins/versions.rb</span>
+<span class="line-num"> 9</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">10</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>
+<span class="line-num">11</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>
+<span class="line-num">12</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -100,7 +108,7 @@ Shrine::Plugins::Versions
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

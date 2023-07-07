@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>3.5.0.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>3.5.0.md
+</h1>
+<div class='paths'>
+doc/release_notes/3.5.0.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2023-07-06 23:36:46 +0200</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>—</p>
+
+<h2 id="label-title-3A+Shrine+3.5.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_5_0_md.html">3.5.0</a><span><a href="#label-title-3A+Shrine+3.5.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>The website has been migrated to Docusaurus v2. :sparkles:</p>
+</li><li>
+<p>The <code>:signer</code> option has been added to the <code>derivation_endpoint</code> plugin, for when you want to use custom URL signing. This is useful when using <code>:expires_in</code>, and wanting to have expiring URLs work with CDN caching.</p>
+</li></ul>
+
+<p>“‘rb  require “aws-sdk-cloudfront”  signer = Aws::CloudFront::UrlSigner.new(key_pair_id: “…”, private_key: “…”)</p>
+
+<p>plugin :derivation_endpoint,  expires_in: 90,  signer: -&gt; (url, expires_in:) do  signer.signed_url(url, expires: Time.now.to_i + expires_in)  end  “‘</p>
+<ul><li>
+<p>The S3 storage now supports <code>:max_multipart_parts</code> option for specifying the maximum number of concurrent parts in which a large file will get uploaded. This number defaults to <code>10_000</code>.</p>
+</li></ul>
+
+<p><code>rb   Shrine::Storage::S3.new(max_multipart_parts: 1000, ...) </code></p>
+<ul><li>
+<p>The <code>:encoding</code> option can now be passed to <code>S3#open</code>, which is applied to downloaded chunks.</p>
+</li></ul>
+
+<p><code>rb   io = uploaded_file.open(encoding: Encoding::UTF_8)   csv = CSV.new(io)   # ... </code></p>
+
+<h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Passing a boolean value to the <code>#remove_attachment=</code> setter now works on Ruby 3.2. Previously this would raise an error, because <a href="../../../classes/Shrine.html"><code>Shrine</code></a> would try to call <code>=~</code> on it, but <code>Object#=~</code> method has been removed in Ruby 3.2.</p>
+</li><li>
+<p>When duplicating a model instance, the duplicated attacher now references the duplicated model instance instead of the original one.</p>
+</li><li>
+<p>The download endpoint now returns a <code>400 Bad Request</code> response when the serialized file component is invalid.</p>
+</li><li>
+<p>The <code>derivatives</code> plugin now supports passing <code>mutex: false</code> option to disable usage of a mutex. This makes the <code>Shrine::Attacher</code> object marshallable, which should enable using <code>Marshal.dump</code> and <code>Marshal.load</code> on model instances with attachments. This should be safe unless you're adding derivatives on the same attacher object concurrently.</p>
+</li><li>
+<p>When loading the <code>derivatives</code> plugin with <code>versions_compatibility: true</code>, this setting doesn't leak to other uploaders anymore. Previously if other uploaders would load <code>derivatives</code> plugin without this option, versions compatibility would still get enabled for them. This change also fixes behavior on JRuby.</p>
+</li><li>
+<p>When S3 storage copies files, the AWS tag are not inherited anymore. This allows passing the <code>:tagging</code> upload option when promoting from temporary to permanent storage, and have it take effect.</p>
+</li><li>
+<p>The <code>UploadedFile#url</code> method doesn't call the obsolete <code>URI.regexp</code> method anymore, which should avoid warnings.</p>
+</li><li>
+<p>The <code>infer_extension</code> plugin now defines <code>infer_extension</code> instance method (in addition to class method) on the uploader for convenience, so that it can be easily called at the uploader instance level.</p>
+</li></ul>
+
+<p>“‘rb  class MyUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  plugin :infer_extension</p>
+
+<pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">metadata:</span>, <span class="ruby-operator">**</span>)
+  <span class="ruby-identifier">extension</span> = <span class="ruby-identifier">infer_extension</span>(<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;mime_type&quot;</span>])
+  <span class="ruby-comment"># ...</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>end  “‘</p>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

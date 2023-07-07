@@ -63,7 +63,13 @@ Shrine::Plugins::DataUri::FileMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-base64-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-base64-source'>    <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>&#x000A;<span class="line-num">144</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">base64</span>&#x000A;<span class="line-num">145</span>   <span class="ruby-identifier">binary</span> = <span class="ruby-identifier">open</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span> }&#x000A;<span class="line-num">146</span>   <span class="ruby-identifier">result</span> = <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">strict_encode64</span>(<span class="ruby-identifier">binary</span>)&#x000A;<span class="line-num">147</span>   <span class="ruby-identifier">binary</span>.<span class="ruby-identifier">clear</span> <span class="ruby-comment"># deallocate string</span>&#x000A;<span class="line-num">148</span>   <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">149</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-base64-source'>    <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
+<span class="line-num">144</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">base64</span>
+<span class="line-num">145</span>   <span class="ruby-identifier">binary</span> = <span class="ruby-identifier">open</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span> }
+<span class="line-num">146</span>   <span class="ruby-identifier">result</span> = <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">strict_encode64</span>(<span class="ruby-identifier">binary</span>)
+<span class="line-num">147</span>   <span class="ruby-identifier">binary</span>.<span class="ruby-identifier">clear</span> <span class="ruby-comment"># deallocate string</span>
+<span class="line-num">148</span>   <span class="ruby-identifier">result</span>
+<span class="line-num">149</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-data_uri'>
@@ -81,7 +87,10 @@ Shrine::Plugins::DataUri::FileMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-data_uri-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-data_uri-source'>    <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>&#x000A;<span class="line-num">139</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data_uri</span>&#x000A;<span class="line-num">140</span>   <span class="ruby-ivar">@data_uri</span> <span class="ruby-operator">||=</span> <span class="ruby-node">&quot;data:#{mime_type || &quot;text/plain&quot;};base64,#{base64}&quot;</span>&#x000A;<span class="line-num">141</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-data_uri-source'>    <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
+<span class="line-num">139</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data_uri</span>
+<span class="line-num">140</span>   <span class="ruby-ivar">@data_uri</span> <span class="ruby-operator">||=</span> <span class="ruby-node">&quot;data:#{mime_type || &quot;text/plain&quot;};base64,#{base64}&quot;</span>
+<span class="line-num">141</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -93,7 +102,7 @@ Shrine::Plugins::DataUri::FileMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

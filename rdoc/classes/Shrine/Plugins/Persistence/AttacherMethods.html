@@ -63,7 +63,10 @@ Shrine::Plugins::Persistence::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-atomic_persist-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-atomic_persist-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>&#x000A;<span class="line-num">67</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">atomic_persist</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="line-num">68</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;unhandled by a persistence plugin&quot;</span>&#x000A;<span class="line-num">69</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-atomic_persist-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>
+<span class="line-num">67</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">atomic_persist</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">68</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;unhandled by a persistence plugin&quot;</span>
+<span class="line-num">69</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-atomic_promote'>
@@ -79,7 +82,10 @@ Shrine::Plugins::Persistence::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-atomic_promote-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-atomic_promote-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>&#x000A;<span class="line-num">63</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">atomic_promote</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="line-num">64</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;unhandled by a persistence plugin&quot;</span>&#x000A;<span class="line-num">65</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-atomic_promote-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>
+<span class="line-num">63</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">atomic_promote</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">64</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;unhandled by a persistence plugin&quot;</span>
+<span class="line-num">65</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-persist'>
@@ -95,7 +101,10 @@ Shrine::Plugins::Persistence::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-persist-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-persist-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>&#x000A;<span class="line-num">71</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">persist</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="line-num">72</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;unhandled by a persistence plugin&quot;</span>&#x000A;<span class="line-num">73</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-persist-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>
+<span class="line-num">71</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">persist</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">72</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;unhandled by a persistence plugin&quot;</span>
+<span class="line-num">73</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-set_entity'>
@@ -113,7 +122,11 @@ Shrine::Plugins::Persistence::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-set_entity-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-set_entity-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>&#x000A;<span class="line-num">77</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_entity</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="line-num">78</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">79</span>   <span class="ruby-ivar">@column_serializer</span> = <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">hash_attribute?</span>&#x000A;<span class="line-num">80</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-set_entity-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>
+<span class="line-num">77</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_entity</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">78</span>   <span class="ruby-keyword">super</span>
+<span class="line-num">79</span>   <span class="ruby-ivar">@column_serializer</span> = <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">hash_attribute?</span>
+<span class="line-num">80</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -125,7 +138,7 @@ Shrine::Plugins::Persistence::AttacherMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

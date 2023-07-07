@@ -64,7 +64,16 @@ Shrine::Plugins::DataUri::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign_data_uri-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-assign_data_uri-source'>    <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>&#x000A;<span class="line-num">106</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign_data_uri</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">107</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uri</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">uri</span>.<span class="ruby-identifier">nil?</span>&#x000A;<span class="line-num">108</span> &#x000A;<span class="line-num">109</span>   <span class="ruby-identifier">data_file</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">data_uri</span>(<span class="ruby-identifier">uri</span>)&#x000A;<span class="line-num">110</span>   <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">data_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">111</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">ParseError</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">error</span>&#x000A;<span class="line-num">112</span>   <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">clear</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">data_uri_error_messsage</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-identifier">error</span>)&#x000A;<span class="line-num">113</span>   <span class="ruby-keyword">false</span>&#x000A;<span class="line-num">114</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-assign_data_uri-source'>    <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
+<span class="line-num">106</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign_data_uri</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">107</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uri</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">uri</span>.<span class="ruby-identifier">nil?</span>
+<span class="line-num">108</span> 
+<span class="line-num">109</span>   <span class="ruby-identifier">data_file</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">data_uri</span>(<span class="ruby-identifier">uri</span>)
+<span class="line-num">110</span>   <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">data_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">111</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">ParseError</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">error</span>
+<span class="line-num">112</span>   <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">clear</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">data_uri_error_messsage</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-identifier">error</span>)
+<span class="line-num">113</span>   <span class="ruby-keyword">false</span>
+<span class="line-num">114</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-data_uri'>
@@ -82,7 +91,10 @@ Shrine::Plugins::DataUri::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-data_uri-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-data_uri-source'>    <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>&#x000A;<span class="line-num">123</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data_uri</span>&#x000A;<span class="line-num">124</span>   <span class="ruby-ivar">@data_uri</span>&#x000A;<span class="line-num">125</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-data_uri-source'>    <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
+<span class="line-num">123</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data_uri</span>
+<span class="line-num">124</span>   <span class="ruby-ivar">@data_uri</span>
+<span class="line-num">125</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-data_uri-3D'>
@@ -100,7 +112,11 @@ Shrine::Plugins::DataUri::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-data_uri-3D-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-data_uri-3D-source'>    <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>&#x000A;<span class="line-num">117</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data_uri=</span>(<span class="ruby-identifier">uri</span>)&#x000A;<span class="line-num">118</span>   <span class="ruby-identifier">assign_data_uri</span>(<span class="ruby-identifier">uri</span>)&#x000A;<span class="line-num">119</span>   <span class="ruby-ivar">@data_uri</span> = <span class="ruby-identifier">uri</span>&#x000A;<span class="line-num">120</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-data_uri-3D-source'>    <span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
+<span class="line-num">117</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data_uri=</span>(<span class="ruby-identifier">uri</span>)
+<span class="line-num">118</span>   <span class="ruby-identifier">assign_data_uri</span>(<span class="ruby-identifier">uri</span>)
+<span class="line-num">119</span>   <span class="ruby-ivar">@data_uri</span> = <span class="ruby-identifier">uri</span>
+<span class="line-num">120</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -112,7 +128,7 @@ Shrine::Plugins::DataUri::AttacherMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

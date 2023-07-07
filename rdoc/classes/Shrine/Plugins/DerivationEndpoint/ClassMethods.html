@@ -66,7 +66,10 @@ Shrine::Plugins::DerivationEndpoint::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-derivation-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-derivation-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">73</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">74</span>   <span class="ruby-identifier">derivations</span>[<span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="line-num">75</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-derivation-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
+<span class="line-num">73</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">74</span>   <span class="ruby-identifier">derivations</span>[<span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>] = <span class="ruby-identifier">block</span>
+<span class="line-num">75</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-derivation_endpoint'>
@@ -84,7 +87,10 @@ Shrine::Plugins::DerivationEndpoint::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-derivation_endpoint-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-derivation_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation_endpoint</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">42</span>   <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">DerivationEndpoint</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">shrine_class:</span> <span class="ruby-keyword">self</span>, <span class="ruby-value">options:</span> <span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-derivation_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
+<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation_endpoint</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">42</span>   <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">DerivationEndpoint</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">shrine_class:</span> <span class="ruby-keyword">self</span>, <span class="ruby-value">options:</span> <span class="ruby-identifier">options</span>)
+<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-derivation_options'>
@@ -100,7 +106,10 @@ Shrine::Plugins::DerivationEndpoint::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-derivation_options-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-derivation_options-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">81</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation_options</span>&#x000A;<span class="line-num">82</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:derivation_endpoint</span>][<span class="ruby-value">:options</span>]&#x000A;<span class="line-num">83</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-derivation_options-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
+<span class="line-num">81</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation_options</span>
+<span class="line-num">82</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:derivation_endpoint</span>][<span class="ruby-value">:options</span>]
+<span class="line-num">83</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-derivation_response'>
@@ -120,7 +129,26 @@ Shrine::Plugins::DerivationEndpoint::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-derivation_response-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-derivation_response-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">51</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation_response</span>(<span class="ruby-identifier">env</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">52</span>   <span class="ruby-identifier">script_name</span> = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>]&#x000A;<span class="line-num">53</span>   <span class="ruby-identifier">path_info</span>   = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]&#x000A;<span class="line-num">54</span> &#x000A;<span class="line-num">55</span>   <span class="ruby-identifier">prefix</span> = <span class="ruby-identifier">derivation_options</span>[<span class="ruby-value">:prefix</span>]&#x000A;<span class="line-num">56</span>   <span class="ruby-identifier">match</span>  = <span class="ruby-identifier">path_info</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^\/#{prefix}/</span>)&#x000A;<span class="line-num">57</span> &#x000A;<span class="line-num">58</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;request path must start with \&quot;/#{prefix}\&quot;, but is \&quot;#{path_info}\&quot;&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">match</span>&#x000A;<span class="line-num">59</span> &#x000A;<span class="line-num">60</span>   <span class="ruby-keyword">begin</span>&#x000A;<span class="line-num">61</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] <span class="ruby-operator">+=</span> <span class="ruby-identifier">match</span>.<span class="ruby-identifier">to_s</span>&#x000A;<span class="line-num">62</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]    = <span class="ruby-identifier">match</span>.<span class="ruby-identifier">post_match</span>&#x000A;<span class="line-num">63</span> &#x000A;<span class="line-num">64</span>     <span class="ruby-identifier">derivation_endpoint</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;<span class="line-num">65</span>   <span class="ruby-keyword">ensure</span>&#x000A;<span class="line-num">66</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] = <span class="ruby-identifier">script_name</span>&#x000A;<span class="line-num">67</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]   = <span class="ruby-identifier">path_info</span>&#x000A;<span class="line-num">68</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">69</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-derivation_response-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
+<span class="line-num">51</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation_response</span>(<span class="ruby-identifier">env</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">52</span>   <span class="ruby-identifier">script_name</span> = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>]
+<span class="line-num">53</span>   <span class="ruby-identifier">path_info</span>   = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]
+<span class="line-num">54</span> 
+<span class="line-num">55</span>   <span class="ruby-identifier">prefix</span> = <span class="ruby-identifier">derivation_options</span>[<span class="ruby-value">:prefix</span>]
+<span class="line-num">56</span>   <span class="ruby-identifier">match</span>  = <span class="ruby-identifier">path_info</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^\/#{prefix}/</span>)
+<span class="line-num">57</span> 
+<span class="line-num">58</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;request path must start with \&quot;/#{prefix}\&quot;, but is \&quot;#{path_info}\&quot;&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">match</span>
+<span class="line-num">59</span> 
+<span class="line-num">60</span>   <span class="ruby-keyword">begin</span>
+<span class="line-num">61</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] <span class="ruby-operator">+=</span> <span class="ruby-identifier">match</span>.<span class="ruby-identifier">to_s</span>
+<span class="line-num">62</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]    = <span class="ruby-identifier">match</span>.<span class="ruby-identifier">post_match</span>
+<span class="line-num">63</span> 
+<span class="line-num">64</span>     <span class="ruby-identifier">derivation_endpoint</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)
+<span class="line-num">65</span>   <span class="ruby-keyword">ensure</span>
+<span class="line-num">66</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] = <span class="ruby-identifier">script_name</span>
+<span class="line-num">67</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]   = <span class="ruby-identifier">path_info</span>
+<span class="line-num">68</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">69</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-derivations'>
@@ -136,7 +164,10 @@ Shrine::Plugins::DerivationEndpoint::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-derivations-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-derivations-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">77</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivations</span>&#x000A;<span class="line-num">78</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:derivation_endpoint</span>][<span class="ruby-value">:derivations</span>]&#x000A;<span class="line-num">79</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-derivations-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
+<span class="line-num">77</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivations</span>
+<span class="line-num">78</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:derivation_endpoint</span>][<span class="ruby-value">:derivations</span>]
+<span class="line-num">79</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -148,7 +179,7 @@ Shrine::Plugins::DerivationEndpoint::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -77,7 +77,10 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">238</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">239</span>   <span class="ruby-identifier">new</span>.<span class="ruby-identifier">public_send</span>(<span class="ruby-value">:&quot;on_#{event.name}&quot;</span>, <span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">240</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>
+<span class="line-num">242</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">event</span>)
+<span class="line-num">243</span>   <span class="ruby-identifier">new</span>.<span class="ruby-identifier">public_send</span>(<span class="ruby-value">:&quot;on_#{event.name}&quot;</span>, <span class="ruby-identifier">event</span>)
+<span class="line-num">244</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -94,7 +97,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_delete-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-on_delete-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">278</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_delete</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">279</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Delete (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">280</span>     storage:  event[:storage],&#x000A;<span class="line-num">281</span>     location: event[:location],&#x000A;<span class="line-num">282</span>     uploader: event[:uploader],&#x000A;<span class="line-num">283</span>   )}&quot;</span>&#x000A;<span class="line-num">284</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-on_delete-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>
+<span class="line-num">282</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_delete</span>(<span class="ruby-identifier">event</span>)
+<span class="line-num">283</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Delete (#{event.duration}ms) – #{format(
+<span class="line-num">284</span>     storage:  event[:storage],
+<span class="line-num">285</span>     location: event[:location],
+<span class="line-num">286</span>     uploader: event[:uploader],
+<span class="line-num">287</span>   )}&quot;</span>
+<span class="line-num">288</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-on_download'>
@@ -110,7 +120,15 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_download-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-on_download-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">252</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_download</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">253</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Download (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">254</span>     storage:          event[:storage],&#x000A;<span class="line-num">255</span>     location:         event[:location],&#x000A;<span class="line-num">256</span>     download_options: event[:download_options],&#x000A;<span class="line-num">257</span>     uploader:         event[:uploader],&#x000A;<span class="line-num">258</span>   )}&quot;</span>&#x000A;<span class="line-num">259</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-on_download-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>
+<span class="line-num">256</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_download</span>(<span class="ruby-identifier">event</span>)
+<span class="line-num">257</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Download (#{event.duration}ms) – #{format(
+<span class="line-num">258</span>     storage:          event[:storage],
+<span class="line-num">259</span>     location:         event[:location],
+<span class="line-num">260</span>     download_options: event[:download_options],
+<span class="line-num">261</span>     uploader:         event[:uploader],
+<span class="line-num">262</span>   )}&quot;</span>
+<span class="line-num">263</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-on_exists'>
@@ -126,7 +144,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_exists-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-on_exists-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">270</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_exists</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">271</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Exists (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">272</span>     storage:  event[:storage],&#x000A;<span class="line-num">273</span>     location: event[:location],&#x000A;<span class="line-num">274</span>     uploader: event[:uploader],&#x000A;<span class="line-num">275</span>   )}&quot;</span>&#x000A;<span class="line-num">276</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-on_exists-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>
+<span class="line-num">274</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_exists</span>(<span class="ruby-identifier">event</span>)
+<span class="line-num">275</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Exists (#{event.duration}ms) – #{format(
+<span class="line-num">276</span>     storage:  event[:storage],
+<span class="line-num">277</span>     location: event[:location],
+<span class="line-num">278</span>     uploader: event[:uploader],
+<span class="line-num">279</span>   )}&quot;</span>
+<span class="line-num">280</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-on_metadata'>
@@ -142,7 +167,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_metadata-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-on_metadata-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">286</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_metadata</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">287</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Metadata (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">288</span>     storage:  event[:storage],&#x000A;<span class="line-num">289</span>     io:       event[:io].class,&#x000A;<span class="line-num">290</span>     uploader: event[:uploader],&#x000A;<span class="line-num">291</span>   )}&quot;</span>&#x000A;<span class="line-num">292</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-on_metadata-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>
+<span class="line-num">290</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_metadata</span>(<span class="ruby-identifier">event</span>)
+<span class="line-num">291</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Metadata (#{event.duration}ms) – #{format(
+<span class="line-num">292</span>     storage:  event[:storage],
+<span class="line-num">293</span>     io:       event[:io].class,
+<span class="line-num">294</span>     uploader: event[:uploader],
+<span class="line-num">295</span>   )}&quot;</span>
+<span class="line-num">296</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-on_open'>
@@ -158,7 +190,15 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_open-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-on_open-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">261</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_open</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">262</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Open (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">263</span>     storage:          event[:storage],&#x000A;<span class="line-num">264</span>     location:         event[:location],&#x000A;<span class="line-num">265</span>     download_options: event[:download_options],&#x000A;<span class="line-num">266</span>     uploader:         event[:uploader],&#x000A;<span class="line-num">267</span>   )}&quot;</span>&#x000A;<span class="line-num">268</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-on_open-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>
+<span class="line-num">265</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_open</span>(<span class="ruby-identifier">event</span>)
+<span class="line-num">266</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Open (#{event.duration}ms) – #{format(
+<span class="line-num">267</span>     storage:          event[:storage],
+<span class="line-num">268</span>     location:         event[:location],
+<span class="line-num">269</span>     download_options: event[:download_options],
+<span class="line-num">270</span>     uploader:         event[:uploader],
+<span class="line-num">271</span>   )}&quot;</span>
+<span class="line-num">272</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-on_upload'>
@@ -174,7 +214,16 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_upload-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-on_upload-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">242</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_upload</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">243</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Upload (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">244</span>     storage:        event[:storage],&#x000A;<span class="line-num">245</span>     location:       event[:location],&#x000A;<span class="line-num">246</span>     io:             event[:io].class,&#x000A;<span class="line-num">247</span>     upload_options: event[:upload_options],&#x000A;<span class="line-num">248</span>     uploader:       event[:uploader],&#x000A;<span class="line-num">249</span>   )}&quot;</span>&#x000A;<span class="line-num">250</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-on_upload-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>
+<span class="line-num">246</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_upload</span>(<span class="ruby-identifier">event</span>)
+<span class="line-num">247</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Upload (#{event.duration}ms) – #{format(
+<span class="line-num">248</span>     storage:        event[:storage],
+<span class="line-num">249</span>     location:       event[:location],
+<span class="line-num">250</span>     io:             event[:io].class,
+<span class="line-num">251</span>     upload_options: event[:upload_options],
+<span class="line-num">252</span>     uploader:       event[:uploader],
+<span class="line-num">253</span>   )}&quot;</span>
+<span class="line-num">254</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -186,7 +235,7 @@ Superclass:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

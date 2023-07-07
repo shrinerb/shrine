@@ -60,7 +60,12 @@ Shrine::Plugins::TypePredicates::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-type_lookup-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-type_lookup-source'>   <span class="ruby-comment"># File lib/shrine/plugins/type_predicates.rb</span>&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">type_lookup</span>(<span class="ruby-identifier">extension</span>, <span class="ruby-identifier">database</span> = <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">18</span>   <span class="ruby-identifier">database</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:type_predicates</span>][<span class="ruby-value">:mime</span>]&#x000A;<span class="line-num">19</span>   <span class="ruby-identifier">database</span>   = <span class="ruby-constant">MimeDatabase</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">database</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">database</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>)&#x000A;<span class="line-num">20</span>   <span class="ruby-identifier">database</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">extension</span>.<span class="ruby-identifier">to_s</span>)&#x000A;<span class="line-num">21</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-type_lookup-source'>   <span class="ruby-comment"># File lib/shrine/plugins/type_predicates.rb</span>
+<span class="line-num">17</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">type_lookup</span>(<span class="ruby-identifier">extension</span>, <span class="ruby-identifier">database</span> = <span class="ruby-keyword">nil</span>)
+<span class="line-num">18</span>   <span class="ruby-identifier">database</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:type_predicates</span>][<span class="ruby-value">:mime</span>]
+<span class="line-num">19</span>   <span class="ruby-identifier">database</span>   = <span class="ruby-constant">MimeDatabase</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">database</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">database</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>)
+<span class="line-num">20</span>   <span class="ruby-identifier">database</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">extension</span>.<span class="ruby-identifier">to_s</span>)
+<span class="line-num">21</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -72,7 +77,7 @@ Shrine::Plugins::TypePredicates::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -74,7 +74,15 @@ Shrine::Plugins::Signature::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-calculate_signature-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-calculate_signature-source'>   <span class="ruby-comment"># File lib/shrine/plugins/signature.rb</span>&#x000A;<span class="line-num">24</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">algorithm</span>, <span class="ruby-value">format:</span> <span class="ruby-value">:hex</span>, <span class="ruby-value">rewind:</span> <span class="ruby-keyword">true</span>)&#x000A;<span class="line-num">25</span>   <span class="ruby-identifier">calculator</span> = <span class="ruby-constant">SignatureCalculator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">algorithm</span>.<span class="ruby-identifier">downcase</span>, <span class="ruby-value">format:</span> <span class="ruby-identifier">format</span>)&#x000A;<span class="line-num">26</span> &#x000A;<span class="line-num">27</span>   <span class="ruby-identifier">signature</span> = <span class="ruby-identifier">instrument_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">algorithm</span>, <span class="ruby-identifier">format</span>) { <span class="ruby-identifier">calculator</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) }&#x000A;<span class="line-num">28</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">rewind</span>&#x000A;<span class="line-num">29</span> &#x000A;<span class="line-num">30</span>   <span class="ruby-identifier">signature</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-calculate_signature-source'>   <span class="ruby-comment"># File lib/shrine/plugins/signature.rb</span>
+<span class="line-num">24</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">algorithm</span>, <span class="ruby-value">format:</span> <span class="ruby-value">:hex</span>, <span class="ruby-value">rewind:</span> <span class="ruby-keyword">true</span>)
+<span class="line-num">25</span>   <span class="ruby-identifier">calculator</span> = <span class="ruby-constant">SignatureCalculator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">algorithm</span>.<span class="ruby-identifier">downcase</span>, <span class="ruby-value">format:</span> <span class="ruby-identifier">format</span>)
+<span class="line-num">26</span> 
+<span class="line-num">27</span>   <span class="ruby-identifier">signature</span> = <span class="ruby-identifier">instrument_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">algorithm</span>, <span class="ruby-identifier">format</span>) { <span class="ruby-identifier">calculator</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) }
+<span class="line-num">28</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">rewind</span>
+<span class="line-num">29</span> 
+<span class="line-num">30</span>   <span class="ruby-identifier">signature</span>
+<span class="line-num">31</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -86,7 +94,7 @@ Shrine::Plugins::Signature::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

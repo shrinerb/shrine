@@ -58,14 +58,23 @@ Shrine::Plugins::Instrumentation::ClassMethods
 
 <p>Sends a <code>*.shrine</code> event.</p>
 
-<pre class="ruby"><span class="ruby-comment"># sends a `my_event.shrine` event</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">instrument</span>(<span class="ruby-value">:my_event</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># work</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-comment"># sends a `my_event.shrine` event</span>
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">instrument</span>(<span class="ruby-value">:my_event</span>) <span class="ruby-keyword">do</span>
+  <span class="ruby-comment"># work</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-instrument-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-instrument-source'>   <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">instrument</span>(<span class="ruby-identifier">event_name</span>, <span class="ruby-identifier">payload</span> = {}, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">30</span>   <span class="ruby-identifier">payload</span>[<span class="ruby-value">:uploader</span>] = <span class="ruby-keyword">self</span>&#x000A;<span class="line-num">31</span> &#x000A;<span class="line-num">32</span>   <span class="ruby-identifier">notifications</span>.<span class="ruby-identifier">instrument</span>(<span class="ruby-node">&quot;#{event_name}.shrine&quot;</span>, <span class="ruby-identifier">payload</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-instrument-source'>   <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>
+<span class="line-num">33</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">instrument</span>(<span class="ruby-identifier">event_name</span>, <span class="ruby-identifier">payload</span> = {}, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">34</span>   <span class="ruby-identifier">payload</span>[<span class="ruby-value">:uploader</span>] = <span class="ruby-keyword">self</span>
+<span class="line-num">35</span> 
+<span class="line-num">36</span>   <span class="ruby-identifier">notifications</span>.<span class="ruby-identifier">instrument</span>(<span class="ruby-node">&quot;#{event_name}.shrine&quot;</span>, <span class="ruby-identifier">payload</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">37</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-subscribe'>
@@ -78,14 +87,32 @@ Shrine::Plugins::Instrumentation::ClassMethods
 
 <p>Subscribes to a <code>*.shrine</code> event. It rejects duplicate subscribers.</p>
 
-<pre class="ruby"><span class="ruby-comment"># subscribes to the `storage_upload.shrine` event</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:storage_upload</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">event</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">event</span>.<span class="ruby-identifier">name</span> <span class="ruby-comment">#=&gt; :storage_upload</span>&#x000A;  <span class="ruby-identifier">event</span>.<span class="ruby-identifier">payload</span> <span class="ruby-comment">#=&gt; { location: &quot;...&quot;, ... }</span>&#x000A;  <span class="ruby-identifier">event</span>[<span class="ruby-value">:location</span>] <span class="ruby-comment">#=&gt; &quot;...&quot;</span>&#x000A;  <span class="ruby-identifier">event</span>.<span class="ruby-identifier">duration</span> <span class="ruby-comment">#=&gt; 50 (in milliseconds)</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-comment"># subscribes to the `storage_upload.shrine` event</span>
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:storage_upload</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">event</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">event</span>.<span class="ruby-identifier">name</span> <span class="ruby-comment">#=&gt; :storage_upload</span>
+  <span class="ruby-identifier">event</span>.<span class="ruby-identifier">payload</span> <span class="ruby-comment">#=&gt; { location: &quot;...&quot;, ... }</span>
+  <span class="ruby-identifier">event</span>[<span class="ruby-value">:location</span>] <span class="ruby-comment">#=&gt; &quot;...&quot;</span>
+  <span class="ruby-identifier">event</span>.<span class="ruby-identifier">duration</span> <span class="ruby-comment">#=&gt; 50 (in milliseconds)</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-subscribe-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-subscribe-source'>   <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">44</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">subscribe</span>(<span class="ruby-identifier">event_name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">subscriber</span>)&#x000A;<span class="line-num">45</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">subscriber</span>.<span class="ruby-identifier">nil?</span>&#x000A;<span class="line-num">46</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">subscribers</span>[<span class="ruby-identifier">event_name</span>]&amp;.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">subscriber</span>)&#x000A;<span class="line-num">47</span> &#x000A;<span class="line-num">48</span>   <span class="ruby-identifier">notifications</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-node">&quot;#{event_name}.shrine&quot;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">event</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">49</span>     <span class="ruby-identifier">subscriber</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">event</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">event</span>[<span class="ruby-value">:uploader</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-keyword">self</span>&#x000A;<span class="line-num">50</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">51</span> &#x000A;<span class="line-num">52</span>   <span class="ruby-identifier">subscribers</span>[<span class="ruby-identifier">event_name</span>] <span class="ruby-operator">||=</span> []&#x000A;<span class="line-num">53</span>   <span class="ruby-identifier">subscribers</span>[<span class="ruby-identifier">event_name</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">subscriber</span>&#x000A;<span class="line-num">54</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-subscribe-source'>   <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>
+<span class="line-num">48</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">subscribe</span>(<span class="ruby-identifier">event_name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">subscriber</span>)
+<span class="line-num">49</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">subscriber</span>.<span class="ruby-identifier">nil?</span>
+<span class="line-num">50</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">subscribers</span>[<span class="ruby-identifier">event_name</span>]&amp;.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">subscriber</span>)
+<span class="line-num">51</span> 
+<span class="line-num">52</span>   <span class="ruby-identifier">notifications</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-node">&quot;#{event_name}.shrine&quot;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">event</span><span class="ruby-operator">|</span>
+<span class="line-num">53</span>     <span class="ruby-identifier">subscriber</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">event</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">event</span>[<span class="ruby-value">:uploader</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-keyword">self</span>
+<span class="line-num">54</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">55</span> 
+<span class="line-num">56</span>   <span class="ruby-identifier">subscribers</span>[<span class="ruby-identifier">event_name</span>] <span class="ruby-operator">||=</span> []
+<span class="line-num">57</span>   <span class="ruby-identifier">subscribers</span>[<span class="ruby-identifier">event_name</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">subscriber</span>
+<span class="line-num">58</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -97,7 +124,7 @@ Shrine::Plugins::Instrumentation::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -35,7 +35,7 @@ Shrine::Plugins::TypePredicates
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<p>Documentation can be found on <a href="https://shrinerb.com/docs/plugins/type_predicates">shrinerb.com/docs/plugins/type_predicates</a></p>
+<p>Documentation can be found on <a target="_top" href="https://shrinerb.com/docs/plugins/type_predicates">shrinerb.com/docs/plugins/type_predicates</a></p>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -70,7 +70,15 @@ Shrine::Plugins::TypePredicates
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/type_predicates.rb</span>&#x000A;<span class="line-num"> 7</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">methods:</span> [], <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num"> 8</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:type_predicates</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">mime:</span> <span class="ruby-value">:mini_mime</span> }&#x000A;<span class="line-num"> 9</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:type_predicates</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">10</span> &#x000A;<span class="line-num">11</span>   <span class="ruby-identifier">methods</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">12</span>     <span class="ruby-identifier">uploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:define_method</span>, <span class="ruby-node">&quot;#{name}?&quot;</span>) { <span class="ruby-identifier">type?</span>(<span class="ruby-identifier">name</span>) }&#x000A;<span class="line-num">13</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/type_predicates.rb</span>
+<span class="line-num"> 7</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">methods:</span> [], <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)
+<span class="line-num"> 8</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:type_predicates</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">mime:</span> <span class="ruby-value">:mini_mime</span> }
+<span class="line-num"> 9</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:type_predicates</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)
+<span class="line-num">10</span> 
+<span class="line-num">11</span>   <span class="ruby-identifier">methods</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span>
+<span class="line-num">12</span>     <span class="ruby-identifier">uploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:define_method</span>, <span class="ruby-node">&quot;#{name}?&quot;</span>) { <span class="ruby-identifier">type?</span>(<span class="ruby-identifier">name</span>) }
+<span class="line-num">13</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">14</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -82,7 +90,7 @@ Shrine::Plugins::TypePredicates
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

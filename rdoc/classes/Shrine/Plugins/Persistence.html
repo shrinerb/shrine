@@ -37,7 +37,8 @@ Shrine::Plugins::Persistence
 <div id='description'>
 <p>Helper plugin that defines persistence methods on the attacher according to convention.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:_persistence</span>, <span class="ruby-value">plugin:</span> <span class="ruby-constant">MyPlugin</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:_persistence</span>, <span class="ruby-value">plugin:</span> <span class="ruby-constant">MyPlugin</span>
+</pre>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -66,7 +67,7 @@ Shrine::Plugins::Persistence
 </div>
 <div class='description'>
 
-<p>Using #&lt;name&gt;<em>persist, #&lt;name&gt;</em>reload, and #&lt;name&gt;?, defines the following methods for a persistence plugin:</p>
+<p>Using <name&gt;<em>persist, #&lt;name&gt;</em>reload, and <name&gt;?, defines the following methods for a persistence plugin:</p>
 <ul><li>
 <p>Attacher#persist</p>
 </li><li>
@@ -80,7 +81,47 @@ Shrine::Plugins::Persistence
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>&#x000A;<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">plugin:</span>)&#x000A;<span class="line-num">22</span>   <span class="ruby-identifier">plugin_name</span> = <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;::&quot;</span>).<span class="ruby-identifier">last</span>.<span class="ruby-identifier">downcase</span>&#x000A;<span class="line-num">23</span> &#x000A;<span class="line-num">24</span>   <span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttacherMethods</span>.<span class="ruby-identifier">module_eval</span> <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">25</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:atomic_promote</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">26</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}?&quot;</span>)&#x000A;<span class="line-num">27</span> &#x000A;<span class="line-num">28</span>       <span class="ruby-identifier">abstract_atomic_promote</span>(&#x000A;<span class="line-num">29</span>         <span class="ruby-value">reload:</span>  <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;#{plugin_name}_reload&quot;</span>),&#x000A;<span class="line-num">30</span>         <span class="ruby-value">persist:</span> <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;#{plugin_name}_persist&quot;</span>),&#x000A;<span class="line-num">31</span>         <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>&#x000A;<span class="line-num">32</span>       )&#x000A;<span class="line-num">33</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">34</span> &#x000A;<span class="line-num">35</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:atomic_persist</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">36</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}?&quot;</span>)&#x000A;<span class="line-num">37</span> &#x000A;<span class="line-num">38</span>       <span class="ruby-identifier">abstract_atomic_persist</span>(&#x000A;<span class="line-num">39</span>         <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>,&#x000A;<span class="line-num">40</span>         <span class="ruby-value">reload:</span>  <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;#{plugin_name}_reload&quot;</span>),&#x000A;<span class="line-num">41</span>         <span class="ruby-value">persist:</span> <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;#{plugin_name}_persist&quot;</span>),&#x000A;<span class="line-num">42</span>         <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>&#x000A;<span class="line-num">43</span>       )&#x000A;<span class="line-num">44</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">45</span> &#x000A;<span class="line-num">46</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:persist</span> <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">47</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span>() <span class="ruby-keyword">unless</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}?&quot;</span>)&#x000A;<span class="line-num">48</span> &#x000A;<span class="line-num">49</span>       <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}_persist&quot;</span>)&#x000A;<span class="line-num">50</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">51</span> &#x000A;<span class="line-num">52</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:hash_attribute?</span> <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">53</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span>() <span class="ruby-keyword">unless</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}?&quot;</span>)&#x000A;<span class="line-num">54</span> &#x000A;<span class="line-num">55</span>       <span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:&quot;#{plugin_name}_hash_attribute?&quot;</span>, <span class="ruby-keyword">true</span>) <span class="ruby-operator">&amp;&amp;</span>&#x000A;<span class="line-num">56</span>       <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}_hash_attribute?&quot;</span>)&#x000A;<span class="line-num">57</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">58</span>     <span class="ruby-identifier">private</span> <span class="ruby-value">:hash_attribute?</span>&#x000A;<span class="line-num">59</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">60</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>
+<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">plugin:</span>)
+<span class="line-num">22</span>   <span class="ruby-identifier">plugin_name</span> = <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;::&quot;</span>).<span class="ruby-identifier">last</span>.<span class="ruby-identifier">downcase</span>
+<span class="line-num">23</span> 
+<span class="line-num">24</span>   <span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttacherMethods</span>.<span class="ruby-identifier">module_eval</span> <span class="ruby-keyword">do</span>
+<span class="line-num">25</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:atomic_promote</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span><span class="ruby-operator">|</span>
+<span class="line-num">26</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}?&quot;</span>)
+<span class="line-num">27</span> 
+<span class="line-num">28</span>       <span class="ruby-identifier">abstract_atomic_promote</span>(
+<span class="line-num">29</span>         <span class="ruby-value">reload:</span>  <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;#{plugin_name}_reload&quot;</span>),
+<span class="line-num">30</span>         <span class="ruby-value">persist:</span> <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;#{plugin_name}_persist&quot;</span>),
+<span class="line-num">31</span>         <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>
+<span class="line-num">32</span>       )
+<span class="line-num">33</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">34</span> 
+<span class="line-num">35</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:atomic_persist</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span><span class="ruby-operator">|</span>
+<span class="line-num">36</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}?&quot;</span>)
+<span class="line-num">37</span> 
+<span class="line-num">38</span>       <span class="ruby-identifier">abstract_atomic_persist</span>(
+<span class="line-num">39</span>         <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>,
+<span class="line-num">40</span>         <span class="ruby-value">reload:</span>  <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;#{plugin_name}_reload&quot;</span>),
+<span class="line-num">41</span>         <span class="ruby-value">persist:</span> <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;#{plugin_name}_persist&quot;</span>),
+<span class="line-num">42</span>         <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>
+<span class="line-num">43</span>       )
+<span class="line-num">44</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">45</span> 
+<span class="line-num">46</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:persist</span> <span class="ruby-keyword">do</span>
+<span class="line-num">47</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span>() <span class="ruby-keyword">unless</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}?&quot;</span>)
+<span class="line-num">48</span> 
+<span class="line-num">49</span>       <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}_persist&quot;</span>)
+<span class="line-num">50</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">51</span> 
+<span class="line-num">52</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:hash_attribute?</span> <span class="ruby-keyword">do</span>
+<span class="line-num">53</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span>() <span class="ruby-keyword">unless</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}?&quot;</span>)
+<span class="line-num">54</span> 
+<span class="line-num">55</span>       <span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:&quot;#{plugin_name}_hash_attribute?&quot;</span>, <span class="ruby-keyword">true</span>) <span class="ruby-operator">&amp;&amp;</span>
+<span class="line-num">56</span>       <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{plugin_name}_hash_attribute?&quot;</span>)
+<span class="line-num">57</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">58</span>     <span class="ruby-identifier">private</span> <span class="ruby-value">:hash_attribute?</span>
+<span class="line-num">59</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">60</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-load_dependencies'>
@@ -96,7 +137,11 @@ Shrine::Plugins::Persistence
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>&#x000A;<span class="line-num">10</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">11</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:atomic_helpers</span>&#x000A;<span class="line-num">12</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:entity</span>&#x000A;<span class="line-num">13</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>
+<span class="line-num">10</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)
+<span class="line-num">11</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:atomic_helpers</span>
+<span class="line-num">12</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:entity</span>
+<span class="line-num">13</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -108,7 +153,7 @@ Shrine::Plugins::Persistence
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

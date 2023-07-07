@@ -66,7 +66,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">645</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">derivative</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">646</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">derivative</span>&#x000A;<span class="line-num">647</span>     <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">derivative</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">648</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">649</span>     <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">derivation</span>.<span class="ruby-identifier">generate</span>, <span class="ruby-value">delete:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">650</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">651</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
+<span class="line-num">646</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">derivative</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">647</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">derivative</span>
+<span class="line-num">648</span>     <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">derivative</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">649</span>   <span class="ruby-keyword">else</span>
+<span class="line-num">650</span>     <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">derivation</span>.<span class="ruby-identifier">generate</span>, <span class="ruby-value">delete:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">651</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">652</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -78,7 +85,7 @@ Superclass:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

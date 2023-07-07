@@ -85,7 +85,12 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>    <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">101</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">102</span>   <span class="ruby-identifier">options</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">103</span>     <span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-node">&quot;@#{name}&quot;</span>, <span class="ruby-identifier">value</span>)&#x000A;<span class="line-num">104</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">105</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>    <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>
+<span class="line-num">101</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">options</span>)
+<span class="line-num">102</span>   <span class="ruby-identifier">options</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
+<span class="line-num">103</span>     <span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-node">&quot;@#{name}&quot;</span>, <span class="ruby-identifier">value</span>)
+<span class="line-num">104</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">105</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -102,7 +107,20 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">107</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">env</span>)&#x000A;<span class="line-num">108</span>   <span class="ruby-identifier">request</span> = <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Request</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">env</span>)&#x000A;<span class="line-num">109</span> &#x000A;<span class="line-num">110</span>   <span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">catch</span>(<span class="ruby-value">:halt</span>) <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">111</span>     <span class="ruby-identifier">error!</span>(<span class="ruby-value">405</span>, <span class="ruby-string">&quot;Method Not Allowed&quot;</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">get?</span>&#x000A;<span class="line-num">112</span> &#x000A;<span class="line-num">113</span>     <span class="ruby-identifier">handle_request</span>(<span class="ruby-identifier">request</span>)&#x000A;<span class="line-num">114</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">115</span> &#x000A;<span class="line-num">116</span>   <span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Length&quot;</span>] <span class="ruby-operator">||=</span> <span class="ruby-identifier">body</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:bytesize</span>).<span class="ruby-identifier">inject</span>(<span class="ruby-value">0</span>, <span class="ruby-value">:+</span>).<span class="ruby-identifier">to_s</span>&#x000A;<span class="line-num">117</span> &#x000A;<span class="line-num">118</span>   [<span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span>]&#x000A;<span class="line-num">119</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>
+<span class="line-num">107</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">env</span>)
+<span class="line-num">108</span>   <span class="ruby-identifier">request</span> = <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Request</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">env</span>)
+<span class="line-num">109</span> 
+<span class="line-num">110</span>   <span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">catch</span>(<span class="ruby-value">:halt</span>) <span class="ruby-keyword">do</span>
+<span class="line-num">111</span>     <span class="ruby-identifier">error!</span>(<span class="ruby-value">405</span>, <span class="ruby-string">&quot;Method Not Allowed&quot;</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">get?</span>
+<span class="line-num">112</span> 
+<span class="line-num">113</span>     <span class="ruby-identifier">handle_request</span>(<span class="ruby-identifier">request</span>)
+<span class="line-num">114</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">115</span> 
+<span class="line-num">116</span>   <span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Length&quot;</span>] <span class="ruby-operator">||=</span> <span class="ruby-identifier">body</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:bytesize</span>).<span class="ruby-identifier">inject</span>(<span class="ruby-value">0</span>, <span class="ruby-value">:+</span>).<span class="ruby-identifier">to_s</span>
+<span class="line-num">117</span> 
+<span class="line-num">118</span>   [<span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span>]
+<span class="line-num">119</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-inspect'>
@@ -118,7 +136,10 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inspect-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-inspect-source'>    <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">121</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>&#x000A;<span class="line-num">122</span>   <span class="ruby-node">&quot;#&lt;#{@shrine_class}::DownloadEndpoint&gt;&quot;</span>&#x000A;<span class="line-num">123</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-inspect-source'>    <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>
+<span class="line-num">121</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>
+<span class="line-num">122</span>   <span class="ruby-node">&quot;#&lt;#{@shrine_class}::DownloadEndpoint&gt;&quot;</span>
+<span class="line-num">123</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -130,7 +151,7 @@ Superclass:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

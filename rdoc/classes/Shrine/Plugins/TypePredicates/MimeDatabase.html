@@ -82,7 +82,12 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/type_predicates.rb</span>&#x000A;<span class="line-num">63</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">tool</span>)&#x000A;<span class="line-num">64</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;unknown type database #{tool.inspect}, supported databases are: #{SUPPORTED_TOOLS.join(&quot;,&quot;)}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">SUPPORTED_TOOLS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">tool</span>)&#x000A;<span class="line-num">65</span> &#x000A;<span class="line-num">66</span>   <span class="ruby-ivar">@tool</span> = <span class="ruby-identifier">tool</span>&#x000A;<span class="line-num">67</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/type_predicates.rb</span>
+<span class="line-num">63</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">tool</span>)
+<span class="line-num">64</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;unknown type database #{tool.inspect}, supported databases are: #{SUPPORTED_TOOLS.join(&quot;,&quot;)}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">SUPPORTED_TOOLS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">tool</span>)
+<span class="line-num">65</span> 
+<span class="line-num">66</span>   <span class="ruby-ivar">@tool</span> = <span class="ruby-identifier">tool</span>
+<span class="line-num">67</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -99,7 +104,10 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'>   <span class="ruby-comment"># File lib/shrine/plugins/type_predicates.rb</span>&#x000A;<span class="line-num">69</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">extension</span>)&#x000A;<span class="line-num">70</span>   <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;lookup_with_#{@tool}&quot;</span>, <span class="ruby-identifier">extension</span>)&#x000A;<span class="line-num">71</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'>   <span class="ruby-comment"># File lib/shrine/plugins/type_predicates.rb</span>
+<span class="line-num">69</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">extension</span>)
+<span class="line-num">70</span>   <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;lookup_with_#{@tool}&quot;</span>, <span class="ruby-identifier">extension</span>)
+<span class="line-num">71</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -111,7 +119,7 @@ Superclass:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

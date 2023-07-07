@@ -30,7 +30,7 @@ doc/testing.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2022-03-05 17:09:59 +0100</span>
+<span class='datetime'>2023-06-02 01:07:30 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -40,6 +40,8 @@ Last Update:
 
 <h2 id="label-title-3A+Testing+with+Shrine">title: Testing with <a href="../../classes/Shrine.html"><code>Shrine</code></a><span><a href="#label-title-3A+Testing+with+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
+<p>import Tabs from ‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;</p>
+
 <p>The goal of this guide is to provide some useful tips for testing file attachments implemented with <a href="../../classes/Shrine.html"><code>Shrine</code></a> in your application.</p>
 
 <h2 id="label-Callbacks">Callbacks<span><a href="#label-Callbacks">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -48,23 +50,37 @@ Last Update:
 
 <p>Specifically, <a href="../../classes/Shrine.html"><code>Shrine</code></a> uses “after commit” callbacks for promoting and deleting attached files. This means that if your tests are wrapped inside transactions, those <a href="../../classes/Shrine.html"><code>Shrine</code></a> actions will happen only after those transactions commit, which happens only after the test has already finished.</p>
 
-<pre class="ruby"><span class="ruby-comment"># Promoting will happen only after the test transaction commits</span>&#x000A;<span class="ruby-identifier">it</span> <span class="ruby-string">&quot;can attach images&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>)&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :cache (we expected it to be promoted to permanent storage)</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-comment"># Promoting will happen only after the test transaction commits</span>
+<span class="ruby-identifier">it</span> <span class="ruby-string">&quot;can attach images&quot;</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>)
+  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :cache (we expected it to be promoted to permanent storage)</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
-<p>For file attachments to properly work, you’ll need to disable transactions for those tests. For Rails apps you can tell Rails not to use transactions, and instead use libraries like <a href="https://github.com/DatabaseCleaner/database_cleaner">DatabaseCleaner</a> which allow you to use table truncation or deletion strategies instead of transactions.</p>
+<p>For file attachments to properly work, you’ll need to disable transactions for those tests. For Rails apps you can tell Rails not to use transactions, and instead use libraries like <a target="_top" href="https://github.com/DatabaseCleaner/database_cleaner">DatabaseCleaner</a> which allow you to use table truncation or deletion strategies instead of transactions.</p>
 
-<pre class="ruby"><span class="ruby-constant">RSpec</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">use_transactional_fixtures</span> = <span class="ruby-keyword">false</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">RSpec</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">use_transactional_fixtures</span> = <span class="ruby-keyword">false</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 <h2 id="label-Storage">Storage<span><a href="#label-Storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>If you’re using FileSystem storage and your tests run in a single process, you can switch to <code>Shrine::Storage::Memory</code>, which is both faster and doesn’t require you to clean up anything between tests.</p>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/memory&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;}</pre>
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/memory&quot;</span>
 
-<p>If you’re using AWS S3 storage, you can use <a href="https://min.io/">MinIO</a> (explained below) instead of S3, both in test and development environment. Alternatively, you can <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html">stub aws-sdk-s3 requests</a> in tests.</p>
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {
+  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,
+  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,
+}
+</pre>
+
+<p>If you’re using AWS S3 storage, you can use <a target="_top" href="https://min.io/">MinIO</a> (explained below) instead of S3, both in test and development environment. Alternatively, you can <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html">stub aws-sdk-s3 requests</a> in tests.</p>
 
 <h3 id="label-MinIO">MinIO<span><a href="#label-MinIO">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p><a href="https://min.io/">MinIO</a> is an open source object storage server with AWS S3 compatible API which you can run locally. The advantage of using MinIO for your development and test environments is that all AWS S3 functionality should still continue to work, including direct uploads, so you don’t need to update your code.</p>
+<p><a target="_top" href="https://min.io/">MinIO</a> is an open source object storage server with AWS S3 compatible API which you can run locally. The advantage of using MinIO for your development and test environments is that all AWS S3 functionality should still continue to work, including direct uploads, so you don’t need to update your code.</p>
 
 <p>If you’re on a Mac you can install it with Homebrew:</p>
 
@@ -76,7 +92,15 @@ Last Update:
 
 <p>This command will print out the credentials for the running MinIO server, as well as a link to the MinIO web interface. Follow that link and create a new bucket. Once you’ve done that, you can configure <code>Shrine::Storage::S3</code> to use your MinIO server:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(&#x000A;  <span class="ruby-value">access_key_id:</span>     <span class="ruby-string">&quot;&lt;MINIO_ACCESS_KEY&gt;&quot;</span>, <span class="ruby-comment"># &quot;AccessKey&quot; value</span>&#x000A;  <span class="ruby-value">secret_access_key:</span> <span class="ruby-string">&quot;&lt;MINIO_SECRET_KEY&gt;&quot;</span>, <span class="ruby-comment"># &quot;SecretKey&quot; value</span>&#x000A;  <span class="ruby-value">endpoint:</span>          <span class="ruby-string">&quot;&lt;MINIO_ENDPOINT&gt;&quot;</span>,   <span class="ruby-comment"># &quot;Endpoint&quot;  value</span>&#x000A;  <span class="ruby-value">bucket:</span>            <span class="ruby-string">&quot;&lt;MINIO_BUCKET&gt;&quot;</span>,     <span class="ruby-comment"># name of the bucket you created</span>&#x000A;  <span class="ruby-value">region:</span>            <span class="ruby-string">&quot;us-east-1&quot;</span>,&#x000A;  <span class="ruby-value">force_path_style:</span>  <span class="ruby-keyword">true</span>,&#x000A;)</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(
+  <span class="ruby-value">access_key_id:</span>     <span class="ruby-string">&quot;&lt;MINIO_ACCESS_KEY&gt;&quot;</span>, <span class="ruby-comment"># &quot;AccessKey&quot; value</span>
+  <span class="ruby-value">secret_access_key:</span> <span class="ruby-string">&quot;&lt;MINIO_SECRET_KEY&gt;&quot;</span>, <span class="ruby-comment"># &quot;SecretKey&quot; value</span>
+  <span class="ruby-value">endpoint:</span>          <span class="ruby-string">&quot;&lt;MINIO_ENDPOINT&gt;&quot;</span>,   <span class="ruby-comment"># &quot;Endpoint&quot;  value</span>
+  <span class="ruby-value">bucket:</span>            <span class="ruby-string">&quot;&lt;MINIO_BUCKET&gt;&quot;</span>,     <span class="ruby-comment"># name of the bucket you created</span>
+  <span class="ruby-value">region:</span>            <span class="ruby-string">&quot;us-east-1&quot;</span>,
+  <span class="ruby-value">force_path_style:</span>  <span class="ruby-keyword">true</span>,
+)
+</pre>
 
 <p>The <code>:endpoint</code> option will make aws-sdk-s3 point all URLs to your MinIO server (instead of <code>s3.amazonaws.com</code>), and <code>:force_path_style</code> tells it not to use subdomains when generating URLs.</p>
 
@@ -86,51 +110,157 @@ Last Update:
 
 <p>We can create a helper method that will create attached file data for us, and use that with our factories/fixtures.</p>
 
-<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">TestData</span>&#x000A;  <span class="ruby-identifier">module_function</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">image_data</span>&#x000A;    <span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_image</span>)&#x000A;&#x000A;    <span class="ruby-comment"># if you&#39;re processing derivatives</span>&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set_derivatives</span>(&#x000A;      <span class="ruby-value">large:</span>  <span class="ruby-identifier">uploaded_image</span>,&#x000A;      <span class="ruby-value">medium:</span> <span class="ruby-identifier">uploaded_image</span>,&#x000A;      <span class="ruby-value">small:</span>  <span class="ruby-identifier">uploaded_image</span>,&#x000A;    )&#x000A;&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">column_data</span> <span class="ruby-comment"># or attacher.data in case of postgres jsonb column</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_image</span>&#x000A;    <span class="ruby-identifier">file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>, <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>)&#x000A;&#x000A;    <span class="ruby-comment"># for performance we skip metadata extraction and assign test metadata</span>&#x000A;    <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:store</span>, <span class="ruby-value">metadata:</span> <span class="ruby-keyword">false</span>)&#x000A;    <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>.<span class="ruby-identifier">merge!</span>(&#x000A;      <span class="ruby-string">&quot;size&quot;</span>      <span class="ruby-operator">=&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">size</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">path</span>),&#x000A;      <span class="ruby-string">&quot;mime_type&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>,&#x000A;      <span class="ruby-string">&quot;filename&quot;</span>  <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;test.jpg&quot;</span>,&#x000A;    )&#x000A;&#x000A;    <span class="ruby-identifier">uploaded_file</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-<!--DOCUSAURUS_CODE_TABS--><!--FactoryBot-->
-<pre class="ruby"><span class="ruby-identifier">factory</span> <span class="ruby-value">:photo</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">image_data</span> { <span class="ruby-constant">TestData</span>.<span class="ruby-identifier">image_data</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
-<!--Rails YAML fixtures-->
-<pre>photo:&#x000A;  image_data: &lt;%= TestData.image_data %&gt;</pre>
-<!--END_DOCUSAURUS_CODE_TABS-->
+<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">TestData</span>
+  <span class="ruby-identifier">module_function</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">image_data</span>
+    <span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_image</span>)
+
+    <span class="ruby-comment"># if you&#39;re processing derivatives</span>
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set_derivatives</span>(
+      <span class="ruby-value">large:</span>  <span class="ruby-identifier">uploaded_image</span>,
+      <span class="ruby-value">medium:</span> <span class="ruby-identifier">uploaded_image</span>,
+      <span class="ruby-value">small:</span>  <span class="ruby-identifier">uploaded_image</span>,
+    )
+
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">column_data</span> <span class="ruby-comment"># or attacher.data in case of postgres jsonb column</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_image</span>
+    <span class="ruby-identifier">file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>, <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>)
+
+    <span class="ruby-comment"># for performance we skip metadata extraction and assign test metadata</span>
+    <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:store</span>, <span class="ruby-value">metadata:</span> <span class="ruby-keyword">false</span>)
+    <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>.<span class="ruby-identifier">merge!</span>(
+      <span class="ruby-string">&quot;size&quot;</span>      <span class="ruby-operator">=&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">size</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">path</span>),
+      <span class="ruby-string">&quot;mime_type&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>,
+      <span class="ruby-string">&quot;filename&quot;</span>  <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;test.jpg&quot;</span>,
+    )
+
+    <span class="ruby-identifier">uploaded_file</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;Tabs&gt; &lt;TabItem value=“factory_bot” label=“FactoryBot”&gt;</p>
+
+<pre class="ruby"><span class="ruby-identifier">factory</span> <span class="ruby-value">:photo</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-identifier">image_data</span> { <span class="ruby-constant">TestData</span>.<span class="ruby-identifier">image_data</span> }
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“fixtures” label=“Rails YAML fixtures”&gt;</p>
+
+<pre>photo:
+  image_data: &lt;%= TestData.image_data %&gt;</pre>
+
+<p>&lt;/TabItem&gt; &lt;/Tabs&gt;</p>
+
 <h2 id="label-Unit+tests">Unit tests<span><a href="#label-Unit+tests">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>For testing attachment in your unit tests, you can assign plain <code>File</code> objects:</p>
 
-<pre class="ruby"><span class="ruby-constant">RSpec</span>.<span class="ruby-identifier">describe</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">let</span>(<span class="ruby-value">:image</span>)       { <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> }&#x000A;  <span class="ruby-identifier">let</span>(<span class="ruby-value">:derivatives</span>) { <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives</span> }&#x000A;  <span class="ruby-identifier">let</span>(<span class="ruby-value">:photo</span>)       { <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-value">image:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.png&quot;</span>, <span class="ruby-string">&quot;rb&quot;</span>)) }&#x000A;&#x000A;  <span class="ruby-identifier">it</span> <span class="ruby-string">&quot;extracts metadata&quot;</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">image</span>.<span class="ruby-identifier">mime_type</span>).<span class="ruby-identifier">to</span> <span class="ruby-identifier">eq</span>(<span class="ruby-string">&quot;image/png&quot;</span>)&#x000A;    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">image</span>.<span class="ruby-identifier">extension</span>).<span class="ruby-identifier">to</span> <span class="ruby-identifier">eq</span>(<span class="ruby-string">&quot;png&quot;</span>)&#x000A;    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">image</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">to</span> <span class="ruby-identifier">be_instance_of</span>(<span class="ruby-constant">Integer</span>)&#x000A;    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">image</span>.<span class="ruby-identifier">width</span>).<span class="ruby-identifier">to</span> <span class="ruby-identifier">be_instance_of</span>(<span class="ruby-constant">Integer</span>)&#x000A;    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">image</span>.<span class="ruby-identifier">height</span>).<span class="ruby-identifier">to</span> <span class="ruby-identifier">be_instance_of</span>(<span class="ruby-constant">Integer</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">it</span> <span class="ruby-string">&quot;generates derivatives&quot;</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:small</span>]).<span class="ruby-identifier">to</span>  <span class="ruby-identifier">be_kind_of</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>)&#x000A;    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:medium</span>]).<span class="ruby-identifier">to</span> <span class="ruby-identifier">be_kind_of</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>)&#x000A;    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:large</span>]).<span class="ruby-identifier">to</span>  <span class="ruby-identifier">be_kind_of</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">RSpec</span>.<span class="ruby-identifier">describe</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-identifier">let</span>(<span class="ruby-value">:image</span>)       { <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> }
+  <span class="ruby-identifier">let</span>(<span class="ruby-value">:derivatives</span>) { <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives</span> }
+  <span class="ruby-identifier">let</span>(<span class="ruby-value">:photo</span>)       { <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-value">image:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.png&quot;</span>, <span class="ruby-string">&quot;rb&quot;</span>)) }
+
+  <span class="ruby-identifier">it</span> <span class="ruby-string">&quot;extracts metadata&quot;</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">image</span>.<span class="ruby-identifier">mime_type</span>).<span class="ruby-identifier">to</span> <span class="ruby-identifier">eq</span>(<span class="ruby-string">&quot;image/png&quot;</span>)
+    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">image</span>.<span class="ruby-identifier">extension</span>).<span class="ruby-identifier">to</span> <span class="ruby-identifier">eq</span>(<span class="ruby-string">&quot;png&quot;</span>)
+    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">image</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">to</span> <span class="ruby-identifier">be_instance_of</span>(<span class="ruby-constant">Integer</span>)
+    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">image</span>.<span class="ruby-identifier">width</span>).<span class="ruby-identifier">to</span> <span class="ruby-identifier">be_instance_of</span>(<span class="ruby-constant">Integer</span>)
+    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">image</span>.<span class="ruby-identifier">height</span>).<span class="ruby-identifier">to</span> <span class="ruby-identifier">be_instance_of</span>(<span class="ruby-constant">Integer</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">it</span> <span class="ruby-string">&quot;generates derivatives&quot;</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:small</span>]).<span class="ruby-identifier">to</span>  <span class="ruby-identifier">be_kind_of</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>)
+    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:medium</span>]).<span class="ruby-identifier">to</span> <span class="ruby-identifier">be_kind_of</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>)
+    <span class="ruby-identifier">expect</span>(<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:large</span>]).<span class="ruby-identifier">to</span>  <span class="ruby-identifier">be_kind_of</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 <h2 id="label-Acceptance+tests">Acceptance tests<span><a href="#label-Acceptance+tests">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>In acceptance tests you’re testing your app end-to-end, and you likely want to also test file attachments here. Here are examples for some common use cases:</p>
-<!--DOCUSAURUS_CODE_TABS--><!--Capybara-->
-<pre class="ruby"><span class="ruby-identifier">attach_file</span>(<span class="ruby-string">&quot;#image-field&quot;</span>, <span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)</pre>
-<!--Rack::Test-->
-<pre class="ruby"><span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-value">photo:</span> {&#x000A;  <span class="ruby-value">image:</span> <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Test</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>, <span class="ruby-string">&quot;image/jpeg&quot;</span>)&#x000A;}</pre>
-<!--Rack::TestApp-->
-<pre class="ruby"><span class="ruby-identifier">app</span>.<span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-value">multipart:</span> {&#x000A;  <span class="ruby-string">&quot;photo[image]&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)&#x000A;}</pre>
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+<p>&lt;Tabs&gt; &lt;TabItem value=“capybara” label=“Capybara”&gt;</p>
+
+<pre class="ruby"><span class="ruby-identifier">attach_file</span>(<span class="ruby-string">&quot;#image-field&quot;</span>, <span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“rack-test” label=“rack-test”&gt;</p>
+
+<pre class="ruby"><span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-value">photo:</span> {
+  <span class="ruby-value">image:</span> <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Test</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>, <span class="ruby-string">&quot;image/jpeg&quot;</span>)
+}
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;/Tabs&gt;</p>
+
+<p>If you want to test requests with cached attachment data, you can do so as follows:</p>
+
+<pre class="ruby"><span class="ruby-identifier">cached_file</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:cache</span>)
+
+<span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-value">photo:</span> { <span class="ruby-value">image:</span> <span class="ruby-identifier">cached_file</span>.<span class="ruby-identifier">to_json</span> }
+</pre>
+
 <h2 id="label-Background+jobs">Background jobs<span><a href="#label-Background+jobs">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>If you’re using background jobs with <a href="../../classes/Shrine.html"><code>Shrine</code></a>, you probably want to make them synchronous in tests. See your backgrounding library docs for how to make jobs synchronous.</p>
-<!--DOCUSAURUS_CODE_TABS--><!--ActiveJob-->
-<pre class="ruby"><span class="ruby-constant">ActiveJob</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">queue_adapter</span> = <span class="ruby-value">:inline</span></pre>
-<!--Sidekiq-->
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sidekiq/testing&quot;</span>&#x000A;<span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Testing</span>.<span class="ruby-identifier">inline!</span></pre>
-<!--SuckerPunch-->
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sucker_punch/testing/inline&quot;</span></pre>
-<!--END_DOCUSAURUS_CODE_TABS-->
+
+<p>&lt;Tabs&gt; &lt;TabItem value=“activejob” label=“Active Job”&gt;</p>
+
+<pre class="ruby"><span class="ruby-constant">ActiveJob</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">queue_adapter</span> = <span class="ruby-value">:inline</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“sidekiq” label=“Sidekiq”&gt;</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sidekiq/testing&quot;</span>
+<span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Testing</span>.<span class="ruby-identifier">inline!</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“sucker_punch” label=“SuckerPunch”&gt;</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sucker_punch/testing/inline&quot;</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;/Tabs&gt;</p>
+
 <h2 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>If you’re testing your attachment flow which includes processing <a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a>, you might want to disable the processing for certain tests. You can do this by temporarily overriding the processor:</p>
+<p>If you’re testing your attachment flow which includes processing <a target="_top" href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a>, you might want to disable the processing for certain tests. You can do this by temporarily overriding the processor:</p>
 
-<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">TestMode</span>&#x000A;  <span class="ruby-identifier">module_function</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">disable_processing</span>(<span class="ruby-identifier">attacher</span>, <span class="ruby-identifier">processor_name</span> = <span class="ruby-value">:default</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_exec</span> <span class="ruby-keyword">do</span>&#x000A;      <span class="ruby-identifier">original_processor</span> = <span class="ruby-identifier">derivatives_processor</span>&#x000A;      <span class="ruby-identifier">derivatives_processor</span>(<span class="ruby-identifier">processor_name</span>) { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }&#x000A;      <span class="ruby-keyword">yield</span>&#x000A;      <span class="ruby-identifier">derivatives_processor</span>(<span class="ruby-identifier">processor_name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">original_processor</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">TestMode</span>
+  <span class="ruby-identifier">module_function</span>
 
-<pre class="ruby"><span class="ruby-constant">TestMode</span>.<span class="ruby-identifier">disable_processing</span>(<span class="ruby-constant">Photo</span>.<span class="ruby-identifier">image_attacher</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.png&quot;</span>, <span class="ruby-string">&quot;rb&quot;</span>)&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">disable_processing</span>(<span class="ruby-identifier">attacher</span>, <span class="ruby-identifier">processor_name</span> = <span class="ruby-value">:default</span>)
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_exec</span> <span class="ruby-keyword">do</span>
+      <span class="ruby-identifier">original_processor</span> = <span class="ruby-identifier">derivatives_processor</span>
+      <span class="ruby-identifier">derivatives_processor</span>(<span class="ruby-identifier">processor_name</span>) { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }
+      <span class="ruby-keyword">yield</span>
+      <span class="ruby-identifier">derivatives_processor</span>(<span class="ruby-identifier">processor_name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">original_processor</span>)
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-constant">TestMode</span>.<span class="ruby-identifier">disable_processing</span>(<span class="ruby-constant">Photo</span>.<span class="ruby-identifier">image_attacher</span>) <span class="ruby-keyword">do</span>
+  <span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.png&quot;</span>, <span class="ruby-string">&quot;rb&quot;</span>)
+  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 <h2 id="label-Testing+direct+upload">Testing direct upload<span><a href="#label-Testing+direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>If you’d like to unit-test direct upload on the server side, you can emulate it by uploading a file to <code>cache</code> and then assigning it to the record.</p>
 
-<pre class="ruby"><span class="ruby-identifier">cached_file</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">some_file</span>, <span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-identifier">record</span>.<span class="ruby-identifier">attachment</span> = <span class="ruby-identifier">cached_file</span>.<span class="ruby-identifier">to_json</span></pre>
+<pre class="ruby"><span class="ruby-identifier">cached_file</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">some_file</span>, <span class="ruby-value">:cache</span>)
+<span class="ruby-identifier">record</span>.<span class="ruby-identifier">attachment</span> = <span class="ruby-identifier">cached_file</span>.<span class="ruby-identifier">to_json</span>
+</pre>
 </div>
 <div id='context'>
 </div>
@@ -141,7 +271,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -81,7 +81,11 @@ Shrine::Attachment::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/attachment.rb</span>&#x000A;<span class="line-num">34</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">35</span>   <span class="ruby-ivar">@name</span>    = <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>&#x000A;<span class="line-num">36</span>   <span class="ruby-ivar">@options</span> = <span class="ruby-identifier">options</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/attachment.rb</span>
+<span class="line-num">34</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">35</span>   <span class="ruby-ivar">@name</span>    = <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>
+<span class="line-num">36</span>   <span class="ruby-ivar">@options</span> = <span class="ruby-identifier">options</span>
+<span class="line-num">37</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -100,7 +104,10 @@ Shrine::Attachment::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-attachment_name-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-attachment_name-source'>   <span class="ruby-comment"># File lib/shrine/attachment.rb</span>&#x000A;<span class="line-num">40</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attachment_name</span>&#x000A;<span class="line-num">41</span>   <span class="ruby-ivar">@name</span>&#x000A;<span class="line-num">42</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-attachment_name-source'>   <span class="ruby-comment"># File lib/shrine/attachment.rb</span>
+<span class="line-num">40</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attachment_name</span>
+<span class="line-num">41</span>   <span class="ruby-ivar">@name</span>
+<span class="line-num">42</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-inspect'>
@@ -113,14 +120,18 @@ Shrine::Attachment::InstanceMethods
 
 <p>Returns class name with attachment name included.</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">to_s</span> <span class="ruby-comment">#=&gt; &quot;#&lt;Shrine::Attachment(image)&gt;&quot;</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">to_s</span> <span class="ruby-comment">#=&gt; &quot;#&lt;Shrine::Attachment(image)&gt;&quot;</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inspect-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-inspect-source'>   <span class="ruby-comment"># File lib/shrine/attachment.rb</span>&#x000A;<span class="line-num">52</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>&#x000A;<span class="line-num">53</span>   <span class="ruby-node">&quot;#&lt;#{self.class.inspect}(#{@name})&gt;&quot;</span>&#x000A;<span class="line-num">54</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-inspect-source'>   <span class="ruby-comment"># File lib/shrine/attachment.rb</span>
+<span class="line-num">52</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>
+<span class="line-num">53</span>   <span class="ruby-node">&quot;#&lt;#{self.class.inspect}(#{@name})&gt;&quot;</span>
+<span class="line-num">54</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-options'>
@@ -138,7 +149,10 @@ Shrine::Attachment::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-options-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-options-source'>   <span class="ruby-comment"># File lib/shrine/attachment.rb</span>&#x000A;<span class="line-num">45</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">options</span>&#x000A;<span class="line-num">46</span>   <span class="ruby-ivar">@options</span>&#x000A;<span class="line-num">47</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-options-source'>   <span class="ruby-comment"># File lib/shrine/attachment.rb</span>
+<span class="line-num">45</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">options</span>
+<span class="line-num">46</span>   <span class="ruby-ivar">@options</span>
+<span class="line-num">47</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-shrine_class'>
@@ -156,7 +170,10 @@ Shrine::Attachment::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-shrine_class-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-shrine_class-source'>   <span class="ruby-comment"># File lib/shrine/attachment.rb</span>&#x000A;<span class="line-num">59</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>&#x000A;<span class="line-num">60</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>&#x000A;<span class="line-num">61</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-shrine_class-source'>   <span class="ruby-comment"># File lib/shrine/attachment.rb</span>
+<span class="line-num">59</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>
+<span class="line-num">60</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>
+<span class="line-num">61</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -168,7 +185,7 @@ Shrine::Attachment::InstanceMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

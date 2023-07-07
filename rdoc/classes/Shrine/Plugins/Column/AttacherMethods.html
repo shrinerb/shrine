@@ -84,7 +84,11 @@ Shrine::Plugins::Column::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/column.rb</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">column_serializer:</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:column</span>][<span class="ruby-value">:serializer</span>], <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">32</span>   <span class="ruby-keyword">super</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">33</span>   <span class="ruby-ivar">@column_serializer</span> = <span class="ruby-identifier">column_serializer</span>&#x000A;<span class="line-num">34</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/column.rb</span>
+<span class="line-num">31</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">column_serializer:</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:column</span>][<span class="ruby-value">:serializer</span>], <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">32</span>   <span class="ruby-keyword">super</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">33</span>   <span class="ruby-ivar">@column_serializer</span> = <span class="ruby-identifier">column_serializer</span>
+<span class="line-num">34</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -98,14 +102,18 @@ Shrine::Plugins::Column::AttacherMethods
 
 <p>Returns attacher data as a serialized string (JSON by default).</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">column_data</span> <span class="ruby-comment">#=&gt; &#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">column_data</span> <span class="ruby-comment">#=&gt; &#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-column_data-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-column_data-source'>   <span class="ruby-comment"># File lib/shrine/plugins/column.rb</span>&#x000A;<span class="line-num">48</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">column_data</span>&#x000A;<span class="line-num">49</span>   <span class="ruby-identifier">serialize_column</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="line-num">50</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-column_data-source'>   <span class="ruby-comment"># File lib/shrine/plugins/column.rb</span>
+<span class="line-num">48</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">column_data</span>
+<span class="line-num">49</span>   <span class="ruby-identifier">serialize_column</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">50</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-load_column'>
@@ -118,14 +126,20 @@ Shrine::Plugins::Column::AttacherMethods
 
 <p>Loads attachment from column data.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">load_column</span>(<span class="ruby-string">&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; nil</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">load_column</span>(<span class="ruby-string">&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-load_column-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-load_column-source'>   <span class="ruby-comment"># File lib/shrine/plugins/column.rb</span>&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_column</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="line-num">42</span>   <span class="ruby-identifier">load_data</span>(<span class="ruby-identifier">deserialize_column</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-load_column-source'>   <span class="ruby-comment"># File lib/shrine/plugins/column.rb</span>
+<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_column</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">42</span>   <span class="ruby-identifier">load_data</span>(<span class="ruby-identifier">deserialize_column</span>(<span class="ruby-identifier">data</span>))
+<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -137,7 +151,7 @@ Shrine::Plugins::Column::AttacherMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

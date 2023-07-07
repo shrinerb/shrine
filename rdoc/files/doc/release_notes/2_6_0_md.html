@@ -30,7 +30,7 @@ doc/release_notes/2.6.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -45,43 +45,113 @@ Last Update:
 <p>Added <code>signature</code> plugin which allows you to calculate a  SHA{1,256,384,512}/MD5/CRC32 hash of a file, in raw, hex or base64 encoding.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:signature</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:md5</span>)&#x000A;<span class="ruby-comment">#=&gt; &quot;8c7dd922ad47494fc02c388e12c00eac&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:md5</span>, <span class="ruby-value">format:</span> <span class="ruby-value">:base64</span>)&#x000A;<span class="ruby-comment">#=&gt; &quot;jH3ZIq1HSU/ALDiOEsAOrA==\n&quot;</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:signature</span>
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:md5</span>)
+<span class="ruby-comment">#=&gt; &quot;8c7dd922ad47494fc02c388e12c00eac&quot;</span>
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:md5</span>, <span class="ruby-value">format:</span> <span class="ruby-value">:base64</span>)
+<span class="ruby-comment">#=&gt; &quot;jH3ZIq1HSU/ALDiOEsAOrA==\n&quot;</span>
+</pre>
 
 <p>You can then easily create a new metadata field with the calculated hash:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:signature</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>&#x000A;&#x000A;<span class="ruby-constant">MyUploader</span>.<span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:md5</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:md5</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:signature</span>
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>
+
+<span class="ruby-constant">MyUploader</span>.<span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:md5</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:md5</span>)
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>Added <code>metadata_attibutes</code> plugin which allows you to sync attachment  metadata to additional record attributes.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>&#x000A;&#x000A;<span class="ruby-comment"># Syncs `size` metadata to `#&lt;attachment&gt;_size` record attribute, and</span>&#x000A;<span class="ruby-comment"># `mime_type` metadata to `#&lt;attachment&gt;_type` record attribute.</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">metadata_attributes</span> <span class="ruby-value">:size</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:size</span>, <span class="ruby-value">:mime_type</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:type</span>&#x000A;&#x000A;<span class="ruby-comment"># ...</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">image</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>]      <span class="ruby-comment">#=&gt; 95724</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_size</span>                  <span class="ruby-comment">#=&gt; 95724</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;mime_type&quot;</span>] <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_type</span>                  <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-keyword">nil</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_size</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_type</span> <span class="ruby-comment">#=&gt; nil</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>
+
+<span class="ruby-comment"># Syncs `size` metadata to `#&lt;attachment&gt;_size` record attribute, and</span>
+<span class="ruby-comment"># `mime_type` metadata to `#&lt;attachment&gt;_type` record attribute.</span>
+<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">metadata_attributes</span> <span class="ruby-value">:size</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:size</span>, <span class="ruby-value">:mime_type</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:type</span>
+
+<span class="ruby-comment"># ...</span>
+
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">image</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>]      <span class="ruby-comment">#=&gt; 95724</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_size</span>                  <span class="ruby-comment">#=&gt; 95724</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;mime_type&quot;</span>] <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_type</span>                  <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>
+
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-keyword">nil</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_size</span> <span class="ruby-comment">#=&gt; nil</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_type</span> <span class="ruby-comment">#=&gt; nil</span>
+</pre>
 <ul><li>
 <p>Added <code>refresh_metadata</code> plugin (extracted from the <code>restore_cached_data</code>  plugin) which allows you to re-extract metadata from an uploaded file.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:refresh_metadata</span>&#x000A;&#x000A;<span class="ruby-comment"># ...</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">refresh_metadata!</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment"># re-extracted metadata</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:refresh_metadata</span>
+
+<span class="ruby-comment"># ...</span>
+
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">refresh_metadata!</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment"># re-extracted metadata</span>
+</pre>
 
 <h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Added <code>Shrine.determine_mime_type</code> and <code>Shrine.mime_type_analyzers</code> methods  to <code>determine_mime_type</code> plugin for extracting MIME type from a file.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">determine_mime_type</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls the defined analyzer</span>&#x000A;<span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">mime_type_analyzers</span>[<span class="ruby-value">:file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls a built-in analyzer</span>&#x000A;<span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">determine_mime_type</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls the defined analyzer</span>
+<span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">mime_type_analyzers</span>[<span class="ruby-value">:file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls a built-in analyzer</span>
+<span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>
+</pre>
 <ul><li>
 <p>Added <code>Shrine.extract_dimensions</code> and <code>Shrine.dimensions_analyzers</code> methods  to <code>store_dimensions</code> plugin for extracting dimensions from a file.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">extract_dimensions</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls the defined analyzer</span>&#x000A;<span class="ruby-comment">#=&gt; [300, 400]</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">dimensions_analyzers</span>[<span class="ruby-value">:fastimage</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls a built-in analyzer</span>&#x000A;<span class="ruby-comment">#=&gt; [300, 400]</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">extract_dimensions</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls the defined analyzer</span>
+<span class="ruby-comment">#=&gt; [300, 400]</span>
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">dimensions_analyzers</span>[<span class="ruby-value">:fastimage</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls a built-in analyzer</span>
+<span class="ruby-comment">#=&gt; [300, 400]</span>
+</pre>
 <ul><li>
 <p>Added <code>Shrine.data_uri</code> method to <code>data_uri</code> plugin for converting a data URI  into an IO object.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:data_uri</span>&#x000A;&#x000A;<span class="ruby-identifier">io</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">data_uri</span>(<span class="ruby-string">&quot;data:image/png;base64,9kfg07a80ihtiort87t85&quot;</span>)&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">content_type</span> <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span>&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span>         <span class="ruby-comment">#=&gt; 482</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:data_uri</span>
+
+<span class="ruby-identifier">io</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">data_uri</span>(<span class="ruby-string">&quot;data:image/png;base64,9kfg07a80ihtiort87t85&quot;</span>)
+<span class="ruby-identifier">io</span>.<span class="ruby-identifier">content_type</span> <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span>
+<span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span>         <span class="ruby-comment">#=&gt; 482</span>
+</pre>
 <ul><li>
 <p>Added <code>Shrine.rack_file</code> method to <code>rack_file</code> plugin for converting the Rack  uploaded file hash into an IO object.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>&#x000A;&#x000A;<span class="ruby-identifier">file_hash</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   :name =&gt; &quot;file&quot;,</span>&#x000A;<span class="ruby-comment">#   :filename =&gt; &quot;cats.png&quot;,</span>&#x000A;<span class="ruby-comment">#   :type =&gt; &quot;image/png&quot;,</span>&#x000A;<span class="ruby-comment">#   :tempfile =&gt; #&lt;Tempfile:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0&gt;,</span>&#x000A;<span class="ruby-comment">#   :head =&gt; &quot;Content-Disposition: form-data; ...&quot;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;&#x000A;<span class="ruby-identifier">io</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">rack_file</span>(<span class="ruby-identifier">file_hash</span>)&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;cats.png&quot;</span>&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">content_type</span>      <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span>&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 58342</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>
+
+<span class="ruby-identifier">file_hash</span> <span class="ruby-comment">#=&gt;</span>
+<span class="ruby-comment"># {</span>
+<span class="ruby-comment">#   :name =&gt; &quot;file&quot;,</span>
+<span class="ruby-comment">#   :filename =&gt; &quot;cats.png&quot;,</span>
+<span class="ruby-comment">#   :type =&gt; &quot;image/png&quot;,</span>
+<span class="ruby-comment">#   :tempfile =&gt; #&lt;Tempfile:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0&gt;,</span>
+<span class="ruby-comment">#   :head =&gt; &quot;Content-Disposition: form-data; ...&quot;,</span>
+<span class="ruby-comment"># }</span>
+
+<span class="ruby-identifier">io</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">rack_file</span>(<span class="ruby-identifier">file_hash</span>)
+<span class="ruby-identifier">io</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;cats.png&quot;</span>
+<span class="ruby-identifier">io</span>.<span class="ruby-identifier">content_type</span>      <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span>
+<span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 58342</span>
+</pre>
 
 <h2 id="label-Performance+improvements">Performance improvements<span><a href="#label-Performance+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
@@ -115,7 +185,8 @@ Last Update:
 <p><code>Shrine::Storage::S3#object</code> is now public, which returns an <code>Aws::S3::Object</code>  representing the file.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">s3</span>.<span class="ruby-identifier">object</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; #&lt;Aws::S3::Object bucket_name=&quot;your-bucket&quot; key=&quot;image.jpg&quot;&gt;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">s3</span>.<span class="ruby-identifier">object</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; #&lt;Aws::S3::Object bucket_name=&quot;your-bucket&quot; key=&quot;image.jpg&quot;&gt;</span>
+</pre>
 <ul><li>
 <p>Added <code>Shrine::Storage::S3#client</code> method for quicker access to the  <code>Aws::S3::Client</code> instance.</p>
 </li><li>
@@ -124,7 +195,8 @@ Last Update:
 <p><code>Shrine::Storage::FileSystem#path</code> is now public, which returns a <code>Pathname</code>  to the file.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">filesystem</span>.<span class="ruby-identifier">path</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; #&lt;Pathname:public/image.jpg&gt;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">filesystem</span>.<span class="ruby-identifier">path</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; #&lt;Pathname:public/image.jpg&gt;</span>
+</pre>
 <ul><li>
 <p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now checks whether <code>Shrine#generate_location</code> happened to return nil,  and raises <code>Shrine::Error</code>.</p>
 </li><li>
@@ -154,12 +226,23 @@ Last Update:
 <p>Passing regexes to <code>validate_(mime_type|extension)_(inclusion|exclusion)</code> has  been deprecated due to lack of usefulness and for security reasons, from now  on you should always pass plain strings.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-comment"># deprecated</span>&#x000A;<span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-regexp">/image\//</span>]&#x000A;<span class="ruby-identifier">validate_extension_inclusion</span> [<span class="ruby-regexp">/jpe?g/</span>]&#x000A;&#x000A;<span class="ruby-comment"># use strings instead</span>&#x000A;<span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif ...]</span>&#x000A;<span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif ...]</span></pre>
+<pre class="ruby"><span class="ruby-comment"># deprecated</span>
+<span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-regexp">/image\//</span>]
+<span class="ruby-identifier">validate_extension_inclusion</span> [<span class="ruby-regexp">/jpe?g/</span>]
+
+<span class="ruby-comment"># use strings instead</span>
+<span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif ...]</span>
+<span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif ...]</span>
+</pre>
 <ul><li>
 <p>Previously the <code>validate_(max|min)_(width|height)</code> validations would ignore  <code>width</code> or <code>height</code> being nil, but this is now deprecated and in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3  this will return an error. You should make sure that the file is of the right  type before validating dimensions.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">if</span> <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>&#x000A;  <span class="ruby-identifier">validate_max_width</span> <span class="ruby-value">1000</span>&#x000A;  <span class="ruby-identifier">validate_max_height</span> <span class="ruby-value">1000</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">if</span> <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>
+  <span class="ruby-identifier">validate_max_width</span> <span class="ruby-value">1000</span>
+  <span class="ruby-identifier">validate_max_height</span> <span class="ruby-value">1000</span>
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>Passing a Rack uploaded file hash to <code>Shrine#upload</code> and <code>Shrine#store</code> is  now deprecated in <code>rack_file</code> plugin, use <code>Shrine.rack_file</code> to first convert  the Rack hash into an IO object.</p>
 </li><li>
@@ -179,7 +262,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

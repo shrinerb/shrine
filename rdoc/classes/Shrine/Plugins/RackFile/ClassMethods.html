@@ -62,7 +62,18 @@ Shrine::Plugins::RackFile::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-rack_file-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-rack_file-source'>   <span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb</span>&#x000A;<span class="line-num">11</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">rack_file</span>(<span class="ruby-identifier">hash</span>)&#x000A;<span class="line-num">12</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">hash</span>[<span class="ruby-value">:filename</span>]&#x000A;<span class="line-num">13</span>     <span class="ruby-comment"># Rack can sometimes return the filename binary encoded, so we force</span>&#x000A;<span class="line-num">14</span>     <span class="ruby-comment"># the encoding to utf-8</span>&#x000A;<span class="line-num">15</span>     <span class="ruby-identifier">hash</span> = <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">merge</span>(&#x000A;<span class="line-num">16</span>       <span class="ruby-value">filename:</span> <span class="ruby-identifier">hash</span>[<span class="ruby-value">:filename</span>].<span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_8</span>)&#x000A;<span class="line-num">17</span>     )&#x000A;<span class="line-num">18</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">19</span> &#x000A;<span class="line-num">20</span>   <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">RackFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">hash</span>)&#x000A;<span class="line-num">21</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-rack_file-source'>   <span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb</span>
+<span class="line-num">11</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">rack_file</span>(<span class="ruby-identifier">hash</span>)
+<span class="line-num">12</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">hash</span>[<span class="ruby-value">:filename</span>]
+<span class="line-num">13</span>     <span class="ruby-comment"># Rack can sometimes return the filename binary encoded, so we force</span>
+<span class="line-num">14</span>     <span class="ruby-comment"># the encoding to utf-8</span>
+<span class="line-num">15</span>     <span class="ruby-identifier">hash</span> = <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">merge</span>(
+<span class="line-num">16</span>       <span class="ruby-value">filename:</span> <span class="ruby-identifier">hash</span>[<span class="ruby-value">:filename</span>].<span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-constant">Encoding</span><span class="ruby-operator">::</span><span class="ruby-constant">UTF_8</span>)
+<span class="line-num">17</span>     )
+<span class="line-num">18</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">19</span> 
+<span class="line-num">20</span>   <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">RackFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">hash</span>)
+<span class="line-num">21</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -74,7 +85,7 @@ Shrine::Plugins::RackFile::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -30,7 +30,7 @@ doc/changing_storage.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -44,31 +44,59 @@ Last Update:
 
 <p>Let’s assume we have a <code>Photo</code> model with an <code>image</code> file attachment stored in AWS S3 storage:</p>
 
-<pre>Shrine.storages = {&#x000A;  cache: Shrine::Storage::S3.new(...),&#x000A;  store: Shrine::Storage::S3.new(...),&#x000A;}&#x000A;Shrine.plugin :activerecord</pre>
+<pre>Shrine.storages = {
+  cache: Shrine::Storage::S3.new(...),
+  store: Shrine::Storage::S3.new(...),
+}
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+Shrine.plugin :activerecord</pre>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-comment"># ...</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)
+<span class="ruby-keyword">end</span>
+</pre>
 
 <p>Let’s also assume that we’re migrating from AWS S3 to Google Cloud Storage, and we’ve added the new storage to <code>Shrine.storages</code>:</p>
 
-<pre>Shrine.storages = {&#x000A;  ...&#x000A;  store: Shrine::Storage::S3.new(...),&#x000A;  gcs:   Shrine::Storage::GoogleCloudStorage.new(...),&#x000A;}</pre>
+<pre>Shrine.storages = {
+  ...
+  store: Shrine::Storage::S3.new(...),
+  gcs:   Shrine::Storage::GoogleCloudStorage.new(...),
+}</pre>
 
 <h2 id="label-1.+Mirror+upload+and+delete+operations">1. Mirror upload and delete operations<span><a href="#label-1.+Mirror+upload+and+delete+operations">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>The first step is to start mirroring uploads and deletes made on your current storage to the new storage. We can do this by loading the <code>mirroring</code> plugin:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:mirroring</span>, <span class="ruby-value">mirror:</span> { <span class="ruby-value">store:</span> <span class="ruby-value">:gcs</span> }</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:mirroring</span>, <span class="ruby-value">mirror:</span> { <span class="ruby-value">store:</span> <span class="ruby-value">:gcs</span> }
+</pre>
 
 <p>Put the above code in an initializer and deploy it.</p>
 
-<p>You can additionally delay the mirroring into a <a href="https://shrinerb.com/docs/plugins/mirroring#backgrounding">background job</a> for better performance.</p>
+<p>You can additionally delay the mirroring into a <a target="_top" href="https://shrinerb.com/docs/plugins/mirroring#backgrounding">background job</a> for better performance.</p>
 
 <h2 id="label-2.+Copy+the+files">2. Copy the files<span><a href="#label-2.+Copy+the+files">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>Next step is to copy all remaining files from current storage into the new storage using the following script. It fetches the photos in batches, downloads the image, and re-uploads it to the new storage.</p>
 
-<pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>&#x000A;&#x000A;  <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">trigger_mirror_upload</span>&#x000A;&#x000A;  <span class="ruby-comment"># if using derivatives</span>&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">_</span>, <span class="ruby-identifier">derivative</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">derivative</span>.<span class="ruby-identifier">trigger_mirror_upload</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>
+
+  <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>
+
+  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">trigger_mirror_upload</span>
+
+  <span class="ruby-comment"># if using derivatives</span>
+  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">_</span>, <span class="ruby-identifier">derivative</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">derivative</span>.<span class="ruby-identifier">trigger_mirror_upload</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 <p>Now the new storage should have all files the current storage has, and new uploads will continue being mirrored to the new storage.</p>
 
@@ -76,13 +104,25 @@ Last Update:
 
 <p>Once all the files are copied over to the new storage, everything should be ready for us to update the storage in the <a href="../../classes/Shrine.html"><code>Shrine</code></a> configuration. We can keep mirroring, in case the change would need to reverted.</p>
 
-<pre>Shrine.storages = {&#x000A;  ...&#x000A;  store: Shrine::Storage::GoogleCloudStorage.new(...),&#x000A;  s3:    Shrine::Storage::S3.new(...),&#x000A;}&#x000A;Shrine.plugin :mirroring, mirror: { store: :s3 } # mirror to :s3 storage</pre>
+<pre>Shrine.storages = {
+  ...
+  store: Shrine::Storage::GoogleCloudStorage.new(...),
+  s3:    Shrine::Storage::S3.new(...),
+}
+
+Shrine.plugin :mirroring, mirror: { store: :s3 } # mirror to :s3 storage</pre>
 
 <h2 id="label-4.+Remove+mirroring">4. Remove mirroring<span><a href="#label-4.+Remove+mirroring">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>Once everything is looking good, we can remove the mirroring:</p>
 
-<pre>Shrine.storages = {&#x000A;  ...&#x000A;  store: Shrine::Storage::GoogleCloudStorage.new(...),&#x000A;- s3:    Shrine::Storage::S3.new(...),&#x000A;}&#x000A;- Shrine.plugin :mirroring, mirror: { store: :s3 } # mirror to :s3 storage</pre>
+<pre>Shrine.storages = {
+  ...
+  store: Shrine::Storage::GoogleCloudStorage.new(...),
+- s3:    Shrine::Storage::S3.new(...),
+}
+
+- Shrine.plugin :mirroring, mirror: { store: :s3 } # mirror to :s3 storage</pre>
 </div>
 <div id='context'>
 </div>
@@ -93,7 +133,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

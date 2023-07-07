@@ -62,7 +62,14 @@ Shrine::Plugins::RackFile::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-assign-source'>   <span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb</span>&#x000A;<span class="line-num">27</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">28</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">rack_file?</span>(<span class="ruby-identifier">value</span>)&#x000A;<span class="line-num">29</span>     <span class="ruby-identifier">assign</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">rack_file</span>(<span class="ruby-identifier">value</span>), <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>&#x000A;<span class="line-num">30</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">31</span>     <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">32</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-assign-source'>   <span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb</span>
+<span class="line-num">27</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">28</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">rack_file?</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">29</span>     <span class="ruby-identifier">assign</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">rack_file</span>(<span class="ruby-identifier">value</span>), <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>
+<span class="line-num">30</span>   <span class="ruby-keyword">else</span>
+<span class="line-num">31</span>     <span class="ruby-keyword">super</span>
+<span class="line-num">32</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">33</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -74,7 +81,7 @@ Shrine::Plugins::RackFile::AttacherMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

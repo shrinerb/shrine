@@ -30,7 +30,7 @@ doc/changing_location.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2022-03-05 17:09:59 +0100</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -44,17 +44,29 @@ Last Update:
 
 <p>Let’s assume we have a <code>Photo</code> model with an <code>image</code> file attachment:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:activerecord</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:activerecord</span>
+</pre>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-comment"># ...</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)
+<span class="ruby-keyword">end</span>
+</pre>
 
 <h2 id="label-1.+Update+the+location+generation">1. Update the location generation<span><a href="#label-1.+Update+the+location+generation">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>Since <a href="../../classes/Shrine.html"><code>Shrine</code></a> generates the location only once during upload, it is safe to change the <code>Shrine#generate_location</code> method. All the existing files will still continue to work with the previously stored urls because the files have not been migrated.</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-comment"># change location generation</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+    <span class="ruby-comment"># change location generation</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 <p>We can now deploy this change to production so new file uploads will be stored in the new location.</p>
 
@@ -62,7 +74,26 @@ Last Update:
 
 <p>To move existing files to new location, run the following script. It fetches the photos in batches, downloads the image, and re-uploads it to the new location. We only need to migrate the files in <code>:store</code> storage need to be migrated as the files in <code>:cache</code> storage will be uploaded to the new location on promotion.</p>
 
-<pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>&#x000A;&#x000A;  <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-comment"># move only attachments uploaded to permanent storage</span>&#x000A;&#x000A;  <span class="ruby-identifier">old_attacher</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">dup</span>&#x000A;  <span class="ruby-identifier">current_file</span> = <span class="ruby-identifier">old_attacher</span>.<span class="ruby-identifier">file</span>&#x000A;&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>             <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>)                    <span class="ruby-comment"># reupload file</span>&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set_derivatives</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload_derivatives</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>) <span class="ruby-comment"># reupload derivatives if you have derivatives</span>&#x000A;&#x000A;  <span class="ruby-keyword">begin</span>&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">atomic_persist</span>(<span class="ruby-identifier">current_file</span>) <span class="ruby-comment"># persist changes if attachment has not changed in the meantime</span>&#x000A;    <span class="ruby-identifier">old_attacher</span>.<span class="ruby-identifier">destroy_attached</span>         <span class="ruby-comment"># delete files on old location</span>&#x000A;  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>,       <span class="ruby-comment"># attachment has changed during reuploading</span>&#x000A;         <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">RecordNotFound</span>     <span class="ruby-comment"># record has been deleted during reuploading</span>&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy_attached</span>             <span class="ruby-comment"># delete now orphaned files</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>
+
+  <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-comment"># move only attachments uploaded to permanent storage</span>
+
+  <span class="ruby-identifier">old_attacher</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">dup</span>
+  <span class="ruby-identifier">current_file</span> = <span class="ruby-identifier">old_attacher</span>.<span class="ruby-identifier">file</span>
+
+  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>             <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>)                    <span class="ruby-comment"># reupload file</span>
+  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set_derivatives</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload_derivatives</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>) <span class="ruby-comment"># reupload derivatives if you have derivatives</span>
+
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">atomic_persist</span>(<span class="ruby-identifier">current_file</span>) <span class="ruby-comment"># persist changes if attachment has not changed in the meantime</span>
+    <span class="ruby-identifier">old_attacher</span>.<span class="ruby-identifier">destroy_attached</span>         <span class="ruby-comment"># delete files on old location</span>
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>,       <span class="ruby-comment"># attachment has changed during reuploading</span>
+         <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">RecordNotFound</span>     <span class="ruby-comment"># record has been deleted during reuploading</span>
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy_attached</span>             <span class="ruby-comment"># delete now orphaned files</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 <p>Now all your existing attachments should be happily living on new locations.</p>
 
@@ -70,9 +101,42 @@ Last Update:
 
 <p>For faster migration, we can also delay moving files into a background job:</p>
 
-<pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>&#x000A;&#x000A;  <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-comment"># move only attachments uploaded to permanent storage</span>&#x000A;&#x000A;  <span class="ruby-constant">MoveFilesJob</span>.<span class="ruby-identifier">perform_async</span>(&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>,&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>,&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>,&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">name</span>,&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file_data</span>,&#x000A;  )&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MoveFilesJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">perform</span>(<span class="ruby-identifier">attacher_class</span>, <span class="ruby-identifier">record_class</span>, <span class="ruby-identifier">record_id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)&#x000A;    <span class="ruby-identifier">attacher_class</span> = <span class="ruby-constant">Object</span>.<span class="ruby-identifier">const_get</span>(<span class="ruby-identifier">attacher_class</span>)&#x000A;    <span class="ruby-identifier">record</span>         = <span class="ruby-constant">Object</span>.<span class="ruby-identifier">const_get</span>(<span class="ruby-identifier">record_class</span>).<span class="ruby-identifier">find</span>(<span class="ruby-identifier">record_id</span>) <span class="ruby-comment"># if using Active Record</span>&#x000A;&#x000A;    <span class="ruby-identifier">attacher</span>     = <span class="ruby-identifier">attacher_class</span>.<span class="ruby-identifier">retrieve</span>(<span class="ruby-value">model:</span> <span class="ruby-identifier">record</span>, <span class="ruby-value">name:</span> <span class="ruby-identifier">name</span>, <span class="ruby-value">file:</span> <span class="ruby-identifier">file_data</span>)&#x000A;    <span class="ruby-identifier">old_attacher</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">dup</span>&#x000A;&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>             <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set_derivatives</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload_derivatives</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>)&#x000A;&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">atomic_persist</span>&#x000A;    <span class="ruby-identifier">old_attacher</span>.<span class="ruby-identifier">destroy_attached</span>&#x000A;  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>, <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">RecordNotFound</span>&#x000A;    <span class="ruby-identifier">attacher</span>&amp;.<span class="ruby-identifier">destroy_attached</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+  <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-comment"># move only attachments uploaded to permanent storage</span>
+
+  <span class="ruby-constant">MoveFilesJob</span>.<span class="ruby-identifier">perform_async</span>(
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>,
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>,
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>,
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">name</span>,
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file_data</span>,
+  )
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MoveFilesJob</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">perform</span>(<span class="ruby-identifier">attacher_class</span>, <span class="ruby-identifier">record_class</span>, <span class="ruby-identifier">record_id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)
+    <span class="ruby-identifier">attacher_class</span> = <span class="ruby-constant">Object</span>.<span class="ruby-identifier">const_get</span>(<span class="ruby-identifier">attacher_class</span>)
+    <span class="ruby-identifier">record</span>         = <span class="ruby-constant">Object</span>.<span class="ruby-identifier">const_get</span>(<span class="ruby-identifier">record_class</span>).<span class="ruby-identifier">find</span>(<span class="ruby-identifier">record_id</span>) <span class="ruby-comment"># if using Active Record</span>
+
+    <span class="ruby-identifier">attacher</span>     = <span class="ruby-identifier">attacher_class</span>.<span class="ruby-identifier">retrieve</span>(<span class="ruby-value">model:</span> <span class="ruby-identifier">record</span>, <span class="ruby-value">name:</span> <span class="ruby-identifier">name</span>, <span class="ruby-value">file:</span> <span class="ruby-identifier">file_data</span>)
+    <span class="ruby-identifier">old_attacher</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">dup</span>
+    <span class="ruby-identifier">current_file</span> = <span class="ruby-identifier">old_attacher</span>.<span class="ruby-identifier">file</span>
+
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>             <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>)
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set_derivatives</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload_derivatives</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>)
+
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">atomic_persist</span>(<span class="ruby-identifier">current_file</span>)
+    <span class="ruby-identifier">old_attacher</span>.<span class="ruby-identifier">destroy_attached</span>
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>, <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">RecordNotFound</span>
+    <span class="ruby-identifier">attacher</span>&amp;.<span class="ruby-identifier">destroy_attached</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 </div>
 <div id='context'>
 </div>
@@ -83,7 +147,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

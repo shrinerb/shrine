@@ -61,7 +61,10 @@ Shrine::Plugins::DynamicStorage::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-find_storage-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-find_storage-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num">16</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">find_storage</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">17</span>   <span class="ruby-identifier">resolve_dynamic_storage</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">or</span> <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">18</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-find_storage-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>
+<span class="line-num">16</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">find_storage</span>(<span class="ruby-identifier">name</span>)
+<span class="line-num">17</span>   <span class="ruby-identifier">resolve_dynamic_storage</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">or</span> <span class="ruby-keyword">super</span>
+<span class="line-num">18</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-storage'>
@@ -77,7 +80,10 @@ Shrine::Plugins::DynamicStorage::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-storage-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-storage-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">storage</span>(<span class="ruby-identifier">regex</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">13</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:dynamic_storage</span>][<span class="ruby-value">:resolvers</span>][<span class="ruby-identifier">regex</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-storage-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>
+<span class="line-num">12</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">storage</span>(<span class="ruby-identifier">regex</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">13</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:dynamic_storage</span>][<span class="ruby-value">:resolvers</span>][<span class="ruby-identifier">regex</span>] = <span class="ruby-identifier">block</span>
+<span class="line-num">14</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -89,7 +95,7 @@ Shrine::Plugins::DynamicStorage::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

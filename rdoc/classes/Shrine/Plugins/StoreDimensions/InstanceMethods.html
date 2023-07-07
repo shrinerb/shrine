@@ -60,7 +60,15 @@ Shrine::Plugins::StoreDimensions::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-extract_metadata-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-extract_metadata-source'>   <span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb</span>&#x000A;<span class="line-num">74</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">75</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:store_dimensions</span>][<span class="ruby-value">:auto_extraction</span>]&#x000A;<span class="line-num">76</span> &#x000A;<span class="line-num">77</span>   <span class="ruby-comment"># We update the metadata with &quot;width&quot; and &quot;height&quot;.</span>&#x000A;<span class="line-num">78</span>   <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">extract_dimensions</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="line-num">79</span> &#x000A;<span class="line-num">80</span>   <span class="ruby-keyword">super</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-string">&quot;width&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">width</span>, <span class="ruby-string">&quot;height&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">height</span>)&#x000A;<span class="line-num">81</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-extract_metadata-source'>   <span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb</span>
+<span class="line-num">74</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">75</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:store_dimensions</span>][<span class="ruby-value">:auto_extraction</span>]
+<span class="line-num">76</span> 
+<span class="line-num">77</span>   <span class="ruby-comment"># We update the metadata with &quot;width&quot; and &quot;height&quot;.</span>
+<span class="line-num">78</span>   <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">extract_dimensions</span>(<span class="ruby-identifier">io</span>)
+<span class="line-num">79</span> 
+<span class="line-num">80</span>   <span class="ruby-keyword">super</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-string">&quot;width&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">width</span>, <span class="ruby-string">&quot;height&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">height</span>)
+<span class="line-num">81</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -72,7 +80,7 @@ Shrine::Plugins::StoreDimensions::InstanceMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

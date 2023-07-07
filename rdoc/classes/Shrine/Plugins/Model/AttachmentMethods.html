@@ -61,14 +61,20 @@ Shrine::Plugins::Model::AttachmentMethods
 
 <p>Allows disabling model behaviour:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)               <span class="ruby-comment"># model (default)</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>, <span class="ruby-value">model:</span> <span class="ruby-keyword">false</span>) <span class="ruby-comment"># entity</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)               <span class="ruby-comment"># model (default)</span>
+<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>, <span class="ruby-value">model:</span> <span class="ruby-keyword">false</span>) <span class="ruby-comment"># entity</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">model:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">22</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">23</span>   <span class="ruby-ivar">@model</span> = <span class="ruby-identifier">model</span>&#x000A;<span class="line-num">24</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>
+<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">model:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">22</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">23</span>   <span class="ruby-ivar">@model</span> = <span class="ruby-identifier">model</span>
+<span class="line-num">24</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -87,7 +93,11 @@ Shrine::Plugins::Model::AttachmentMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-included-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-included-source'>   <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">klass</span>)&#x000A;<span class="line-num">30</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">31</span>   <span class="ruby-identifier">define_model_methods</span>(<span class="ruby-ivar">@name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">model?</span>&#x000A;<span class="line-num">32</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-included-source'>   <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>
+<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">klass</span>)
+<span class="line-num">30</span>   <span class="ruby-keyword">super</span>
+<span class="line-num">31</span>   <span class="ruby-identifier">define_model_methods</span>(<span class="ruby-ivar">@name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">model?</span>
+<span class="line-num">32</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -99,7 +109,7 @@ Shrine::Plugins::Model::AttachmentMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

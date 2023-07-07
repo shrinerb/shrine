@@ -63,7 +63,23 @@ Shrine::Plugins::Versions::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-uploaded_file-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-uploaded_file-source'>   <span class="ruby-comment"># File lib/shrine/plugins/versions.rb</span>&#x000A;<span class="line-num">25</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_file</span>(<span class="ruby-identifier">object</span>)&#x000A;<span class="line-num">26</span>   <span class="ruby-identifier">object</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">object</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)&#x000A;<span class="line-num">27</span> &#x000A;<span class="line-num">28</span>   <span class="ruby-constant">Utils</span>.<span class="ruby-identifier">deep_map</span>(<span class="ruby-identifier">object</span>, <span class="ruby-value">transform_keys:</span> <span class="ruby-value">:to_sym</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">29</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-identifier">value</span>[<span class="ruby-string">&quot;id&quot;</span>].<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>[<span class="ruby-value">:id</span>].<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))&#x000A;<span class="line-num">30</span>       <span class="ruby-identifier">file</span> = <span class="ruby-keyword">super</span>(<span class="ruby-identifier">value</span>)&#x000A;<span class="line-num">31</span>     <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>)&#x000A;<span class="line-num">32</span>       <span class="ruby-identifier">file</span> = <span class="ruby-identifier">value</span>&#x000A;<span class="line-num">33</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">34</span> &#x000A;<span class="line-num">35</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">file</span>&#x000A;<span class="line-num">36</span>       <span class="ruby-keyword">yield</span> <span class="ruby-identifier">file</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;<span class="line-num">37</span>       <span class="ruby-identifier">file</span>&#x000A;<span class="line-num">38</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">39</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">40</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-uploaded_file-source'>   <span class="ruby-comment"># File lib/shrine/plugins/versions.rb</span>
+<span class="line-num">25</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_file</span>(<span class="ruby-identifier">object</span>)
+<span class="line-num">26</span>   <span class="ruby-identifier">object</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">object</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
+<span class="line-num">27</span> 
+<span class="line-num">28</span>   <span class="ruby-constant">Utils</span>.<span class="ruby-identifier">deep_map</span>(<span class="ruby-identifier">object</span>, <span class="ruby-value">transform_keys:</span> <span class="ruby-value">:to_sym</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
+<span class="line-num">29</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-identifier">value</span>[<span class="ruby-string">&quot;id&quot;</span>].<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>[<span class="ruby-value">:id</span>].<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))
+<span class="line-num">30</span>       <span class="ruby-identifier">file</span> = <span class="ruby-keyword">super</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">31</span>     <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>)
+<span class="line-num">32</span>       <span class="ruby-identifier">file</span> = <span class="ruby-identifier">value</span>
+<span class="line-num">33</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">34</span> 
+<span class="line-num">35</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">file</span>
+<span class="line-num">36</span>       <span class="ruby-keyword">yield</span> <span class="ruby-identifier">file</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>
+<span class="line-num">37</span>       <span class="ruby-identifier">file</span>
+<span class="line-num">38</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">39</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">40</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-version_fallbacks'>
@@ -79,7 +95,10 @@ Shrine::Plugins::Versions::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-version_fallbacks-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-version_fallbacks-source'>   <span class="ruby-comment"># File lib/shrine/plugins/versions.rb</span>&#x000A;<span class="line-num">20</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">version_fallbacks</span>&#x000A;<span class="line-num">21</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:versions</span>][<span class="ruby-value">:fallbacks</span>]&#x000A;<span class="line-num">22</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-version_fallbacks-source'>   <span class="ruby-comment"># File lib/shrine/plugins/versions.rb</span>
+<span class="line-num">20</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">version_fallbacks</span>
+<span class="line-num">21</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:versions</span>][<span class="ruby-value">:fallbacks</span>]
+<span class="line-num">22</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -91,7 +110,7 @@ Shrine::Plugins::Versions::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

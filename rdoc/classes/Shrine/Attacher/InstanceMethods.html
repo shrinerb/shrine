@@ -121,7 +121,14 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">file:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">cache:</span> <span class="ruby-value">:cache</span>, <span class="ruby-value">store:</span> <span class="ruby-value">:store</span>)&#x000A;<span class="line-num">42</span>   <span class="ruby-ivar">@file</span>     = <span class="ruby-identifier">file</span>&#x000A;<span class="line-num">43</span>   <span class="ruby-ivar">@cache</span>    = <span class="ruby-identifier">cache</span>&#x000A;<span class="line-num">44</span>   <span class="ruby-ivar">@store</span>    = <span class="ruby-identifier">store</span>&#x000A;<span class="line-num">45</span>   <span class="ruby-ivar">@context</span>  = {}&#x000A;<span class="line-num">46</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-keyword">nil</span>&#x000A;<span class="line-num">47</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">file:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">cache:</span> <span class="ruby-value">:cache</span>, <span class="ruby-value">store:</span> <span class="ruby-value">:store</span>)
+<span class="line-num">42</span>   <span class="ruby-ivar">@file</span>     = <span class="ruby-identifier">file</span>
+<span class="line-num">43</span>   <span class="ruby-ivar">@cache</span>    = <span class="ruby-identifier">cache</span>
+<span class="line-num">44</span>   <span class="ruby-ivar">@store</span>    = <span class="ruby-identifier">store</span>
+<span class="line-num">45</span>   <span class="ruby-ivar">@context</span>  = {}
+<span class="line-num">46</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-keyword">nil</span>
+<span class="line-num">47</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -135,14 +142,29 @@ Shrine::Attacher::InstanceMethods
 
 <p>Calls <a href="InstanceMethods.html#method-i-attach_cached"><code>attach_cached</code></a>, but skips if value is an empty string (this is useful when the uploaded file comes from form fields). Forwards any additional options to <a href="InstanceMethods.html#method-i-attach_cached"><code>attach_cached</code></a>.</p>
 
-<pre>attacher.assign(File.open(...))&#x000A;attacher.assign(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })&#x000A;attacher.assign(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)&#x000A;attacher.assign({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })&#x000A;# ignores the assignment when a blank string is given&#x000A;attacher.assign(&quot;&quot;)</pre>
+<pre>attacher.assign(File.open(...))
+attacher.assign(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })
+attacher.assign(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)
+attacher.assign({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })
+
+# ignores the assignment when a blank string is given
+attacher.assign(&quot;&quot;)</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-assign-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">70</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">71</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-comment"># skip empty hidden field</span>&#x000A;<span class="line-num">72</span> &#x000A;<span class="line-num">73</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)&#x000A;<span class="line-num">74</span>     <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">file</span> <span class="ruby-comment"># skip assignment for current file</span>&#x000A;<span class="line-num">75</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">76</span> &#x000A;<span class="line-num">77</span>   <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">78</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-assign-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">70</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">71</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-comment"># skip empty hidden field</span>
+<span class="line-num">72</span> 
+<span class="line-num">73</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
+<span class="line-num">74</span>     <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">file</span> <span class="ruby-comment"># skip assignment for current file</span>
+<span class="line-num">75</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">76</span> 
+<span class="line-num">77</span>   <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">78</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-attach'>
@@ -155,14 +177,30 @@ Shrine::Attacher::InstanceMethods
 
 <p>Uploads given IO object and changes the uploaded file.</p>
 
-<pre class="ruby"><span class="ruby-comment"># uploads the file to permanent storage</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>)&#x000A;&#x000A;<span class="ruby-comment"># uploads the file to specified storage</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">storage:</span> <span class="ruby-value">:other_store</span>)&#x000A;&#x000A;<span class="ruby-comment"># forwards additional options to the uploader</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">upload_options:</span> { <span class="ruby-value">acl:</span> <span class="ruby-string">&quot;public-read&quot;</span> }, <span class="ruby-value">metadata:</span> { <span class="ruby-string">&quot;foo&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;bar&quot;</span> })&#x000A;&#x000A;<span class="ruby-comment"># removes the attachment</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-keyword">nil</span>)</pre>
+<pre class="ruby"><span class="ruby-comment"># uploads the file to permanent storage</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>)
+
+<span class="ruby-comment"># uploads the file to specified storage</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">storage:</span> <span class="ruby-value">:other_store</span>)
+
+<span class="ruby-comment"># forwards additional options to the uploader</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">upload_options:</span> { <span class="ruby-value">acl:</span> <span class="ruby-string">&quot;public-read&quot;</span> }, <span class="ruby-value">metadata:</span> { <span class="ruby-string">&quot;foo&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;bar&quot;</span> })
+
+<span class="ruby-comment"># removes the attachment</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-keyword">nil</span>)
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-attach-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-attach-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">116</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">117</span>   <span class="ruby-identifier">file</span> = <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>&#x000A;<span class="line-num">118</span> &#x000A;<span class="line-num">119</span>   <span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">120</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-attach-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">116</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">117</span>   <span class="ruby-identifier">file</span> = <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>
+<span class="line-num">118</span> 
+<span class="line-num">119</span>   <span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">120</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-attach_cached'>
@@ -177,14 +215,31 @@ Shrine::Attacher::InstanceMethods
 
 <h1 id="method-i-attach_cached-label-attach.">attach.<span><a href="#method-i-attach_cached-label-attach.">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
-<pre># upload file to temporary storage and set the uploaded file.&#x000A;attacher.attach_cached(File.open(...))&#x000A;# foward additional options to the uploader&#x000A;attacher.attach_cached(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })&#x000A;&#x000A;# sets an existing cached file from JSON data&#x000A;attacher.attach_cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)&#x000A;&#x000A;# sets an existing cached file from Hash data&#x000A;attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })</pre>
+<pre># upload file to temporary storage and set the uploaded file.
+attacher.attach_cached(File.open(...))
+
+# foward additional options to the uploader
+attacher.attach_cached(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })
+
+# sets an existing cached file from JSON data
+attacher.attach_cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)
+
+# sets an existing cached file from Hash data
+attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-attach_cached-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-attach_cached-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num"> 95</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num"> 96</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)&#x000A;<span class="line-num"> 97</span>     <span class="ruby-identifier">change</span>(<span class="ruby-identifier">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>))&#x000A;<span class="line-num"> 98</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num"> 99</span>     <span class="ruby-identifier">attach</span>(<span class="ruby-identifier">value</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">cache_key</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:cache</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">100</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">101</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-attach_cached-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num"> 95</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num"> 96</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
+<span class="line-num"> 97</span>     <span class="ruby-identifier">change</span>(<span class="ruby-identifier">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>))
+<span class="line-num"> 98</span>   <span class="ruby-keyword">else</span>
+<span class="line-num"> 99</span>     <span class="ruby-identifier">attach</span>(<span class="ruby-identifier">value</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">cache_key</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:cache</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">100</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">101</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-attached-3F'>
@@ -197,14 +252,22 @@ Shrine::Attacher::InstanceMethods
 
 <p>Returns whether a file is attached.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attached?</span> <span class="ruby-comment">#=&gt; true</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-keyword">nil</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attached?</span> <span class="ruby-comment">#=&gt; false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attached?</span> <span class="ruby-comment">#=&gt; true</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-keyword">nil</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attached?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-attached-3F-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-attached-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">272</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attached?</span>&#x000A;<span class="line-num">273</span>   <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">file</span>&#x000A;<span class="line-num">274</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-attached-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">272</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attached?</span>
+<span class="line-num">273</span>   <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">file</span>
+<span class="line-num">274</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-cache'>
@@ -222,7 +285,8 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-cache-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-cache-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">55</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache</span>; <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cache_key</span>); <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-cache-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">55</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache</span>; <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cache_key</span>); <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-cache_key'>
@@ -240,7 +304,8 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-cache_key-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-cache_key-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">50</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache_key</span>; <span class="ruby-ivar">@cache</span>.<span class="ruby-identifier">to_sym</span>; <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-cache_key-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">50</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache_key</span>; <span class="ruby-ivar">@cache</span>.<span class="ruby-identifier">to_sym</span>; <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-cached-3F'>
@@ -253,14 +318,19 @@ Shrine::Attacher::InstanceMethods
 
 <p>Returns whether the file is uploaded to temporary storage.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span>       <span class="ruby-comment"># checks current file</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment"># checks given file</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span>       <span class="ruby-comment"># checks current file</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment"># checks given file</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-cached-3F-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-cached-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">280</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">281</span>   <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">cache_key</span>)&#x000A;<span class="line-num">282</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-cached-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">280</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)
+<span class="line-num">281</span>   <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">cache_key</span>)
+<span class="line-num">282</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-change'>
@@ -273,14 +343,21 @@ Shrine::Attacher::InstanceMethods
 
 <p>Sets the uploaded file with dirty tracking, and runs validations.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">change</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; true</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">change</span>(<span class="ruby-identifier">uploaded_file</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; true</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-change-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-change-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">219</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">220</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-identifier">dup</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">change?</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">221</span>   <span class="ruby-identifier">set</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">222</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-change-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">219</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">220</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-identifier">dup</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">change?</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">221</span>   <span class="ruby-identifier">set</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">222</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-changed-3F'>
@@ -293,14 +370,20 @@ Shrine::Attacher::InstanceMethods
 
 <p>Returns whether the attachment has changed.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; false</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; true</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">file</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; true</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-changed-3F-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-changed-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">261</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">changed?</span>&#x000A;<span class="line-num">262</span>   <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-ivar">@previous</span>&#x000A;<span class="line-num">263</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-changed-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">261</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">changed?</span>
+<span class="line-num">262</span>   <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-ivar">@previous</span>
+<span class="line-num">263</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-data'>
@@ -313,14 +396,18 @@ Shrine::Attacher::InstanceMethods
 
 <p>Generates serializable data for the attachment.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">data</span> <span class="ruby-comment">#=&gt; { &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot;: { ... } }</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">data</span> <span class="ruby-comment">#=&gt; { &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot;: { ... } }</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-data-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-data-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">295</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>&#x000A;<span class="line-num">296</span>   <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">data</span>&#x000A;<span class="line-num">297</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-data-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">295</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
+<span class="line-num">296</span>   <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">data</span>
+<span class="line-num">297</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-destroy'>
@@ -333,14 +420,20 @@ Shrine::Attacher::InstanceMethods
 
 <p>Destroys the attachment.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-destroy-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-destroy-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">210</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>&#x000A;<span class="line-num">211</span>   <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">delete</span>&#x000A;<span class="line-num">212</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-destroy-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">210</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>
+<span class="line-num">211</span>   <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">delete</span>
+<span class="line-num">212</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-destroy_attached'>
@@ -353,14 +446,20 @@ Shrine::Attacher::InstanceMethods
 
 <p>Destroys the attached file if it exists and is uploaded to permanent storage.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy_attached</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy_attached</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-destroy_attached-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-destroy_attached-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">201</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_attached</span>&#x000A;<span class="line-num">202</span>   <span class="ruby-identifier">destroy</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">destroy?</span>&#x000A;<span class="line-num">203</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-destroy_attached-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">201</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_attached</span>
+<span class="line-num">202</span>   <span class="ruby-identifier">destroy</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">destroy?</span>
+<span class="line-num">203</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-destroy_previous'>
@@ -373,14 +472,21 @@ Shrine::Attacher::InstanceMethods
 
 <p>If a new file was attached, deletes previously attached file if any.</p>
 
-<pre class="ruby"><span class="ruby-identifier">previous_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy_previous</span>&#x000A;<span class="ruby-identifier">previous_file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">previous_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">file</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy_previous</span>
+<span class="ruby-identifier">previous_file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-destroy_previous-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-destroy_previous-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">191</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_previous</span>&#x000A;<span class="line-num">192</span>   <span class="ruby-ivar">@previous</span>.<span class="ruby-identifier">destroy_attached</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">changed?</span>&#x000A;<span class="line-num">193</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-destroy_previous-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">191</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_previous</span>
+<span class="line-num">192</span>   <span class="ruby-ivar">@previous</span>.<span class="ruby-identifier">destroy_attached</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">changed?</span>
+<span class="line-num">193</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-file-21'>
@@ -398,7 +504,10 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-file-21-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-file-21-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">321</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file!</span>&#x000A;<span class="line-num">322</span>   <span class="ruby-identifier">file</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;no file is attached&quot;</span>&#x000A;<span class="line-num">323</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-file-21-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">321</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file!</span>
+<span class="line-num">322</span>   <span class="ruby-identifier">file</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;no file is attached&quot;</span>
+<span class="line-num">323</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-file-3D'>
@@ -411,14 +520,23 @@ Shrine::Attacher::InstanceMethods
 
 <p>Saves the given uploaded file to an instance variable.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> = <span class="ruby-identifier">uploaded_file</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> = <span class="ruby-identifier">uploaded_file</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-file-3D-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-file-3D-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">312</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file=</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">313</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">nil?</span>&#x000A;<span class="line-num">314</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;expected file to be a Shrine::UploadedFile or nil, got #{file.inspect}&quot;</span>&#x000A;<span class="line-num">315</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">316</span> &#x000A;<span class="line-num">317</span>   <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">file</span>&#x000A;<span class="line-num">318</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-file-3D-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">312</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file=</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">313</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">nil?</span>
+<span class="line-num">314</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;expected file to be a Shrine::UploadedFile or nil, got #{file.inspect}&quot;</span>
+<span class="line-num">315</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">316</span> 
+<span class="line-num">317</span>   <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">318</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-finalize'>
@@ -431,14 +549,37 @@ Shrine::Attacher::InstanceMethods
 
 <p>Deletes any previous file and promotes newly attached cached file. It also clears any dirty tracking.</p>
 
-<pre class="ruby"><span class="ruby-comment"># promoting cached file</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span> <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;&#x000A;<span class="ruby-comment"># deleting previous file</span>&#x000A;<span class="ruby-identifier">previous_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>&#x000A;<span class="ruby-identifier">previous_file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span>&#x000A;<span class="ruby-identifier">previous_file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span>&#x000A;&#x000A;<span class="ruby-comment"># clearing dirty tracking</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; false</span></pre>
+<pre class="ruby"><span class="ruby-comment"># promoting cached file</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span> <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>
+
+<span class="ruby-comment"># deleting previous file</span>
+<span class="ruby-identifier">previous_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>
+<span class="ruby-identifier">previous_file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span>
+<span class="ruby-identifier">previous_file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span>
+
+<span class="ruby-comment"># clearing dirty tracking</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-finalize-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-finalize-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">143</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">finalize</span>&#x000A;<span class="line-num">144</span>   <span class="ruby-identifier">destroy_previous</span>&#x000A;<span class="line-num">145</span>   <span class="ruby-identifier">promote_cached</span>&#x000A;<span class="line-num">146</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-keyword">nil</span>&#x000A;<span class="line-num">147</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-finalize-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">143</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">finalize</span>
+<span class="line-num">144</span>   <span class="ruby-identifier">destroy_previous</span>
+<span class="line-num">145</span>   <span class="ruby-identifier">promote_cached</span>
+<span class="line-num">146</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-keyword">nil</span>
+<span class="line-num">147</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-get'>
@@ -451,14 +592,22 @@ Shrine::Attacher::InstanceMethods
 
 <p>Returns the attached file.</p>
 
-<pre class="ruby"><span class="ruby-comment"># when a file is attached</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;&#x000A;<span class="ruby-comment"># when no file is attached</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span> <span class="ruby-comment">#=&gt; nil</span></pre>
+<pre class="ruby"><span class="ruby-comment"># when a file is attached</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+
+<span class="ruby-comment"># when no file is attached</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span> <span class="ruby-comment">#=&gt; nil</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-get-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-get-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">240</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">get</span>&#x000A;<span class="line-num">241</span>   <span class="ruby-identifier">file</span>&#x000A;<span class="line-num">242</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-get-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">240</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">get</span>
+<span class="line-num">241</span>   <span class="ruby-identifier">file</span>
+<span class="line-num">242</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-load_data'>
@@ -471,14 +620,19 @@ Shrine::Attacher::InstanceMethods
 
 <p>Loads the uploaded file from data generated by <code>Attacher#data</code>.</p>
 
-<pre>attacher.file #=&gt; nil&#x000A;attacher.load_data({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... } })&#x000A;attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
+<pre>attacher.file #=&gt; nil
+attacher.load_data({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... } })
+attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-load_data-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-load_data-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">304</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_data</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="line-num">305</span>   <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">data</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="line-num">306</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-load_data-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">304</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_data</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">305</span>   <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">data</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">306</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-promote'>
@@ -491,14 +645,20 @@ Shrine::Attacher::InstanceMethods
 
 <p>Uploads current file to permanent storage and sets the stored file.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span> <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-comment">#=&gt; true</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span> <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-comment">#=&gt; true</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-promote-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-promote-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">170</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">171</span>   <span class="ruby-identifier">set</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:store</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">172</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-promote-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">170</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">171</span>   <span class="ruby-identifier">set</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:store</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">172</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-promote_cached'>
@@ -511,14 +671,21 @@ Shrine::Attacher::InstanceMethods
 
 <p>If a new cached file has been attached, uploads it to permanent storage. Any additional options are forwarded to <a href="InstanceMethods.html#method-i-promote"><code>promote</code></a>.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span> <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote_cached</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-comment">#=&gt; true</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span> <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote_cached</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-comment">#=&gt; true</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-promote_cached-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-promote_cached-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">161</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_cached</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">162</span>   <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>&#x000A;<span class="line-num">163</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-promote_cached-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">161</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_cached</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">162</span>   <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>
+<span class="line-num">163</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-save'>
@@ -536,7 +703,9 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-save-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-save-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">151</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save</span>&#x000A;<span class="line-num">152</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-save-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">151</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save</span>
+<span class="line-num">152</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-set'>
@@ -549,14 +718,20 @@ Shrine::Attacher::InstanceMethods
 
 <p>Sets the uploaded file.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-set-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-set-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">229</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">230</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span> = <span class="ruby-identifier">file</span>&#x000A;<span class="line-num">231</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-set-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">229</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">230</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">231</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-shrine_class'>
@@ -574,7 +749,10 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-shrine_class-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-shrine_class-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">338</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>&#x000A;<span class="line-num">339</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>&#x000A;<span class="line-num">340</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-shrine_class-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">338</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>
+<span class="line-num">339</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>
+<span class="line-num">340</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-store'>
@@ -592,7 +770,8 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-store-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-store-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">57</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store</span>; <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store_key</span>); <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-store-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">57</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store</span>; <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store_key</span>); <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-store_key'>
@@ -610,7 +789,8 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-store_key-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-store_key-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">52</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store_key</span>; <span class="ruby-ivar">@store</span>.<span class="ruby-identifier">to_sym</span>; <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-store_key-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">52</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store_key</span>; <span class="ruby-ivar">@store</span>.<span class="ruby-identifier">to_sym</span>; <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-stored-3F'>
@@ -623,14 +803,19 @@ Shrine::Attacher::InstanceMethods
 
 <p>Returns whether the file is uploaded to permanent storage.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>       <span class="ruby-comment"># checks current file</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment"># checks given file</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>       <span class="ruby-comment"># checks current file</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment"># checks given file</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-stored-3F-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-stored-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">288</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">stored?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">289</span>   <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">store_key</span>)&#x000A;<span class="line-num">290</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-stored-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">288</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">stored?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)
+<span class="line-num">289</span>   <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">store_key</span>)
+<span class="line-num">290</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-upload'>
@@ -643,14 +828,22 @@ Shrine::Attacher::InstanceMethods
 
 <p>Delegates to <code>Shrine.upload</code>, passing the <a href="InstanceMethods.html#attribute-i-context"><code>context</code></a>.</p>
 
-<pre class="ruby"><span class="ruby-comment"># upload file to specified storage</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:store</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;&#x000A;<span class="ruby-comment"># pass additional options for the uploader</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:store</span>, <span class="ruby-value">metadata:</span> { <span class="ruby-string">&quot;foo&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;bar&quot;</span> })</pre>
+<pre class="ruby"><span class="ruby-comment"># upload file to specified storage</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:store</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+
+<span class="ruby-comment"># pass additional options for the uploader</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:store</span>, <span class="ruby-value">metadata:</span> { <span class="ruby-string">&quot;foo&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;bar&quot;</span> })
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-upload-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-upload-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">181</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span> = <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">182</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">183</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-upload-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">181</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span> = <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">182</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">183</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-uploaded_file'>
@@ -663,14 +856,22 @@ Shrine::Attacher::InstanceMethods
 
 <p>Converts JSON or Hash data into a <a href="../UploadedFile.html"><code>Shrine::UploadedFile</code></a> object.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-string">&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;</span>)&#x000A;<span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">uploaded_file</span>({ <span class="ruby-string">&quot;id&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;...&quot;</span>, <span class="ruby-string">&quot;storage&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;...&quot;</span>, <span class="ruby-string">&quot;metadata&quot;</span> <span class="ruby-operator">=&gt;</span> {} })&#x000A;<span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-string">&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;</span>)
+<span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">uploaded_file</span>({ <span class="ruby-string">&quot;id&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;...&quot;</span>, <span class="ruby-string">&quot;storage&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;...&quot;</span>, <span class="ruby-string">&quot;metadata&quot;</span> <span class="ruby-operator">=&gt;</span> {} })
+<span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-uploaded_file-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-uploaded_file-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">332</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_file</span>(<span class="ruby-identifier">value</span>)&#x000A;<span class="line-num">333</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)&#x000A;<span class="line-num">334</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-uploaded_file-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">332</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">333</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">334</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-url'>
@@ -683,14 +884,22 @@ Shrine::Attacher::InstanceMethods
 
 <p>If a file is attached, returns the uploaded file URL, otherwise returns nil. Any options are forwarded to the storage.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> = <span class="ruby-identifier">file</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;https://...&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> = <span class="ruby-keyword">nil</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; nil</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> = <span class="ruby-identifier">file</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;https://...&quot;</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> = <span class="ruby-keyword">nil</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; nil</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-url-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-url-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">252</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">253</span>   <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">254</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-url-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">252</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">253</span>   <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">254</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -702,7 +911,7 @@ Shrine::Attacher::InstanceMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

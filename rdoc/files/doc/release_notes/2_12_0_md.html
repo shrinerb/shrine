@@ -30,7 +30,7 @@ doc/release_notes/2.12.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -45,7 +45,8 @@ Last Update:
 <p>The <code>Shrine::Attacher#assign_remote_url</code> method has been added, which acts the  same as <code>#remote_url=</code> but allows you to also dynamically provide options to  the underlying downloader (<code>Down.download</code> by default).</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign_remote_url</span>(<span class="ruby-string">&quot;https://example.com/image.jpg&quot;</span>, <span class="ruby-value">downloader:</span> { <span class="ruby-string">&#39;Cookie&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;abc123&#39;</span> })</pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign_remote_url</span>(<span class="ruby-string">&quot;https://example.com/image.jpg&quot;</span>, <span class="ruby-value">downloader:</span> { <span class="ruby-string">&#39;Cookie&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;abc123&#39;</span> })
+</pre>
 <ul><li>
 <p>The <code>Shrine::UploadedFile#download_url</code> method has been added to the  <code>download_endpoint</code> plugin for explicitly generating the file URL through  the download endpoint.</p>
 </li><li>
@@ -54,7 +55,11 @@ Last Update:
 <p>The <code>Shrine::Plugins::ValidationHelpers::PRETTY_FILESIZE</code> callbable has been  added, which takes the filesize in bytes and returns the representation in  correct unit. This can be used when providing custom validation error messages.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">pretty_filesize</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">ValidationHelpers</span><span class="ruby-operator">::</span><span class="ruby-constant">PRETTY_FILESIZE</span>&#x000A;<span class="ruby-identifier">pretty_filesize</span>.<span class="ruby-identifier">call</span>(<span class="ruby-value">1</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)           <span class="ruby-comment">#=&gt; &quot;1.0 KB&quot;</span>&#x000A;<span class="ruby-identifier">pretty_filesize</span>.<span class="ruby-identifier">call</span>(<span class="ruby-value">1.5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)    <span class="ruby-comment">#=&gt; &quot;1.5 MB&quot;</span>&#x000A;<span class="ruby-identifier">pretty_filesize</span>.<span class="ruby-identifier">call</span>(<span class="ruby-value">2</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>) <span class="ruby-comment">#=&gt; &quot;2.0 GB&quot;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">pretty_filesize</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">ValidationHelpers</span><span class="ruby-operator">::</span><span class="ruby-constant">PRETTY_FILESIZE</span>
+<span class="ruby-identifier">pretty_filesize</span>.<span class="ruby-identifier">call</span>(<span class="ruby-value">1</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)           <span class="ruby-comment">#=&gt; &quot;1.0 KB&quot;</span>
+<span class="ruby-identifier">pretty_filesize</span>.<span class="ruby-identifier">call</span>(<span class="ruby-value">1.5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)    <span class="ruby-comment">#=&gt; &quot;1.5 MB&quot;</span>
+<span class="ruby-identifier">pretty_filesize</span>.<span class="ruby-identifier">call</span>(<span class="ruby-value">2</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>) <span class="ruby-comment">#=&gt; &quot;2.0 GB&quot;</span>
+</pre>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
@@ -91,7 +96,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

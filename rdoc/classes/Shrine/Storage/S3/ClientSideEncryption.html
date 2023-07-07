@@ -82,7 +82,13 @@ Shrine::Storage::S3::ClientSideEncryption
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>    <span class="ruby-comment"># File lib/shrine/storage/s3.rb</span>&#x000A;<span class="line-num">345</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">client:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">346</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;Aws::S3::Encryption&quot;</span>)&#x000A;<span class="line-num">347</span> &#x000A;<span class="line-num">348</span>   <span class="ruby-keyword">super</span>(<span class="ruby-value">client:</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">client</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">349</span>   <span class="ruby-ivar">@encryption_client</span> = <span class="ruby-identifier">client</span>&#x000A;<span class="line-num">350</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>    <span class="ruby-comment"># File lib/shrine/storage/s3.rb</span>
+<span class="line-num">355</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">client:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">356</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;Aws::S3::Encryption&quot;</span>)
+<span class="line-num">357</span> 
+<span class="line-num">358</span>   <span class="ruby-keyword">super</span>(<span class="ruby-value">client:</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">client</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">359</span>   <span class="ruby-ivar">@encryption_client</span> = <span class="ruby-identifier">client</span>
+<span class="line-num">360</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -94,7 +100,7 @@ Shrine::Storage::S3::ClientSideEncryption
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

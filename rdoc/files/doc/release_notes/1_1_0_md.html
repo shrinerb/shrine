@@ -30,7 +30,7 @@ doc/release_notes/1.1.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -47,47 +47,70 @@ Last Update:
 <p>The <code>backup</code> plugin has been added, which allows automatically backing up  stored files upon upload.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:backup</span>, <span class="ruby-value">storage:</span> <span class="ruby-value">:backup_store</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:backup</span>, <span class="ruby-value">storage:</span> <span class="ruby-value">:backup_store</span>
+</pre>
 
-<pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">create</span>(<span class="ruby-value">avatar:</span> <span class="ruby-identifier">image</span>) <span class="ruby-comment"># uploads to :store and :backup_store</span></pre>
+<pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">create</span>(<span class="ruby-value">avatar:</span> <span class="ruby-identifier">image</span>) <span class="ruby-comment"># uploads to :store and :backup_store</span>
+</pre>
 <ul><li>
 <p>The <code>delete_uploaded</code> plugin has been added for automatically deleting files  after they're uploaded (useful for removing temporary files in versions).</p>
 </li><li>
 <p>The <code>upload_options</code> plugin has been added, for dynamically generating  storage-specific upload options.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_options</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">if</span> [<span class="ruby-value">:original</span>, <span class="ruby-value">:thumb</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">context</span>[<span class="ruby-value">:version</span>])&#x000A;    {<span class="ruby-value">acl:</span> <span class="ruby-string">&quot;public-read&quot;</span>}&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    {<span class="ruby-value">acl:</span> <span class="ruby-string">&quot;private&quot;</span>}&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_options</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-keyword">do</span>
+  <span class="ruby-keyword">if</span> [<span class="ruby-value">:original</span>, <span class="ruby-value">:thumb</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">context</span>[<span class="ruby-value">:version</span>])
+    {<span class="ruby-value">acl:</span> <span class="ruby-string">&quot;public-read&quot;</span>}
+  <span class="ruby-keyword">else</span>
+    {<span class="ruby-value">acl:</span> <span class="ruby-string">&quot;private&quot;</span>}
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 <ul><li>
 <p>The <code>keep_location</code> plugin has been added, which allows keeping file location  when moving from cache to store, which can be useful when debugging.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:keep_location</span>, <span class="ruby-value">:cache</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:store</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:keep_location</span>, <span class="ruby-value">:cache</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:store</span>
+</pre>
 
-<pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">image</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :cache</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">id</span> <span class="ruby-comment">#=&gt; &quot;abc123.jpg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">save</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :store</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">id</span> <span class="ruby-comment">#=&gt; &quot;abc123.jpg&quot;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">image</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :cache</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">id</span> <span class="ruby-comment">#=&gt; &quot;abc123.jpg&quot;</span>
+
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">save</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :store</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">id</span> <span class="ruby-comment">#=&gt; &quot;abc123.jpg&quot;</span>
+</pre>
 <ul><li>
 <p>The <code>default_url</code> plugin has been added (extracted from the base  functionality):</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-node">&quot;/#{context[:name]}/missing.jpg&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span>
+  <span class="ruby-node">&quot;/#{context[:name]}/missing.jpg&quot;</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
-<pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span> <span class="ruby-comment">#=&gt; &quot;/avatar/missing.jpg&quot;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span> <span class="ruby-comment">#=&gt; &quot;/avatar/missing.jpg&quot;</span>
+</pre>
 <ul><li>
 <p>The <code>remove_invalid</code> plugin has been added, for automatically deleting and  deassigning cached files that were invalid.</p>
 </li></ul>
 
 <h1 id="label-New+storages">New storages<span><a href="#label-New+storages">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>The <a href="https://github.com/shrinerb/shrine-fog">shrine-fog</a> storage has been created for storing files on any of the  cloud services supported by <a href="https://github.com/fog/fog">Fog</a>.</p>
+<p>The <a target="_top" href="https://github.com/shrinerb/shrine-fog">shrine-fog</a> storage has been created for storing files on any of the  cloud services supported by <a target="_top" href="https://github.com/fog/fog">Fog</a>.</p>
 </li><li>
-<p>The <a href="https://github.com/shrinerb/shrine-imgix">shrine-imgix</a> storage has been created which intergrates with the <a target="_top" href="http://www.imgix.com">Imgix</a>  service which provides on-the-fly processing.</p>
+<p>The <a target="_top" href="https://github.com/shrinerb/shrine-imgix">shrine-imgix</a> storage has been created which intergrates with the <a target="_top" href="http://www.imgix.com">Imgix</a>  service which provides on-the-fly processing.</p>
 </li><li>
-<p>The <a href="https://github.com/shrinerb/shrine-cloudinary">shrine-cloudinary</a> storage as been created for storing files on  <a target="_top" href="http://cloudinary.com">Cloudinary</a>, which supports upfront, eager and on-the-fly processing.</p>
+<p>The <a target="_top" href="https://github.com/shrinerb/shrine-cloudinary">shrine-cloudinary</a> storage as been created for storing files on  <a target="_top" href="http://cloudinary.com">Cloudinary</a>, which supports upfront, eager and on-the-fly processing.</p>
 </li><li>
-<p>The <a href="https://github.com/shrinerb/shrine-flickr">shrine-flickr</a> storage as been created for storing files on  <a href="https://www.flickr.com">Flickr</a>, which automatically generates various sizes of your photos upon  upload.</p>
+<p>The <a target="_top" href="https://github.com/shrinerb/shrine-flickr">shrine-flickr</a> storage as been created for storing files on  <a target="_top" href="https://www.flickr.com">Flickr</a>, which automatically generates various sizes of your photos upon  upload.</p>
 </li><li>
-<p>The <a href="https://github.com/shrinerb/shrine-gridfs">shrine-gridfs</a> storage has been created for storing files in MongoDB  using the <a href="https://docs.mongodb.org/v3.0/core/gridfs/">GridFS</a> data model.</p>
+<p>The <a target="_top" href="https://github.com/shrinerb/shrine-gridfs">shrine-gridfs</a> storage has been created for storing files in MongoDB  using the <a target="_top" href="https://docs.mongodb.org/v3.0/core/gridfs/">GridFS</a> data model.</p>
 </li><li>
-<p>The <a href="https://github.com/shrinerb/shrine-sql">shrine-sql</a> storage has been created for storing files in any SQL  database.</p>
+<p>The <a target="_top" href="https://github.com/shrinerb/shrine-sql">shrine-sql</a> storage has been created for storing files in any SQL  database.</p>
 </li></ul>
 
 <h1 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h1>
@@ -95,7 +118,8 @@ Last Update:
 <p>The S3 storage now accepts <code>:upload_options</code> for applying additional options  on upload and presigning.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">upload_options:</span> {<span class="ruby-value">acl:</span> <span class="ruby-string">&quot;public-read&quot;</span>}, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">upload_options:</span> {<span class="ruby-value">acl:</span> <span class="ruby-string">&quot;public-read&quot;</span>}, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)
+</pre>
 <ul><li>
 <p>The <code>:max_size</code> has been (re)added to <code>direct_upload</code> plugin, for limiting  the maximum accepted filesize.</p>
 </li><li>
@@ -169,7 +193,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

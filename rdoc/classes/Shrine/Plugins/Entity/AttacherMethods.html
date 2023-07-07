@@ -85,14 +85,19 @@ Shrine::Plugins::Entity::AttacherMethods
 
 <p>Returns the entity attribute name used for reading and writing attachment data.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_entity</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attribute</span> <span class="ruby-comment">#=&gt; :image_data</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_entity</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attribute</span> <span class="ruby-comment">#=&gt; :image_data</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-attribute-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-attribute-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">137</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attribute</span>&#x000A;<span class="line-num">138</span>   <span class="ruby-value">:&quot;#{name}_data&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">name</span>&#x000A;<span class="line-num">139</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-attribute-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>
+<span class="line-num">143</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attribute</span>
+<span class="line-num">144</span>   <span class="ruby-value">:&quot;#{name}_data&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">name</span>
+<span class="line-num">145</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-column_values'>
@@ -105,14 +110,19 @@ Shrine::Plugins::Entity::AttacherMethods
 
 <p>Returns a hash with entity attribute name and column data.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">column_values</span>&#x000A;<span class="ruby-comment">#=&gt; { image_data: &#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39; }</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">column_values</span>
+<span class="ruby-comment">#=&gt; { image_data: &#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39; }</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-column_values-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-column_values-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">128</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">column_values</span>&#x000A;<span class="line-num">129</span>   { <span class="ruby-identifier">attribute</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">column_data</span> }&#x000A;<span class="line-num">130</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-column_values-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>
+<span class="line-num">134</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">column_values</span>
+<span class="line-num">135</span>   { <span class="ruby-identifier">attribute</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">column_data</span> }
+<span class="line-num">136</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-load_entity'>
@@ -130,7 +140,11 @@ Shrine::Plugins::Entity::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-load_entity-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-load_entity-source'>   <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">90</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">91</span>   <span class="ruby-identifier">set_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">92</span>   <span class="ruby-identifier">read</span>&#x000A;<span class="line-num">93</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-load_entity-source'>   <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>
+<span class="line-num">96</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)
+<span class="line-num">97</span>   <span class="ruby-identifier">set_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)
+<span class="line-num">98</span>   <span class="ruby-identifier">read</span>
+<span class="line-num">99</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-read'>
@@ -148,7 +162,10 @@ Shrine::Plugins::Entity::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-read-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-read-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">120</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">read</span>&#x000A;<span class="line-num">121</span>   <span class="ruby-identifier">load_column</span>(<span class="ruby-identifier">read_attribute</span>)&#x000A;<span class="line-num">122</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-read-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>
+<span class="line-num">126</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">read</span>
+<span class="line-num">127</span>   <span class="ruby-identifier">load_column</span>(<span class="ruby-identifier">read_attribute</span>)
+<span class="line-num">128</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-reload'>
@@ -161,14 +178,26 @@ Shrine::Plugins::Entity::AttacherMethods
 
 <p>Overwrites the current attachment with the one from model attribute.</p>
 
-<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_entity</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_data</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_json</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">reload</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt; nil</span>
+<span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_entity</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_data</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_json</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; nil</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">reload</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</pre>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-reload-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-reload-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">113</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">reload</span>&#x000A;<span class="line-num">114</span>   <span class="ruby-identifier">read</span>&#x000A;<span class="line-num">115</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-keyword">nil</span>&#x000A;<span class="line-num">116</span>   <span class="ruby-keyword">self</span>&#x000A;<span class="line-num">117</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-reload-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>
+<span class="line-num">119</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">reload</span>
+<span class="line-num">120</span>   <span class="ruby-identifier">read</span>
+<span class="line-num">121</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-keyword">nil</span>
+<span class="line-num">122</span>   <span class="ruby-keyword">self</span>
+<span class="line-num">123</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-set_entity'>
@@ -186,7 +215,13 @@ Shrine::Plugins::Entity::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-set_entity-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-set_entity-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num"> 97</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num"> 98</span>   <span class="ruby-ivar">@record</span> = <span class="ruby-identifier">record</span>&#x000A;<span class="line-num"> 99</span>   <span class="ruby-ivar">@name</span>   = <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>&#x000A;<span class="line-num">100</span> &#x000A;<span class="line-num">101</span>   <span class="ruby-ivar">@context</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-value">record:</span> <span class="ruby-identifier">record</span>, <span class="ruby-value">name:</span> <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">102</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-set_entity-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>
+<span class="line-num">103</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)
+<span class="line-num">104</span>   <span class="ruby-ivar">@record</span> = <span class="ruby-identifier">record</span>
+<span class="line-num">105</span>   <span class="ruby-ivar">@name</span>   = <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>
+<span class="line-num">106</span> 
+<span class="line-num">107</span>   <span class="ruby-ivar">@context</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-value">record:</span> <span class="ruby-identifier">record</span>, <span class="ruby-value">name:</span> <span class="ruby-identifier">name</span>)
+<span class="line-num">108</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -198,7 +233,7 @@ Shrine::Plugins::Entity::AttacherMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -60,7 +60,17 @@ Shrine::Plugins::Tempfile::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-with_file-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-with_file-source'>   <span class="ruby-comment"># File lib/shrine/plugins/tempfile.rb</span>&#x000A;<span class="line-num"> 8</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">with_file</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="line-num"> 9</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">opened?</span>&#x000A;<span class="line-num">10</span>     <span class="ruby-comment"># open a new file descriptor for thread safety</span>&#x000A;<span class="line-num">11</span>     <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">path</span>, <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">12</span>       <span class="ruby-keyword">yield</span> <span class="ruby-identifier">file</span>&#x000A;<span class="line-num">13</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">14</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">15</span>     <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">16</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-with_file-source'>   <span class="ruby-comment"># File lib/shrine/plugins/tempfile.rb</span>
+<span class="line-num"> 8</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">with_file</span>(<span class="ruby-identifier">io</span>)
+<span class="line-num"> 9</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">opened?</span>
+<span class="line-num">10</span>     <span class="ruby-comment"># open a new file descriptor for thread safety</span>
+<span class="line-num">11</span>     <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">path</span>, <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+<span class="line-num">12</span>       <span class="ruby-keyword">yield</span> <span class="ruby-identifier">file</span>
+<span class="line-num">13</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">14</span>   <span class="ruby-keyword">else</span>
+<span class="line-num">15</span>     <span class="ruby-keyword">super</span>
+<span class="line-num">16</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">17</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -72,7 +82,7 @@ Shrine::Plugins::Tempfile::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

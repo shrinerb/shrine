@@ -60,7 +60,14 @@ Shrine::Plugins::AddMetadata::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-extract_metadata-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-extract_metadata-source'>   <span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb</span>&#x000A;<span class="line-num">32</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">33</span>   <span class="ruby-identifier">metadata</span> = <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">34</span> &#x000A;<span class="line-num">35</span>   <span class="ruby-identifier">extract_custom_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-value">metadata:</span> <span class="ruby-identifier">metadata</span>)&#x000A;<span class="line-num">36</span> &#x000A;<span class="line-num">37</span>   <span class="ruby-identifier">metadata</span>&#x000A;<span class="line-num">38</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-extract_metadata-source'>   <span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb</span>
+<span class="line-num">32</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">33</span>   <span class="ruby-identifier">metadata</span> = <span class="ruby-keyword">super</span>
+<span class="line-num">34</span> 
+<span class="line-num">35</span>   <span class="ruby-identifier">extract_custom_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-value">metadata:</span> <span class="ruby-identifier">metadata</span>)
+<span class="line-num">36</span> 
+<span class="line-num">37</span>   <span class="ruby-identifier">metadata</span>
+<span class="line-num">38</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -72,7 +79,7 @@ Shrine::Plugins::AddMetadata::InstanceMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>

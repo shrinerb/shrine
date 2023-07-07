@@ -30,7 +30,7 @@ doc/release_notes/2.9.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2021-09-30 20:09:06 +0200</span>
+<span class='datetime'>2023-01-04 11:06:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -45,29 +45,47 @@ Last Update:
 <p>The <code>infer_extension</code> plugin has been added, which automatically infers  the upload location extension from the MIME type if it’s unknown. This is  useful when using the <code>data_uri</code> plugin (where the extension is always  unknown), or the <code>remote_url</code> plugin (where the extension might not be  known).</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span>
+</pre>
 
 <h2 id="label-New+Features">New Features<span><a href="#label-New+Features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>determine_mime_type</code> plugin has gained built-in support for the <a href="https://github.com/basecamp/marcel">Marcel</a>  gem, Basecamp’s wrapper around the existing <a href="https://github.com/minad/mimemagic">MimeMagic</a>.</p>
+<p>The <code>determine_mime_type</code> plugin has gained built-in support for the <a target="_top" href="https://github.com/basecamp/marcel">Marcel</a>  gem, Basecamp’s wrapper around the existing <a target="_top" href="https://github.com/minad/mimemagic">MimeMagic</a>.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:marcel</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:marcel</span>
+</pre>
 <ul><li>
 <p>The <code>versions</code> plugin now supports saving arrays of files, as well as nested  structures of arrays and hashes.</p>
 </li></ul>
 
-<pre>class PdfUploader &lt; Shrine&#x000A;  plugin :versions&#x000A;  plugin :processing&#x000A;  process(:store) do |io, context|&#x000A;    [ file1, file2, ... ]&#x000A;    # or&#x000A;    { name1: [ file1, file2, ... ], ... }&#x000A;    # or&#x000A;    [ { name1: file1 }, ... ]&#x000A;  end&#x000A;end</pre>
+<pre>class PdfUploader &lt; Shrine
+  plugin :versions
+  plugin :processing
+
+  process(:store) do |io, context|
+    [ file1, file2, ... ]
+    # or
+    { name1: [ file1, file2, ... ], ... }
+    # or
+    [ { name1: file1 }, ... ]
+  end
+end</pre>
 <ul><li>
 <p><code>UploadedFile#open</code> can now be called without passing a block. This is useful  if you want to make it explicit when the uploaded file is opened, instead of  it happening automatically when <code>#read</code> is called.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>  <span class="ruby-comment"># opens the local or remote file</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>  <span class="ruby-comment"># read content</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">close</span> <span class="ruby-comment"># close the file</span></pre>
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>  <span class="ruby-comment"># opens the local or remote file</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>  <span class="ruby-comment"># read content</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">close</span> <span class="ruby-comment"># close the file</span>
+</pre>
 <ul><li>
 <p>The <code>Model#&lt;attachment&gt;_attacher</code> now accepts options which are forwarded to  <code>Shrine::Attacher.new</code>.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>(<span class="ruby-value">store:</span> <span class="ruby-value">:other_store</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">update</span>(<span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>) <span class="ruby-comment"># uploads to :other_store</span></pre>
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>(<span class="ruby-value">store:</span> <span class="ruby-value">:other_store</span>)
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">update</span>(<span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>) <span class="ruby-comment"># uploads to :other_store</span>
+</pre>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
@@ -96,7 +114,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
 </div>
 </body>
 </html>
