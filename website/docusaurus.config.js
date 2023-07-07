@@ -5,6 +5,7 @@ module.exports = {
   baseUrl: "/",
   organizationName: "shrinerb",
   projectName: "shrine",
+  trailingSlash: false,
   favicon: "img/favicon.ico",
   customFields: {
     projectVersion: "3.4.0",
