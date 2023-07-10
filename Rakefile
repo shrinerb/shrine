@@ -30,6 +30,15 @@ RDoc::Task.new do |t|
 end
 
 namespace :website do
+  task :publish => :build do
+    sh "git switch gh-pages"
+    sh "cp -R website/build/* ."
+    sh "git add --all"
+    sh "git commit -m 'Update website'"
+    sh "git push origin gh-pages"
+    sh "git switch master"
+  end
+
   task :build do
     sh "yarn build", chdir: "website"
     Rake::Task["rdoc"].invoke
