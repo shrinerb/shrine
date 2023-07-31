@@ -104,7 +104,7 @@ module.exports = {
     },
     algolia: {
       appId: "KBFWBJ5DPX",
-      apiKey: "31cb4225120fdce1d852b8566680e816",
+      apiKey: "f00673f90ed23135519e3c40bae05e17",
       contextualSearch: false,
       indexName: "shrinerb"
     }
