@@ -14,6 +14,9 @@ ENV["MT_NO_EXPECTATIONS"] = "1" # disable Minitest's expectations monkey-patches
 
 require "minitest/autorun"
 require "minitest/pride"
+
+# Mocha still references the old constant
+MiniTest = Minitest unless defined?(MiniTest)
 require "mocha/minitest"
 
 require "shrine"
