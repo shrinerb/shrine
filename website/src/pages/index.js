@@ -12,11 +12,14 @@ export default () => {
           <h1 className="hero__title ">Shrine</h1>
           <p className="hero__subtitle">File attachment toolkit for Ruby applications</p>
           <div>
-            <a href="/docs/getting-started" className="button button--danger button--outline button--lg margin-right--sm">
+            <a href="/docs/getting-started" className="button button--danger button--outline button--lg margin-right--sm margin-top--sm">
               Get Started
             </a>
-            <a href="/docs/advantages" className="button button--danger button--outline button--lg">
+            <a href="/docs/advantages" className="button button--danger button--outline button--lg margin-right--sm margin-top--sm">
               Advantages
+            </a>
+            <a href="/rdoc" className="button button--danger button--outline button--lg margin-top--sm">
+              RDoc
             </a>
           </div>
         </div>
