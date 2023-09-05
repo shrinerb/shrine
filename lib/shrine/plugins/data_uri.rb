@@ -4,7 +4,6 @@ require "base64"
 require "strscan"
 require "cgi"
 require "stringio"
-require "forwardable"
 
 class Shrine
   module Plugins
@@ -151,27 +150,5 @@ class Shrine
     end
 
     register_plugin(:data_uri, DataUri)
-  end
-
-  class DataFile
-    attr_reader :content_type, :original_filename
-
-    def initialize(content, content_type: nil, filename: nil)
-      @content_type      = content_type
-      @original_filename = filename
-      @io                = StringIO.new(content)
-    end
-
-    def to_io
-      @io
-    end
-
-    extend Forwardable
-    delegate [:read, :size, :rewind, :eof?] => :@io
-
-    def close
-      @io.close
-      @io.string.clear # deallocate string
-    end
   end
 end

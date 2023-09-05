@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "shrine/data_file"
 require "shrine/uploaded_file"
 require "shrine/attacher"
 require "shrine/attachment"
