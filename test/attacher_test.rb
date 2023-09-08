@@ -6,6 +6,13 @@ describe Shrine::Attacher do
     @shrine   = @attacher.shrine_class
   end
 
+  describe '#initialize_copy' do
+    it 'duplicates the context when duplicating the attacher' do
+      attacher_copy = @attacher.dup
+      refute_equal @attacher.context.object_id, attacher_copy.context.object_id
+    end
+  end
+
   describe ".from_data" do
     it "instantiates an attacher from file data" do
       file     = @attacher.upload(fakeio)

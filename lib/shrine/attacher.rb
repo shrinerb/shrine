@@ -341,6 +341,13 @@ class Shrine
 
       private
 
+      # The copy constructor that's called on #dup and #clone
+      # We need to duplicate the context to prevent it from being shared
+      def initialize_copy(other)
+        super
+        @context = @context.dup
+      end
+
       # Converts a String or Hash value into an UploadedFile object and ensures
       # it's uploaded to temporary storage.
       #
