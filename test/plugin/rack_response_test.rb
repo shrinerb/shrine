@@ -106,8 +106,11 @@ describe Shrine::Plugins::RackResponse do
     uploaded_file = @uploader.upload(fakeio)
     uploaded_file.open
     response = uploaded_file.to_rack_response
+
+    existing_io = uploaded_file.to_io
+
     response[2].close
-    assert uploaded_file.to_io.closed?
+    assert existing_io.closed?
   end
 
   it "returns ranged responses when :range is given" do
