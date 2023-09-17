@@ -170,6 +170,7 @@ class Shrine
       # opened IO object.
       def close
         io.close if opened?
+        @io = nil
       end
 
       # Returns whether the file has already been opened.
