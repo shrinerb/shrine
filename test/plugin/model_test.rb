@@ -136,6 +136,7 @@ describe Shrine::Plugins::Model do
         assert_equal model_copy, model_copy.file_attacher.record
         assert_equal :file, model_copy.file_attacher.name
         assert_equal Hash[record: model_copy, name: :file], model_copy.file_attacher.context
+        assert_equal Hash[record: model, name: :file], model.file_attacher.context
         assert model_copy.file_attacher.changed? # retains any state
       end
 
