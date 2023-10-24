@@ -20,10 +20,10 @@ status, headers, body = uploaded_file.to_rack_response
 status  #=> 200
 headers #=>
 # {
-#   "Content-Length"      => "100",
-#   "Content-Type"        => "text/plain",
-#   "Content-Disposition" => "inline; filename=\"file.txt\"",
-#   "Accept-Ranges"       => "bytes"
+#   "content-length"      => "100",
+#   "content-type"        => "text/plain",
+#   "content-disposition" => "inline; filename=\"file.txt\"",
+#   "accept-ranges"       => "bytes"
 # }
 body    # object that responds to #each and #close
 ```
@@ -53,33 +53,33 @@ directly from the storage. It also works with [Rack::Sendfile] when using
 
 ## Type
 
-The response `Content-Type` header will default to the value of the `mime_type`
+The response `content-type` header will default to the value of the `mime_type`
 metadata. A custom content type can be provided via the `:type` option:
 
 ```rb
 response = uploaded_file.to_rack_response(type: "text/plain; charset=utf-8")
-response[1]["Content-Type"] #=> "text/plain; charset=utf-8"
+response[1]["content-type"] #=> "text/plain; charset=utf-8"
 ```
 
 ## Filename
 
-The download filename in the `Content-Disposition` header will default to the
+The download filename in the `content-disposition` header will default to the
 value of the `filename` metadata. A custom download filename can be provided
 via the `:filename` option:
 
 ```rb
 response = uploaded_file.to_rack_response(filename: "my-filename.txt")
-response[1]["Content-Disposition"] #=> "inline; filename=\"my-filename.txt\""
+response[1]["content-disposition"] #=> "inline; filename=\"my-filename.txt\""
 ```
 
 ## Disposition
 
-The default disposition in the "Content-Disposition" header is `inline`, but it
+The default disposition in the "content-disposition" header is `inline`, but it
 can be changed via the `:disposition` option:
 
 ```rb
 response = uploaded_file.to_rack_response(disposition: "attachment")
-response[1]["Content-Disposition"] #=> "attachment; filename=\"file.txt\""
+response[1]["content-disposition"] #=> "attachment; filename=\"file.txt\""
 ```
 
 ## Range
@@ -90,8 +90,8 @@ which accepts a value of the `Range` request header.
 ```rb
 status, headers, body = uploaded_file.to_rack_response(range: env["HTTP_RANGE"])
 status                    #=> 206
-headers["Content-Length"] #=> "101"
-headers["Content-Range"]  #=> "bytes 100-200/1000"
+headers["content-length"] #=> "101"
+headers["content-range"]  #=> "bytes 100-200/1000"
 body                      # partial content
 ```
 

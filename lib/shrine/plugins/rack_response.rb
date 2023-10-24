@@ -48,14 +48,25 @@ class Shrine
         # metadata. Also returns the correct "Content-Range" header on ranged
         # requests.
         def rack_headers(filename: nil, type: nil, disposition: "inline", range: false)
-          {
-            "Content-Length"      => content_length(range),
-            "Content-Type"        => content_type(type),
-            "Content-Disposition" => content_disposition(disposition, filename),
-            "Content-Range"       => content_range(range),
-            "Accept-Ranges"       => accept_ranges(range),
-            "ETag"                => etag,
-          }.compact
+          if Rack.release > "2"
+            {
+              "content-length" => content_length(range),
+              "content-type" => content_type(type),
+              "content-disposition" => content_disposition(disposition, filename),
+              "content-range" => content_range(range),
+              "accept-ranges" => accept_ranges(range),
+              "etag" => etag
+            }.compact
+          else
+            {
+              "Content-Length" => content_length(range),
+              "Content-Type" => content_type(type),
+              "Content-Disposition" => content_disposition(disposition, filename),
+              "Content-Range" => content_range(range),
+              "Accept-Ranges" => accept_ranges(range),
+              "ETag" => etag
+            }.compact
+          end
         end
 
         # Value for the "Content-Length" header.
