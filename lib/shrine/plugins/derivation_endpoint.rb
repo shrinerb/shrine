@@ -365,7 +365,11 @@ class Shrine
         handle_request(request)
       end
 
-      headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      if Rack.release > "2"
+        headers["content-length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      else
+        headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      end
 
       [status, headers, body]
     end
@@ -444,7 +448,11 @@ class Shrine
 
     # Halts the request with the error message.
     def error!(status, message)
-      throw :halt, [status, { "Content-Type" => "text/plain" }, [message]]
+      if Rak.release > "2"
+        throw :halt, [status, {"content-type" => "text/plain"}, [message]]
+      else
+        throw :halt, [status, {"Content-Type" => "text/plain"}, [message]]
+      end
     end
 
     def secret_key
@@ -485,13 +493,24 @@ class Shrine
 
       status = response[0]
 
-      headers = {
-        "Content-Type"        => type || response[1]["Content-Type"],
-        "Content-Length"      => response[1]["Content-Length"],
-        "Content-Disposition" => content_disposition(file),
-        "Content-Range"       => response[1]["Content-Range"],
-        "Accept-Ranges"       => "bytes",
-      }.compact
+      headers = if Rack.release > "2"
+        {
+          "content-type" => type || response[1]["content-type"],
+          "content-length" => response[1]["content-length"],
+          "content-disposition" => content_disposition(file),
+          "content-range" => response[1]["content-range"],
+          "accept-ranges" => "bytes"
+        }.compact
+      else
+        {
+          "Content-Type" => type || response[1]["Content-Type"],
+          "Content-Length" => response[1]["Content-Length"],
+          "Content-Disposition" => content_disposition(file),
+          "Content-Range" => response[1]["Content-Range"],
+          "Accept-Ranges" => "bytes"
+        }.compact
+      end
+
 
       body = Rack::BodyProxy.new(response[2]) { File.delete(file.path) }
 

@@ -113,7 +113,11 @@ class Shrine
         handle_request(request)
       end
 
-      headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      if Rack.release > "2"
+        headers["content-length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      else
+        headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      end
 
       [status, headers, body]
     end
@@ -151,8 +155,12 @@ class Shrine
         range:       request.env["HTTP_RANGE"],
       )
 
-      response[1]["Cache-Control"] = "max-age=#{365*24*60*60}" # cache for a year
-
+      if Rack.release > "2"
+        response[1]["cache-control"] = "max-age=#{365*24*60*60}" # cache for a year
+      else
+        response[1]["Cache-Control"] = "max-age=#{365*24*60*60}" # cache for a year
+      end
+      
       response
     end
 
@@ -164,7 +172,11 @@ class Shrine
         redirect_url = @redirect.call(uploaded_file, request)
       end
 
-      [302, { "Location" => redirect_url }, []]
+      if Rack.release > "2"
+        [302, { "location" => redirect_url }, []]
+      else
+        [302, { "Location" => redirect_url }, []]
+      end
     end
 
     def open_file(uploaded_file, request)
@@ -197,7 +209,11 @@ class Shrine
 
     # Halts the request with the error message.
     def error!(status, message)
-      throw :halt, [status, { "Content-Type" => "text/plain" }, [message]]
+      if Rack.release > "2"
+        throw :halt, [status, { "content-type" => "text/plain" }, [message]]
+      else
+        throw :halt, [status, { "Content-Type" => "text/plain" }, [message]]
+      end
     end
   end
 end

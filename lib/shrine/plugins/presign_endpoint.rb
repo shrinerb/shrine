@@ -91,7 +91,11 @@ class Shrine
         end
       end
 
-      headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      if Rack.release > "2"
+        headers["content-length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      else
+        headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      end
 
       [status, headers, body]
     end
@@ -161,18 +165,30 @@ class Shrine
       if @rack_response
         response = @rack_response.call(object, request)
       else
-        response = [200, { "Content-Type" => CONTENT_TYPE_JSON }, [object.to_json]]
+        if Rack.release > "2"
+          response = [200, { "content-type" => CONTENT_TYPE_JSON }, [object.to_json]]
+        else
+          response = [200, { "Content-Type" => CONTENT_TYPE_JSON }, [object.to_json]]
+        end
       end
 
       # prevent browsers from caching the response
-      response[1]["Cache-Control"] = "no-store" unless response[1].key?("Cache-Control")
+      if Rack.release > "2"
+        response[1]["cache-control"] = "no-store" unless response[1].key?("cache-control")
+      else
+        response[1]["Cache-Control"] = "no-store" unless response[1].key?("Cache-Control")
+      end
 
       response
     end
 
     # Used for early returning an error response.
     def error!(status, message)
-      throw :halt, [status, { "Content-Type" => CONTENT_TYPE_TEXT }, [message]]
+      if Rack.release > "2"
+        throw :halt, [status, { "content-type" => CONTENT_TYPE_TEXT }, [message]]
+      else
+        throw :halt, [status, { "Content-Type" => CONTENT_TYPE_TEXT }, [message]]
+      end
     end
 
     # Returns the uploader around the specified storage.
