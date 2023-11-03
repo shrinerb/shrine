@@ -91,7 +91,14 @@ class Shrine
         end
       end
 
-      headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      if Rack.release >= "2.1"
+        headers["Content-Length"] ||= body.byesize.to_s
+      else
+        sum = 0
+        body.each { |chunk| sum += chunk.bytesize }
+
+        headers["Content-Length"] = sum.to_s
+      end
 
       [status, headers, body]
     end
