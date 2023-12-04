@@ -5,3 +5,4 @@ website/build
 coverage/
 node_modules
 .docusaurus
+.idea
