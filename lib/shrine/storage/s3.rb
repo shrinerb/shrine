@@ -241,7 +241,8 @@ class Shrine
         # don't inherit source object metadata or AWS tags
         options = {
           metadata_directive: "REPLACE",
-          tagging_directive: "REPLACE"
+          # CloudFlare R2 doesn't support tagging_directive for now
+          # tagging_directive: "REPLACE"
         }
 
         if io.size && io.size >= @multipart_threshold[:copy]
