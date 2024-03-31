@@ -365,9 +365,20 @@ class Shrine
         handle_request(request)
       end
 
-      headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      headers ||= {}
 
-      [status, headers, body]
+      if Rack.release >= "3"
+        headers["content-length"] ||= body.respond_to?(:bytesize) ? body.bytesize.to_s :
+                                                                    body.map(&:bytesize).inject(0, :+).to_s
+      else
+        headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      end
+
+      if Rack.release >= "3"
+        [status, headers.transform_keys(&:downcase), body]
+      else
+        [status, headers, body]
+      end
     end
 
     # Verifies validity of the URL, then extracts parameters from it (such as
@@ -411,7 +422,11 @@ class Shrine
         headers["Cache-Control"] = derivation.option(:cache_control)
       end
 
-      [status, headers, body]
+      if Rack.release >= "3"
+        [status, headers.transform_keys(&:downcase), body]
+      else
+        [status, headers, body]
+      end
     end
 
     def inspect
@@ -444,7 +459,11 @@ class Shrine
 
     # Halts the request with the error message.
     def error!(status, message)
-      throw :halt, [status, { "Content-Type" => "text/plain" }, [message]]
+      if Rack.release >= "3"
+        throw :halt, [status, { "content-type" => "text/plain" }, [message]]
+      else
+        throw :halt, [status, { "Content-Type" => "text/plain" }, [message]]
+      end
     end
 
     def secret_key
@@ -485,19 +504,33 @@ class Shrine
 
       status = response[0]
 
-      headers = {
-        "Content-Type"        => type || response[1]["Content-Type"],
-        "Content-Length"      => response[1]["Content-Length"],
-        "Content-Disposition" => content_disposition(file),
-        "Content-Range"       => response[1]["Content-Range"],
-        "Accept-Ranges"       => "bytes",
-      }.compact
+      headers = if Rack.release >= "3"
+        {
+          "content-type"        => type || response[1]["content-type"],
+          "content-length"      => response[1]["content-length"],
+          "content-disposition" => content_disposition(file),
+          "content-range"       => response[1]["content-range"],
+          "accept-ranges"       => "bytes",
+        }.compact
+      else
+        {
+          "Content-Type"        => type || response[1]["Content-Type"],
+          "Content-Length"      => response[1]["Content-Length"],
+          "Content-Disposition" => content_disposition(file),
+          "Content-Range"       => response[1]["Content-Range"],
+          "Accept-Ranges"       => "bytes",
+        }.compact
+      end
 
       body = Rack::BodyProxy.new(response[2]) { File.delete(file.path) }
 
       file.close
 
-      [status, headers, body]
+      if Rack.release >= "3"
+        [status, headers.transform_keys(&:downcase), body]
+      else
+        [status, headers, body]
+      end
     end
 
     # This is called when `:upload` is enabled. Checks the storage for already

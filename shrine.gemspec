@@ -42,7 +42,7 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "mocha", "~> 1.11"
 
   # for endpoint plugins
-  gem.add_development_dependency "rack", "~> 2.0"
+  gem.add_development_dependency "rack", ">= 2", "< 4"
   gem.add_development_dependency "http-form_data", "~> 2.2"
   gem.add_development_dependency "rack-test_app"
 

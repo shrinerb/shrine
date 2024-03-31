@@ -4,7 +4,7 @@ require "uri"
 
 describe Shrine::Plugins::DownloadEndpoint do
   def app
-    Rack::TestApp.wrap(Rack::Lint.new(endpoint))
+    Rack::TestApp.wrap(Rack::Lint.new(endpoint), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
   end
 
   def endpoint
@@ -23,9 +23,9 @@ describe Shrine::Plugins::DownloadEndpoint do
     response = app.get(@uploaded_file.download_url)
     assert_equal 200, response.status
     assert_equal @uploaded_file.read, response.body_binary
-    assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
-    assert_equal @uploaded_file.mime_type, response.headers["Content-Type"]
-    assert_equal ContentDisposition.inline(@uploaded_file.original_filename), response.headers["Content-Disposition"]
+    assert_equal @uploaded_file.size.to_s, response.headers[CONTENT_LENGTH_HEADER]
+    assert_equal @uploaded_file.mime_type, response.headers[CONTENT_TYPE_HEADER]
+    assert_equal ContentDisposition.inline(@uploaded_file.original_filename), response.headers[CONTENT_DISPOSITION_HEADER]
   end
 
   it "applies :download_options hash" do
@@ -45,46 +45,46 @@ describe Shrine::Plugins::DownloadEndpoint do
   it "applies :disposition to response" do
     @shrine.plugin :download_endpoint, disposition: "attachment"
     response = app.get(@uploaded_file.download_url)
-    assert_equal ContentDisposition.attachment(@uploaded_file.id), response.headers["Content-Disposition"]
+    assert_equal ContentDisposition.attachment(@uploaded_file.id), response.headers[CONTENT_DISPOSITION_HEADER]
   end
 
   it "returns Cache-Control" do
     response = app.get(@uploaded_file.download_url)
-    assert_equal "max-age=31536000", response.headers["Cache-Control"]
+    assert_equal "max-age=31536000", response.headers[CACHE_CONTROL_HEADER]
   end
 
   it "accepts :redirect with true" do
     @shrine.plugin :download_endpoint, redirect: true
     response = app.get(@uploaded_file.download_url)
     assert_equal 302, response.status
-    assert_match %r{^memory://\w+$}, response.headers["Location"]
+    assert_match %r{^memory://\w+$}, response.headers[LOCATION_HEADER]
   end
 
   it "accepts :redirect with proc" do
     @shrine.plugin :download_endpoint, redirect: -> (uploaded_file, request) { "/foo" }
     response = app.get(@uploaded_file.download_url)
     assert_equal 302, response.status
-    assert_equal "/foo", response.headers["Location"]
+    assert_equal "/foo", response.headers[LOCATION_HEADER]
   end
 
   it "returns Accept-Ranges" do
     response = app.get(@uploaded_file.download_url)
-    assert_equal "bytes", response.headers["Accept-Ranges"]
+    assert_equal "bytes", response.headers[ACCEPT_RANGES_HEADER]
   end
 
   it "supports ranged requests" do
     @uploaded_file = @uploader.upload(fakeio("content"))
     response = app.get(@uploaded_file.download_url, headers: { "Range" => "bytes=2-4" })
     assert_equal 206,           response.status
-    assert_equal "bytes 2-4/7", response.headers["Content-Range"]
-    assert_equal "3",           response.headers["Content-Length"]
+    assert_equal "bytes 2-4/7", response.headers[CONTENT_RANGE_HEADER]
+    assert_equal "3",           response.headers[CONTENT_LENGTH_HEADER]
     assert_equal "nte",         response.body_binary
   end
 
   it "returns ETag" do
     response = app.get(@uploaded_file.download_url)
-    assert_instance_of String,    response.headers["ETag"]
-    assert_match /^W\/"\w{32}"$/, response.headers["ETag"]
+    assert_instance_of String,    response.headers[ETAG_HEADER]
+    assert_match /^W\/"\w{32}"$/, response.headers[ETAG_HEADER]
   end
 
   it "returns 404 for nonexisting file" do
@@ -125,9 +125,9 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "accepts ad-hoc options" do
-    app = Rack::TestApp.wrap(@shrine.download_endpoint(disposition: "attachment"))
+    app = Rack::TestApp.wrap(@shrine.download_endpoint(disposition: "attachment"), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
     response = app.get(@uploaded_file.download_url)
-    assert_match /^attachment; /, response.headers["Content-Disposition"]
+    assert_match /^attachment; /, response.headers[CONTENT_DISPOSITION_HEADER]
   end
 
   it "returns same URL regardless of metadata order" do
@@ -165,7 +165,7 @@ describe Shrine::Plugins::DownloadEndpoint do
       status, headers, body = @shrine.download_response(env)
 
       assert_equal 200,                      status
-      assert_equal @uploaded_file.size.to_s, headers["Content-Length"]
+      assert_equal @uploaded_file.size.to_s, headers[CONTENT_LENGTH_HEADER]
       assert_equal @uploaded_file.read,      body.enum_for(:each).to_a.join
 
       assert_equal "",                env["SCRIPT_NAME"]
@@ -207,7 +207,7 @@ describe Shrine::Plugins::DownloadEndpoint do
       status, headers, body = @shrine.download_response(env, disposition: "attachment")
 
       assert_equal 200,             status
-      assert_match /^attachment; /, headers["Content-Disposition"]
+      assert_match /^attachment; /, headers[CONTENT_DISPOSITION_HEADER]
     end
 
     it "fails when request path doesn't start with prefix" do
