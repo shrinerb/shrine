@@ -54,5 +54,8 @@ jobs:
           chmod +x "${GITHUB_WORKSPACE}"/minio/minio
           ${GITHUB_WORKSPACE}/minio/minio server ${GITHUB_WORKSPACE}/minio/data --address localhost:9000 &>${GITHUB_WORKSPACE}/minio/data/server.log &
 
+      - name: Install dependencies
+        run: bundle exec appraisal install
+
       - name: Run tests
         run: bundle exec appraisal rack-${{ matrix.rack }} rake test
