@@ -374,11 +374,9 @@ class Shrine
         headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
       end
 
-      if Rack.release >= "3"
-        [status, headers.transform_keys(&:downcase), body]
-      else
-        [status, headers, body]
-      end
+      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
+
+      [status, headers, body]
     end
 
     # Verifies validity of the URL, then extracts parameters from it (such as
@@ -422,11 +420,9 @@ class Shrine
         headers["Cache-Control"] = derivation.option(:cache_control)
       end
 
-      if Rack.release >= "3"
-        [status, headers.transform_keys(&:downcase), body]
-      else
-        [status, headers, body]
-      end
+      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
+
+      [status, headers, body]
     end
 
     def inspect
@@ -459,11 +455,11 @@ class Shrine
 
     # Halts the request with the error message.
     def error!(status, message)
-      if Rack.release >= "3"
-        throw :halt, [status, { "content-type" => "text/plain" }, [message]]
-      else
-        throw :halt, [status, { "Content-Type" => "text/plain" }, [message]]
-      end
+      headers = { "Content-Type" => "text/plain" }
+
+      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
+
+      throw :halt, [status, headers, [message]]
     end
 
     def secret_key
@@ -526,11 +522,9 @@ class Shrine
 
       file.close
 
-      if Rack.release >= "3"
-        [status, headers.transform_keys(&:downcase), body]
-      else
-        [status, headers, body]
-      end
+      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
+
+      [status, headers, body]
     end
 
     # This is called when `:upload` is enabled. Checks the storage for already
