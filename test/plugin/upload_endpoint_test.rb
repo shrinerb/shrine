@@ -5,7 +5,7 @@ require "json"
 
 describe Shrine::Plugins::UploadEndpoint do
   def app
-    Rack::TestApp.wrap(Rack::Lint.new(endpoint))
+    Rack::TestApp.wrap(Rack::Lint.new(endpoint), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
   end
 
   def endpoint
@@ -21,7 +21,7 @@ describe Shrine::Plugins::UploadEndpoint do
     response = app.post "/", multipart: { file: image }
 
     assert_equal 200, response.status
-    assert_equal "application/json; charset=utf-8", response.headers["Content-Type"]
+    assert_equal "application/json; charset=utf-8", response.headers[CONTENT_TYPE_HEADER]
 
     assert_match /^\w+\.jpg$/, response.body_json["id"]
     assert_equal "cache",      response.body_json["storage"]
@@ -64,28 +64,28 @@ describe Shrine::Plugins::UploadEndpoint do
     @shrine.plugin :upload_endpoint, max_size: 10
     response = app.post "/", multipart: { file: image }
     assert_equal 413, response.status
-    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "text/plain", response.headers[CONTENT_TYPE_HEADER]
     assert_equal "Upload Too Large", response.body_binary
   end
 
   it "validates that param is a file" do
     response = app.post "/", multipart: { file: "image" }
     assert_equal 400, response.status
-    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "text/plain", response.headers[CONTENT_TYPE_HEADER]
     assert_equal "Upload Not Valid", response.body_binary
   end
 
   it "validates that param is present" do
     response = app.post "/", multipart: { image: "image" }
     assert_equal 400, response.status
-    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "text/plain", response.headers[CONTENT_TYPE_HEADER]
     assert_equal "Upload Not Found", response.body_binary
   end
 
   it "handles filenames with UTF-8 characters" do
     filename = "über_pdf_with_1337%_leetness.pdf"
     form = HTTP::FormData.create({ file: HTTP::FormData::Part.new("", filename: filename) })
-    response = app.post "/", multipart: { input: form.to_s }, headers: {"Content-Type" => form.content_type}
+    response = app.post "/", multipart: { input: form.to_s }, headers: {CONTENT_TYPE_HEADER => form.content_type}
     assert_equal 200, response.status
     uploaded_file = @shrine.uploaded_file(response.body_json)
     assert_equal filename, uploaded_file.original_filename
@@ -144,27 +144,27 @@ describe Shrine::Plugins::UploadEndpoint do
 
   it "accepts response proc" do
     @shrine.plugin :upload_endpoint, rack_response: -> (o, r) do
-      [200, {"Content-Type" => "application/vnd.api+json"}, [{data: o}.to_json]]
+      [200, {CONTENT_TYPE_HEADER => "application/vnd.api+json"}, [{data: o}.to_json]]
     end
     response = app.post "/", multipart: { file: image }
     assert_equal ["id", "storage", "metadata"], JSON.parse(response.body_binary)["data"].keys
-    assert_equal "application/vnd.api+json", response.headers["Content-Type"]
+    assert_equal "application/vnd.api+json", response.headers[CONTENT_TYPE_HEADER]
   end
 
   it "allows overriding options when instantiating the endpoint" do
-    app = Rack::TestApp.wrap(@shrine.upload_endpoint(:cache, max_size: 10))
+    app = Rack::TestApp.wrap(@shrine.upload_endpoint(:cache, max_size: 10), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
     response = app.post "/", multipart: { file: image }
     assert_equal 413, response.status
   end
 
   it "doesn't react to parseable Content-Type" do
-    response = app.post "/", headers: { "Content-Type" => "application/x-www-form-urlencoded" }
+    response = app.post "/", headers: { CONTENT_TYPE_HEADER => "application/x-www-form-urlencoded" }
     assert_equal 400, response.status
     assert_equal "Upload Not Found", response.body_binary
   end
 
   it "doesn't react to blank Content-Type" do
-    response = app.post "/", headers: { "Content-Type" => "" }
+    response = app.post "/", headers: { CONTENT_TYPE_HEADER => "" }
     assert_equal 400, response.status
     assert_equal "Upload Not Found", response.body_binary
   end
@@ -172,7 +172,7 @@ describe Shrine::Plugins::UploadEndpoint do
   it "accepts only POST requests" do
     response = app.put "/", multipart: { file: image }
     assert_equal 405, response.status
-    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "text/plain", response.headers[CONTENT_TYPE_HEADER]
     assert_equal "Method Not Allowed", response.body_binary
   end
 
@@ -199,7 +199,7 @@ describe Shrine::Plugins::UploadEndpoint do
       response = @shrine.upload_response(:cache, env)
 
       assert_equal 200, response[0]
-      assert_equal "application/json; charset=utf-8", response[1]["Content-Type"]
+      assert_equal "application/json; charset=utf-8", response[1][CONTENT_TYPE_HEADER]
       assert_equal "content", @shrine.uploaded_file(response[2].first).read
     end
 
@@ -220,7 +220,7 @@ describe Shrine::Plugins::UploadEndpoint do
       response = @shrine.upload_response(:cache, env, max_size: 1)
 
       assert_equal 413, response[0]
-      assert_equal "text/plain", response[1]["Content-Type"]
+      assert_equal "text/plain", response[1][CONTENT_TYPE_HEADER]
       assert_equal "Upload Too Large", response[2].first
     end
   end

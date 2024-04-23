@@ -91,7 +91,14 @@ class Shrine
         end
       end
 
-      headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      if Rack.release >= "3"
+        headers["content-length"] ||= body.respond_to?(:bytesize) ? body.bytesize.to_s :
+                                                                    body.map(&:bytesize).inject(0, :+).to_s
+      else
+        headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+      end
+
+      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
 
       [status, headers, body]
     end
@@ -172,7 +179,11 @@ class Shrine
 
     # Used for early returning an error response.
     def error!(status, message)
-      throw :halt, [status, { "Content-Type" => CONTENT_TYPE_TEXT }, [message]]
+      headers = { "Content-Type" => CONTENT_TYPE_TEXT }
+
+      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
+
+      throw :halt, [status, headers, [message]]
     end
 
     # Returns the uploader around the specified storage.

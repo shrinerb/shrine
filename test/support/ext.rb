@@ -9,3 +9,19 @@ class Rack::TestApp::Wrapper
     alias_method verb, verb.upcase
   end
 end
+
+module RackTestAppResultPatch
+  def body_binary
+    @body_binary ||= super
+  end
+
+  def body_text
+    @body_text ||= super
+  end
+
+  def body_json
+    @body_json ||= super
+  end
+end
+
+Rack::TestApp::Result.send(:prepend, RackTestAppResultPatch)

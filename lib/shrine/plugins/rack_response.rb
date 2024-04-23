@@ -32,7 +32,11 @@ class Shrine
           headers = rack_headers(**options)
           body    = rack_body(**options)
 
-          [status, headers, body]
+          if Rack.release >= "3"
+            [status, headers.transform_keys(&:downcase), body]
+          else
+            [status, headers, body]
+          end
         end
 
         private
@@ -139,6 +143,10 @@ class Shrine
         # Closes the file when response body is closed by the web server.
         def close
           file.close
+        end
+
+        def bytesize
+          each.inject(0) { |sum, chunk| sum += chunk.length }
         end
 
         # Rack::Sendfile is activated when response body responds to #to_path.

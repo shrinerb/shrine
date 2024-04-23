@@ -198,7 +198,7 @@ describe Shrine::Plugins::DerivationEndpoint do
 
   describe "Shrine.derivation_endpoint" do
     def app(*args, **options)
-      Rack::TestApp.wrap(Rack::Lint.new(endpoint(*args, **options)))
+      Rack::TestApp.wrap(Rack::Lint.new(endpoint(*args, **options)), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
     end
 
     def endpoint(*args, **options)
@@ -210,7 +210,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app.get(derivation_url)
       assert_equal 200,                 response.status
       assert_equal "gray dark content", response.body_binary
-      assert_equal "17",                response.headers["Content-Length"]
+      assert_equal "17",                response.headers[CONTENT_LENGTH_HEADER]
     end
 
     it "handles Range requests" do
@@ -218,8 +218,8 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app.get(derivation_url, headers: { "Range" => "bytes=0-3" })
       assert_equal 206,            response.status
       assert_equal "gray",         response.body_binary
-      assert_equal "4",            response.headers["Content-Length"]
-      assert_equal "bytes 0-3/12", response.headers["Content-Range"]
+      assert_equal "4",            response.headers[CONTENT_LENGTH_HEADER]
+      assert_equal "bytes 0-3/12", response.headers[CONTENT_RANGE_HEADER]
     end
 
     it "applies plugin options" do
@@ -227,7 +227,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app.get(derivation_url)
       assert_equal 200,          response.status
-      assert_match "attachment", response.headers["Content-Disposition"]
+      assert_match "attachment", response.headers[CONTENT_DISPOSITION_HEADER]
     end
 
     it "applies app options" do
@@ -235,7 +235,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app(disposition: "attachment").get(derivation_url)
       assert_equal 200,          response.status
-      assert_match "attachment", response.headers["Content-Disposition"]
+      assert_match "attachment", response.headers[CONTENT_DISPOSITION_HEADER]
     end
 
     it "applies 'type' param" do
@@ -243,7 +243,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       derivation_url = @uploaded_file.derivation_url(:gray, type: "text/csv")
       response = app(type: "text/plain").get(derivation_url)
       assert_equal 200,        response.status
-      assert_equal "text/csv", response.headers["Content-Type"]
+      assert_equal "text/csv", response.headers[CONTENT_TYPE_HEADER]
     end
 
     it "applies 'disposition' param" do
@@ -251,7 +251,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       derivation_url = @uploaded_file.derivation_url(:gray, disposition: "attachment")
       response = app(disposition: "inline").get(derivation_url)
       assert_equal 200,          response.status
-      assert_match "attachment", response.headers["Content-Disposition"]
+      assert_match "attachment", response.headers[CONTENT_DISPOSITION_HEADER]
     end
 
     it "applies 'filename' param" do
@@ -259,7 +259,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       derivation_url = @uploaded_file.derivation_url(:gray, filename: "custom")
       response = app(filename: "default").get(derivation_url)
       assert_equal 200,                   response.status
-      assert_match "filename=\"custom\"", response.headers["Content-Disposition"]
+      assert_match "filename=\"custom\"", response.headers[CONTENT_DISPOSITION_HEADER]
     end
 
     it "applies 'version' param" do
@@ -267,41 +267,41 @@ describe Shrine::Plugins::DerivationEndpoint do
       derivation_url = @uploaded_file.derivation_url(:gray, version: 2)
       response = app(version: 1).get(derivation_url)
       assert_equal 200, response.status
-      assert_match "filename=\"2\"", response.headers["Content-Disposition"]
+      assert_match "filename=\"2\"", response.headers[CONTENT_DISPOSITION_HEADER]
     end
 
     it "returns Cache-Control header on 2xx response" do
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app.get(derivation_url)
       assert_equal 200,                        response.status
-      assert_equal "public, max-age=31536000", response.headers["Cache-Control"]
+      assert_equal "public, max-age=31536000", response.headers[CACHE_CONTROL_HEADER]
 
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app.get(derivation_url, headers: { "Range" => "bytes=0-3" })
       assert_equal 206,                        response.status
-      assert_equal "public, max-age=31536000", response.headers["Cache-Control"]
+      assert_equal "public, max-age=31536000", response.headers[CACHE_CONTROL_HEADER]
 
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app(upload: true, upload_redirect: true).get(derivation_url)
       assert_equal 302, response.status
-      refute response.headers.key?("Cache-Control")
+      refute response.headers.key?(CACHE_CONTROL_HEADER)
     end
 
     it "applies :cache_control" do
       @shrine.plugin :derivation_endpoint, cache_control: "public, max-age=10"
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app.get(derivation_url)
-      assert_equal "public, max-age=10", response.headers["Cache-Control"]
+      assert_equal "public, max-age=10", response.headers[CACHE_CONTROL_HEADER]
 
       response = app(cache_control: "public, max-age=20").get(derivation_url)
-      assert_equal "public, max-age=20", response.headers["Cache-Control"]
+      assert_equal "public, max-age=20", response.headers[CACHE_CONTROL_HEADER]
 
       response = app(cache_control: -> { "public, max-age=20" }).get(derivation_url)
-      assert_equal "public, max-age=20", response.headers["Cache-Control"]
+      assert_equal "public, max-age=20", response.headers[CACHE_CONTROL_HEADER]
 
       derivation_url = @uploaded_file.derivation_url(:gray, expires_in: 100)
       response = app.get(derivation_url)
-      assert_equal "public, max-age=10", response.headers["Cache-Control"]
+      assert_equal "public, max-age=10", response.headers[CACHE_CONTROL_HEADER]
     end
 
     it "returns 404 on unknown derivation" do
@@ -309,7 +309,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app.get(derivation_url)
       assert_equal 404,                              response.status
       assert_match "Unknown derivation",             response.body_binary
-      assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
+      assert_equal response.body_binary.length.to_s, response.headers[CONTENT_LENGTH_HEADER]
     end
 
     it "returns 404 when source was not found" do
@@ -318,17 +318,17 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app.get(derivation_url)
       assert_equal 404,                              response.status
       assert_match "Source file not found",          response.body_binary
-      assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
+      assert_equal response.body_binary.length.to_s, response.headers[CONTENT_LENGTH_HEADER]
     end
 
     it "successfully handles expiring links that have not yet expired" do
       derivation_url = @uploaded_file.derivation_url(:gray, expires_in: 100)
       response = app.get(derivation_url)
       assert_equal 200,  response.status
-      assert_equal "12", response.headers["Content-Length"]
+      assert_equal "12", response.headers[CONTENT_LENGTH_HEADER]
 
       # caching duration is limited by the expiration date
-      max_age = Integer(response.headers["Cache-Control"][/max-age=(\d+)/, 1])
+      max_age = Integer(response.headers[CACHE_CONTROL_HEADER][/max-age=(\d+)/, 1])
       assert_operator max_age, :<=, 100
       assert_operator 0,       :<, max_age
     end
@@ -339,8 +339,8 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app.get(derivation_url)
       assert_equal 403,                              response.status
       assert_match "Request has expired",            response.body_binary
-      assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
-      refute response.headers.key?("Cache-Control")
+      assert_equal response.body_binary.length.to_s, response.headers[CONTENT_LENGTH_HEADER]
+      refute response.headers.key?(CACHE_CONTROL_HEADER)
     end
 
     it "returns 403 on invalid signature" do
@@ -349,8 +349,8 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app.get(derivation_url)
       assert_equal 403,                              response.status
       assert_match "signature does not match",       response.body_binary
-      assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
-      refute response.headers.key?("Cache-Control")
+      assert_equal response.body_binary.length.to_s, response.headers[CONTENT_LENGTH_HEADER]
+      refute response.headers.key?(CACHE_CONTROL_HEADER)
     end
 
     it "returns 403 on missing signature" do
@@ -359,8 +359,8 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app.get(derivation_url)
       assert_equal 403,                              response.status
       assert_match "Missing \"signature\" param",    response.body_binary
-      assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
-      refute response.headers.key?("Cache-Control")
+      assert_equal response.body_binary.length.to_s, response.headers[CONTENT_LENGTH_HEADER]
+      refute response.headers.key?(CACHE_CONTROL_HEADER)
     end
 
     it "includes request params when calculating signature" do
@@ -368,7 +368,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app.get(derivation_url)
       assert_equal 403,                              response.status
       assert_match "signature does not match",       response.body_binary
-      assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
+      assert_equal response.body_binary.length.to_s, response.headers[CONTENT_LENGTH_HEADER]
     end
 
     it "skips signature verifcation when secret_key is nil" do
@@ -378,14 +378,14 @@ describe Shrine::Plugins::DerivationEndpoint do
       derivation_url = @uploaded_file.derivation_url(:gray).sub(/signature=\w+$/, "")
       response = app.get(derivation_url)
       assert_equal 200,  response.status
-      assert_equal "12", response.headers["Content-Length"]
+      assert_equal "12", response.headers[CONTENT_LENGTH_HEADER]
     end
 
     it "accepts HEAD requests" do
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app.head(derivation_url)
       assert_equal 200,  response.status
-      assert_equal "12", response.headers["Content-Length"]
+      assert_equal "12", response.headers[CONTENT_LENGTH_HEADER]
     end
 
     it "returns 405 on invalid request method" do
@@ -393,7 +393,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app.post(derivation_url)
       assert_equal 405,                              response.status
       assert_equal "Method not allowed",             response.body_binary
-      assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
+      assert_equal response.body_binary.length.to_s, response.headers[CONTENT_LENGTH_HEADER]
     end
 
     it "defines #inspect and #to_s" do
@@ -419,7 +419,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       status, headers, body = @shrine.derivation_response(env)
 
       assert_equal 200,            status
-      assert_equal "12",           headers["Content-Length"]
+      assert_equal "12",           headers[CONTENT_LENGTH_HEADER]
       assert_equal "gray content", body.enum_for(:each).to_a.join
 
       assert_equal "",                       env["SCRIPT_NAME"]
@@ -461,7 +461,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       status, headers, body = @shrine.derivation_response(env, type: "text/plain")
 
       assert_equal 200,          status
-      assert_equal "text/plain", headers["Content-Type"]
+      assert_equal "text/plain", headers[CONTENT_TYPE_HEADER]
     end
 
     it "fails when request path doesn't start with prefix" do
@@ -489,26 +489,26 @@ describe Shrine::Plugins::DerivationEndpoint do
         response = @uploaded_file.derivation_response(:gray, env: {})
 
         assert_equal 200,            response[0]
-        assert_equal "12",           response[1]["Content-Length"]
+        assert_equal "12",           response[1][CONTENT_LENGTH_HEADER]
         assert_equal "gray content", response[2].enum_for(:each).to_a.join
       end
 
       it "returns Content-Disposition" do
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_equal ContentDisposition.inline("gray-#{@uploaded_file.id}"), response[1]["Content-Disposition"]
+        assert_equal ContentDisposition.inline("gray-#{@uploaded_file.id}"), response[1][CONTENT_DISPOSITION_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, "dark", env: {})
-        assert_equal ContentDisposition.inline("gray-dark-#{@uploaded_file.id}"), response[1]["Content-Disposition"]
+        assert_equal ContentDisposition.inline("gray-dark-#{@uploaded_file.id}"), response[1][CONTENT_DISPOSITION_HEADER]
 
         @shrine.derivation(:gray) { |file| Tempfile.new(["derivation", ".txt"]) }
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_equal ContentDisposition.inline("gray-#{@uploaded_file.id}.txt"), response[1]["Content-Disposition"]
+        assert_equal ContentDisposition.inline("gray-#{@uploaded_file.id}.txt"), response[1][CONTENT_DISPOSITION_HEADER]
       end
 
       it "returns Content-Type" do
         @shrine.derivation(:gray) { |file| Tempfile.new(["derivation", ".jpg"]) }
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_equal "image/jpeg", response[1]["Content-Type"]
+        assert_equal "image/jpeg", response[1][CONTENT_TYPE_HEADER]
 
         @shrine.derivation(:gray) { |file| Tempfile.new(["derivation"]) }
         response = @uploaded_file.derivation_response(:gray, env: {})
@@ -520,33 +520,33 @@ describe Shrine::Plugins::DerivationEndpoint do
 
         @shrine.plugin :derivation_endpoint, type: "text/plain"
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_equal "text/plain", response[1]["Content-Type"]
+        assert_equal "text/plain", response[1][CONTENT_TYPE_HEADER]
 
         @shrine.plugin :derivation_endpoint, type: -> { "text/plain" }
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_equal "text/plain", response[1]["Content-Type"]
+        assert_equal "text/plain", response[1][CONTENT_TYPE_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, type: "text/csv")
-        assert_equal "text/csv", response[1]["Content-Type"]
+        assert_equal "text/csv", response[1][CONTENT_TYPE_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, type: -> { "text/csv" })
-        assert_equal "text/csv", response[1]["Content-Type"]
+        assert_equal "text/csv", response[1][CONTENT_TYPE_HEADER]
       end
 
       it "applies :disposition" do
         @shrine.plugin :derivation_endpoint, disposition: "attachment"
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_match "attachment; ", response[1]["Content-Disposition"]
+        assert_match "attachment; ", response[1][CONTENT_DISPOSITION_HEADER]
 
         @shrine.plugin :derivation_endpoint, disposition: -> { "attachment" }
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_match "attachment; ", response[1]["Content-Disposition"]
+        assert_match "attachment; ", response[1][CONTENT_DISPOSITION_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, disposition: "inline")
-        assert_match "inline; ", response[1]["Content-Disposition"]
+        assert_match "inline; ", response[1][CONTENT_DISPOSITION_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, disposition: -> { "inline" })
-        assert_match "inline; ", response[1]["Content-Disposition"]
+        assert_match "inline; ", response[1][CONTENT_DISPOSITION_HEADER]
       end
 
       it "applies :filename" do
@@ -554,30 +554,30 @@ describe Shrine::Plugins::DerivationEndpoint do
 
         @shrine.plugin :derivation_endpoint, filename: "one"
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_match "inline; filename=\"one.txt\"", response[1]["Content-Disposition"]
+        assert_match "inline; filename=\"one.txt\"", response[1][CONTENT_DISPOSITION_HEADER]
 
         @shrine.plugin :derivation_endpoint, filename: -> { "one" }
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_match "inline; filename=\"one.txt\"", response[1]["Content-Disposition"]
+        assert_match "inline; filename=\"one.txt\"", response[1][CONTENT_DISPOSITION_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, filename: "two.csv")
-        assert_match "inline; filename=\"two.csv\"", response[1]["Content-Disposition"]
+        assert_match "inline; filename=\"two.csv\"", response[1][CONTENT_DISPOSITION_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, filename: -> { "two.csv" })
-        assert_match "inline; filename=\"two.csv\"", response[1]["Content-Disposition"]
+        assert_match "inline; filename=\"two.csv\"", response[1][CONTENT_DISPOSITION_HEADER]
       end
 
       it "handles Range requests" do
         response = @uploaded_file.derivation_response(:gray, env: { "HTTP_RANGE" => "bytes=0-3" })
         assert_equal 206,            response[0]
-        assert_equal "bytes 0-3/12", response[1]["Content-Range"]
-        assert_equal "bytes",        response[1]["Accept-Ranges"]
+        assert_equal "bytes 0-3/12", response[1][CONTENT_RANGE_HEADER]
+        assert_equal "bytes",        response[1][ACCEPT_RANGES_HEADER]
         assert_equal "gray",         response[2].enum_for(:each).to_a.join
 
         response = @uploaded_file.derivation_response(:gray, env: {})
         assert_equal 200,     response[0]
-        assert_equal "bytes", response[1]["Accept-Ranges"]
-        refute response[1].key?("Content-Range")
+        assert_equal "bytes", response[1][ACCEPT_RANGES_HEADER]
+        refute response[1].key?(CONTENT_RANGE_HEADER)
       end
 
       it "closes and deletes derivation result" do
@@ -605,7 +605,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         response = @uploaded_file.derivation_response(:gray, env: {})
 
         assert_equal 200,            response[0]
-        assert_equal "12",           response[1]["Content-Length"]
+        assert_equal "12",           response[1][CONTENT_LENGTH_HEADER]
         assert_equal "gray content", response[2].enum_for(:each).to_a.join
 
         refute_instance_of Shrine::Plugins::RackResponse::FileBody, response[2]
@@ -618,7 +618,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         response = @uploaded_file.derivation_response(:gray, env: {})
 
         assert_equal 200,            response[0]
-        assert_equal "12",           response[1]["Content-Length"]
+        assert_equal "12",           response[1][CONTENT_LENGTH_HEADER]
         assert_equal "gray content", response[2].enum_for(:each).to_a.join
       end
 
@@ -627,17 +627,17 @@ describe Shrine::Plugins::DerivationEndpoint do
 
         @shrine.plugin :derivation_endpoint, type: "text/plain"
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_equal "text/plain", response[1]["Content-Type"]
+        assert_equal "text/plain", response[1][CONTENT_TYPE_HEADER]
 
         @shrine.plugin :derivation_endpoint, type: -> { "text/plain" }
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_equal "text/plain", response[1]["Content-Type"]
+        assert_equal "text/plain", response[1][CONTENT_TYPE_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, type: "text/csv")
-        assert_equal "text/csv", response[1]["Content-Type"]
+        assert_equal "text/csv", response[1][CONTENT_TYPE_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, type: -> { "text/csv" })
-        assert_equal "text/csv", response[1]["Content-Type"]
+        assert_equal "text/csv", response[1][CONTENT_TYPE_HEADER]
       end
 
       it "applies :disposition" do
@@ -645,17 +645,17 @@ describe Shrine::Plugins::DerivationEndpoint do
 
         @shrine.plugin :derivation_endpoint, disposition: "attachment"
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_match "attachment; ", response[1]["Content-Disposition"]
+        assert_match "attachment; ", response[1][CONTENT_DISPOSITION_HEADER]
 
         @shrine.plugin :derivation_endpoint, disposition: -> { "attachment" }
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_match "attachment; ", response[1]["Content-Disposition"]
+        assert_match "attachment; ", response[1][CONTENT_DISPOSITION_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, disposition: "inline")
-        assert_match "inline; ", response[1]["Content-Disposition"]
+        assert_match "inline; ", response[1][CONTENT_DISPOSITION_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, disposition: -> { "inline" })
-        assert_match "inline; ", response[1]["Content-Disposition"]
+        assert_match "inline; ", response[1][CONTENT_DISPOSITION_HEADER]
       end
 
       it "applies :filename" do
@@ -663,33 +663,33 @@ describe Shrine::Plugins::DerivationEndpoint do
 
         @shrine.plugin :derivation_endpoint, filename: "one"
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_match "inline; filename=\"one\"", response[1]["Content-Disposition"]
+        assert_match "inline; filename=\"one\"", response[1][CONTENT_DISPOSITION_HEADER]
 
         @shrine.plugin :derivation_endpoint, filename: -> { "one" }
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_match "inline; filename=\"one\"", response[1]["Content-Disposition"]
+        assert_match "inline; filename=\"one\"", response[1][CONTENT_DISPOSITION_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, filename: "two")
-        assert_match "inline; filename=\"two\"", response[1]["Content-Disposition"]
+        assert_match "inline; filename=\"two\"", response[1][CONTENT_DISPOSITION_HEADER]
 
         response = @uploaded_file.derivation_response(:gray, env: {}, filename: -> { "two" })
-        assert_match "inline; filename=\"two\"", response[1]["Content-Disposition"]
+        assert_match "inline; filename=\"two\"", response[1][CONTENT_DISPOSITION_HEADER]
       end
 
       it "handles Range requests" do
         @uploaded_file.derivation_response(:gray, env: {})
         response = @uploaded_file.derivation_response(:gray, env: { "HTTP_RANGE" => "bytes=0-3" })
         assert_equal 206,            response[0]
-        assert_equal "bytes 0-3/12", response[1]["Content-Range"]
-        assert_equal "bytes",        response[1]["Accept-Ranges"]
+        assert_equal "bytes 0-3/12", response[1][CONTENT_RANGE_HEADER]
+        assert_equal "bytes",        response[1][ACCEPT_RANGES_HEADER]
         assert_equal "gray",         response[2].enum_for(:each).to_a.join
       end
 
       it "returns ETag" do
         @uploaded_file.derivation_response(:gray, env: {})
         response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_instance_of String,    response[1]["ETag"]
-        assert_match /^W\/"\w{32}"$/, response[1]["ETag"]
+        assert_instance_of String,    response[1][ETAG_HEADER]
+        assert_match /^W\/"\w{32}"$/, response[1][ETAG_HEADER]
       end
 
       it "applies :upload_open_options" do
@@ -739,7 +739,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         response = @uploaded_file.derivation_response(:gray, env: {})
 
         assert_equal 200,            response[0]
-        assert_equal "12",           response[1]["Content-Length"]
+        assert_equal "12",           response[1][CONTENT_LENGTH_HEADER]
         assert_equal "gray content", response[2].enum_for(:each).to_a.join
       end
 

@@ -5,7 +5,7 @@ require "json"
 
 describe Shrine::Plugins::PresignEndpoint do
   def app
-    Rack::TestApp.wrap(Rack::Lint.new(endpoint))
+    Rack::TestApp.wrap(Rack::Lint.new(endpoint), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
   end
 
   def endpoint
@@ -23,9 +23,9 @@ describe Shrine::Plugins::PresignEndpoint do
 
     assert_equal 200, response.status
 
-    assert_equal "application/json; charset=utf-8",  response.headers["Content-Type"]
-    assert_equal response.body_binary.bytesize.to_s, response.headers["Content-Length"]
-    assert_equal "no-store",                         response.headers["Cache-Control"]
+    assert_equal "application/json; charset=utf-8",  response.headers[CONTENT_TYPE_HEADER]
+    assert_equal response.body_binary.bytesize.to_s, response.headers[CONTENT_LENGTH_HEADER]
+    assert_equal "no-store",                         response.headers[CACHE_CONTROL_HEADER]
 
     assert_instance_of String, response.body_json["method"]
     assert_instance_of String, response.body_json["url"]
@@ -86,23 +86,23 @@ describe Shrine::Plugins::PresignEndpoint do
 
   it "accepts response proc" do
     @shrine.plugin :presign_endpoint, rack_response: -> (o, r) do
-      [200, {"Content-Type" => "application/vnd.api+json"}, [{data: o}.to_json]]
+      [200, {CONTENT_TYPE_HEADER => "application/vnd.api+json"}, [{data: o}.to_json]]
     end
     response = app.get "/"
     assert_equal ["fields", "headers", "method", "url"], JSON.parse(response.body_binary)["data"].keys.sort
-    assert_equal "application/vnd.api+json", response.headers["Content-Type"]
+    assert_equal "application/vnd.api+json", response.headers[CONTENT_TYPE_HEADER]
   end
 
   it "allows overriding Cache-Control" do
     @shrine.plugin :presign_endpoint, rack_response: -> (o, r) do
-      [200, {"Content-Type" => "application/json", "Cache-Control" => "no-cache"}, [o.to_json]]
+      [200, {CONTENT_TYPE_HEADER => "application/json", "Cache-Control" => "no-cache"}, [o.to_json]]
     end
     response = app.get "/"
-    assert_equal "no-cache", response.headers["Cache-Control"]
+    assert_equal "no-cache", response.headers[CACHE_CONTROL_HEADER]
   end
 
   it "allows overriding options when instantiating the endpoint" do
-    app = Rack::TestApp.wrap(@shrine.presign_endpoint(:cache, presign_options: { content_type: "image/jpeg" }))
+    app = Rack::TestApp.wrap(@shrine.presign_endpoint(:cache, presign_options: { content_type: "image/jpeg" }), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
     response = app.get "/"
     assert_equal "image/jpeg", response.body_json["fields"]["Content-Type"]
   end
@@ -111,7 +111,7 @@ describe Shrine::Plugins::PresignEndpoint do
     response = app.options "/"
 
     assert_equal 200,                           response.status
-    assert_equal Hash["Content-Length" => "0"], response.headers
+    assert_equal Hash[CONTENT_LENGTH_HEADER => "0"], response.headers
     assert_equal "",                            response.body_binary
   end
 
@@ -123,7 +123,7 @@ describe Shrine::Plugins::PresignEndpoint do
   it "doesn't accept verbs other than GET or OPTIONS" do
     response = app.put "/"
     assert_equal 405, response.status
-    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "text/plain", response.headers[CONTENT_TYPE_HEADER]
     assert_equal "Method Not Allowed", response.body_binary
   end
 
@@ -140,7 +140,7 @@ describe Shrine::Plugins::PresignEndpoint do
       response = @shrine.presign_response(:cache, env)
 
       assert_equal 200, response[0]
-      assert_equal "application/json; charset=utf-8", response[1]["Content-Type"]
+      assert_equal "application/json; charset=utf-8", response[1][CONTENT_TYPE_HEADER]
       assert_match /\.txt$/, JSON.parse(response[2].first)["fields"]["key"]
     end
 
@@ -156,7 +156,7 @@ describe Shrine::Plugins::PresignEndpoint do
       response = @shrine.presign_response(:cache, env, presign_options: { content_type: "foo/bar" })
 
       assert_equal 200, response[0]
-      assert_equal "application/json; charset=utf-8", response[1]["Content-Type"]
+      assert_equal "application/json; charset=utf-8", response[1][CONTENT_TYPE_HEADER]
       assert_equal "foo/bar", JSON.parse(response[2].first)["fields"]["Content-Type"]
     end
   end
