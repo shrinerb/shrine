@@ -113,14 +113,9 @@ class Shrine
         handle_request(request)
       end
 
-      if Rack.release >= "3"
-        headers["content-length"] ||= body.respond_to?(:bytesize) ? body.bytesize.to_s :
-                                                                    body.map(&:bytesize).inject(0, :+).to_s
-      else
-        headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
-      end
-
-      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
+      headers = Rack::Headers[headers] if Rack.release >= "3"
+      headers["Content-Length"] ||= body.respond_to?(:bytesize) ? body.bytesize.to_s :
+                                                                  body.map(&:bytesize).inject(0, :+).to_s
 
       [status, headers, body]
     end
@@ -204,11 +199,7 @@ class Shrine
 
     # Halts the request with the error message.
     def error!(status, message)
-      headers = { "Content-Type" => "text/plain" }
-
-      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
-
-      throw :halt, [status, headers, [message]]
+      throw :halt, [status, { "Content-Type" => "text/plain" }, [message]]
     end
   end
 end

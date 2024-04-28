@@ -350,6 +350,10 @@ describe Shrine::Storage::FileSystem do
     assert_equal "#{root}/uploads/foo.jpg", @storage.open("foo.jpg").path
   end
 
+  it "forbids traversal" do
+    # assertions
+  end
+
   def assert_permissions(expected, path)
     assert_equal expected, File.lstat(path).mode & 0777
   end

@@ -91,14 +91,9 @@ class Shrine
         end
       end
 
-      if Rack.release >= "3"
-        headers["content-length"] ||= body.respond_to?(:bytesize) ? body.bytesize.to_s :
-                                                                    body.map(&:bytesize).inject(0, :+).to_s
-      else
-        headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
-      end
-
-      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
+      headers = Rack::Headers[headers] if Rack.release >= "3"
+      headers["Content-Length"] ||= body.respond_to?(:bytesize) ? body.bytesize.to_s :
+                                                                  body.map(&:bytesize).inject(0, :+).to_s
 
       [status, headers, body]
     end
@@ -165,25 +160,22 @@ class Shrine
     # headers, and a body enumerable. If `:rack_response` option is given,
     # calls that instead.
     def make_response(object, request)
-      if @rack_response
-        response = @rack_response.call(object, request)
+      status, headers, body = if @rack_response
+        @rack_response.call(object, request)
       else
-        response = [200, { "Content-Type" => CONTENT_TYPE_JSON }, [object.to_json]]
+        [200, { "Content-Type" => CONTENT_TYPE_JSON }, [object.to_json]]
       end
 
+      headers = Rack::Headers[headers] if Rack.release >= "3"
       # prevent browsers from caching the response
-      response[1]["Cache-Control"] = "no-store" unless response[1].key?("Cache-Control")
+      headers["Cache-Control"] = "no-store" unless headers.key?("Cache-Control")
 
-      response
+      [status, headers, body]
     end
 
     # Used for early returning an error response.
     def error!(status, message)
-      headers = { "Content-Type" => CONTENT_TYPE_TEXT }
-
-      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
-
-      throw :halt, [status, headers, [message]]
+      throw :halt, [status, { "Content-Type" => CONTENT_TYPE_TEXT }, [message]]
     end
 
     # Returns the uploader around the specified storage.

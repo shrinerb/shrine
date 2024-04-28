@@ -365,16 +365,9 @@ class Shrine
         handle_request(request)
       end
 
-      headers ||= {}
-
-      if Rack.release >= "3"
-        headers["content-length"] ||= body.respond_to?(:bytesize) ? body.bytesize.to_s :
-                                                                    body.map(&:bytesize).inject(0, :+).to_s
-      else
-        headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
-      end
-
-      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
+      headers = Rack::Headers[headers] if Rack.release >= "3"
+      headers["Content-Length"] ||= body.respond_to?(:bytesize) ? body.bytesize.to_s :
+                                                                  body.map(&:bytesize).inject(0, :+).to_s
 
       [status, headers, body]
     end
@@ -420,8 +413,6 @@ class Shrine
         headers["Cache-Control"] = derivation.option(:cache_control)
       end
 
-      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
-
       [status, headers, body]
     end
 
@@ -455,11 +446,7 @@ class Shrine
 
     # Halts the request with the error message.
     def error!(status, message)
-      headers = { "Content-Type" => "text/plain" }
-
-      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
-
-      throw :halt, [status, headers, [message]]
+      throw :halt, [status, { "Content-Type" => "text/plain" }, [message]]
     end
 
     def secret_key
@@ -496,33 +483,20 @@ class Shrine
     # `Content-Type` and `Content-Disposition` response headers from derivation
     # options and file extension of the derivation result.
     def file_response(file, env)
-      response = rack_file_response(file.path, env)
+      status, headers, body = rack_file_response(file.path, env)
 
-      status = response[0]
+      headers = Rack::Headers[headers] if Rack.release >= "3"
+      headers = {
+        "Content-Type"        => type || headers["Content-Type"],
+        "Content-Length"      => headers["Content-Length"],
+        "Content-Disposition" => content_disposition(file),
+        "Content-Range"       => headers["Content-Range"],
+        "Accept-Ranges"       => "bytes",
+      }.compact
 
-      headers = if Rack.release >= "3"
-        {
-          "content-type"        => type || response[1]["content-type"],
-          "content-length"      => response[1]["content-length"],
-          "content-disposition" => content_disposition(file),
-          "content-range"       => response[1]["content-range"],
-          "accept-ranges"       => "bytes",
-        }.compact
-      else
-        {
-          "Content-Type"        => type || response[1]["Content-Type"],
-          "Content-Length"      => response[1]["Content-Length"],
-          "Content-Disposition" => content_disposition(file),
-          "Content-Range"       => response[1]["Content-Range"],
-          "Accept-Ranges"       => "bytes",
-        }.compact
-      end
-
-      body = Rack::BodyProxy.new(response[2]) { File.delete(file.path) }
+      body = Rack::BodyProxy.new(body) { File.delete(file.path) }
 
       file.close
-
-      headers = headers.transform_keys(&:downcase) if Rack.release >= "3"
 
       [status, headers, body]
     end
@@ -541,8 +515,10 @@ class Shrine
 
       if upload_redirect
         redirect_url = uploaded_file.url(**upload_redirect_url_options)
+        headers = { "Location" => redirect_url }
+        headers = Rack::Headers[headers] if Rack.release >= "3"
 
-        [302, { "Location" => redirect_url }, []]
+        [302, headers, []]
       else
         if derivative && File.exist?(derivative.path)
           file_response(derivative, env)

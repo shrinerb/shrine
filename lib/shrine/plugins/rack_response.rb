@@ -32,11 +32,9 @@ class Shrine
           headers = rack_headers(**options)
           body    = rack_body(**options)
 
-          if Rack.release >= "3"
-            [status, headers.transform_keys(&:downcase), body]
-          else
-            [status, headers, body]
-          end
+          headers = Rack::Headers[headers] if Rack.release >= "3"
+
+          [status, headers, body]
         end
 
         private

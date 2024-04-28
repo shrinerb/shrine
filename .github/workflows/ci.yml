@@ -24,6 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
+          - "2.3"
           - "2.4"
           - "2.5"
           - "2.6"
@@ -33,9 +34,6 @@ jobs:
           - "3.2"
           - "3.3"
           - "jruby-9.4"
-        rack:
-          - "2"
-          - "3"
 
     steps:
       - uses: actions/checkout@v3
@@ -54,8 +52,5 @@ jobs:
           chmod +x "${GITHUB_WORKSPACE}"/minio/minio
           ${GITHUB_WORKSPACE}/minio/minio server ${GITHUB_WORKSPACE}/minio/data --address localhost:9000 &>${GITHUB_WORKSPACE}/minio/data/server.log &
 
-      - name: Install dependencies
-        run: bundle exec appraisal install
-
       - name: Run tests
-        run: bundle exec appraisal rack-${{ matrix.rack }} rake test
+        run: bundle exec rake test

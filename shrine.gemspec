@@ -37,7 +37,6 @@ direct uploads for fully asynchronous user experience.
   gem.add_dependency "content_disposition", "~> 1.0"
 
   # general testing helpers
-  gem.add_development_dependency "appraisal", "~> 2.5"
   gem.add_development_dependency "rake", ">= 11.1"
   gem.add_development_dependency "minitest", "~> 5.8"
   gem.add_development_dependency "mocha", "~> 1.11"
@@ -45,7 +44,7 @@ direct uploads for fully asynchronous user experience.
   # for endpoint plugins
   gem.add_development_dependency "rack", ">= 2", "< 4"
   gem.add_development_dependency "http-form_data", "~> 2.2"
-  gem.add_development_dependency "rack-test_app"
+  gem.add_development_dependency "rack-test", "~> 2.1"
 
   # for determine_mime_type plugin
   gem.add_development_dependency "mimemagic", ">= 0.3.2"

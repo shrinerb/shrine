@@ -1,15 +1,20 @@
 require "test_helper"
 require "shrine/plugins/upload_endpoint"
 require "http/form_data"
+require "rack/test"
 require "json"
 
 describe Shrine::Plugins::UploadEndpoint do
   def app
-    Rack::TestApp.wrap(Rack::Lint.new(endpoint), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
+    Rack::Test::Session.new(Rack::Lint.new(endpoint))
   end
 
   def endpoint
     @shrine.upload_endpoint(:cache)
+  end
+
+  def rack_file(filename: nil)
+    Rack::Test::UploadedFile.new(image.path, "image/jpeg", original_filename: filename)
   end
 
   before do
@@ -18,166 +23,164 @@ describe Shrine::Plugins::UploadEndpoint do
   end
 
   it "returns a JSON response" do
-    response = app.post "/", multipart: { file: image }
+    response = app.post "/", { file: rack_file }
 
     assert_equal 200, response.status
-    assert_equal "application/json; charset=utf-8", response.headers[CONTENT_TYPE_HEADER]
+    assert_equal "application/json; charset=utf-8", response.headers["Content-Type"]
 
-    assert_match /^\w+\.jpg$/, response.body_json["id"]
-    assert_equal "cache",      response.body_json["storage"]
-    assert_equal image.size,   response.body_json["metadata"]["size"]
-    assert_equal "image.jpg",  response.body_json["metadata"]["filename"]
-    assert_equal "image/jpeg", response.body_json["metadata"]["mime_type"]
+    result = JSON.parse(response.body)
+
+    assert_match /^\w+\.jpg$/, result["id"]
+    assert_equal "cache",      result["storage"]
+    assert_equal image.size,   result["metadata"]["size"]
+    assert_equal "image.jpg",  result["metadata"]["filename"]
+    assert_equal "image/jpeg", result["metadata"]["mime_type"]
   end
 
   it "uploads the file" do
-    response = app.post "/", multipart: { file: image }
-    uploaded_file = @shrine.uploaded_file(response.body_json)
+    response = app.post "/", { file: rack_file }
+    uploaded_file = @shrine.uploaded_file(response.body)
     assert_equal image.read, uploaded_file.read
   end
 
   it "finds the file in Uppy's default files[] format" do
-    response = app.post "/", multipart: {"files[]": image}
-    uploaded_file = @shrine.uploaded_file(response.body_json)
+    response = app.post "/", { "files[]": rack_file }
+    uploaded_file = @shrine.uploaded_file(JSON.parse(response.body))
     assert_equal image.read, uploaded_file.read
   end
 
   it "doesn't accept more than one file" do
-    response = app.post "/", multipart: HTTP::FormData.create({ "files[]": [
-      HTTP::FormData::File.new(image.path),
-      HTTP::FormData::File.new(image.path),
-    ] })
+    response = app.post "/", { "files[]": [rack_file, rack_file] }
     assert_equal 400, response.status
-    assert_equal "Too Many Files", response.body_binary
+    assert_equal "Too Many Files", response.body
   end
 
   it "accepts already wrapped uploaded file (Rails)" do
     Rack::Request.any_instance.stubs(:params).returns({ "file" => fakeio("file") })
 
-    response = app.post "/", multipart: { file: image }
+    response = app.post "/", { file: rack_file }
 
     assert_equal 200,    response.status
-    assert_equal "file", @shrine.uploaded_file(response.body_json).read
+    assert_equal "file", @shrine.uploaded_file(JSON.parse(response.body)).read
   end
 
   it "validates maximum size" do
     @shrine.plugin :upload_endpoint, max_size: 10
-    response = app.post "/", multipart: { file: image }
+    response = app.post "/", { file: rack_file }
     assert_equal 413, response.status
-    assert_equal "text/plain", response.headers[CONTENT_TYPE_HEADER]
-    assert_equal "Upload Too Large", response.body_binary
+    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "Upload Too Large", response.body
   end
 
   it "validates that param is a file" do
-    response = app.post "/", multipart: { file: "image" }
+    response = app.post "/", { file: "image" }, multipart: true
     assert_equal 400, response.status
-    assert_equal "text/plain", response.headers[CONTENT_TYPE_HEADER]
-    assert_equal "Upload Not Valid", response.body_binary
+    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "Upload Not Valid", response.body
   end
 
   it "validates that param is present" do
-    response = app.post "/", multipart: { image: "image" }
+    response = app.post "/", { image: "image" }, multipart: true
     assert_equal 400, response.status
-    assert_equal "text/plain", response.headers[CONTENT_TYPE_HEADER]
-    assert_equal "Upload Not Found", response.body_binary
+    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "Upload Not Found", response.body
   end
 
   it "handles filenames with UTF-8 characters" do
     filename = "über_pdf_with_1337%_leetness.pdf"
-    form = HTTP::FormData.create({ file: HTTP::FormData::Part.new("", filename: filename) })
-    response = app.post "/", multipart: { input: form.to_s }, headers: {CONTENT_TYPE_HEADER => form.content_type}
+    response = app.post "/", { file: rack_file(filename: filename) }
     assert_equal 200, response.status
-    uploaded_file = @shrine.uploaded_file(response.body_json)
+    uploaded_file = @shrine.uploaded_file(response.body)
     assert_equal filename, uploaded_file.original_filename
   end
 
   it "adds the :action parameter to context" do
     @shrine.class_eval { def extract_metadata(io, context); { "action" => context[:action] }; end }
-    response = app.post "/", multipart: { file: image }
-    assert_equal "upload", response.body_json["metadata"]["action"]
+    response = app.post "/", { file: rack_file }
+    assert_equal "upload", JSON.parse(response.body)["metadata"]["action"]
   end
 
   it "accepts upload context" do
     @shrine.plugin :upload_endpoint, upload_context: -> (r) { { location: "foo" } }
-    response = app.post "/", multipart: { file: image }
-    assert_equal "foo", response.body_json["id"]
-    uploaded_file = @shrine.uploaded_file(response.body_json)
+    response = app.post "/", { file: rack_file }
+    assert_equal "foo", JSON.parse(response.body)["id"]
+    uploaded_file = @shrine.uploaded_file(response.body)
     assert_equal image.read, uploaded_file.read
   end
 
   it "accepts upload proc" do
     @shrine.plugin :upload_endpoint, upload: -> (i, c, r) { @uploader.upload(i, **c, location: "foo") }
-    response = app.post "/", multipart: { file: image }
-    assert_equal "foo", response.body_json["id"]
-    uploaded_file = @shrine.uploaded_file(response.body_json)
+    response = app.post "/", { file: rack_file }
+    assert_equal "foo", JSON.parse(response.body)["id"]
+    uploaded_file = @shrine.uploaded_file(response.body)
     assert_equal image.read, uploaded_file.read
   end
 
   it "accepts :url parameter" do
     @shrine.plugin :upload_endpoint, url: true
-    response = app.post "/", multipart: { file: image }
-    uploaded_file = @shrine.uploaded_file(response.body_json["data"])
-    assert_equal uploaded_file.url, response.body_json["url"]
+    response = app.post "/", { file: rack_file }
+    uploaded_file = @shrine.uploaded_file(JSON.parse(response.body)["data"])
+    assert_equal uploaded_file.url, JSON.parse(response.body)["url"]
 
     @shrine.plugin :upload_endpoint, url: { foo: "bar" }, upload_context: -> (r) { { location: "foo" } }
     @shrine.storages[:cache].expects(:url).with("foo", { foo: "bar" }).returns("my-url")
-    response = app.post "/", multipart: { file: image }
-    assert_equal "my-url", response.body_json["url"]
+    response = app.post "/", { file: rack_file }
+    assert_equal "my-url", JSON.parse(response.body)["url"]
 
     @shrine.plugin :upload_endpoint, url: -> (f, r) { "my-url" }
-    response = app.post "/", multipart: { file: image }
-    assert_equal "my-url", response.body_json["url"]
+    response = app.post "/", { file: rack_file }
+    assert_equal "my-url", JSON.parse(response.body)["url"]
   end
 
   it "verifies provided checksum" do
-    response = app.post "/", multipart: { file: image }, headers: { "Content-MD5" => Digest::MD5.base64digest(image.read) }
+    response = app.post "/", { file: rack_file }, { "HTTP_CONTENT_MD5" => Digest::MD5.base64digest(image.read) }
     assert_equal 200, response.status
 
-    response = app.post "/", multipart: { file: image }, headers: { "Content-MD5" => Digest::MD5.base64digest("") }
+    response = app.post "/", { file: rack_file }, { "HTTP_CONTENT_MD5" => Digest::MD5.base64digest("") }
     assert_equal 460, response.status
-    assert_equal "The Content-MD5 you specified did not match what was recieved", response.body_binary
+    assert_equal "The Content-MD5 you specified did not match what was recieved", response.body
 
-    response = app.post "/", multipart: { file: image }, headers: { "Content-MD5" => "foo" }
+    response = app.post "/", { file: rack_file }, { "HTTP_CONTENT_MD5" => "foo" }
     assert_equal 400, response.status
-    assert_equal "The Content-MD5 you specified was invalid", response.body_binary
+    assert_equal "The Content-MD5 you specified was invalid", response.body
   end
 
   it "accepts response proc" do
     @shrine.plugin :upload_endpoint, rack_response: -> (o, r) do
-      [200, {CONTENT_TYPE_HEADER => "application/vnd.api+json"}, [{data: o}.to_json]]
+      [200, {"Content-Type" => "application/vnd.api+json"}, [{data: o}.to_json]]
     end
-    response = app.post "/", multipart: { file: image }
-    assert_equal ["id", "storage", "metadata"], JSON.parse(response.body_binary)["data"].keys
-    assert_equal "application/vnd.api+json", response.headers[CONTENT_TYPE_HEADER]
+    response = app.post "/", { file: rack_file }
+    assert_equal ["id", "storage", "metadata"], JSON.parse(response.body)["data"].keys
+    assert_equal "application/vnd.api+json", response.headers["Content-Type"]
   end
 
   it "allows overriding options when instantiating the endpoint" do
-    app = Rack::TestApp.wrap(@shrine.upload_endpoint(:cache, max_size: 10), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
-    response = app.post "/", multipart: { file: image }
+    app = Rack::Test::Session.new(@shrine.upload_endpoint(:cache, max_size: 10))
+    response = app.post "/", { file: rack_file }
     assert_equal 413, response.status
   end
 
   it "doesn't react to parseable Content-Type" do
-    response = app.post "/", headers: { CONTENT_TYPE_HEADER => "application/x-www-form-urlencoded" }
+    response = app.post "/", {}, { "CONTENT_TYPE" => "application/x-www-form-urlencoded" }
     assert_equal 400, response.status
-    assert_equal "Upload Not Found", response.body_binary
+    assert_equal "Upload Not Found", response.body
   end
 
   it "doesn't react to blank Content-Type" do
-    response = app.post "/", headers: { CONTENT_TYPE_HEADER => "" }
+    response = app.post "/", {}, { "CONTENT_TYPE" => "" }
     assert_equal 400, response.status
-    assert_equal "Upload Not Found", response.body_binary
+    assert_equal "Upload Not Found", response.body
   end
 
   it "accepts only POST requests" do
-    response = app.put "/", multipart: { file: image }
+    response = app.put "/", { file: rack_file }
     assert_equal 405, response.status
-    assert_equal "text/plain", response.headers[CONTENT_TYPE_HEADER]
-    assert_equal "Method Not Allowed", response.body_binary
+    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "Method Not Allowed", response.body
   end
 
   it "accepts only root requests" do
-    response = app.post "/upload", multipart: { file: image }
+    response = app.post "/upload", { file: rack_file }
     assert_equal 404, response.status
   end
 
@@ -199,7 +202,7 @@ describe Shrine::Plugins::UploadEndpoint do
       response = @shrine.upload_response(:cache, env)
 
       assert_equal 200, response[0]
-      assert_equal "application/json; charset=utf-8", response[1][CONTENT_TYPE_HEADER]
+      assert_equal "application/json; charset=utf-8", response[1]["Content-Type"]
       assert_equal "content", @shrine.uploaded_file(response[2].first).read
     end
 
@@ -220,7 +223,7 @@ describe Shrine::Plugins::UploadEndpoint do
       response = @shrine.upload_response(:cache, env, max_size: 1)
 
       assert_equal 413, response[0]
-      assert_equal "text/plain", response[1][CONTENT_TYPE_HEADER]
+      assert_equal "text/plain", response[1]["Content-Type"]
       assert_equal "Upload Too Large", response[2].first
     end
   end

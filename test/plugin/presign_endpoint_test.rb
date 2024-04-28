@@ -1,11 +1,12 @@
 require "test_helper"
 require "shrine/plugins/presign_endpoint"
 require "shrine/storage/s3"
+require "rack/test"
 require "json"
 
 describe Shrine::Plugins::PresignEndpoint do
   def app
-    Rack::TestApp.wrap(Rack::Lint.new(endpoint), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
+    Rack::Test::Session.new(Rack::Lint.new(endpoint))
   end
 
   def endpoint
@@ -23,35 +24,37 @@ describe Shrine::Plugins::PresignEndpoint do
 
     assert_equal 200, response.status
 
-    assert_equal "application/json; charset=utf-8",  response.headers[CONTENT_TYPE_HEADER]
-    assert_equal response.body_binary.bytesize.to_s, response.headers[CONTENT_LENGTH_HEADER]
-    assert_equal "no-store",                         response.headers[CACHE_CONTROL_HEADER]
+    assert_equal "application/json; charset=utf-8", response.headers["Content-Type"]
+    assert_equal response.body.bytesize.to_s, response.headers["Content-Length"]
+    assert_equal "no-store", response.headers["Cache-Control"]
 
-    assert_instance_of String, response.body_json["method"]
-    assert_instance_of String, response.body_json["url"]
-    assert_instance_of Hash,   response.body_json["fields"]
-    assert_instance_of Hash,   response.body_json["headers"]
+    result = JSON.parse(response.body)
+
+    assert_instance_of String, result["method"]
+    assert_instance_of String, result["url"]
+    assert_instance_of Hash, result["fields"]
+    assert_instance_of Hash, result["headers"]
   end
 
   it "uses extension from given filename" do
     response = app.get "/?filename=nature.jpg"
-    assert_match /\.jpg$/, response.body_json["fields"]["key"]
+    assert_match /\.jpg$/, JSON.parse(response.body)["fields"]["key"]
   end
 
   it "accepts presign location" do
     @shrine.plugin :presign_endpoint, presign_location: -> (r) { "${filename}" }
     response = app.get "/"
-    assert_match "${filename}", response.body_json["fields"]["key"]
+    assert_match "${filename}", JSON.parse(response.body)["fields"]["key"]
   end
 
   it "accepts presign options" do
     @shrine.plugin :presign_endpoint, presign_options: { content_type: "image/jpeg" }
     response = app.get "/"
-    assert_equal "image/jpeg", response.body_json["fields"]["Content-Type"]
+    assert_equal "image/jpeg", JSON.parse(response.body)["fields"]["Content-Type"]
 
     @shrine.plugin :presign_endpoint, presign_options: -> (r) { {content_type: "image/jpeg"} }
     response = app.get "/"
-    assert_equal "image/jpeg", response.body_json["fields"]["Content-Type"]
+    assert_equal "image/jpeg", JSON.parse(response.body)["fields"]["Content-Type"]
   end
 
   it "accepts presign proc" do
@@ -59,9 +62,9 @@ describe Shrine::Plugins::PresignEndpoint do
       presign_options: { content_type: "image/jpeg" },
       presign: -> (i, o, r) { {url: "foo", fields: o, headers: {"foo" => "bar"}} }
     response = app.get "/"
-    assert_match "foo",        response.body_json["url"]
-    assert_equal "image/jpeg", response.body_json["fields"]["content_type"]
-    assert_equal "bar",        response.body_json["headers"]["foo"]
+    assert_match "foo",        JSON.parse(response.body)["url"]
+    assert_equal "image/jpeg", JSON.parse(response.body)["fields"]["content_type"]
+    assert_equal "bar",        JSON.parse(response.body)["headers"]["foo"]
   end
 
   it "sets default fields and headers for presign" do
@@ -69,9 +72,9 @@ describe Shrine::Plugins::PresignEndpoint do
       presign_options: { content_type: "image/jpeg" },
       presign: -> (i, o, r) { {url: "foo"} }
     response = app.get "/"
-    assert_match "foo",    response.body_json["url"]
-    assert_equal Hash.new, response.body_json["fields"]
-    assert_equal Hash.new, response.body_json["headers"]
+    assert_match "foo",    JSON.parse(response.body)["url"]
+    assert_equal Hash.new, JSON.parse(response.body)["fields"]
+    assert_equal Hash.new, JSON.parse(response.body)["headers"]
   end
 
   it "supports presign as an object that responds to #to_h" do
@@ -79,40 +82,40 @@ describe Shrine::Plugins::PresignEndpoint do
       presign_options: { content_type: "image/jpeg" },
       presign: -> (i, o, r) { Struct.new(:url, :fields).new("foo", o) }
     response = app.get "/"
-    assert_match "foo",        response.body_json["url"]
-    assert_equal "image/jpeg", response.body_json["fields"]["content_type"]
-    assert_equal Hash.new,     response.body_json["headers"]
+    assert_match "foo",        JSON.parse(response.body)["url"]
+    assert_equal "image/jpeg", JSON.parse(response.body)["fields"]["content_type"]
+    assert_equal Hash.new,     JSON.parse(response.body)["headers"]
   end
 
   it "accepts response proc" do
     @shrine.plugin :presign_endpoint, rack_response: -> (o, r) do
-      [200, {CONTENT_TYPE_HEADER => "application/vnd.api+json"}, [{data: o}.to_json]]
+      [200, { "Content-Type" => "application/vnd.api+json" }, [{data: o}.to_json]]
     end
     response = app.get "/"
-    assert_equal ["fields", "headers", "method", "url"], JSON.parse(response.body_binary)["data"].keys.sort
-    assert_equal "application/vnd.api+json", response.headers[CONTENT_TYPE_HEADER]
+    assert_equal ["fields", "headers", "method", "url"], JSON.parse(response.body)["data"].keys.sort
+    assert_equal "application/vnd.api+json", response.headers["Content-Type"]
   end
 
   it "allows overriding Cache-Control" do
     @shrine.plugin :presign_endpoint, rack_response: -> (o, r) do
-      [200, {CONTENT_TYPE_HEADER => "application/json", "Cache-Control" => "no-cache"}, [o.to_json]]
+      [200, { "Content-Type" => "application/json", "Cache-Control" => "no-cache"}, [o.to_json]]
     end
     response = app.get "/"
-    assert_equal "no-cache", response.headers[CACHE_CONTROL_HEADER]
+    assert_equal "no-cache", response.headers["Cache-Control"]
   end
 
   it "allows overriding options when instantiating the endpoint" do
-    app = Rack::TestApp.wrap(@shrine.presign_endpoint(:cache, presign_options: { content_type: "image/jpeg" }), { Rack::SERVER_PROTOCOL => "HTTP/1.1" })
+    app = Rack::Test::Session.new(@shrine.presign_endpoint(:cache, presign_options: { content_type: "image/jpeg" }))
     response = app.get "/"
-    assert_equal "image/jpeg", response.body_json["fields"]["Content-Type"]
+    assert_equal "image/jpeg", JSON.parse(response.body)["fields"]["Content-Type"]
   end
 
   it "accepts OPTIONS request" do
     response = app.options "/"
 
-    assert_equal 200,                           response.status
-    assert_equal Hash[CONTENT_LENGTH_HEADER => "0"], response.headers
-    assert_equal "",                            response.body_binary
+    assert_equal 200, response.status
+    assert_equal "0", response.headers["Content-Length"]
+    assert_equal "", response.body
   end
 
   it "accepts only root requests" do
@@ -123,8 +126,8 @@ describe Shrine::Plugins::PresignEndpoint do
   it "doesn't accept verbs other than GET or OPTIONS" do
     response = app.put "/"
     assert_equal 405, response.status
-    assert_equal "text/plain", response.headers[CONTENT_TYPE_HEADER]
-    assert_equal "Method Not Allowed", response.body_binary
+    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "Method Not Allowed", response.body
   end
 
   describe "Shrine.presign_response" do
@@ -140,7 +143,7 @@ describe Shrine::Plugins::PresignEndpoint do
       response = @shrine.presign_response(:cache, env)
 
       assert_equal 200, response[0]
-      assert_equal "application/json; charset=utf-8", response[1][CONTENT_TYPE_HEADER]
+      assert_equal "application/json; charset=utf-8", response[1]["Content-Type"]
       assert_match /\.txt$/, JSON.parse(response[2].first)["fields"]["key"]
     end
 
@@ -156,7 +159,7 @@ describe Shrine::Plugins::PresignEndpoint do
       response = @shrine.presign_response(:cache, env, presign_options: { content_type: "foo/bar" })
 
       assert_equal 200, response[0]
-      assert_equal "application/json; charset=utf-8", response[1][CONTENT_TYPE_HEADER]
+      assert_equal "application/json; charset=utf-8", response[1]["Content-Type"]
       assert_equal "foo/bar", JSON.parse(response[2].first)["fields"]["Content-Type"]
     end
   end
