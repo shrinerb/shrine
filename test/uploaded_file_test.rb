@@ -241,6 +241,14 @@ describe Shrine::UploadedFile do
       uploaded_file.storage.expects(:open).never
       uploaded_file.close
     end
+
+    it "leaves the UploadedFile no longer #opened?" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.open
+      uploaded_file.close
+
+      refute uploaded_file.opened?
+    end
   end
 
   describe "#url" do
