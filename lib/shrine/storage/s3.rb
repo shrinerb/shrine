@@ -14,12 +14,14 @@ require "tempfile"
 class Shrine
   module Storage
     class S3
-      attr_reader :client, :bucket, :prefix, :upload_options, :signer, :public
+      attr_reader :client, :bucket, :prefix, :upload_options, :copy_options, :signer, :public
 
       MAX_MULTIPART_PARTS = 10_000
       MIN_PART_SIZE       = 5*1024*1024
 
       MULTIPART_THRESHOLD = { upload: 15*1024*1024, copy: 100*1024*1024 }
+
+      COPY_OPTIONS = { tagging_directive: "REPLACE" }
 
       # Initializes a storage for uploading to S3. All options are forwarded to
       # [`Aws::S3::Client#initialize`], except the following:
@@ -40,6 +42,10 @@ class Shrine
       # : Additional options that will be used for uploading files, they will
       #   be passed to [`Aws::S3::Object#put`], [`Aws::S3::Object#copy_from`]
       #   and [`Aws::S3::Bucket#presigned_post`].
+      #
+      # :copy_options
+      # : Additional options that will be used for copying files, they will
+      #   be passed to [`Aws::S3::Object#copy_from`].
       #
       # :multipart_threshold
       # : If the input file is larger than the specified size, a parallelized
@@ -62,13 +68,14 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method
       # [configuring AWS SDK]: https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html
-      def initialize(bucket:, client: nil, prefix: nil, upload_options: {}, multipart_threshold: {}, max_multipart_parts: nil, signer: nil, public: nil, **s3_options)
+      def initialize(bucket:, client: nil, prefix: nil, upload_options: {}, multipart_threshold: {}, max_multipart_parts: nil, signer: nil, public: nil, copy_options: COPY_OPTIONS, **s3_options)
         raise ArgumentError, "the :bucket option is nil" unless bucket
 
         @client = client || Aws::S3::Client.new(**s3_options)
         @bucket = Aws::S3::Bucket.new(name: bucket, client: @client)
         @prefix = prefix
         @upload_options = upload_options
+        @copy_options = copy_options
         @multipart_threshold = MULTIPART_THRESHOLD.merge(multipart_threshold)
         @max_multipart_parts = max_multipart_parts || MAX_MULTIPART_PARTS
         @signer = signer
@@ -241,7 +248,6 @@ class Shrine
         # don't inherit source object metadata or AWS tags
         options = {
           metadata_directive: "REPLACE",
-          tagging_directive: "REPLACE"
         }
 
         if io.size && io.size >= @multipart_threshold[:copy]
@@ -249,6 +255,7 @@ class Shrine
           options.merge!(multipart_copy: true, content_length: io.size)
         end
 
+        options.merge!(@copy_options)
         options.merge!(copy_options)
 
         object(id).copy_from(io.storage.object(io.id), **options)
