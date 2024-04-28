@@ -71,6 +71,6 @@ direct uploads for fully asynchronous user experience.
 
   # for ORM plugins
   gem.add_development_dependency "sequel"
-  gem.add_development_dependency "activerecord", RUBY_VERSION >= "2.7" ? "~> 7.0" : RUBY_VERSION >= "2.5" ? "~> 6.0" : "~> 5.2"
+  gem.add_development_dependency "activerecord", RUBY_ENGINE == "jruby" ? "~> 7.0.0" : RUBY_VERSION >= "2.7" ? "~> 7.0" : RUBY_VERSION >= "2.5" ? "~> 6.0" : "~> 5.2"
   gem.add_development_dependency "sqlite3", "~> 1.4" unless RUBY_ENGINE == "jruby"
 end
