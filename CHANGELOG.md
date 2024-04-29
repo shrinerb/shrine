@@ -1,3 +1,13 @@
+## 3.6.0 (2024-04-29)
+
+* Add Rack 3 support (@tomasc, @janko)
+
+* Make a copy of attacher context hash when duplicating the attacher (@reidab)
+
+* An uploaded file can be implicitly re-opened after it has been closed (@jrochkind)
+
+* Add new `:copy_options` for initializing the S3 storage (@hkdahal)
+
 ## 3.5.0 (2023-07-06)
 
 * Migrate website to Docusaurus v2 (@janko)
