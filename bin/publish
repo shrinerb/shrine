@@ -1,0 +1,11 @@
+#!/bin/bash
+
+cd website
+npm run build
+cd ..
+git switch gh-pages
+cp -R website/build/* .
+git add --all
+git commit -m "Update website"
+git push origin gh-pages
+git switch master
