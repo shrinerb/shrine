@@ -69,7 +69,7 @@ class Shrine
         # Does a background promote if promote block was registered.
         def promote_cached(**options)
           if promote? && promote_block
-            promote_background
+            promote_background(**options)
           else
             super
           end
