@@ -25,9 +25,6 @@ gem "dry-monitor"
 # Background jobs
 gem "sucker_punch", "~> 2.0"
 
-# Debugging
-gem "pry-byebug"
-
 # Testing
 gem "minitest"
 gem "capybara", "~> 3.33"
