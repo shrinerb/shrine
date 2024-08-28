@@ -13,7 +13,10 @@ class Shrine
         min_height:          -> (min)  { "height must not be less than #{min}px" },
         max_dimensions:      -> (dims) { "dimensions must not be greater than #{dims.join("x")}" },
         min_dimensions:      -> (dims) { "dimensions must not be less than #{dims.join("x")}" },
-        mime_type_inclusion: -> (list) { "type must be one of: #{list.join(", ")}" },
+        mime_type_inclusion: lambda do |list, type|
+          mime_type = type.nil? || type == "" ? "no" : type
+          "type must be one of: #{list.join(", ")}, (#{mime_type} content type detected)"
+        end,
         mime_type_exclusion: -> (list) { "type must not be one of: #{list.join(", ")}" },
         extension_inclusion: -> (list) { "extension must be one of: #{list.join(", ")}" },
         extension_exclusion: -> (list) { "extension must not be one of: #{list.join(", ")}" },
@@ -172,7 +175,7 @@ class Shrine
         def validate_mime_type_inclusion(types, message: nil)
           validate_result(
             types.include?(file.mime_type),
-            :mime_type_inclusion, message, types
+            :mime_type_inclusion, message, types, file.mime_type
           )
         end
         alias validate_mime_type validate_mime_type_inclusion
@@ -230,9 +233,9 @@ class Shrine
 
         # Returns the direct message if given, otherwise uses the default error
         # message.
-        def error_message(type, message, object)
+        def error_message(type, message, *args)
           message ||= self.class.default_validation_messages.fetch(type)
-          message.is_a?(String) ? message : message.call(object)
+          message.is_a?(String) ? message : message.call(*args)
         end
       end
     end
