@@ -49,14 +49,14 @@ class Shrine
         # "Content-Disposition" headers, whose values are extracted from
         # metadata. Also returns the correct "Content-Range" header on ranged
         # requests.
-        def rack_headers(filename: nil, type: nil, disposition: "inline", range: false)
+        def rack_headers(filename: nil, type: nil, disposition: "inline", range: false, custom_etag: nil)
           {
             "Content-Length"      => content_length(range),
             "Content-Type"        => content_type(type),
             "Content-Disposition" => content_disposition(disposition, filename),
             "Content-Range"       => content_range(range),
             "Accept-Ranges"       => accept_ranges(range),
-            "ETag"                => etag,
+            "ETag"                => custom_etag || etag,
           }.compact
         end
 
