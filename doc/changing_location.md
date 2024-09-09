@@ -3,7 +3,7 @@ id: changing-location
 title: Migrating File Locations
 ---
 
-This guide shows how to migrate the location of uploaded files on the same 
+This guide shows how to migrate the location of uploaded files on the same
 storage in production, with zero downtime.
 
 Let's assume we have a `Photo` model with an `image` file attachment:
@@ -31,13 +31,25 @@ to work with the previously stored urls because the files have not been migrated
 ```rb
 class ImageUploader < Shrine
   def generate_location(io, **options)
-    # change location generation
+    # change location generation, eg....
+    [
+      options[:record] && options[:record].class.name.underscore,
+      option[:record] && options[:record].id,
+      super
+    ].compact.join("/")
   end
 end
 ```
 
-We can now deploy this change to production so new file uploads will be stored in 
+We can now deploy this change to production so new file uploads will be stored in
 the new location.
+
+As seen above, we can call `super` to get the include the default location, which uses ruby
+`SecureRandom.hex` to have a unique immutable storage location. While it isn't
+strictly required to have a unique immutable storage location, it makes many
+things work smoother when different content will get a different storage location,
+and is recommended. One approach is using fixed directory/prefix as above.
+
 
 ## 2. Move existing files
 
