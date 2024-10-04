@@ -1,5 +1,6 @@
 require "test_helper"
 require "shrine/plugins/download_endpoint"
+require "active_support/message_verifier"
 require "rack/test"
 require "uri"
 
@@ -25,8 +26,40 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal 200, response.status
     assert_equal @uploaded_file.read, response.body
     assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
-    assert_equal @uploaded_file.mime_type, response.headers["COntent-Type"]
+    assert_equal @uploaded_file.mime_type, response.headers["Content-Type"]
     assert_equal ContentDisposition.inline(@uploaded_file.original_filename), response.headers["Content-Disposition"]
+  end
+
+  it "raise error if using expires_in without any verifier_secret" do
+    io = fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, content_type: "text/plain", filename: "content.txt")
+    @uploaded_file = @uploader.upload(io)
+    assert_raises Shrine::Error do
+      @uploaded_file.download_url(expires_in: 1000)
+    end
+  end
+
+  it "returns a file response with expiring url" do
+    @uploader = uploader { plugin :download_endpoint, verifier_secret: SecureRandom.hex(64) }
+    @shrine = @uploader.class
+    io = fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, content_type: "text/plain", filename: "content.txt")
+    @uploaded_file = @uploader.upload(io)
+    response = app.get(@uploaded_file.download_url(expires_in: 1000))
+
+    assert_equal 200, response.status
+    assert_equal @uploaded_file.read, response.body
+    assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
+    assert_equal @uploaded_file.mime_type, response.headers["Content-Type"]
+    assert_equal ContentDisposition.inline(@uploaded_file.original_filename), response.headers["Content-Disposition"]
+  end
+
+  it "does not return a file if expired" do
+    @uploader = uploader { plugin :download_endpoint, verifier_secret: SecureRandom.hex(64) }
+    @shrine = @uploader.class
+    io = fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, content_type: "text/plain", filename: "content.txt")
+    @uploaded_file = @uploader.upload(io)
+    response = app.get(@uploaded_file.download_url(expires_in: -1))
+
+    assert_equal 404, response.status
   end
 
   it "applies :download_options hash" do

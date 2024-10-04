@@ -65,14 +65,20 @@ class Shrine
           @file = file
         end
 
-        def call(host: self.host)
-          [host, *prefix, path].join("/")
+        def call(host: self.host, expires_in: nil)
+          [host, *prefix, path(expires_in: expires_in)].join("/")
         end
 
         protected
 
-        def path
-          file.urlsafe_dump(metadata: %w[filename size mime_type])
+        def path(expires_in: nil)
+          if expires_in || default_expires_in
+            reference = file.urlsafe_dump(metadata: %w[filename size mime_type])
+            expires_at = Time.now + (expires_in || default_expires_in)
+            verifier.generate(reference, expires_at: expires_at)
+          else
+            file.urlsafe_dump(metadata: %w[filename size mime_type])
+          end
         end
 
         def host
@@ -81,6 +87,20 @@ class Shrine
 
         def prefix
           options[:prefix]
+        end
+
+        def default_expires_in
+          options[:expires_in]
+        end
+
+        def verifier_secret
+          options[:verifier_secret]
+        end
+
+        def verifier
+          raise Error, "verifier_secret is required for expiring URLs" unless verifier_secret
+
+          ::ActiveSupport::MessageVerifier.new(verifier_secret)
         end
 
         def options
@@ -185,6 +205,11 @@ class Shrine
     rescue Shrine::Error # storage not found
       not_found!
     rescue JSON::ParserError, ArgumentError => error # invalid serialized component
+      if @verifier_secret
+        reference = ::ActiveSupport::MessageVerifier.new(@verifier_secret).verified(serialized)
+        return reference ? get_uploaded_file(reference) : not_found!
+      end
+
       raise if error.is_a?(ArgumentError) && error.message != "invalid base64"
       bad_request!("Invalid serialized file")
     end
