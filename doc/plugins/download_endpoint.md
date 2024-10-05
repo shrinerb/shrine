@@ -135,10 +135,10 @@ plugin :download_endpoint, download_options: -> (uploaded_file, request) {
 
 ## Expiring download urls
 
-If you want to have URLs that expire after a certain time, you can use the `:expires_in` and `verifier_secret` options:
+If you want to have URLs that expire after a certain time, you can use the `:expires_in` and `secret_key` options:
 
 ```rb
-plugin :download_endpoint, expires_in: 5 * 60, verifier_secret: "secret"
+plugin :download_endpoint, expires_in: 5 * 60, secret_key: "secret"
 ```
 
 this will generate URLs that are signed with a signature valid for 5 minutes.
