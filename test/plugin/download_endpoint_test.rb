@@ -25,8 +25,40 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal 200, response.status
     assert_equal @uploaded_file.read, response.body
     assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
-    assert_equal @uploaded_file.mime_type, response.headers["COntent-Type"]
+    assert_equal @uploaded_file.mime_type, response.headers["Content-Type"]
     assert_equal ContentDisposition.inline(@uploaded_file.original_filename), response.headers["Content-Disposition"]
+  end
+
+  it "raise error if using expires_in without any secret_key" do
+    io = fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, content_type: "text/plain", filename: "content.txt")
+    @uploaded_file = @uploader.upload(io)
+    assert_raises Shrine::Error, "secret_key is required for expiring URLs" do
+      @uploaded_file.download_url(expires_in: 1000)
+    end
+  end
+
+  it "returns a file response with expiring url" do
+    @uploader = uploader { plugin :download_endpoint, secret_key: SecureRandom.hex(64) }
+    @shrine = @uploader.class
+    io = fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, content_type: "text/plain", filename: "content.txt")
+    @uploaded_file = @uploader.upload(io)
+    response = app.get(@uploaded_file.download_url(expires_in: 1000))
+
+    assert_equal 200, response.status
+    assert_equal @uploaded_file.read, response.body
+    assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
+    assert_equal @uploaded_file.mime_type, response.headers["Content-Type"]
+    assert_equal ContentDisposition.inline(@uploaded_file.original_filename), response.headers["Content-Disposition"]
+  end
+
+  it "does not return a file if expired" do
+    @uploader = uploader { plugin :download_endpoint, secret_key: SecureRandom.hex(64) }
+    @shrine = @uploader.class
+    io = fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, content_type: "text/plain", filename: "content.txt")
+    @uploaded_file = @uploader.upload(io)
+    response = app.get(@uploaded_file.download_url(expires_in: -1))
+
+    assert_equal 400, response.status
   end
 
   it "applies :download_options hash" do
@@ -137,6 +169,34 @@ describe Shrine::Plugins::DownloadEndpoint do
     @uploaded_file.data["metadata"] = { "mime_type" => "b", "size" => "c", "filename" => "a" }
     url2 = @uploaded_file.url
     assert_equal url1, url2
+  end
+  it "returns same download_url regardless of metadata order" do
+    @uploaded_file.data["metadata"] = { "filename" => "a", "mime_type" => "b", "size" => "c" }
+    url1 = @uploaded_file.download_url
+    @uploaded_file.data["metadata"] = { "mime_type" => "b", "size" => "c", "filename" => "a" }
+    url2 = @uploaded_file.download_url
+    assert_equal url1, url2
+  end
+
+  it "returns signature and expires_at when configured" do
+    secret = "A" * 64
+    @uploader = uploader { plugin :download_endpoint, secret_key: secret }
+    @shrine = @uploader.class
+    @uploaded_file = @uploader.upload(fakeio)
+
+    url = @uploaded_file.download_url(expires_in: 1000)
+
+    uri = URI.parse(url)
+    path = uri.path.split("/").last
+    query = URI.decode_www_form(uri.query).to_h
+    signature, expires_at = query.values_at("signature", "expires_at")
+
+    calculated_signature = OpenSSL::HMAC.digest(
+      OpenSSL::Digest::SHA256.new,
+      secret,
+      "#{path}--#{expires_at}"
+    )
+    assert_equal Base64.urlsafe_decode64(signature), calculated_signature
   end
 
   it "returns 400 on invalid serialized file" do
