@@ -32,7 +32,7 @@ describe Shrine::Plugins::DownloadEndpoint do
   it "raise error if using expires_in without any secret_key" do
     io = fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, content_type: "text/plain", filename: "content.txt")
     @uploaded_file = @uploader.upload(io)
-    assert_raises Shrine::Error do
+    assert_raises Shrine::Error, "secret_key is required for expiring URLs" do
       @uploaded_file.download_url(expires_in: 1000)
     end
   end
@@ -179,7 +179,7 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "returns signature and expires_at when configured" do
-    secret = SecureRandom.hex(64)
+    secret = "A" * 64
     @uploader = uploader { plugin :download_endpoint, secret_key: secret }
     @shrine = @uploader.class
     @uploaded_file = @uploader.upload(fakeio)
