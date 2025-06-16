@@ -110,7 +110,7 @@ class Shrine
         # Generates an error message for failed remote URL download.
         def remote_url_error_message(url, error)
           message = shrine_class.opts[:remote_url][:error_message]
-          message = message.call *[url, error].take(message.arity.abs) if message.respond_to?(:call)
+          message = message.call(*[url, error].take(message.arity.abs)) if message.respond_to?(:call)
           message || "download failed: #{error.message}"
         end
       end
