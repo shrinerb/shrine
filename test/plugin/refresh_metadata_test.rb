@@ -88,6 +88,15 @@ describe Shrine::Plugins::RefreshMetadata do
         file.refresh_metadata!(foo: "bar")
       end
 
+      it "overwrites all metadata when replace is true" do
+        file = @uploader.upload(fakeio("content"))
+        file.metadata["size"]= 100
+        file.metadata["custom"] = "custom"
+        file.refresh_metadata!(replace: true)
+        refute_includes file.metadata.keys, "custom"
+        assert_equal 7, file.metadata["size"]
+      end
+
       it "doesn't re-open an already open uploaded file" do
         file = @uploader.upload(fakeio("content"))
         file.metadata.delete("size")

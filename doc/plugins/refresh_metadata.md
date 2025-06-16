@@ -69,5 +69,25 @@ Any options passed in will be forwarded to metadata extraction:
 uploaded_file.refresh_metadata!(foo: "bar") # passes `{ foo: "bar" }` options to metadata extraction
 ```
 
+## Replacing Metadata
+
+By default the `#refresh_metadata!` method will merge the results into any existing metadata.
+
+```rb
+  uploaded_file.metadata["custom"] = "custom value"
+  uploaded_file.refresh_metadata!
+  uploaded_file.metadata
+  # returns {"filename"=>"example.jpg", "size"=>1024, "mime_type"=>"image/jpeg", "custom"=>"custom value"}
+```
+
+Passing `replace: true` will instead fully overwrite the existing metadata with the new metadata.
+
+```rb
+  uploaded_file.metadata["custom"] = "custom value"
+  uploaded_file.refresh_metadata!(replace: true)
+  uploaded_file.metadata
+  # returns {"filename"=>"example.jpg", "size"=>1024, "mime_type"=>"image/jpeg"}
+```
+
 [refresh_metadata]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/refresh_metadata.rb
 [model]: https://shrinerb.com/docs/plugins/model
