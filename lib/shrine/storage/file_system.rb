@@ -176,17 +176,8 @@ class Shrine
           .each { |path| yield path if path.file? }
       end
 
-      if RUBY_VERSION >= "2.4"
-        def dir_empty?(path)
-          Dir.empty?(path)
-        end
-      else
-        # :nocov:
-        def dir_empty?(path)
-          Dir.foreach(path) { |x| return false unless [".", ".."].include?(x) }
-          true
-        end
-        # :nocov:
+      def dir_empty?(path)
+        Dir.empty?(path)
       end
     end
   end

@@ -88,7 +88,7 @@ describe Shrine::Plugins::Derivatives do
         model = @model_class.new(file_data: file.to_json)
         model.file_derivatives!(:options, foo: "bar")
 
-        assert_equal '{:foo=>"bar"}', model.file_derivatives[:options].read
+        assert_equal({ foo: "bar" }.inspect, model.file_derivatives[:options].read)
       end
 
       it "is not defined for entity attachments" do
@@ -536,7 +536,7 @@ describe Shrine::Plugins::Derivatives do
         @attacher.attach fakeio("file")
         @attacher.create_derivatives(:options, foo: "bar")
 
-        assert_equal '{:foo=>"bar"}', @attacher.derivatives[:options].read
+        assert_equal({ foo: "bar" }.inspect, @attacher.derivatives[:options].read)
       end
 
       it "accepts :storage" do
@@ -859,7 +859,7 @@ describe Shrine::Plugins::Derivatives do
         @attacher.attach(fakeio)
         files = @attacher.process_derivatives(:options, foo: "bar")
 
-        assert_equal '{:foo=>"bar"}', files[:options].read
+        assert_equal({ foo: "bar" }.inspect, files[:options].read)
       end
 
       it "evaluates block in context of Attacher instance" do

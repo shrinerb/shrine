@@ -524,7 +524,7 @@ describe Shrine::UploadedFile do
   end
 
   it "has custom #inspect" do
-    assert_equal %(#<#{@shrine}::UploadedFile storage=:store id="foo" metadata={"bar"=>"quux"}>),
+    assert_equal %(#<#{@shrine}::UploadedFile storage=:store id="foo" metadata=#{{ "bar" => "quux" }.inspect}>),
                  uploaded_file(id: "foo", storage: :store, metadata: { "bar" => "quux" }).inspect
   end
 end

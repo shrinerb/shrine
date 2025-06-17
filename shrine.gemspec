@@ -4,7 +4,7 @@ Gem::Specification.new do |gem|
   gem.name         = "shrine"
   gem.version      = Shrine.version
 
-  gem.required_ruby_version = ">= 2.3"
+  gem.required_ruby_version = ">= 2.5"
 
   gem.summary      = "Toolkit for file attachments in Ruby applications"
   gem.description  = <<-END
@@ -67,10 +67,10 @@ direct uploads for fully asynchronous user experience.
 
   # for instrumentation plugin
   gem.add_development_dependency "dry-monitor"
-  gem.add_development_dependency "activesupport", RUBY_VERSION >= "2.7" ? "~> 7.0" : RUBY_VERSION >= "2.5" ? "~> 6.0" : "~> 5.2"
+  gem.add_development_dependency "activesupport", RUBY_ENGINE == "jruby" ? "~> 7.0.0" : RUBY_VERSION >= "3.2" ? "~> 8.0" : RUBY_VERSION >= "2.7" ? "~> 7.0" : "~> 6.0"
 
   # for ORM plugins
   gem.add_development_dependency "sequel"
-  gem.add_development_dependency "activerecord", RUBY_ENGINE == "jruby" ? "~> 7.0.0" : RUBY_VERSION >= "2.7" ? "~> 7.0" : RUBY_VERSION >= "2.5" ? "~> 6.0" : "~> 5.2"
-  gem.add_development_dependency "sqlite3", "~> 1.4" unless RUBY_ENGINE == "jruby"
+  gem.add_development_dependency "activerecord", RUBY_ENGINE == "jruby" ? "~> 7.0.0" : RUBY_VERSION >= "3.2" ? "~> 8.0" : RUBY_VERSION >= "2.7" ? "~> 7.0" : "~> 6.0"
+  gem.add_development_dependency "sqlite3", RUBY_VERSION >= "3.2" ? "~> 2.1" : "~> 1.4" unless RUBY_ENGINE == "jruby"
 end
