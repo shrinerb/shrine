@@ -405,7 +405,7 @@ Shrine integration, the ImageProcessing gem that we saw earlier is a completely
 generic gem.
 
 To demonstrate, here is an example of transcoding videos using
-[streamio-ffmpeg]:
+[streamio-ffmpeg][streamio-ffmpeg]:
 
 ```rb
 # Gemfile
