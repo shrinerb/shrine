@@ -1,3 +1,7 @@
+## Unreleased
+
+* `download_endpoint` - Add support for expiring URLs
+
 ## 3.6.0 (2024-04-29)
 
 * Add Rack 3 support (@tomasc, @janko)

@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'openssl'
+require 'base64'
+
 class Shrine
   module Plugins
     # Documentation can be found on https://shrinerb.com/docs/plugins/download_endpoint
@@ -65,14 +68,36 @@ class Shrine
           @file = file
         end
 
-        def call(host: self.host)
-          [host, *prefix, path].join("/")
+        def call(host: self.host, expires_in: nil)
+          path = file.urlsafe_dump(metadata: %w[filename size mime_type])
+
+          query = signature_as_query(path: path, expires_in: expires_in)
+
+          path = [host, *prefix, path].join("/")
+          path += "?#{query}" if query
+          path
         end
 
         protected
 
-        def path
-          file.urlsafe_dump(metadata: %w[filename size mime_type])
+        def signature_as_query(path:, expires_in:)
+          expires_in = default_expires_in if expires_in.nil?
+          raise(Error, "secret_key is required for expiring URLs") if !secret_key && expires_in
+          raise(Error, "expires_in is required for expiring URLs") if secret_key && !expires_in
+
+          return nil unless expires_in
+
+          expires_at = (Time.now + expires_in).to_i
+          signature = OpenSSL::HMAC.digest(
+            OpenSSL::Digest::SHA256.new,
+            secret_key,
+            "#{path}--#{expires_at}"
+          )
+
+          Rack::Utils.build_query(
+            signature: Base64.urlsafe_encode64(signature),
+            expires_at: expires_at
+          )
         end
 
         def host
@@ -81,6 +106,14 @@ class Shrine
 
         def prefix
           options[:prefix]
+        end
+
+        def default_expires_in
+          options[:expires_in]
+        end
+
+        def secret_key
+          options[:secret_key]
         end
 
         def options
@@ -129,6 +162,9 @@ class Shrine
 
     def handle_request(request)
       _, serialized, * = request.path_info.split("/")
+      signature, expires_at = request.params.values_at("signature", "expires_at")
+
+      check_signature!(serialized, signature, expires_at) if @secret_key
 
       uploaded_file = get_uploaded_file(serialized)
 
@@ -187,6 +223,22 @@ class Shrine
     rescue JSON::ParserError, ArgumentError => error # invalid serialized component
       raise if error.is_a?(ArgumentError) && error.message != "invalid base64"
       bad_request!("Invalid serialized file")
+    end
+
+    def check_signature!(serialized, signature, expires_at)
+      if expires_at && expires_at.to_i < Time.now.to_i
+        error!(400, "URL has expired")
+      end
+
+      calculated_signature = OpenSSL::HMAC.digest(
+        OpenSSL::Digest::SHA256.new,
+        @secret_key,
+        "#{serialized}--#{expires_at}"
+      )
+
+      if !Rack::Utils.secure_compare(signature, Base64.urlsafe_encode64(calculated_signature))
+        error!(403, "Signature does not match")
+      end
     end
 
     def not_found!
