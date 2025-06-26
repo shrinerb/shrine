@@ -76,7 +76,7 @@ class Shrine
 
             yield attacher if block_given?
 
-            abstract_persist(persist)
+            attacher.abstract_persist(persist)
           end
         end
 
