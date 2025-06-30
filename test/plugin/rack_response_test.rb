@@ -232,6 +232,13 @@ describe Shrine::Plugins::RackResponse do
     assert_equal etags, etags.uniq
   end
 
+  it "allows custom ETAG value" do
+    uploaded_file = @uploader.upload(fakeio)
+    response = uploaded_file.to_rack_response(custom_etag: "VeryCustomETAG")
+    assert_instance_of String,    response[1]["ETag"]
+    assert_match "VeryCustomETAG", response[1]["ETag"]
+  end
+
   it "implements #to_path on the body for filesystem storage" do
     uploaded_file = @uploader.upload(fakeio)
     response = uploaded_file.to_rack_response
