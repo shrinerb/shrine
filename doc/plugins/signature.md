@@ -78,15 +78,17 @@ plugin :signature
 Calculating signature will trigger a `signature.shrine` event with the
 following payload:
 
-| Key         | Description                            |
-| :--         | :----                                  |
-| `:io`       | The IO object                          |
-| `:uploader` | The uploader class that sent the event |
+| Key          | Description                            |
+| :--          | :----                                  |
+| `:algorithm` | The hashing algorithm used             |
+| `:format`    | The encoding format                    |
+| `:io`        | The IO object                          |
+| `:uploader`  | The uploader class that sent the event |
 
 A default log subscriber is added as well which logs these events:
 
 ```
-MIME Type (33ms) – {:io=>StringIO, :uploader=>Shrine}
+Signature (1ms) – {io: StringIO, algorithm: :md5, format: :hex, uploader: Shrine}
 ```
 
 You can also use your own log subscriber:
@@ -97,7 +99,7 @@ plugin :signature, log_subscriber: -> (event) {
 }
 ```
 ```
-{"name":"signature","duration":24,"io":"#<StringIO:0x00007fb7c5b08b80>","uploader":"Shrine"}
+{"name":"signature","duration":24,"io":"#<StringIO:0x00007fb7c5b08b80>","algorithm":"sha512","format":"hex","uploader":"Shrine"}
 ```
 
 Or disable logging altogether:
