@@ -615,13 +615,13 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.attach(fakeio(content_type: nil))
       @attacher.class.validate { validate_mime_type_inclusion(["image/jpeg"]) }
       @attacher.validate
-      assert_equal 1, @attacher.errors.size
+      assert_equal ["type must be one of: image/jpeg, (no content type detected)"], @attacher.errors
     end
 
     it "uses the default error message" do
       @attacher.class.validate { validate_mime_type_inclusion(["video/mpeg"]) }
       @attacher.validate
-      assert_equal ["type must be one of: video/mpeg"], @attacher.errors
+      assert_equal ["type must be one of: video/mpeg, (image/jpeg content type detected)"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -629,9 +629,12 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.validate
       assert_equal ["must be a video"], @attacher.errors
 
-      @attacher.class.validate { validate_mime_type_inclusion(["video/mpeg"], message: ->(whitelist){"must be #{whitelist.join(", ")}"}) }
+      @attacher.class.validate do
+        validate_mime_type_inclusion(["video/mpeg"],
+                                     message: ->(whitelist, type) {"must be #{whitelist.join(", ")}, #{type} detected"})
+      end
       @attacher.validate
-      assert_equal ["must be video/mpeg"], @attacher.errors
+      assert_equal ["must be video/mpeg, image/jpeg detected"], @attacher.errors
     end
 
     it "handles multiline mime types" do
@@ -656,7 +659,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "is aliased to #validate_mime_type" do
       @attacher.class.validate { validate_mime_type(["video/mpeg"]) }
       @attacher.validate
-      assert_equal ["type must be one of: video/mpeg"], @attacher.errors
+      assert_equal ["type must be one of: video/mpeg, (image/jpeg content type detected)"], @attacher.errors
     end
   end
 
@@ -890,7 +893,7 @@ describe Shrine::Plugins::ValidationHelpers do
       max_size: -> (max) { "is too big" }
     }
     @attacher.shrine_class.plugin :validation_helpers, default_messages: {
-      mime_type_inclusion: -> (list) { "is forbidden" }
+      mime_type_inclusion: -> (list, _type) { "is forbidden" }
     }
     @attacher.class.validate do
       validate_max_size 1
