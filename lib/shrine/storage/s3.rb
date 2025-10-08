@@ -72,6 +72,7 @@ class Shrine
         raise ArgumentError, "the :bucket option is nil" unless bucket
 
         @client = client || Aws::S3::Client.new(**s3_options)
+        @transfer_manager = Aws::S3::TransferManager.new(client: @client) if defined?(Aws::S3::TransferManager)
         @bucket = Aws::S3::Bucket.new(name: bucket, client: @client)
         @prefix = prefix
         @upload_options = upload_options
@@ -235,7 +236,11 @@ class Shrine
       def put(io, id, **options)
         if io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
           object(id).put(body: io, **options)
-        else # multipart upload
+        elsif @transfer_manager # multipart upload - transfer manager
+          @transfer_manager.upload_stream(bucket: bucket.name, key: object_key(id), part_size: part_size(io), **options) do |write_stream|
+            IO.copy_stream(io, write_stream)
+          end
+        else # multipart upload - before transfer manager
           object(id).upload_stream(part_size: part_size(io), **options) do |write_stream|
             IO.copy_stream(io, write_stream)
           end
