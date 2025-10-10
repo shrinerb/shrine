@@ -75,6 +75,8 @@ class Shrine
         #     Attacher.deserialize_column(nil)
         #     #=> nil
         def deserialize_column(data)
+          return nil if data == ""
+
           if column_serializer && data && !data.is_a?(Hash)
             column_serializer.load(data)
           else
