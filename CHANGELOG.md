@@ -4,6 +4,8 @@
 
 * `s3` - Use `TransferManager` where available instead of deprecated `upload_steam` (@danieldevlewis)
 
+* `column` - Don't attempt to deserialize empty string as JSON (@adam12)
+
 ## 3.6.0 (2024-04-29)
 
 * Add Rack 3 support (@tomasc, @janko)

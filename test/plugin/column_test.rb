@@ -61,6 +61,13 @@ describe Shrine::Plugins::Column do
       assert_nil @attacher.file
     end
 
+    it "clears file when empty string is given" do
+      @attacher.attach(fakeio)
+      @attacher.load_column("")
+
+      assert_nil @attacher.file
+    end
+
     it "handles hashes" do
       file = @attacher.attach(fakeio)
       @attacher.load_column(file.data)
