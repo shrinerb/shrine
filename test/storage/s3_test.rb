@@ -77,13 +77,37 @@ describe Shrine::Storage::S3 do
 
   describe "#upload" do
     describe "simple upload" do
-      it "is performed on IO with size under multipart threshold" do
-        @s3.upload(fakeio("content"), "foo")
-        assert_equal 1, @s3.client.api_requests.size
+      describe "with TransferManager" do
+        it "is performed on IO with size under multipart threshold (if @transfer_manager.nil?)" do
+          @s3.upload(fakeio("content"), "foo")
+          assert_equal 3, @s3.client.api_requests.size
 
-        assert_equal :put_object,   @s3.client.api_requests[0][:operation_name]
-        assert_instance_of FakeIO,  @s3.client.api_requests[0][:params][:body]
-        assert_equal "foo",         @s3.client.api_requests[0][:params][:key]
+          # old style uploads without using TransferManager
+          @s3.instance_variable_set(:@transfer_manager, nil)
+          @s3.upload(fakeio("content"), "foo")
+          assert_equal 4, @s3.client.api_requests.size
+
+          assert_equal :create_multipart_upload, @s3.client.api_requests[0][:operation_name]
+          assert_instance_of FakeIO,                 @s3.client.api_requests[3][:params][:body]
+          assert_equal "foo",                    @s3.client.api_requests[0][:params][:key]
+        end
+      end
+
+      describe "without TransferManager" do
+        it "is performed on IO with size under multipart threshold (if @transfer_manager.nil?)" do
+          @s3.instance_variable_set(:@transfer_manager, nil)
+          @s3.upload(fakeio("content"), "foo")
+          assert_equal 1, @s3.client.api_requests.size
+
+          # old style uploads without using TransferManager
+          @s3.instance_variable_set(:@transfer_manager, nil)
+          @s3.upload(fakeio("content"), "foo")
+          assert_equal 2, @s3.client.api_requests.size
+
+          assert_equal :put_object, @s3.client.api_requests[0][:operation_name]
+          assert_instance_of FakeIO,    @s3.client.api_requests[0][:params][:body]
+          assert_equal "foo",       @s3.client.api_requests[0][:params][:key]
+        end
       end
 
       it "respects :prefix" do
@@ -219,7 +243,6 @@ describe Shrine::Storage::S3 do
         assert_equal "REPLACE",    @s3.client.api_requests[0][:params][:tagging_directive]
       end
 
-
       it "forwards any upload options" do
         uploaded_file = @shrine.uploaded_file(id: "bar", storage: "s3", metadata: { "size" => 10 })
         @s3.upload(uploaded_file, "foo", acl: "public-read")
@@ -250,10 +273,10 @@ describe Shrine::Storage::S3 do
       @s3 = s3(public: true)
 
       @s3.upload(fakeio, "foo")
-      assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
+      assert_equal "public-read", @s3.client.api_requests.select { it[:operation_name] == :create_multipart_upload }[0][:params][:acl]
 
       @s3.upload(fakeio, "foo", acl: "public-read-write")
-      assert_equal "public-read-write", @s3.client.api_requests[1][:params][:acl]
+      assert_equal "public-read-write", @s3.client.api_requests.select { it[:operation_name] == :create_multipart_upload }[1][:params][:acl]
     end
 
     it "applies default upload options" do
@@ -276,10 +299,10 @@ describe Shrine::Storage::S3 do
 
       @s3.upload(fakeio("file"), "foo", acl: "public-read")
 
-      assert_equal :put_object,     @s3.client.api_requests[0][:operation_name]
-      assert_equal @s3.bucket.name, @s3.client.api_requests[0][:params][:bucket]
-      assert_equal "prefix/foo",    @s3.client.api_requests[0][:params][:key]
-      assert_equal "public-read",   @s3.client.api_requests[0][:params][:acl]
+      assert_equal :put_object,   @s3.client.api_requests[0][:operation_name]
+      assert_equal @s3.bucket.name,   @s3.client.api_requests[0][:params][:bucket]
+      assert_equal "prefix/foo",  @s3.client.api_requests[0][:params][:key]
+      assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
 
       assert_instance_of Aws::S3::EncryptionV2::IOEncrypter, @s3.client.api_requests[0][:params][:body]
     end
@@ -371,10 +394,10 @@ describe Shrine::Storage::S3 do
       assert_equal 4,      io.size
       assert_equal "file", io.read
 
-      assert_equal :get_object,     @s3.client.api_requests[1][:operation_name]
-      assert_equal @s3.bucket.name, @s3.client.api_requests[1][:params][:bucket]
-      assert_equal "prefix/foo",    @s3.client.api_requests[1][:params][:key]
-      assert_equal "attachment",    @s3.client.api_requests[1][:params][:response_content_disposition]
+      assert_equal :get_object,  @s3.client.api_requests[1][:operation_name]
+      assert_equal @s3.bucket.name,  @s3.client.api_requests[1][:params][:bucket]
+      assert_equal "prefix/foo", @s3.client.api_requests[1][:params][:key]
+      assert_equal "attachment", @s3.client.api_requests[1][:params][:response_content_disposition]
     end
   end
 

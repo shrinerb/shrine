@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+#
 gem "aws-sdk-s3", "~> 1.14"
 
 require "shrine"
@@ -234,12 +234,12 @@ class Shrine
 
       # Uploads the file to S3. Uses multipart upload for large files.
       def put(io, id, **options)
-        if io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
-          object(id).put(body: io, **options)
-        elsif @transfer_manager # multipart upload - transfer manager
+        if @transfer_manager # multipart upload - transfer manager
           @transfer_manager.upload_stream(bucket: bucket.name, key: object_key(id), part_size: part_size(io), **options) do |write_stream|
             IO.copy_stream(io, write_stream)
           end
+        elsif io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
+          object(id).put(body: io, **options)
         else # multipart upload - before transfer manager
           object(id).upload_stream(part_size: part_size(io), **options) do |write_stream|
             IO.copy_stream(io, write_stream)
