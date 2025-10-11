@@ -13,10 +13,13 @@ describe Shrine::Plugins::Activerecord do
       def self.model_name
         ActiveModel::Name.new(self, nil, "User")
       end
+
+      attribute :json_avatar_data, :json
     end
 
-    @user     = user_class.new
-    @attacher = @shrine::Attacher.from_model(@user, :avatar)
+    @user          = user_class.new
+    @attacher      = @shrine::Attacher.from_model(@user, :avatar)
+    @json_attacher = @shrine::Attacher.from_model(@user, :json_avatar)
   end
 
   after do
@@ -271,22 +274,19 @@ describe Shrine::Plugins::Activerecord do
     describe "JSON columns" do
       [:json, :jsonb].each do |type|
         it "handles #{type} type" do
-          # work around Active Record casting assigned values into a string
-          @user.class.send(:attr_accessor, :avatar_data)
+          # redefine attribute type to make :jsonb test
+          @user.class.type_for_attribute("json_avatar_data").class.send(:define_method, :type) { type }
 
-          columns_hash = @user.class.columns_hash.dup # unfreeze
-          columns_hash["avatar_data"] = columns_hash["avatar_data"].dup # unfreeze
-          columns_hash["avatar_data"].singleton_class.send(:define_method, :type) { type }
-          @user.class.instance_variable_set(:@columns_hash, columns_hash)
+          assert_equal @user.class.type_for_attribute("json_avatar_data").type, type
 
-          @attacher.load_model(@user, :avatar)
-          @attacher.attach(fakeio)
+          @json_attacher.load_model(@user, :json_avatar)
+          @json_attacher.attach(fakeio)
 
-          assert_equal @attacher.file.data, @user.avatar_data
+          assert_equal @json_attacher.file.data, @user.json_avatar_data
 
-          @attacher.reload
+          @json_attacher.reload
 
-          assert_equal @attacher.file.data, @user.avatar_data
+          assert_equal @json_attacher.file.data, @user.json_avatar_data
         end
       end
     end
