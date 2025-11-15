@@ -239,25 +239,13 @@ class Shrine
       # for multipart uploads of large files.
       def put(io, id, **options)
         if @transfer_manager
-          transfer_manager_put(io, id, **options)
-        else
-          og_put(io, id, **options)
-        end
-      end
-
-      def transfer_manager_put(io, id, **options)
-        @transfer_manager.upload_stream(bucket: bucket.name, key: object_key(id), part_size: part_size(io), **options) do |write_stream|
-          IO.copy_stream(io, write_stream)
-        end
-      end
-
-      # Original (ganster) #put.
-      # Optimizes between object.put and object.upload_stream based on
-      # upload size.
-      def og_put(io, id, **options)
-        if io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
+          @transfer_manager.upload_stream(bucket: bucket.name, key: object_key(id), part_size: part_size(io), **options) do |write_stream|
+            IO.copy_stream(io, write_stream)
+          end
+        elsif io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
           object(id).put(body: io, **options)
-        else # multipart upload
+        else
+          # multipart upload old API
           object(id).upload_stream(part_size: part_size(io), **options) do |write_stream|
             IO.copy_stream(io, write_stream)
           end
