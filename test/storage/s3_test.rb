@@ -77,13 +77,29 @@ describe Shrine::Storage::S3 do
 
   describe "#upload" do
     describe "simple upload" do
-      it "is performed on IO with size under multipart threshold" do
-        @s3.upload(fakeio("content"), "foo")
-        assert_equal 1, @s3.client.api_requests.size
+      describe "with TransferManager" do
+        it "is performed on IO with size under multipart threshold" do
+          @s3.upload(fakeio("content"), "foo")
+          assert_equal 3, @s3.client.api_requests.size
 
-        assert_equal :put_object,   @s3.client.api_requests[0][:operation_name]
-        assert_instance_of FakeIO,  @s3.client.api_requests[0][:params][:body]
-        assert_equal "foo",         @s3.client.api_requests[0][:params][:key]
+          assert_equal :create_multipart_upload, @s3.client.api_requests[0][:operation_name]
+          assert_equal :multipart_upload_part,   @s3.client.api_requests[1][:operation_name]
+          assert_equal :multipart_upload_end,    @s3.client.api_requests[2][:operation_name]
+          assert_instance_of StringIO,           @s3.client.api_requests[1][:params][:body]
+          assert_equal "foo",                    @s3.client.api_requests[0][:params][:key]
+        end
+      end unless @s3.instance_variable_get(:@transfer_manager).nil?
+
+      describe "without TransferManager" do
+        it "is performed on IO with size under multipart threshold" do
+          @s3.instance_variable_set(:@transfer_manager, nil)
+          @s3.upload(fakeio("content"), "foo")
+          assert_equal 1, @s3.client.api_requests.size
+
+          assert_equal :put_object,  @s3.client.api_requests[0][:operation_name]
+          assert_instance_of FakeIO, @s3.client.api_requests[0][:params][:body]
+          assert_equal "foo",        @s3.client.api_requests[0][:params][:key]
+        end
       end
 
       it "respects :prefix" do
@@ -250,11 +266,23 @@ describe Shrine::Storage::S3 do
       @s3 = s3(public: true)
 
       @s3.upload(fakeio, "foo")
+      cmu = @s3.client.api_requests.select { |request| request[:operation_name] == :create_multipart_upload }
+      assert_equal "public-read", cmu[0][:params][:acl]
+
+      @s3.upload(fakeio, "foo", acl: "public-read-write")
+      cmu = @s3.client.api_requests.select { |request| request[:operation_name] == :create_multipart_upload }
+      assert_equal "public-read-write", cmu[1][:params][:acl]
+    end if RUBY_VERSION >= "2.7.0"
+
+    it "respects :public option" do
+      @s3 = s3(public: true)
+
+      @s3.upload(fakeio, "foo")
       assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
 
       @s3.upload(fakeio, "foo", acl: "public-read-write")
       assert_equal "public-read-write", @s3.client.api_requests[1][:params][:acl]
-    end
+    end if RUBY_VERSION < "2.7.0"
 
     it "applies default upload options" do
       @s3 = s3(upload_options: { content_type: "foo/bar" })

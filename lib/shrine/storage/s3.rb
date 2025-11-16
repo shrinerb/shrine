@@ -232,15 +232,20 @@ class Shrine
 
       private
 
-      # Uploads the file to S3. Uses multipart upload for large files.
+      # Upload the file to S3.
+      # Uses @transfer_manager, if defined, for any size upload.
+      # Falls back to the original code using the older, now depricated
+      # AWS APIs for users of older version of the AWS Gem.
+      # for multipart uploads of large files.
       def put(io, id, **options)
-        if io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
-          object(id).put(body: io, **options)
-        elsif @transfer_manager # multipart upload - transfer manager
+        if @transfer_manager
           @transfer_manager.upload_stream(bucket: bucket.name, key: object_key(id), part_size: part_size(io), **options) do |write_stream|
             IO.copy_stream(io, write_stream)
           end
-        else # multipart upload - before transfer manager
+        elsif io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
+          object(id).put(body: io, **options)
+        else
+          # multipart upload old API
           object(id).upload_stream(part_size: part_size(io), **options) do |write_stream|
             IO.copy_stream(io, write_stream)
           end
