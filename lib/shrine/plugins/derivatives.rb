@@ -459,9 +459,13 @@ class Shrine
         #     attacher.derivatives #=> { thumb: #<Shrine::UploadedFile> }
         #     attacher.change(file)
         #     attacher.derivatives #=> {}
+        #
+        #     # With keep_derivatives: true
+        #     attacher.change(file)
+        #     attacher.derivatives #=> { thumb: #<Shrine::UploadedFile> }
         def change(*)
           result = super
-          set_derivatives({})
+          set_derivatives({}) unless shrine_class.derivatives_options[:keep_derivatives]
           result
         end
 

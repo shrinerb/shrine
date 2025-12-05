@@ -1270,6 +1270,20 @@ describe Shrine::Plugins::Derivatives do
         assert_equal file,     @attacher.file
       end
 
+      it "does not clear derivatives if keep_derivatives is set" do
+        @shrine.derivatives_options[:keep_derivatives] = true
+
+        @attacher.attach(fakeio)
+        @attacher.add_derivatives({ one: fakeio })
+        old = @attacher.derivatives.dup
+
+        file = @attacher.upload(fakeio)
+        @attacher.change(file)
+
+        assert_equal old,  @attacher.derivatives
+        assert_equal file, @attacher.file
+      end
+
       it "records previous derivatives" do
         file        = @attacher.attach(fakeio)
         derivatives = @attacher.add_derivatives({ one: fakeio })
