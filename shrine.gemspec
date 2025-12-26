@@ -57,7 +57,7 @@ direct uploads for fully asynchronous user experience.
 
   # for store_dimensions plugin
   gem.add_development_dependency "fastimage"
-  gem.add_development_dependency "mini_magick", "~> 4.0" unless ENV["CI"]
+  gem.add_development_dependency "mini_magick", "~> 5.0" unless ENV["CI"]
   gem.add_development_dependency "ruby-vips", "~> 2.0" unless ENV["CI"]
 
   # for S3 storage

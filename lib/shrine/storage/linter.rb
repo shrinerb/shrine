@@ -28,14 +28,14 @@ class Shrine
         new(*args).call
       end
 
-      def initialize(storage, action: :error, nonexisting: "nonexisting")
+      def initialize(storage, action: :error, nonexisting: String.new("nonexisting"))
         @storage     = storage
         @action      = action
         @nonexisting = nonexisting
       end
 
       def call(io_factory = default_io_factory)
-        storage.upload(io_factory.call, id = "foo", shrine_metadata: { "foo" => "bar" })
+        storage.upload(io_factory.call, id = String.new("foo"), shrine_metadata: { "foo" => "bar" })
 
         lint_open(id)
         lint_exists(id)
@@ -43,9 +43,9 @@ class Shrine
         lint_delete(id)
 
         if storage.respond_to?(:delete_prefixed)
-          storage.upload(io_factory.call, id1 = "a/a/a")
-          storage.upload(io_factory.call, id2 = "a/a/b")
-          storage.upload(io_factory.call, id3 = "a/aaa/a")
+          storage.upload(io_factory.call, id1 = String.new("a/a/a"))
+          storage.upload(io_factory.call, id2 = String.new("a/a/b"))
+          storage.upload(io_factory.call, id3 = String.new("a/aaa/a"))
 
           lint_delete_prefixed(prefix: "a/a/",
                                expect_deleted: [id1, id2],
@@ -55,7 +55,7 @@ class Shrine
         end
 
         if storage.respond_to?(:clear!)
-          storage.upload(io_factory.call, id = "quux".dup)
+          storage.upload(io_factory.call, id = String.new("quux"))
           lint_clear(id)
         end
 

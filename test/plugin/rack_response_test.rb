@@ -148,7 +148,7 @@ describe Shrine::Plugins::RackResponse do
     response = uploaded_file.to_rack_response(range: "bytes=0-36863")
     assert_equal "bytes 0-36863/36864", response[1]["Content-Range"]
     assert_equal "36864",               response[1]["Content-Length"]
-    yielded_content = ""
+    yielded_content = String.new
     response[2].each { |chunk| yielded_content << chunk }
     assert_equal "a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, yielded_content
 
@@ -156,7 +156,7 @@ describe Shrine::Plugins::RackResponse do
     response = uploaded_file.to_rack_response(range: "bytes=0-20479")
     assert_equal "bytes 0-20479/36864", response[1]["Content-Range"]
     assert_equal "20480",               response[1]["Content-Length"]
-    yielded_content = ""
+    yielded_content = String.new
     response[2].each { |chunk| yielded_content << chunk }
     assert_equal "a" * 16*1024 + "b" * 4*1024, yielded_content
 
@@ -164,7 +164,7 @@ describe Shrine::Plugins::RackResponse do
     response = uploaded_file.to_rack_response(range: "bytes=12288-20479")
     assert_equal "bytes 12288-20479/36864", response[1]["Content-Range"]
     assert_equal "8192", response[1]["Content-Length"]
-    yielded_content = ""
+    yielded_content = String.new
     response[2].each { |chunk| yielded_content << chunk }
     assert_equal "a" * 4*1024 + "b" * 4*1024, yielded_content
 
@@ -172,7 +172,7 @@ describe Shrine::Plugins::RackResponse do
     response = uploaded_file.to_rack_response(range: "bytes=12288-33791")
     assert_equal "bytes 12288-33791/36864", response[1]["Content-Range"]
     assert_equal "21504", response[1]["Content-Length"]
-    yielded_content = ""
+    yielded_content = String.new
     response[2].each { |chunk| yielded_content << chunk }
     assert_equal "a" * 4*1024 + "b" * 16*1024 + "c" * 1*1024, yielded_content
 
@@ -180,7 +180,7 @@ describe Shrine::Plugins::RackResponse do
     response = uploaded_file.to_rack_response(range: "bytes=35840-36863")
     assert_equal "bytes 35840-36863/36864", response[1]["Content-Range"]
     assert_equal "1024", response[1]["Content-Length"]
-    yielded_content = ""
+    yielded_content = String.new
     response[2].each { |chunk| yielded_content << chunk }
     assert_equal "c" * 1*1024, yielded_content
   end
