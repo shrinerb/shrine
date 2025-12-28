@@ -272,17 +272,7 @@ describe Shrine::Storage::S3 do
       @s3.upload(fakeio, "foo", acl: "public-read-write")
       cmu = @s3.client.api_requests.select { |request| request[:operation_name] == :create_multipart_upload }
       assert_equal "public-read-write", cmu[1][:params][:acl]
-    end if RUBY_VERSION >= "2.7.0"
-
-    it "respects :public option" do
-      @s3 = s3(public: true)
-
-      @s3.upload(fakeio, "foo")
-      assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
-
-      @s3.upload(fakeio, "foo", acl: "public-read-write")
-      assert_equal "public-read-write", @s3.client.api_requests[1][:params][:acl]
-    end if RUBY_VERSION < "2.7.0"
+    end
 
     it "applies default upload options" do
       @s3 = s3(upload_options: { content_type: "foo/bar" })
