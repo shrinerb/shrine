@@ -103,15 +103,21 @@ describe Shrine::Plugins::DetermineMimeType do
     end
 
     it "determines MIME type from file contents" do
-      assert_equal "image/jpeg", @shrine.determine_mime_type(image)
+      capture_io do
+        assert_equal "image/jpeg", @shrine.determine_mime_type(image)
+      end
     end
 
     it "returns text/plain for unidentified MIME types" do
-      assert_equal "text/plain", @shrine.determine_mime_type(fakeio("😃"))
+      capture_io do
+        assert_equal "text/plain", @shrine.determine_mime_type(fakeio("😃"))
+      end
     end
 
     it "returns nil for empty IOs" do
-      assert_nil @shrine.determine_mime_type(fakeio(""))
+      capture_io do
+        assert_nil @shrine.determine_mime_type(fakeio(""))
+      end
     end
   end unless RUBY_ENGINE == "jruby" || ENV["CI"]
 
