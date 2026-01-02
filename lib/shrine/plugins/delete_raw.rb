@@ -15,8 +15,8 @@ class Shrine
         private
 
         # Deletes the file that was uploaded, unless it's an UploadedFile.
-        def _upload(io, delete: delete_raw?, **options)
-          super(io, delete: delete, **options)
+        def _upload(io, delete: delete_raw?, **)
+          super(io, delete:, **)
         end
 
         def delete_raw?

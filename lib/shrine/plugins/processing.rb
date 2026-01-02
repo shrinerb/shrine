@@ -18,14 +18,14 @@ class Shrine
       end
 
       module InstanceMethods
-        def upload(io, process: true, **options)
+        def upload(io, process: true, **)
           if process
-            input = process(io, **options)
+            input = process(io, **)
           else
             input = io
           end
 
-          super(input, **options)
+          super(input, **)
         end
 
         private

@@ -22,8 +22,8 @@ class Shrine
       #
       #     attacher = Attacher.from_data({ "id" => "...", "storage" => "...", "metadata" => { ... } })
       #     attacher.file #=> #<Shrine::UploadedFile>
-      def from_data(data, **options)
-        attacher = new(**options)
+      def from_data(data, **)
+        attacher = new(**)
         attacher.load_data(data)
         attacher
       end
@@ -47,14 +47,14 @@ class Shrine
       end
 
       # Returns the temporary storage identifier.
-      def cache_key; @cache.to_sym; end
+      def cache_key = @cache.to_sym
       # Returns the permanent storage identifier.
-      def store_key; @store.to_sym; end
+      def store_key = @store.to_sym
 
       # Returns the uploader that is used for the temporary storage.
-      def cache; shrine_class.new(cache_key); end
+      def cache = shrine_class.new(cache_key)
       # Returns the uploader that is used for the permanent storage.
-      def store; shrine_class.new(store_key); end
+      def store = shrine_class.new(store_key)
 
       # Calls #attach_cached, but skips if value is an empty string (this is
       # useful when the uploaded file comes from form fields). Forwards any
@@ -67,14 +67,14 @@ class Shrine
       #
       #     # ignores the assignment when a blank string is given
       #     attacher.assign("")
-      def assign(value, **options)
+      def assign(value, **)
         return if value == "" # skip empty hidden field
 
         if value.is_a?(Hash) || value.is_a?(String)
           return if uploaded_file(value) == file # skip assignment for current file
         end
 
-        attach_cached(value, **options)
+        attach_cached(value, **)
       end
 
       # Sets an existing cached file, or uploads an IO object to temporary
@@ -92,11 +92,11 @@ class Shrine
       #
       #     # sets an existing cached file from Hash data
       #     attacher.attach_cached({ "id" => "...", "storage" => "cache", "metadata" => {} })
-      def attach_cached(value, **options)
+      def attach_cached(value, **)
         if value.is_a?(String) || value.is_a?(Hash)
-          change(cached(value, **options))
+          change(cached(value, **))
         else
-          attach(value, storage: cache_key, action: :cache, **options)
+          attach(value, storage: cache_key, action: :cache, **)
         end
       end
 
@@ -113,8 +113,8 @@ class Shrine
       #
       #     # removes the attachment
       #     attacher.attach(nil)
-      def attach(io, storage: store_key, **options)
-        file = upload(io, storage, **options) if io
+      def attach(io, storage: store_key, **)
+        file = upload(io, storage, **) if io
 
         change(file)
       end
@@ -158,8 +158,8 @@ class Shrine
       #     attacher.cached? #=> true
       #     attacher.promote_cached
       #     attacher.stored? #=> true
-      def promote_cached(**options)
-        promote(**options) if promote?
+      def promote_cached(**)
+        promote(**) if promote?
       end
 
       # Uploads current file to permanent storage and sets the stored file.
@@ -167,8 +167,8 @@ class Shrine
       #     attacher.cached? #=> true
       #     attacher.promote
       #     attacher.stored? #=> true
-      def promote(storage: store_key, **options)
-        set upload(file, storage, action: :store, **options)
+      def promote(storage: store_key, **)
+        set upload(file, storage, action: :store, **)
       end
 
       # Delegates to `Shrine.upload`, passing the #context.
@@ -178,8 +178,8 @@ class Shrine
       #
       #     # pass additional options for the uploader
       #     attacher.upload(io, :store, metadata: { "foo" => "bar" })
-      def upload(io, storage = store_key, **options)
-        shrine_class.upload(io, storage, **context, **options)
+      def upload(io, storage = store_key, **)
+        shrine_class.upload(io, storage, **context, **)
       end
 
       # If a new file was attached, deletes previously attached file if any.
@@ -249,8 +249,8 @@ class Shrine
       #
       #     attacher.file = nil
       #     attacher.url #=> nil
-      def url(**options)
-        file&.url(**options)
+      def url(**)
+        file&.url(**)
       end
 
       # Returns whether the attachment has changed.

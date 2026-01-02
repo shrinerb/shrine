@@ -16,8 +16,8 @@ class Shrine
         # from a database record column.
         #
         #     Attacher.from_column('{"id":"...","storage":"...","metadata":{...}}')
-        def from_column(data, **options)
-          attacher = new(**options)
+        def from_column(data, **)
+          attacher = new(**)
           attacher.load_column(data)
           attacher
         end
@@ -28,8 +28,8 @@ class Shrine
         attr_reader :column_serializer
 
         # Allows overriding the default column serializer.
-        def initialize(column_serializer: shrine_class.opts[:column][:serializer], **options)
-          super(**options)
+        def initialize(column_serializer: shrine_class.opts[:column][:serializer], **)
+          super(**)
           @column_serializer = column_serializer
         end
 

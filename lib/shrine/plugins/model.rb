@@ -18,8 +18,8 @@ class Shrine
         #
         #     Shrine::Attachment(:image)               # model (default)
         #     Shrine::Attachment(:image, model: false) # entity
-        def initialize(name, model: true, **options)
-          super(name, **options)
+        def initialize(name, model: true, **)
+          super(name, **)
           @model = model
         end
 
@@ -82,16 +82,16 @@ class Shrine
         #
         #     attacher = Attacher.from_model(photo, :image)
         #     attacher.file #=> #<Shrine::UploadedFile>
-        def from_model(record, name, **options)
-          attacher = new(**options)
+        def from_model(record, name, **)
+          attacher = new(**)
           attacher.load_model(record, name)
           attacher
         end
       end
 
       module AttacherMethods
-        def initialize(model_cache: shrine_class.opts[:model][:cache], **options)
-          super(**options)
+        def initialize(model_cache: shrine_class.opts[:model][:cache], **)
+          super(**)
           @model_cache = model_cache
           @model       = nil
         end
@@ -111,11 +111,11 @@ class Shrine
         end
 
         # Called by the attachment attribute setter on the model.
-        def model_assign(value, **options)
+        def model_assign(value, **)
           if model_cache?
-            assign(value, **options)
+            assign(value, **)
           else
-            attach(value, **options)
+            attach(value, **)
           end
         end
 

@@ -48,7 +48,7 @@ class Shrine
         # It uses a trick where it removes the derivation path prefix from the
         # path info before calling the Rack app, which is what web framework
         # routers do before they're calling a mounted Rack app.
-        def derivation_response(env, **options)
+        def derivation_response(env, **)
           script_name = env["SCRIPT_NAME"]
           path_info   = env["PATH_INFO"]
 
@@ -61,7 +61,7 @@ class Shrine
             env["SCRIPT_NAME"] += match.to_s
             env["PATH_INFO"]    = match.post_match
 
-            derivation_endpoint(**options).call(env)
+            derivation_endpoint(**).call(env)
           ensure
             env["SCRIPT_NAME"] = script_name
             env["PATH_INFO"]   = path_info
@@ -87,15 +87,15 @@ class Shrine
         # Generates a URL to a derivation with the receiver as the source file.
         # Any arguments provided will be included in the URL and passed to the
         # derivation block. Accepts additional URL options.
-        def derivation_url(name, *args, **options)
-          derivation(name, *args).url(**options)
+        def derivation_url(name, *, **)
+          derivation(name, *).url(**)
         end
 
         # Calls the specified derivation with the receiver as the source file,
         # returning a Rack response triple. The derivation endpoint ultimately
         # calls this method.
-        def derivation_response(name, *args, env:, **options)
-          derivation(name, *args, **options).response(env)
+        def derivation_response(name, *, env:, **)
+          derivation(name, *, **).response(env)
         end
 
         # Returns a Shrine::Derivation object created from the provided
@@ -129,14 +129,14 @@ class Shrine
     end
 
     # Returns an URL to the derivation.
-    def url(**options)
+    def url(**)
       Derivation::Url.new(self).call(
         host:       option(:host),
         prefix:     option(:prefix),
         expires_in: option(:expires_in),
         version:    option(:version),
         metadata:   option(:metadata),
-        **options,
+        **,
       )
     end
 
@@ -158,8 +158,8 @@ class Shrine
 
     # Uploads the derivation result to a dedicated destination on the specified
     # Shrine storage.
-    def upload(file = nil, **options)
-      Derivation::Upload.new(self).call(file, **options)
+    def upload(file = nil, **)
+      Derivation::Upload.new(self).call(file, **)
     end
 
     # Returns a Shrine::UploadedFile object pointing to the uploaded derivative
@@ -184,7 +184,7 @@ class Shrine
     end
 
     def self.option(name, default: nil, result: nil)
-      options[name] = { default: default, result: result }
+      options[name] = { default:, result: }
     end
 
     option :cache_control,               default: -> { default_cache_control }
@@ -303,15 +303,15 @@ class Shrine
   class Derivation::Url < Derivation::Command
     delegate :name, :args, :source, :secret_key, :signer
 
-    def call(host: nil, prefix: nil, **options)
+    def call(host: nil, prefix: nil, metadata: [], **)
       base_url = [host, *prefix].join("/")
-      path = path_identifier(metadata: options.delete(:metadata))
+      path = path_identifier(metadata:)
 
       if signer
         url = [base_url, path].join("/")
-        signer.call(url, **options)
+        signer.call(url, **)
       else
-        signed_part = signed_url("#{path}?#{query(**options)}")
+        signed_part = signed_url("#{path}?#{query(**)}")
         [base_url, signed_part].join("/")
       end
     end
@@ -322,7 +322,7 @@ class Shrine
       [
         name,
         *args,
-        source.urlsafe_dump(metadata: metadata)
+        source.urlsafe_dump(metadata:)
       ].map{|component| Rack::Utils.escape_path(component.to_s)}.join('/')
     end
 
@@ -558,7 +558,7 @@ class Shrine
       filename  = self.filename
       filename += File.extname(file.path) if File.extname(filename).empty?
 
-      ContentDisposition.format(disposition: disposition, filename: filename)
+      ContentDisposition.format(disposition:, filename:)
     end
   end
 
@@ -597,9 +597,9 @@ class Shrine
     end
 
     # Calls the derivation block.
-    def derive(*args)
+    def derive(*)
       instrument_derivation do
-        derivation.instance_exec(*args, &derivation_block)
+        derivation.instance_exec(*, &derivation_block)
       end
     end
 
@@ -607,7 +607,7 @@ class Shrine
     def instrument_derivation(&block)
       return yield unless shrine_class.respond_to?(:instrument)
 
-      shrine_class.instrument(:derivation, { derivation: derivation }, &block)
+      shrine_class.instrument(:derivation, { derivation: }, &block)
     end
 
     # Massages the derivation result, ensuring it's opened in binary mode,
@@ -646,22 +646,22 @@ class Shrine
     # Uploads the derivation result to the dedicated location on the storage.
     # If a file object is given, uploads that to the storage, otherwise calls
     # the derivation block and uploads the result.
-    def call(derivative = nil, **options)
+    def call(derivative = nil, **)
       if derivative
-        upload(derivative, **options)
+        upload(derivative, **)
       else
-        upload(derivation.generate, delete: true, **options)
+        upload(derivation.generate, delete: true, **)
       end
     end
 
     private
 
-    def upload(io, **options)
+    def upload(io, **)
       shrine_class.upload io, upload_storage,
         location:       upload_location,
         upload_options: upload_options,
         action:         :derivation,
-        **options
+        **
     end
   end
 

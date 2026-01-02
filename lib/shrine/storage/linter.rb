@@ -24,8 +24,8 @@ class Shrine
     #
     #   Shrine::Storage::Linter.new(storage).call(->{File.open("test/fixtures/image.jpg")})
     class Linter
-      def self.call(*args)
-        new(*args).call
+      def self.call(*)
+        new(*).call
       end
 
       def initialize(storage, action: :error, nonexisting: String.new("nonexisting"))

@@ -16,16 +16,16 @@ class Shrine
       end
 
       module AttacherMethods
-        def url(**options)
-          super || default_url(**options)
+        def url(**)
+          super || default_url(**)
         end
 
         private
 
-        def default_url(**options)
+        def default_url(**)
           return unless default_url_block
 
-          url = instance_exec(**options, &default_url_block)
+          url = instance_exec(**, &default_url_block)
 
           [*default_url_host, url].join
         end

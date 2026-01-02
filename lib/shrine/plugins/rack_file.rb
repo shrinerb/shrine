@@ -24,9 +24,9 @@ class Shrine
       module AttacherMethods
         # Checks whether a file is a Rack file hash, and in that case wraps the
         # hash in an IO-like object.
-        def assign(value, **options)
+        def assign(value, **)
           if rack_file?(value)
-            assign shrine_class.rack_file(value), **options
+            assign shrine_class.rack_file(value), **
           else
             super
           end

@@ -59,16 +59,16 @@ class Shrine
 
         # Smart versioned URLs, which include the version name in the default
         # URL, and properly forwards any options to the underlying storage.
-        def url(version = nil, **options)
+        def url(version = nil, **)
           if file.is_a?(Hash)
             if version
               version = version.to_sym
               if file.key?(version)
-                file[version].url(**options)
+                file[version].url(**)
               elsif fallback = shrine_class.version_fallbacks[version]
-                url(fallback, **options)
+                url(fallback, **)
               else
-                default_url(**options, version: version)
+                default_url(**, version:)
               end
             else
               raise Error, "must call Shrine::Attacher#url with the name of the version"
@@ -76,12 +76,12 @@ class Shrine
           else
             if version
               if file && shrine_class.opts[:versions][:fallback_to_original]
-                file.url(**options)
+                file.url(**)
               else
-                default_url(**options, version: version)
+                default_url(**, version:)
               end
             else
-              super(**options)
+              super(**)
             end
           end
         end
@@ -130,7 +130,7 @@ class Shrine
 
         def map_file(object, transform_keys: :to_sym)
           if object.is_a?(Hash) || object.is_a?(Array)
-            deep_map(object, transform_keys: transform_keys) do |path, value|
+            deep_map(object, transform_keys:) do |path, value|
               yield path, value unless value.is_a?(Hash) || value.is_a?(Array)
             end
           elsif object
@@ -150,7 +150,7 @@ class Shrine
               key    = key.send(transform_keys)
               result = yield [*path, key], value
 
-              hash.merge! key => (result || deep_map(value, [*path, key], transform_keys: transform_keys, &block))
+              hash.merge! key => (result || deep_map(value, [*path, key], transform_keys:, &block))
             end
           elsif object.is_a?(Array)
             result = yield path, object
@@ -160,7 +160,7 @@ class Shrine
             object.map.with_index do |value, idx|
               result = yield [*path, idx], value
 
-              result || deep_map(value, [*path, idx], transform_keys: transform_keys, &block)
+              result || deep_map(value, [*path, idx], transform_keys:, &block)
             end
           else
             result = yield path, object

@@ -91,9 +91,9 @@ class Shrine
       #     # or
       #
       #     uploaded_file.open { |io| io.read } # the IO is automatically closed
-      def open(**options)
+      def open(**)
         @io.close if @io
-        @io = _open(**options)
+        @io = _open(**)
 
         return @io unless block_given?
 
@@ -120,9 +120,9 @@ class Shrine
       #     # or
       #
       #     uploaded_file.download { |tempfile| tempfile.read } # tempfile is deleted
-      def download(**options)
+      def download(**)
         tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
-        stream(tempfile, **options)
+        stream(tempfile, **)
         tempfile.open
 
         block_given? ? yield(tempfile) : tempfile
@@ -141,19 +141,19 @@ class Shrine
       #     uploaded_file.stream(StringIO.new)
       #     # or
       #     uploaded_file.stream("/path/to/destination")
-      def stream(destination, **options)
+      def stream(destination, **)
         if opened?
           IO.copy_stream(io, destination)
           io.rewind
         else
-          open(**options) { |io| IO.copy_stream(io, destination) }
+          open(**) { |io| IO.copy_stream(io, destination) }
         end
       end
 
       # Part of complying to the IO interface. It delegates to the internally
       # opened IO object.
-      def read(*args)
-        io.read(*args)
+      def read(*)
+        io.read(*)
       end
 
       # Part of complying to the IO interface. It delegates to the internally
@@ -181,8 +181,8 @@ class Shrine
       end
 
       # Calls `#url` on the storage, forwarding any given URL options.
-      def url(**options)
-        storage.url(id, **options)
+      def url(**)
+        storage.url(id, **)
       end
 
       # Calls `#exists?` on the storage, which checks whether the file exists
@@ -192,8 +192,8 @@ class Shrine
       end
 
       # Uploads a new file to this file's location and returns it.
-      def replace(io, **options)
-        uploader.upload(io, **options, location: id)
+      def replace(io, **)
+        uploader.upload(io, **, location: id)
       end
 
       # Calls `#delete` on the storage, which deletes the file from the
@@ -209,12 +209,12 @@ class Shrine
 
       # Returns the data hash in the JSON format. Suitable for storing in a
       # database column or passing to a background job.
-      def to_json(*args)
-        data.to_json(*args)
+      def to_json(*)
+        data.to_json(*)
       end
 
       # Conform to ActiveSupport's JSON interface.
-      def as_json(*args)
+      def as_json(*)
         data
       end
 
@@ -265,8 +265,8 @@ class Shrine
         @io ||= _open
       end
 
-      def _open(**options)
-        storage.open(id, **options)
+      def _open(**)
+        storage.open(id, **)
       end
     end
 

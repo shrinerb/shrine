@@ -46,7 +46,7 @@ class Shrine
         def instrument_extension(mime_type, &block)
           return yield unless respond_to?(:instrument)
 
-          instrument(:extension, mime_type: mime_type, &block)
+          instrument(:extension, mime_type:, &block)
         end
       end
 

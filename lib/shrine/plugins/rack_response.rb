@@ -10,8 +10,8 @@ class Shrine
     module RackResponse
       module FileMethods
         # Returns a Rack response triple for the uploaded file.
-        def to_rack_response(**options)
-          FileResponse.new(self).call(**options)
+        def to_rack_response(**)
+          FileResponse.new(self).call(**)
         end
       end
 
@@ -75,7 +75,7 @@ class Shrine
         def content_disposition(disposition, filename)
           filename ||= file.original_filename || file.id.split("/").last
 
-          ContentDisposition.format(disposition: disposition, filename: filename)
+          ContentDisposition.format(disposition:, filename:)
         end
 
         # Value for the "Content-Range" header.
@@ -98,7 +98,7 @@ class Shrine
         # Returns an object that responds to #each and #close, which yields
         # contents of the file.
         def rack_body(range: nil, **)
-          FileBody.new(file, range: range)
+          FileBody.new(file, range:)
         end
 
         # Retrieves a range value parsed from HTTP "Range" header.

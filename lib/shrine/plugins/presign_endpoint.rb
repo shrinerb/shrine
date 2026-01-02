@@ -21,12 +21,12 @@ class Shrine
         # The `storage_key` needs to be one of the registered Shrine storages.
         # Additional options can be given to override the options given on
         # plugin initialization.
-        def presign_endpoint(storage_key, **options)
+        def presign_endpoint(storage_key, **)
           Shrine::PresignEndpoint.new(
             shrine_class: self,
             storage_key:  storage_key,
             **opts[:presign_endpoint],
-            **options,
+            **,
           )
         end
 
@@ -36,7 +36,7 @@ class Shrine
         # It performs the same mounting logic that Rack and other web
         # frameworks use, and is meant for cases where statically mounting the
         # endpoint in the router isn't enough.
-        def presign_response(storage_key, env, **options)
+        def presign_response(storage_key, env, **)
           script_name = env["SCRIPT_NAME"]
           path_info   = env["PATH_INFO"]
 
@@ -44,7 +44,7 @@ class Shrine
             env["SCRIPT_NAME"] += path_info
             env["PATH_INFO"]    = ""
 
-            presign_endpoint(storage_key, **options).call(env)
+            presign_endpoint(storage_key, **).call(env)
           ensure
             env["SCRIPT_NAME"] = script_name
             env["PATH_INFO"]   = path_info

@@ -18,26 +18,18 @@ class Shrine
       plugin
     end
 
-    # Delegate call to the plugin in a way that works across Ruby versions.
-    def self.load_dependencies(plugin, uploader, *args, **kwargs, &block)
+    # Delegate to the plugin's `load_dependencies` method.
+    def self.load_dependencies(plugin, uploader, ...)
       return unless plugin.respond_to?(:load_dependencies)
 
-      if kwargs.any?
-        plugin.load_dependencies(uploader, *args, **kwargs, &block)
-      else
-        plugin.load_dependencies(uploader, *args, &block)
-      end
+      plugin.load_dependencies(uploader, ...)
     end
 
-    # Delegate call to the plugin in a way that works across Ruby versions.
-    def self.configure(plugin, uploader, *args, **kwargs, &block)
+    # Delegate to the plugin's `load_dependencies` method.
+    def self.configure(plugin, uploader, ...)
       return unless plugin.respond_to?(:configure)
 
-      if kwargs.any?
-        plugin.configure(uploader, *args, **kwargs, &block)
-      else
-        plugin.configure(uploader, *args, &block)
-      end
+      plugin.configure(uploader, ...)
     end
 
     # Register the given plugin with Shrine, so that it can be loaded using

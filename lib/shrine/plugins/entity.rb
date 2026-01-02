@@ -10,7 +10,7 @@ class Shrine
 
       module AttachmentMethods
         # Defines instance methods on initialization.
-        def initialize(name, **options)
+        def initialize(name, **)
           super
 
           define_entity_methods(name)
@@ -59,16 +59,16 @@ class Shrine
 
         # Returns the class attacher instance with loaded entity. It's not
         # memoized because the entity object could be frozen.
-        def attacher(record, **options)
-          attacher = class_attacher(**options)
+        def attacher(record, **)
+          attacher = class_attacher(**)
           attacher.load_entity(record, @name)
           attacher
         end
 
         # Creates an instance of the corresponding attacher class with set
         # name.
-        def class_attacher(**options)
-          attacher = shrine_class::Attacher.new(**@options, **options)
+        def class_attacher(**)
+          attacher = shrine_class::Attacher.new(**@options, **)
           attacher.instance_variable_set(:@name, @name)
           attacher
         end
@@ -81,8 +81,8 @@ class Shrine
         #
         #     attacher = Attacher.from_entity(photo, :image)
         #     attacher.file #=> #<Shrine::UploadedFile>
-        def from_entity(record, name, **options)
-          attacher = new(**options)
+        def from_entity(record, name, **)
+          attacher = new(**)
           attacher.load_entity(record, name)
           attacher
         end

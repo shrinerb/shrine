@@ -11,14 +11,14 @@ class Shrine
       module AttacherMethods
         private
 
-        def cached(value, **options)
+        def cached(value, **)
           cached_file = super
 
           # TODO: Remove this conditional when we remove the versions plugin
           if cached_file.is_a?(Hash) || cached_file.is_a?(Array)
-            uploaded_file(cached_file) { |file| file.refresh_metadata!(**context, **options) }
+            uploaded_file(cached_file) { |file| file.refresh_metadata!(**context, **) }
           else
-            cached_file.refresh_metadata!(**context, **options)
+            cached_file.refresh_metadata!(**context, **)
           end
 
           cached_file

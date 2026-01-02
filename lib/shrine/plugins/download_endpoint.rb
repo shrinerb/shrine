@@ -19,11 +19,11 @@ class Shrine
 
       module ClassMethods
         # Returns the Rack application that retrieves requested files.
-        def download_endpoint(**options)
+        def download_endpoint(**)
           Shrine::DownloadEndpoint.new(
             shrine_class: self,
             **opts[:download_endpoint],
-            **options,
+            **,
           )
         end
 
@@ -33,7 +33,7 @@ class Shrine
         # It uses a trick where it removes the download path prefix from the
         # path info before calling the Rack app, which is what web framework
         # routers do before they're calling a mounted Rack app.
-        def download_response(env, **options)
+        def download_response(env, **)
           script_name = env["SCRIPT_NAME"]
           path_info   = env["PATH_INFO"]
 
@@ -46,7 +46,7 @@ class Shrine
             env["SCRIPT_NAME"] += match.to_s
             env["PATH_INFO"]    = match.post_match
 
-            download_endpoint(**options).call(env)
+            download_endpoint(**).call(env)
           ensure
             env["SCRIPT_NAME"] = script_name
             env["PATH_INFO"]   = path_info
@@ -56,8 +56,8 @@ class Shrine
 
       module FileMethods
         # Returns file URL on the download endpoint.
-        def download_url(**options)
-          FileUrl.new(self).call(**options)
+        def download_url(**)
+          FileUrl.new(self).call(**)
         end
       end
 

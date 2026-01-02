@@ -67,19 +67,19 @@ class Shrine
         end
 
         # Does a background promote if promote block was registered.
-        def promote_cached(**options)
+        def promote_cached(**)
           if promote? && promote_block
-            promote_background(**options)
+            promote_background(**)
           else
             super
           end
         end
 
         # Calls the registered promote block.
-        def promote_background(**options)
+        def promote_background(**)
           fail Error, "promote block is not registered" unless promote_block
 
-          background_block(promote_block, **options)
+          background_block(promote_block, **)
         end
 
         # Does a background destroy if destroy block was registered.
@@ -92,19 +92,19 @@ class Shrine
         end
 
         # Calls the registered destroy block.
-        def destroy_background(**options)
+        def destroy_background(**)
           fail Error, "destroy block is not registered" unless destroy_block
 
-          background_block(destroy_block, **options)
+          background_block(destroy_block, **)
         end
 
         private
 
-        def background_block(block, **options)
+        def background_block(block, **)
           if block.arity == 1
-            block.call(self, **options)
+            block.call(self, **)
           else
-            instance_exec(**options, &block)
+            instance_exec(**, &block)
           end
         end
       end

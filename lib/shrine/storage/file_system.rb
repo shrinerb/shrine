@@ -59,8 +59,8 @@ class Shrine
 
       # Opens the file on the given location in read mode. Accepts additional
       # `File.open` arguments.
-      def open(id, **options)
-        path(id).open(binmode: true, **options)
+      def open(id, **)
+        path(id).open(binmode: true, **)
       rescue Errno::ENOENT
         raise Shrine::FileNotFound, "file #{id.inspect} not found on storage"
       end
@@ -75,7 +75,7 @@ class Shrine
       # from the returned path (e.g. #directory can be set to "public" folder).
       # Both cases accept a `:host` value which will be prefixed to the
       # generated path.
-      def url(id, host: nil, **options)
+      def url(id, host: nil, **)
         path = (prefix ? relative_path(id) : path(id)).to_s
         host ? host + path : path
       end
@@ -123,7 +123,7 @@ class Shrine
       # Cleans all empty subdirectories up the hierarchy.
       def clean(path)
         path.dirname.ascend do |pathname|
-          if dir_empty?(pathname) && pathname != directory
+          if Dir.empty?(pathname) && pathname != directory
             pathname.rmdir
           else
             break
@@ -174,10 +174,6 @@ class Shrine
         Pathname("#{directory}/") # add trailing slash to make it work with symlinks
           .find
           .each { |path| yield path if path.file? }
-      end
-
-      def dir_empty?(path)
-        Dir.empty?(path)
       end
     end
   end

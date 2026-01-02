@@ -57,7 +57,7 @@ class Shrine
         def dimensions_analyzer(name)
           on_error = opts[:store_dimensions][:on_error]
 
-          DimensionsAnalyzer.new(name, on_error: on_error).method(:call)
+          DimensionsAnalyzer.new(name, on_error:).method(:call)
         end
 
         private
@@ -66,7 +66,7 @@ class Shrine
         def instrument_dimensions(io, &block)
           return yield unless respond_to?(:instrument)
 
-          instrument(:image_dimensions, io: io, &block)
+          instrument(:image_dimensions, io:, &block)
         end
       end
 

@@ -169,14 +169,14 @@ class Shrine
           end
         end
 
-        def library_send(method_name, *args, &block)
+        def library_send(method_name, ...)
           case notifications.to_s
           when /Dry::Monitor::Notifications/
-            send(:"dry_monitor_#{method_name}", *args, &block)
+            send(:"dry_monitor_#{method_name}", ...)
           when /ActiveSupport::Notifications/
-            send(:"active_support_#{method_name}", *args, &block)
+            send(:"active_support_#{method_name}", ...)
           else
-            notifications.send(method_name, *args, &block)
+            notifications.send(method_name, ...)
           end
         end
       end
@@ -224,14 +224,14 @@ class Shrine
           event.duration.to_i
         end
 
-        def library_send(method_name, *args, &block)
+        def library_send(method_name, ...)
           case event.class.name
           when "ActiveSupport::Notifications::Event"
-            send(:"active_support_#{method_name}", *args, &block)
+            send(:"active_support_#{method_name}", ...)
           when "Dry::Events::Event"
-            send(:"dry_events_#{method_name}", *args, &block)
+            send(:"dry_events_#{method_name}", ...)
           else
-            event.send(method_name, *args, &block)
+            event.send(method_name, ...)
           end
         end
       end

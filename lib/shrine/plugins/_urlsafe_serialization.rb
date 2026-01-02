@@ -23,8 +23,8 @@ class Shrine
       end
 
       module FileMethods
-        def urlsafe_dump(**options)
-          self.class.urlsafe_dump(self, **options)
+        def urlsafe_dump(**)
+          self.class.urlsafe_dump(self, **)
         end
 
         def urlsafe_data(metadata: [])
@@ -45,8 +45,8 @@ class Shrine
       end
 
       module FileClassMethods
-        def urlsafe_dump(file, **options)
-          data = file.urlsafe_data(**options)
+        def urlsafe_dump(file, **)
+          data = file.urlsafe_data(**)
 
           shrine_class.urlsafe_serialize(data)
         end

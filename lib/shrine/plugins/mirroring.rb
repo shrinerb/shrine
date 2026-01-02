@@ -51,9 +51,9 @@ class Shrine
 
       module InstanceMethods
         # Mirrors upload to other mirror storages.
-        def upload(io, mirror: true, **options)
-          file = super(io, **options)
-          file.trigger_mirror_upload(**options) if mirror
+        def upload(io, mirror: true, **)
+          file = super(io, **)
+          file.trigger_mirror_upload(**) if mirror
           file
         end
       end
@@ -61,31 +61,31 @@ class Shrine
       module FileMethods
         # Mirrors upload if mirrors are defined. Calls mirror block if
         # registered, otherwise mirrors synchronously.
-        def trigger_mirror_upload(**options)
+        def trigger_mirror_upload(**)
           return unless shrine_class.mirrors[storage_key] && shrine_class.mirror_upload?
 
           if shrine_class.mirror_upload_block
-            mirror_upload_background(**options)
+            mirror_upload_background(**)
           else
-            mirror_upload(**options)
+            mirror_upload(**)
           end
         end
 
         # Calls mirror upload block.
-        def mirror_upload_background(**options)
+        def mirror_upload_background(**)
           fail Error, "mirror upload block is not registered" unless shrine_class.mirror_upload_block
 
-          shrine_class.mirror_upload_block.call(self, **options)
+          shrine_class.mirror_upload_block.call(self, **)
         end
 
         # Uploads the file to each mirror storage.
-        def mirror_upload(**options)
+        def mirror_upload(**)
           previously_opened = opened?
 
           each_mirror do |mirror|
             rewind if opened?
 
-            shrine_class.upload(self, mirror, **options, location: id, close: false, action: :mirror)
+            shrine_class.upload(self, mirror, **, location: id, close: false, action: :mirror)
           end
         ensure
           if opened? && !previously_opened

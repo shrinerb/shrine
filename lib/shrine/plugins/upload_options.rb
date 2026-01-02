@@ -15,7 +15,7 @@ class Shrine
         def _upload(io, **options)
           upload_options = get_upload_options(io, options)
 
-          super(io, **options, upload_options: upload_options)
+          super(io, **options, upload_options:)
         end
 
         def get_upload_options(io, options)

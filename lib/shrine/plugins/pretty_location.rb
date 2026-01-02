@@ -10,8 +10,8 @@ class Shrine
       end
 
       module InstanceMethods
-        def generate_location(io, **options)
-          pretty_location(io, **options)
+        def generate_location(io, **)
+          pretty_location(io, **)
         end
 
         def pretty_location(io, name: nil, record: nil, version: nil, derivative: nil, identifier: nil, metadata: {}, **)

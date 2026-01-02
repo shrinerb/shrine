@@ -37,7 +37,7 @@ class Shrine
         def instrument_signature(io, algorithm, format, &block)
           return yield unless respond_to?(:instrument)
 
-          instrument(:signature, io: io, algorithm: algorithm, format: format, &block)
+          instrument(:signature, io:, algorithm:, format:, &block)
         end
       end
 
@@ -45,7 +45,7 @@ class Shrine
         # Calculates `algorithm` hash of the contents of the IO object, and
         # encodes it into `format`.
         def calculate_signature(io, algorithm, format: :hex)
-          self.class.calculate_signature(io, algorithm, format: format)
+          self.class.calculate_signature(io, algorithm, format:)
         end
       end
 

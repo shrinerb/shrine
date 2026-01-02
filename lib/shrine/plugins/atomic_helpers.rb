@@ -14,14 +14,14 @@ class Shrine
         #
         #     Shrine::Attacher.retrieve(model: photo, name: :image, file: file_data)
         #     #=> #<ImageUploader::Attacher>
-        def retrieve(model: nil, entity: nil, name:, file:, **options)
+        def retrieve(model: nil, entity: nil, name:, file:, **)
           fail ArgumentError, "either :model or :entity is required" unless model || entity
 
           record = model || entity
 
-          attacher   = record.send(:"#{name}_attacher", **options) if record.respond_to?(:"#{name}_attacher")
-          attacher ||= from_model(record, name, **options) if model
-          attacher ||= from_entity(record, name, **options) if entity
+          attacher   = record.send(:"#{name}_attacher", **) if record.respond_to?(:"#{name}_attacher")
+          attacher ||= from_model(record, name, **) if model
+          attacher ||= from_entity(record, name, **) if entity
 
           if attacher.file != attacher.uploaded_file(file)
             fail Shrine::AttachmentChanged, "attachment has changed"
@@ -43,13 +43,13 @@ class Shrine
         #
         # This more convenient to use with concrete persistence plugins, which
         # provide defaults for reloading and persistence.
-        def abstract_atomic_promote(reload:, persist:, **options, &block)
+        def abstract_atomic_promote(reload:, persist:, **, &block)
           original_file = file
 
-          result = promote(**options)
+          result = promote(**)
 
           begin
-            abstract_atomic_persist(original_file, reload: reload, persist: persist, &block)
+            abstract_atomic_persist(original_file, reload:, persist:, &block)
             result
           rescue Shrine::AttachmentChanged
             destroy_attached

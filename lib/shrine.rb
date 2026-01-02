@@ -68,9 +68,9 @@ class Shrine
     #
     #     Shrine.plugin MyPlugin
     #     Shrine.plugin :my_plugin
-    def plugin(plugin, *args, **kwargs, &block)
+    def plugin(plugin, ...)
       plugin = Plugins.load_plugin(plugin) if plugin.is_a?(Symbol)
-      Plugins.load_dependencies(plugin, self, *args, **kwargs, &block)
+      Plugins.load_dependencies(plugin, self, ...)
       self.include(plugin::InstanceMethods) if defined?(plugin::InstanceMethods)
       self.extend(plugin::ClassMethods) if defined?(plugin::ClassMethods)
       self::UploadedFile.include(plugin::FileMethods) if defined?(plugin::FileMethods)
@@ -79,7 +79,7 @@ class Shrine
       self::Attachment.extend(plugin::AttachmentClassMethods) if defined?(plugin::AttachmentClassMethods)
       self::Attacher.include(plugin::AttacherMethods) if defined?(plugin::AttacherMethods)
       self::Attacher.extend(plugin::AttacherClassMethods) if defined?(plugin::AttacherClassMethods)
-      Plugins.configure(plugin, self, *args, **kwargs, &block)
+      Plugins.configure(plugin, self, ...)
       plugin
     end
 
@@ -95,8 +95,8 @@ class Shrine
     #     class Photo
     #       include Shrine::Attachment(:image) # creates a Shrine::Attachment object
     #     end
-    def Attachment(name, **args)
-      self::Attachment.new(name, **args)
+    def Attachment(name, **)
+      self::Attachment.new(name, **)
     end
     alias attachment Attachment
     alias [] Attachment
@@ -104,8 +104,8 @@ class Shrine
     # Uploads the file to the specified storage. It delegates to `Shrine#upload`.
     #
     #     Shrine.upload(io, :store) #=> #<Shrine::UploadedFile>
-    def upload(io, storage, **options)
-      new(storage).upload(io, **options)
+    def upload(io, storage, **)
+      new(storage).upload(io, **)
     end
 
     # Instantiates a Shrine::UploadedFile from a hash, and optionally
@@ -201,13 +201,13 @@ class Shrine
     #   uploader.upload(io, metadata: { "foo" => "bar" })           # add metadata
     #   uploader.upload(io, location: "path/to/file")               # specify location
     #   uploader.upload(io, upload_options: { acl: "public-read" }) # add upload options
-    def upload(io, **options)
+    def upload(io, **)
       _enforce_io(io)
 
-      metadata = get_metadata(io, **options)
-      location = get_location(io, **options, metadata: metadata)
+      metadata = get_metadata(io, **)
+      location = get_location(io, **, metadata:)
 
-      _upload(io, **options, location: location, metadata: metadata)
+      _upload(io, **, location:, metadata:)
 
       self.class::UploadedFile.new(
         id:       location,
@@ -219,13 +219,13 @@ class Shrine
     # Generates a unique location for the uploaded file, preserving the
     # file extension. Can be overriden in uploaders for generating custom
     # location.
-    def generate_location(io, metadata: {}, **options)
-      basic_location(io, metadata: metadata)
+    def generate_location(io, metadata: {}, **)
+      basic_location(io, metadata:)
     end
 
     # Extracts filename, size and MIME type from the file, which is later
     # accessible through UploadedFile#metadata.
-    def extract_metadata(io, **options)
+    def extract_metadata(io, **)
       {
         "filename"  => extract_filename(io),
         "size"      => extract_size(io),
@@ -281,11 +281,11 @@ class Shrine
 
     # If the IO object is a Shrine::UploadedFile, it simply copies over its
     # metadata, otherwise it calls #extract_metadata.
-    def get_metadata(io, metadata: nil, **options)
+    def get_metadata(io, metadata: nil, **)
       if io.is_a?(UploadedFile) && metadata != true
         result = io.metadata.dup
       elsif metadata != false
-        result = extract_metadata(io, **options)
+        result = extract_metadata(io, **)
       else
         result = {}
       end
@@ -296,8 +296,8 @@ class Shrine
 
     # Retrieves the location for the given IO and context. First it looks
     # for the `:location` option, otherwise it calls #generate_location.
-    def get_location(io, location: nil, **options)
-      location ||= generate_location(io, **options)
+    def get_location(io, location: nil, **)
+      location ||= generate_location(io, **)
       location or fail Error, "location generated for #{io.inspect} was nil"
     end
 

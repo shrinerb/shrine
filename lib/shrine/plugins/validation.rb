@@ -24,21 +24,21 @@ class Shrine
         attr_reader :errors
 
         # Initializes validation errors to an empty array.
-        def initialize(**options)
+        def initialize(**)
           super
           @errors = []
         end
 
         # Performs validations after attaching cached file.
-        def attach_cached(value, validate: nil, **options)
-          result = super(value, validate: false, **options)
+        def attach_cached(value, validate: nil, **)
+          result = super(value, validate: false, **)
           validation(validate)
           result
         end
 
         # Performs validations after attaching file.
-        def attach(io, validate: nil, **options)
-          result = super(io, **options)
+        def attach(io, validate: nil, **)
+          result = super(io, **)
           validation(validate)
           result
         end
@@ -61,16 +61,16 @@ class Shrine
         end
 
         # Calls #validate_block, passing it accepted parameters.
-        def _validate(**options)
+        def _validate(**)
           if method(:validate_block).arity.zero?
             validate_block
           else
-            validate_block(**options)
+            validate_block(**)
           end
         end
 
         # Overridden by the `Attacher.validate` block.
-        def validate_block(**options)
+        def validate_block(**)
         end
       end
     end

@@ -29,11 +29,9 @@ class Shrine
       end
 
       module InstanceMethods
-        def extract_metadata(io, **options)
+        def extract_metadata(io, **)
           metadata = super
-
-          extract_custom_metadata(io, **options, metadata: metadata)
-
+          extract_custom_metadata(io, **, metadata:)
           metadata
         end
 

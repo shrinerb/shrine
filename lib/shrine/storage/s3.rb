@@ -68,10 +68,10 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method
       # [configuring AWS SDK]: https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html
-      def initialize(bucket:, client: nil, prefix: nil, upload_options: {}, multipart_threshold: {}, max_multipart_parts: nil, signer: nil, public: nil, copy_options: COPY_OPTIONS, **s3_options)
+      def initialize(bucket:, client: nil, prefix: nil, upload_options: {}, multipart_threshold: {}, max_multipart_parts: nil, signer: nil, public: nil, copy_options: COPY_OPTIONS, **)
         raise ArgumentError, "the :bucket option is nil" unless bucket
 
-        @client = client || Aws::S3::Client.new(**s3_options)
+        @client = client || Aws::S3::Client.new(**)
         @transfer_manager = Aws::S3::TransferManager.new(client: @client) if defined?(Aws::S3::TransferManager)
         @bucket = Aws::S3::Bucket.new(name: bucket, client: @client)
         @prefix = prefix
@@ -98,8 +98,7 @@ class Shrine
         options[:content_disposition] = ContentDisposition.inline(filename) if filename
         options[:acl] = "public-read" if public
 
-        options.merge!(@upload_options)
-        options.merge!(upload_options)
+        options.merge!(@upload_options, upload_options)
 
         if copyable?(io)
           copy(io, id, **options)
@@ -117,8 +116,8 @@ class Shrine
       # Any additional options are forwarded to [`Aws::S3::Object#get`].
       #
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
-      def open(id, rewindable: true, encoding: nil, **options)
-        chunks, length = get(id, **options)
+      def open(id, rewindable: true, encoding: nil, **)
+        chunks, length = get(id, **)
 
         Down::ChunkedIO.new(chunks: chunks, rewindable: rewindable, size: length, encoding: encoding)
       rescue Aws::S3::Errors::NoSuchKey
@@ -146,11 +145,11 @@ class Shrine
       #
       # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method
       # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#public_url-instance_method
-      def url(id, public: self.public, host: nil, **options)
+      def url(id, public: self.public, host: nil, **)
         if public || signer
-          url = object(id).public_url(**options)
+          url = object(id).public_url(**)
         else
-          url = object(id).presigned_url(:get, **options)
+          url = object(id).presigned_url(:get, **)
         end
 
         if host
@@ -160,7 +159,7 @@ class Shrine
         end
 
         if signer
-          url = signer.call(url, **options)
+          url = signer.call(url, **)
         end
 
         url
@@ -191,8 +190,7 @@ class Shrine
         options = {}
         options[:acl] = "public-read" if public
 
-        options.merge!(@upload_options)
-        options.merge!(presign_options)
+        options.merge!(@upload_options, presign_options)
 
         send(:"presign_#{method}", id, options)
       end
@@ -237,16 +235,16 @@ class Shrine
       # Falls back to the original code using the older, now depricated
       # AWS APIs for users of older version of the AWS Gem.
       # for multipart uploads of large files.
-      def put(io, id, **options)
+      def put(io, id, **)
         if @transfer_manager
-          @transfer_manager.upload_stream(bucket: bucket.name, key: object_key(id), part_size: part_size(io), **options) do |write_stream|
+          @transfer_manager.upload_stream(bucket: bucket.name, key: object_key(id), part_size: part_size(io), **) do |write_stream|
             IO.copy_stream(io, write_stream)
           end
         elsif io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
-          object(id).put(body: io, **options)
+          object(id).put(body: io, **)
         else
           # multipart upload old API
-          object(id).upload_stream(part_size: part_size(io), **options) do |write_stream|
+          object(id).upload_stream(part_size: part_size(io), **) do |write_stream|
             IO.copy_stream(io, write_stream)
           end
         end
@@ -265,8 +263,7 @@ class Shrine
           options.merge!(multipart_copy: true, content_length: io.size)
         end
 
-        options.merge!(@copy_options)
-        options.merge!(copy_options)
+        options.merge!(@copy_options, copy_options)
 
         object(id).copy_from(io.storage.object(io.id), **options)
       end
@@ -284,13 +281,14 @@ class Shrine
 
         # When any of these options are specified, the corresponding request
         # headers must be included in the upload request.
-        headers = {}
-        headers["Content-Length"]      = options[:content_length]      if options[:content_length]
-        headers["Content-Type"]        = options[:content_type]        if options[:content_type]
-        headers["Content-Disposition"] = options[:content_disposition] if options[:content_disposition]
-        headers["Content-Encoding"]    = options[:content_encoding]    if options[:content_encoding]
-        headers["Content-Language"]    = options[:content_language]    if options[:content_language]
-        headers["Content-MD5"]         = options[:content_md5]         if options[:content_md5]
+        headers = {
+          "Content-Length"      => options[:content_length],
+          "Content-Type"        => options[:content_type],
+          "Content-Disposition" => options[:content_disposition],
+          "Content-Encoding"    => options[:content_encoding],
+          "Content-Language"    => options[:content_language],
+          "Content-MD5"         => options[:content_md5],
+        }.compact
 
         { method: :put, url: url, headers: headers }
       end
@@ -311,8 +309,8 @@ class Shrine
       # object before all content is downloaded, so we hack our way around it.
       # This way get the content length without an additional HEAD request.
       if Gem::Version.new(Aws::CORE_GEM_VERSION) >= Gem::Version.new("3.104.0")
-        def get(id, **params)
-          enum = object(id).enum_for(:get, **params)
+        def get(id, **)
+          enum = object(id).enum_for(:get, **)
 
           begin
             content_length = Integer(enum.peek.last["content-length"])
@@ -325,8 +323,8 @@ class Shrine
           [chunks, content_length]
         end
       else
-        def get(id, **params)
-          req = client.build_request(:get_object, bucket: bucket.name, key: object_key(id), **params)
+        def get(id, **)
+          req = client.build_request(:get_object, bucket: bucket.name, key: object_key(id), **)
 
           body = req.enum_for(:send_request)
           begin
@@ -369,10 +367,10 @@ class Shrine
 
         # Save the encryption client and continue initialization with normal
         # client.
-        def initialize(client: nil, **options)
+        def initialize(client: nil, **)
           return super unless client.class.name.start_with?("Aws::S3::Encryption")
 
-          super(client: client.client, **options)
+          super(client: client.client, **)
           @encryption_client = client
         end
 
@@ -380,19 +378,19 @@ class Shrine
 
         # Encryption client doesn't support multipart uploads, so we always use
         # #put_object.
-        def put(io, id, **options)
+        def put(io, id, **)
           return super unless encryption_client
 
-          encryption_client.put_object(body: io, bucket: bucket.name, key: object_key(id), **options)
+          encryption_client.put_object(body: io, bucket: bucket.name, key: object_key(id), **)
         end
 
-        def get(id, **options)
+        def get(id, **)
           return super unless encryption_client
 
           # Encryption client v2 warns against streaming download, so we first
           # download all content into a file.
           tempfile = Tempfile.new("shrine-s3", binmode: true)
-          response = encryption_client.get_object(response_target: tempfile, bucket: bucket.name, key: object_key(id), **options)
+          response = encryption_client.get_object(response_target: tempfile, bucket: bucket.name, key: object_key(id), **)
           tempfile.rewind
 
           chunks = Enumerator.new do |yielder|
