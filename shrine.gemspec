@@ -38,7 +38,7 @@ direct uploads for fully asynchronous user experience.
 
   # general testing helpers
   gem.add_development_dependency "rake", ">= 11.1"
-  gem.add_development_dependency "minitest", "~> 5.8"
+  gem.add_development_dependency "minitest", "~> 6.0"
   gem.add_development_dependency "mocha", "~> 1.11"
 
   # for endpoint plugins
