@@ -308,6 +308,19 @@ uploaded_file.derivation_url(:thumbnail, prefix: "transformations/image")
 #=> ".../transformations/image/thumbnail/eyJpZCI6ImZvbyIsInN?signature=..."
 ```
 
+## File Extension
+
+Some HTTP clients and CDNs use the URL path extension to determine the content
+type of the response. You can append a file extension to the derivation URL
+path with the `:extension` option:
+
+```rb
+uploaded_file.derivation_url(:thumbnail, extension: "jpg")
+#=> ".../thumbnail/eyJpZCI6ImZvbyIsInN.jpg?signature=..."
+```
+
+The extension is included in the URL signature, so it cannot be tampered with.
+
 ## Expiration
 
 By default derivation URLs are valid indefinitely. If you want URLs to expire

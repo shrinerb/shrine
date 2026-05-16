@@ -303,9 +303,9 @@ class Shrine
   class Derivation::Url < Derivation::Command
     delegate :name, :args, :source, :secret_key, :signer
 
-    def call(host: nil, prefix: nil, metadata: [], **)
+    def call(host: nil, prefix: nil, metadata: [], extension: nil, **)
       base_url = [host, *prefix].join("/")
-      path = path_identifier(metadata:)
+      path = path_identifier(metadata:, extension:)
 
       if signer
         url = [base_url, path].join("/")
@@ -318,12 +318,13 @@ class Shrine
 
     private
 
-    def path_identifier(metadata: [])
-      [
+    def path_identifier(metadata: [], extension: nil)
+      path = [
         name,
         *args,
         source.urlsafe_dump(metadata:)
       ].map{|component| Rack::Utils.escape_path(component.to_s)}.join('/')
+      extension ? "#{path}.#{extension}" : path
     end
 
     def query(expires_in: nil,
@@ -386,6 +387,7 @@ class Shrine
       check_expiry!(request)
 
       name, *args, serialized_file = request.path_info.split("/")[1..-1]
+      serialized_file = serialized_file.sub(/\.\w+$/, "")
 
       name          = name.to_sym
       uploaded_file = shrine_class::UploadedFile.urlsafe_load(serialized_file)
