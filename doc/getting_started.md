@@ -602,7 +602,8 @@ creation:
 
 ```rb
 # Gemfile
-gem "image_processing", "~> 1.8"
+gem "image_processing", "~> 2.0"
+gem "mini_magick", "~> 5.0"
 ```
 ```rb
 Shrine.plugin :derivatives, create_on_promote: true
@@ -656,7 +657,8 @@ processing we want to perform:
 
 ```rb
 # Gemfile
-gem "image_processing", "~> 1.8"
+gem "image_processing", "~> 2.0"
+gem "mini_magick", "~> 5.0"
 ```
 ```rb
 # config/initializers/rails.rb (Rails)

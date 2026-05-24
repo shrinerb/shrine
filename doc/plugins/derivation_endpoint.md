@@ -35,7 +35,8 @@ apply to an attached file. For example, we can generate image thumbnails using
 the [ImageProcessing] gem:
 
 ```rb
-gem "image_processing", "~> 1.8"
+gem "image_processing", "~> 2.0"
+gem "mini_magick", "~> 5.0"
 ```
 ```rb
 require "image_processing/mini_magick"

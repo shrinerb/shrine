@@ -36,7 +36,8 @@ derivatives generated). Let's assume you're generating image thumbnails:
 
 ```rb
 # Gemfile
-gem "image_processing", "~> 1.8"
+gem "image_processing", "~> 2.0"
+gem "mini_magick", "~> 5.0"
 ```
 ```rb
 require "image_processing/mini_magick"
