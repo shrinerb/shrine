@@ -107,6 +107,14 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_match %r{type=text%2Fcsv}, derivation_url
     end
 
+    it "applies :format" do
+      derivation_url = @uploaded_file.derivation_url(:gray)
+      refute_match %r{/\w+\.\w+\?}, derivation_url
+
+      derivation_url = @uploaded_file.derivation_url(:gray, format: "jpg")
+      assert_match %r{/\w+\.jpg\?}, derivation_url
+    end
+
     it "applies :filename" do
       derivation_url = @uploaded_file.derivation_url(:gray)
       refute_match %r{filename=}, derivation_url
@@ -237,6 +245,12 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app(disposition: "attachment").get(derivation_url)
       assert_equal 200,          response.status
       assert_match "attachment", response.headers["Content-Disposition"]
+    end
+
+    it "applies 'format' in URL path" do
+      derivation_url = @uploaded_file.derivation_url(:gray, format: "jpg")
+      response = app.get(derivation_url)
+      assert_equal 200, response.status
     end
 
     it "applies 'type' param" do
