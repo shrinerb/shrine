@@ -303,9 +303,9 @@ class Shrine
   class Derivation::Url < Derivation::Command
     delegate :name, :args, :source, :secret_key, :signer
 
-    def call(host: nil, prefix: nil, metadata: [], extension: nil, **)
+    def call(host: nil, prefix: nil, metadata: [], format: nil, **)
       base_url = [host, *prefix].join("/")
-      path = path_identifier(metadata:, extension:)
+      path = path_identifier(metadata:, format:)
 
       if signer
         url = [base_url, path].join("/")
@@ -318,13 +318,13 @@ class Shrine
 
     private
 
-    def path_identifier(metadata: [], extension: nil)
+    def path_identifier(metadata: [], format: nil)
       path = [
         name,
         *args,
         source.urlsafe_dump(metadata:)
       ].map{|component| Rack::Utils.escape_path(component.to_s)}.join('/')
-      extension ? "#{path}.#{extension}" : path
+      format ? "#{path}.#{format}" : path
     end
 
     def query(expires_in: nil,

@@ -107,11 +107,11 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_match %r{type=text%2Fcsv}, derivation_url
     end
 
-    it "applies :extension" do
+    it "applies :format" do
       derivation_url = @uploaded_file.derivation_url(:gray)
       refute_match %r{/\w+\.\w+\?}, derivation_url
 
-      derivation_url = @uploaded_file.derivation_url(:gray, extension: "jpg")
+      derivation_url = @uploaded_file.derivation_url(:gray, format: "jpg")
       assert_match %r{/\w+\.jpg\?}, derivation_url
     end
 
@@ -247,8 +247,8 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_match "attachment", response.headers["Content-Disposition"]
     end
 
-    it "applies 'extension' in URL path" do
-      derivation_url = @uploaded_file.derivation_url(:gray, extension: "jpg")
+    it "applies 'format' in URL path" do
+      derivation_url = @uploaded_file.derivation_url(:gray, format: "jpg")
       response = app.get(derivation_url)
       assert_equal 200, response.status
     end

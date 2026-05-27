@@ -308,14 +308,14 @@ uploaded_file.derivation_url(:thumbnail, prefix: "transformations/image")
 #=> ".../transformations/image/thumbnail/eyJpZCI6ImZvbyIsInN?signature=..."
 ```
 
-## File Extension
+## Format
 
 Some HTTP clients and CDNs use the URL path extension to determine the content
 type of the response. You can append a file extension to the derivation URL
-path with the `:extension` option:
+path with the `:format` option:
 
 ```rb
-uploaded_file.derivation_url(:thumbnail, extension: "jpg")
+uploaded_file.derivation_url(:thumbnail, format: "jpg")
 #=> ".../thumbnail/eyJpZCI6ImZvbyIsInN.jpg?signature=..."
 ```
 
