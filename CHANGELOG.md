@@ -1,10 +1,20 @@
-## Unreleased
+## 3.7.0 (2026-05-27)
 
-* `download_endpoint` - Add support for expiring URLs
+* `download_endpoint` - Add support for expiring URLs (@davidwessman)
 
 * `s3` - Use `TransferManager` where available instead of deprecated `upload_steam` (@danieldevlewis)
 
 * `column` - Don't attempt to deserialize empty string as JSON (@adam12)
+
+* `derivatives` - Add `:keep_derivatives` plugin option to keep existing derivatives when a new file is attached (@fnordfish)
+
+* `refresh_metadata` - Add `replace:` keyword argument to `refresh_metadata!` for replacing instead of merging existing metadata (@JacobGalati)
+
+* `backgrounding` - Fix options not being forwarded from `promote_cached` to `promote_block` (@4ndypanda)
+
+* Fix URI default parser warnings in `UploadedFile` (@adam12)
+
+* Drop support for Ruby < 3.2
 
 ## 3.6.0 (2024-04-29)
 
