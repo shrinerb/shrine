@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>1.4.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,23 +29,21 @@
 <div class='paths'>
 doc/release_notes/1.4.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+1.4.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_4_0_md.html">1.4.0</a><span><a href="#label-title-3A+Shrine+1.4.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+1.4.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-140"><a href="#title-shrine-140">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_4_0_md.html">1.4.0</a></a></h2>
 
-<h1 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-New+features" class="legacy-anchor"></span>
+<h1 id="new-features"><a href="#new-features">New features</a></h1>
 <ul><li>
-<p>Added delete_promoted plugin for deleting files that have been promoted, which  applies to any cached files that have been uploaded to store.</p>
+<p>Added delete_promoted plugin for deleting files that have been promoted, which applies to any cached files that have been uploaded to store.</p>
 </li><li>
-<p>Added <code>:fallbacks</code> option to versions plugin, which allows specifying  fallback URLs for versions which haven't finished processing yet.</p>
+<p>Added <code>:fallbacks</code> option to versions plugin, which allows specifying fallback URLs for versions which haven’t finished processing yet.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
@@ -58,7 +57,7 @@ Last Update:
 <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span>(<span class="ruby-value">:large_2x</span>) <span class="ruby-comment"># returns :large URL until :large_2x becomes available</span>
 </pre>
 <ul><li>
-<p>Added ability to do custom backgrounding via <code>Attacher.dump</code> and  <code>Attacher.load</code>.</p>
+<p>Added ability to do custom backgrounding via <code>Attacher.dump</code> and <code>Attacher.load</code>.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Record</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>
@@ -80,13 +79,13 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p>Added <code>:presign_location</code> to direct_upload plugin for generating the location  for presigned upload.</p>
+<p>Added <code>:presign_location</code> to direct_upload plugin for generating the location for presigned upload.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:direct_upload</span>, <span class="ruby-value">presign:</span> <span class="ruby-keyword">true</span>, <span class="ruby-value">presign_location:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">r</span>) { <span class="ruby-string">&quot;${filename}&quot;</span> }
 </pre>
 <ul><li>
-<p>Added <code>:filename</code> to data_uri for generating filenames based on content type  of the data URI, in order for filename's extension to be automatically used  in uploaded file's location.</p>
+<p>Added <code>:filename</code> to <a href="../../lib/shrine/plugins/data_uri_rb.html">data_uri</a> for generating filenames based on content type of the data URI, in order for filename’s extension to be automatically used in uploaded file’s location.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;mime/types&quot;</span>
@@ -97,71 +96,74 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h1 id="other-improvements"><a href="#other-improvements">Other improvements</a></h1>
 <ul><li>
-<p>The download_endpoint now sets the <code>Content-Length</code> response header, if the  size of the uploaded file is available (S3 now supports it).</p>
+<p>The <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> now sets the <code>Content-Length</code> response header, if the size of the uploaded file is available (S3 now supports it).</p>
 </li><li>
-<p>It's now possible to swap S3 storage with FileSystem when using presigns in  direct_upload plugin, without changing any code, which is very useful in  tests.</p>
+<p>It’s now possible to swap S3 storage with FileSystem when using presigns in direct_upload plugin, without changing any code, which is very useful in tests.</p>
 </li><li>
-<p>The backup plugin now waits for the record to be saved with stored files  before it starts uploading to backup storage.</p>
+<p>The backup plugin now waits for the record to be saved with stored files before it starts uploading to backup storage.</p>
 </li><li>
-<p>The logging plugin now logs both number of input and output files for  processing.</p>
+<p>The logging plugin now logs both number of input and output files for processing.</p>
 </li><li>
-<p>The migration_helpers now has a <code>:delegate</code> option, which when set to false  doesn't add any additional methods to the model.</p>
+<p>The migration_helpers now has a <code>:delegate</code> option, which when set to false doesn’t add any additional methods to the model.</p>
 </li><li>
-<p>In restore_cached_data plugin the cached file is now closed after the  metadata has been extracted.</p>
+<p>In <a href="../../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> plugin the cached file is now closed after the metadata has been extracted.</p>
 </li><li>
-<p><code>Attacher#promote</code> can now accept a phase, which makes it more generic and  can now be used for securely reuploading stored files (no processing, aborts  if attachment changes, old file is deleted with delete_promoted plugin),  which is useful for moving to new location.</p>
+<p><code>Attacher#promote</code> can now accept a phase, which makes it more generic and can now be used for securely reuploading stored files (no processing, aborts if attachment changes, old file is deleted with delete_promoted plugin), which is useful for moving to new location.</p>
 </li><li>
 <p>The <code>:presign_options</code> now accepts a static hash in addition to a block.</p>
 </li><li>
-<p>The direct_upload endpoint has now been refactored into methods, which means  its now easier to override parts of its behaviour.</p>
+<p>The direct_upload endpoint has now been refactored into methods, which means its now easier to override parts of its behaviour.</p>
 </li><li>
-<p>The user-defined hooks will now happen outside logging, regardless of the  load order of logging and hooks plugins.</p>
+<p>The user-defined hooks will now happen outside logging, regardless of the load order of logging and hooks plugins.</p>
 </li><li>
-<p>The parallelize plugin doesn't depend on the <a target="_top" href="https://github.com/meh/ruby-thread">thread</a> gem anymore, it now  uses threads directly.</p>
+<p>The parallelize plugin doesn’t depend on the <a target="_top" href="https://github.com/meh/ruby-thread">thread</a> gem anymore, it now uses threads directly.</p>
 </li><li>
-<p>Improved the storage linter; it now accounts for some subtleties which could  potentially make some storages error, it fails fast, and it tests the content  length in streaming.</p>
+<p>Improved the storage linter; it now accounts for some subtleties which could potentially make some storages error, it fails fast, and it tests the content length in streaming.</p>
 </li><li>
 <p>The <code>before_*</code> and <code>after_*</code> hooks now always happen around <code>around_*</code> hooks.</p>
 </li><li>
-<p>The IO is now automatically rewinded when custom analyzer is used with  determine_mime_type and store_dimensions plugins.</p>
+<p>The IO is now automatically rewinded when custom analyzer is used with <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> and <a href="../../lib/shrine/plugins/store_dimensions_rb.html">store_dimensions</a> plugins.</p>
 </li></ul>
 
-<h1 id="label-Bug+fixes">Bug fixes<span><a href="#label-Bug+fixes">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Bug+fixes" class="legacy-anchor"></span>
+<h1 id="bug-fixes"><a href="#bug-fixes">Bug fixes</a></h1>
 <ul><li>
 <p>Fixed logger not being inherited in the logging plugin.</p>
 </li><li>
-<p>In validation_helpers plugin the dimensions validations now don't do anything  when dimensions are missing from metadata (previously they were erroring).</p>
+<p>In <a href="../../lib/shrine/plugins/validation_helpers_rb.html">validation_helpers</a> plugin the dimensions validations now don’t do anything when dimensions are missing from metadata (previously they were erroring).</p>
 </li><li>
-<p>The keep_files plugin doesn't spawn delete background jobs anymore for files  that are to be kept.</p>
+<p>The <a href="../../lib/shrine/plugins/keep_files_rb.html">keep_files</a> plugin doesn’t spawn delete background jobs anymore for files that are to be kept.</p>
 </li><li>
 <p>Deleting backed up files now actually works with backgrounding plugin.</p>
 </li><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now ignores validations when promoting, which means it will work when  saving the record when it is invalid (but validations are skipped).</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now ignores validations when promoting, which means it will work when saving the record when it is invalid (but validations are skipped).</p>
 </li><li>
-<p>S3 storage now properly encodes the URL when <code>:host</code> option is used, which  would previously cause errors if location contained URL-unsafe characters.</p>
+<p>S3 storage now properly encodes the URL when <code>:host</code> option is used, which would previously cause errors if location contained URL-unsafe characters.</p>
 </li><li>
-<p>Eliminate a tiny chance of a race condition during promoting, which could  happen with subsequent attachment updates on the same record when using the  backgrounding plugin.</p>
+<p>Eliminate a tiny chance of a race condition during promoting, which could happen with subsequent attachment updates on the same record when using the backgrounding plugin.</p>
 </li><li>
 <p>S3 storage now uses an assigned SSL certificate when downloading.</p>
 </li></ul>
 
-<h1 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h1 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h1>
 <ul><li>
-<p>The restore_cached plugin has been renamed to "restore_cached_data". The  plugin will stop being loadable with the old name in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.</p>
+<p>The restore_cached plugin has been renamed to “restore_cached_data”. The plugin will stop being loadable with the old name in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.</p>
 </li><li>
-<p>In direct_upload presign options are now accepted via <code>:presign_options</code>  (instead of <code>:presign</code>). Accepting them via <code>:presign</code> will stop working in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.</p>
+<p>In direct_upload presign options are now accepted via <code>:presign_options</code> (instead of <code>:presign</code>). Accepting them via <code>:presign</code> will stop working in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.</p>
 </li><li>
-<p>The direct_upload's endpoint has now been changed from <code>/:storage/:name</code> to  <code>/:storage/upload</code>. The old endpoint is still accessible and will stay in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2, but will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
+<p>The direct_upload’s endpoint has now been changed from <code>/:storage/:name</code> to <code>/:storage/upload</code>. The old endpoint is still accessible and will stay in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2, but will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li><li>
-<p>The <code>:delegate</code> option is now mandatory to pass for migration_helpers,  until <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2 where it will default to false.</p>
+<p>The <code>:delegate</code> option is now mandatory to pass for migration_helpers, until <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2 where it will default to false.</p>
 </li><li>
-<p>The delete_uploaded plugin has been renamed to "delete_raw". The plugin can  still be loaded via "delete_uploaded", but this won't be possible anymore in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.</p>
+<p>The delete_uploaded plugin has been renamed to “delete_raw”. The plugin can still be loaded via “delete_uploaded”, but this won’t be possible anymore in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.</p>
 </li><li>
-<p>The moving plugin now deprecates "fake" moving, where in case the storage  didn't support moving the file would be uploaded and deleted. In <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2  the file won't be deleted anymore (you can use the delete_raw plugin for  this functionality).</p>
+<p>The moving plugin now deprecates “fake” moving, where in case the storage didn’t support moving the file would be uploaded and deleted. In <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2 the file won’t be deleted anymore (you can use the <a href="../../lib/shrine/plugins/delete_raw_rb.html">delete_raw</a> plugin for this functionality).</p>
 </li><li>
-<p>The <code>Shrine.versions!</code> and <code>Shrine.versions</code> methods have been removed, as  they were part of internal API of versions plugin, but accidentally made  public.</p>
+<p>The <code>Shrine.versions!</code> and <code>Shrine.versions</code> methods have been removed, as they were part of internal API of versions plugin, but accidentally made public.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -173,7 +175,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>README.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,15 +29,12 @@
 <div class='paths'>
 README.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-Shrine"><a target="_top" href="https://shrinerb.com">Shrine</a><span><a href="#label-Shrine">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Shrine" class="legacy-anchor"></span>
+<h1 id="shrine"><a href="#shrine"><a target="_top" href="https://shrinerb.com">Shrine</a></a></h1>
 
 <p>&lt;img src=“<img src="https://shrinerb.com/img/logo.png" />” width=“100” alt=“Shrine logo: a red paperclip” align=“right” /&gt;</p>
 
@@ -61,9 +59,10 @@ Last Update:
 <p><strong>Background jobs</strong> – built-in support for <a target="_top" href="https://shrinerb.com/docs/plugins/backgrounding">background processing</a> that supports <a target="_top" href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">any backgrounding library</a></p>
 </li></ul>
 
-<p>If you’re curious how it compares to other file attachment libraries, see the <a target="_top" href="https://shrinerb.com/docs/advantages">Advantages of Shrine</a>. Otherwise, follow along with the <strong>{Getting Started guide}[https://shrinerb.com/docs/getting-started]</strong>.</p>
+<p>If you’re curious how it compares to other file attachment libraries, see the <a target="_top" href="https://shrinerb.com/docs/advantages">Advantages of Shrine</a>. Otherwise, follow along with the <strong><a target="_top" href="https://shrinerb.com/docs/getting-started">Getting Started guide</a></strong>.</p>
 
-<h2 id="label-Links">Links<span><a href="#label-Links">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Links" class="legacy-anchor"></span>
+<h2 id="links"><a href="#links">Links</a></h2>
 
 <table role="table">
 <thead>
@@ -75,7 +74,7 @@ Last Update:
 <tbody>
 <tr>
 <td align="left">Website &amp; Documentation</td>
-<td align="left">[shrinerb.com](<a target="_top" href="https://shrinerb.com">shrinerb.com</a>)</td>
+<td align="left"><a target="_top" href="https://shrinerb.com">shrinerb.com</a></td>
 </tr>
 <tr>
 <td align="left">Demo code</td>
@@ -83,25 +82,25 @@ Last Update:
 </tr>
 <tr>
 <td align="left">Wiki</td>
-<td align="left">[github.com/shrinerb/shrine/wiki](<a target="_top" href="https://github.com/shrinerb/shrine/wiki">github.com/shrinerb/shrine/wiki</a>)</td>
+<td align="left"><a target="_top" href="https://github.com/shrinerb/shrine/wiki">github.com/shrinerb/shrine/wiki</a></td>
 </tr>
 <tr>
 <td align="left">Discussion forum</td>
-<td align="left">[github.com/shrinerb/shrine/discussions](<a target="_top" href="https://github.com/shrinerb/shrine/discussions">github.com/shrinerb/shrine/discussions</a>)</td>
+<td align="left"><a target="_top" href="https://github.com/shrinerb/shrine/discussions">github.com/shrinerb/shrine/discussions</a></td>
 </tr>
 <tr>
 <td align="left">Alternate Discussion forum</td>
-<td align="left">[discourse.shrinerb.com](<a target="_top" href="https://discourse.shrinerb.com">discourse.shrinerb.com</a>)</td>
+<td align="left"><a target="_top" href="https://discourse.shrinerb.com">discourse.shrinerb.com</a></td>
 </tr>
 </tbody>
 </table>
 
-<h2 id="label-Setup">Setup<span><a href="#label-Setup">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Setup" class="legacy-anchor"></span>
+<h2 id="setup"><a href="#setup">Setup</a></h2>
 
 <p>Run:</p>
 
-<pre class="ruby"><span class="ruby-identifier">bundle</span> <span class="ruby-identifier">add</span> <span class="ruby-identifier">shrine</span>
-</pre>
+<pre class="sh">bundle add shrine</pre>
 
 <p>Then add <code>config/initializers/shrine.rb</code> which sets up the storage and loads ORM integration:</p>
 
@@ -138,7 +137,7 @@ Last Update:
 
 <p>In our views let’s now add form fields for our attachment attribute that will allow users to upload files:</p>
 
-<pre>&lt;%= form_for @photo do |f| %&gt;
+<pre class="erb">&lt;%= form_for @photo do |f| %&gt;
   &lt;%= f.hidden_field :image, value: @photo.cached_image_data, id: nil %&gt;
   &lt;%= f.file_field :image %&gt;
   &lt;%= f.submit %&gt;
@@ -162,15 +161,17 @@ Last Update:
 
 <p>Once a file is uploaded and attached to the record, you can retrieve the file URL and display it on the page:</p>
 
-<pre>&lt;%= image_tag @photo.image_url %&gt;</pre>
+<pre class="erb">&lt;%= image_tag @photo.image_url %&gt;</pre>
 
-<p>See the <strong>{Getting Started guide}[https://shrinerb.com/docs/getting-started]</strong> for further documentation.</p>
+<p>See the <strong><a target="_top" href="https://shrinerb.com/docs/getting-started">Getting Started guide</a></strong> for further documentation.</p>
 
-<h2 id="label-Inspiration">Inspiration<span><a href="#label-Inspiration">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Inspiration" class="legacy-anchor"></span>
+<h2 id="inspiration"><a href="#inspiration">Inspiration</a></h2>
 
 <p><a href="../classes/Shrine.html"><code>Shrine</code></a> was heavily inspired by <a target="_top" href="https://github.com/refile/refile">Refile</a> and <a target="_top" href="https://github.com/jeremyevans/roda">Roda</a>. From Refile it borrows the idea of “backends” (here named “storages”), attachment interface, and direct uploads. From Roda it borrows the implementation of an extensible plugin system.</p>
 
-<h2 id="label-Similar+libraries">Similar libraries<span><a href="#label-Similar+libraries">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Similar+libraries" class="legacy-anchor"></span>
+<h2 id="similar-libraries"><a href="#similar-libraries">Similar libraries</a></h2>
 <ul><li>
 <p>Paperclip</p>
 </li><li>
@@ -183,15 +184,18 @@ Last Update:
 <p>Active Storage</p>
 </li></ul>
 
-<h2 id="label-Contributing">Contributing<span><a href="#label-Contributing">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Contributing" class="legacy-anchor"></span>
+<h2 id="contributing"><a href="#contributing">Contributing</a></h2>
 
 <p>Please refer to the <a target="_top" href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md">contributing page</a>.</p>
 
-<h2 id="label-Code+of+Conduct">Code of Conduct<span><a href="#label-Code+of+Conduct">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Code+of+Conduct" class="legacy-anchor"></span>
+<h2 id="code-of-conduct"><a href="#code-of-conduct">Code of Conduct</a></h2>
 
 <p>Everyone interacting in the <a href="../classes/Shrine.html"><code>Shrine</code></a> project’s codebases, issue trackers, and mailing lists is expected to follow the <a href="/CODE_OF_CONDUCT_md.html">Shrine code of conduct</a>.</p>
 
-<h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-License" class="legacy-anchor"></span>
+<h2 id="license"><a href="#license">License</a></h2>
 
 <p>The gem is available as open source under the terms of the <a href="/LICENSE.txt">MIT License</a>.</p>
 </div>
@@ -204,7 +208,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

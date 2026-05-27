@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>3.6.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>3.6.0.md
+</h1>
+<div class='paths'>
+doc/release_notes/3.6.0.md
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>—</p>
+
+<span id="label-title-3A+Shrine+3.6.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-360"><a href="#title-shrine-360">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_6_0_md.html">3.6.0</a></a></h2>
+
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
+<ul><li>
+<p>The S3 storage now accepts <code>:copy_options</code> when initializing. This can be used for supporting Cloudflare R2 by removing <code>:tagging_directive</code> when copying file from temporary to permanent storage.</p>
+</li></ul>
+
+<p><code>rb  Shrine::Storage::S3.new(bucket: BUCKET, copy_options: {}, **s3_options)  </code></p>
+
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
+<ul><li>
+<p>Rack 3 is now supported.</p>
+</li><li>
+<p>When duplicating the attacher, the <code>Attacher#context</code> hash is now copied as well, instead of being kept the same between the two attachers.</p>
+</li><li>
+<p>After <code>UploadedFile#close</code> was called, <code>UploadedFile#opened?</code> will return <code>false</code> and the uploaded file can be implicitly re-opened again.</p>
+</li></ul>
+
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
+<ul><li>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> API that is returning a rack response triple will now return headers as an instance of <code>Rack::Headers</code> on Rack 3, which is a subclass of <code>Hash</code>. This should keep user code that references header names in mixed case working (in addition to lowercase), but could theoretically cause issues for code explicitly requiring headers to be an instance of <code>Hash</code>.</p>
+</li></ul>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
+</div>
+</body>
+</html>

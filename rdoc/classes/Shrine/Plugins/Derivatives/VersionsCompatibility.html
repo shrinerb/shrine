@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::Derivatives::VersionsCompatibility</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -63,16 +64,16 @@ Shrine::Plugins::Derivatives::VersionsCompatibility
 [show source]
 </a>
 <pre id='method-i-load_data-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
-<span class="line-num">630</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_data</span>(<span class="ruby-identifier">data</span>)
-<span class="line-num">631</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">data</span>.<span class="ruby-identifier">nil?</span>
-<span class="line-num">632</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;derivatives&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>[<span class="ruby-value">:derivatives</span>]
-<span class="line-num">633</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> (<span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;id&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>[<span class="ruby-value">:id</span>]).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
-<span class="line-num">634</span> 
-<span class="line-num">635</span>   <span class="ruby-identifier">data</span>     = <span class="ruby-identifier">data</span>.<span class="ruby-identifier">dup</span>
-<span class="line-num">636</span>   <span class="ruby-identifier">original</span> = <span class="ruby-identifier">data</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-string">&quot;original&quot;</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:original</span>) <span class="ruby-operator">||</span> {}
-<span class="line-num">637</span> 
-<span class="line-num">638</span>   <span class="ruby-keyword">super</span> <span class="ruby-identifier">original</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-string">&quot;derivatives&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">data</span>)
-<span class="line-num">639</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">634</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_data</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">635</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">data</span>.<span class="ruby-identifier">nil?</span>
+<span class="line-num">636</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;derivatives&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>[<span class="ruby-value">:derivatives</span>]
+<span class="line-num">637</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> (<span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;id&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>[<span class="ruby-value">:id</span>]).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
+<span class="line-num">638</span> 
+<span class="line-num">639</span>   <span class="ruby-identifier">data</span>     = <span class="ruby-identifier">data</span>.<span class="ruby-identifier">dup</span>
+<span class="line-num">640</span>   <span class="ruby-identifier">original</span> = <span class="ruby-identifier">data</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-string">&quot;original&quot;</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:original</span>) <span class="ruby-operator">||</span> {}
+<span class="line-num">641</span> 
+<span class="line-num">642</span>   <span class="ruby-keyword">super</span> <span class="ruby-identifier">original</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-string">&quot;derivatives&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">data</span>)
+<span class="line-num">643</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -84,7 +85,7 @@ Shrine::Plugins::Derivatives::VersionsCompatibility
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

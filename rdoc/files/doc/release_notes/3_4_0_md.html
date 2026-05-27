@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>3.4.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,34 +29,31 @@
 <div class='paths'>
 doc/release_notes/3.4.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+3.4.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_4_0_md.html">3.4.0</a><span><a href="#label-title-3A+Shrine+3.4.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+3.4.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-340"><a href="#title-shrine-340">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_4_0_md.html">3.4.0</a></a></h2>
 <ul><li>
 <p>Passing attacher options to <code>Shrine.Attachment</code> method now works on Ruby 3.0.</p>
 </li><li>
-<p>Defining validation errors as an array of I18n key and options in  <code>activerecord</code> plugin now works on Ruby 3.0.</p>
+<p>Defining validation errors as an array of I18n key and options in <code>activerecord</code> plugin now works on Ruby 3.0.</p>
 </li><li>
-<p>The <code>:fastimage</code> MIME type analyzer now correctly detects SVGs as  <code>image/svg+html</code> in the <code>determine_mime_type</code> plugin.</p>
+<p>The <code>:fastimage</code> MIME type analyzer now correctly detects SVGs as <code>image/svg+html</code> in the <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin.</p>
 </li><li>
-<p>The <code>Shrine::Attacher#read</code> method provided by the <code>entity</code> plugin is now  public. This is consistent with <code>Shrine::Attacher#write</code> from <code>model</code> plugin  being public as well.</p>
+<p>The <code>Shrine::Attacher#read</code> method provided by the <code>entity</code> plugin is now public. This is consistent with <code>Shrine::Attacher#write</code> from <code>model</code> plugin being public as well.</p>
 </li><li>
-<p>The <code>Shrine::Attacher#reload</code> method now resets attachment's dirty state.  This means that for a model whose <code>Attacher#changed?</code> returns <code>true</code>, calling  <code>#reload</code> on the model will make <code>Attacher#changed?</code> return <code>false</code>. This was  the behaviour before <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.3.0.</p>
+<p>The <code>Shrine::Attacher#reload</code> method now resets attachment’s dirty state. This means that for a model whose <code>Attacher#changed?</code> returns <code>true</code>, calling reload on the model will make <code>Attacher#changed?</code> return <code>false</code>. This was the behaviour before <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.3.0.</p>
 </li></ul>
 
-<p>“‘rb  # before  model.file_attacher.changed? #=&gt; true  model.reload  model.file_attacher.changed? #=&gt; true</p>
+<p>“‘rb # before model.file_attacher.changed? #=&gt; true model.reload model.file_attacher.changed? #=&gt; true</p>
 
-<p># after  model.file_attacher.changed? #=&gt; true  model.reload  model.file_attacher.changed? #=&gt; false  “‘</p>
+<p># after model.file_attacher.changed? #=&gt; true model.reload model.file_attacher.changed? #=&gt; false “‘</p>
 <ul><li>
-<p>Calling <code>#reload</code> on the model will not initialize a <code>Shrine::Attacher</code>  instance anymore if one hasn’t previously been initialized.</p>
+<p>Calling reload on the model will not initialize a <a href="../../../classes/Shrine/Attacher.html"><code>Shrine::Attacher</code></a> instance anymore if one hasn’t previously been initialized.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -67,7 +65,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

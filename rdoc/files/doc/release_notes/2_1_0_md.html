@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.1.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,38 +29,37 @@
 <div class='paths'>
 doc/release_notes/2.1.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.1.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_1_0_md.html">2.1.0</a><span><a href="#label-title-3A+Shrine+2.1.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.1.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-210"><a href="#title-shrine-210">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_1_0_md.html">2.1.0</a></a></h2>
 
-<h1 id="label-Improvements">Improvements<span><a href="#label-Improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Improvements" class="legacy-anchor"></span>
+<h1 id="improvements"><a href="#improvements">Improvements</a></h1>
 <ul><li>
-<p>The versions plugin doesn't require the <code>:names</code> option anymore.</p>
+<p>The versions plugin doesn’t require the <code>:names</code> option anymore.</p>
 </li><li>
-<p>The restore_cached_data plugin will now download only a small portion of the  file needed for extracting metadata (after which it will terminate the  connection). Previously the whole file was always downloaded. To get this  you need to update your storage gem.</p>
+<p>The <a href="../../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> plugin will now download only a small portion of the file needed for extracting metadata (after which it will terminate the connection). Previously the whole file was always downloaded. To get this you need to update your storage gem.</p>
 </li><li>
-<p>When enforcing that the input is an IO-like object <a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn't check  method arity anymore, only if the object responds to that method. This means  that <a href="../../../classes/Shrine.html"><code>Shrine</code></a> now properly works with objects like <code>Rack::Test::UploadedFile</code>,  which use <code>#method_missing</code> to delegate to the underlying object.</p>
+<p>When enforcing that the input is an IO-like object <a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn’t check method arity anymore, only if the object responds to that method. This means that <a href="../../../classes/Shrine.html"><code>Shrine</code></a> now properly works with objects like <code>Rack::Test::UploadedFile</code>, which use method_missing to delegate to the underlying object.</p>
 </li><li>
-<p>Fixed a load order bug with parallelize and logging plugins, where loading  them in this order would make the thread pool join <em>outside</em> of the logging  block, making the logs show an instantaneous duration instead of the actual  duration.</p>
+<p>Fixed a load order bug with parallelize and logging plugins, where loading them in this order would make the thread pool join <em>outside</em> of the logging block, making the logs show an instantaneous duration instead of the actual duration.</p>
 </li><li>
-<p>The <code>file</code> command from the determine_mime_type plugin is now executed in the  same way for files as for other IO objects.</p>
+<p>The <code>file</code> command from the <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin is now executed in the same way for files as for other IO objects.</p>
 </li><li>
-<p>Increase the amount of bytes read from the IO in determine_mime_type when  using <code>:file</code> or <code>:filemagic</code> analyzers, which might make the recognize some  MIME types that they haven't before.</p>
+<p>Increase the amount of bytes read from the IO in <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> when using <code>:file</code> or <code>:filemagic</code> analyzers, which might make the recognize some MIME types that they haven’t before.</p>
 </li></ul>
 
-<h1 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h1 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h1>
 <ul><li>
 <p>Generating versions in <code>:cache</code> phase is now deprecated, for better security.</p>
 </li><li>
-<p>The <code>#cached_&lt;attachment&gt;_data=</code> method that comes from the  cached_attachment_data plugin is now deprecated. The reason for this is that  the following "recommended" usage actually produces bugs when image is  invalid:</p>
+<p>The <code>#cached_&lt;attachment&gt;_data=</code> method that comes from the <a href="../../lib/shrine/plugins/cached_attachment_data_rb.html">cached_attachment_data</a> plugin is now deprecated. The reason for this is that the following “recommended” usage actually produces bugs when image is invalid:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@photo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
@@ -68,7 +68,7 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>The recommended and correct way now to build forms is by keeping the  <code>#&lt;attachment&gt;=</code> setter:</p>
+<p>The recommended and correct way now to build forms is by keeping the <code>#&lt;attachment&gt;=</code> setter:</p>
 
 <pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@photo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
   <span class="ruby-identifier">f</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:image</span>, <span class="ruby-value">value:</span> <span class="ruby-ivar">@photo</span>.<span class="ruby-identifier">cached_image_data</span>, <span class="ruby-value">id:</span> <span class="ruby-keyword">nil</span>
@@ -76,9 +76,9 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p>The restore_cached_data now sends the <code>Shrine::UploadedFile</code> to  <code>#extract_metadata</code>, instead of the result of <code>Storage#open</code>.</p>
+<p>The <a href="../../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> now sends the <a href="../../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a> to extract_metadata, instead of the result of <code>Storage#open</code>.</p>
 </li><li>
-<p>Storages which use <code>#stream</code> should switch to <code>Down.open</code> for remote files, or  the generic <code>Down::ChunkedIO</code> in other cases.</p>
+<p>Storages which use stream should switch to <code>Down.open</code> for remote files, or the generic <code>Down::ChunkedIO</code> in other cases.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -90,7 +90,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

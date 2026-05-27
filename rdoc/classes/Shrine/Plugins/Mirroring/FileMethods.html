@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::Mirroring::FileMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -125,7 +126,7 @@ Shrine::Plugins::Mirroring::FileMethods
 <div class='method public-instance' id='method-method-i-mirror_upload'>
 <a name='method-i-mirror_upload'></a>
 <div class='synopsis'>
-<span class='name'>mirror_upload</span><span class='arguments'>(**options)</span>
+<span class='name'>mirror_upload</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -138,13 +139,13 @@ Shrine::Plugins::Mirroring::FileMethods
 [show source]
 </a>
 <pre id='method-i-mirror_upload-source'>   <span class="ruby-comment"># File lib/shrine/plugins/mirroring.rb</span>
-<span class="line-num">82</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mirror_upload</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">82</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mirror_upload</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">83</span>   <span class="ruby-identifier">previously_opened</span> = <span class="ruby-identifier">opened?</span>
 <span class="line-num">84</span> 
 <span class="line-num">85</span>   <span class="ruby-identifier">each_mirror</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">mirror</span><span class="ruby-operator">|</span>
 <span class="line-num">86</span>     <span class="ruby-identifier">rewind</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">opened?</span>
 <span class="line-num">87</span> 
-<span class="line-num">88</span>     <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">mirror</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-value">location:</span> <span class="ruby-identifier">id</span>, <span class="ruby-value">close:</span> <span class="ruby-keyword">false</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:mirror</span>)
+<span class="line-num">88</span>     <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">mirror</span>, <span class="ruby-operator">**</span>, <span class="ruby-value">location:</span> <span class="ruby-identifier">id</span>, <span class="ruby-value">close:</span> <span class="ruby-keyword">false</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:mirror</span>)
 <span class="line-num">89</span>   <span class="ruby-keyword">end</span>
 <span class="line-num">90</span> <span class="ruby-keyword">ensure</span>
 <span class="line-num">91</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">opened?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">previously_opened</span>
@@ -157,7 +158,7 @@ Shrine::Plugins::Mirroring::FileMethods
 <div class='method public-instance' id='method-method-i-mirror_upload_background'>
 <a name='method-i-mirror_upload_background'></a>
 <div class='synopsis'>
-<span class='name'>mirror_upload_background</span><span class='arguments'>(**options)</span>
+<span class='name'>mirror_upload_background</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -170,10 +171,10 @@ Shrine::Plugins::Mirroring::FileMethods
 [show source]
 </a>
 <pre id='method-i-mirror_upload_background-source'>   <span class="ruby-comment"># File lib/shrine/plugins/mirroring.rb</span>
-<span class="line-num">75</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mirror_upload_background</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">75</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mirror_upload_background</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">76</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;mirror upload block is not registered&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_upload_block</span>
 <span class="line-num">77</span> 
-<span class="line-num">78</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_upload_block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-keyword">self</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">78</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_upload_block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-keyword">self</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">79</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -207,7 +208,7 @@ Shrine::Plugins::Mirroring::FileMethods
 <div class='method public-instance' id='method-method-i-trigger_mirror_upload'>
 <a name='method-i-trigger_mirror_upload'></a>
 <div class='synopsis'>
-<span class='name'>trigger_mirror_upload</span><span class='arguments'>(**options)</span>
+<span class='name'>trigger_mirror_upload</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -220,13 +221,13 @@ Shrine::Plugins::Mirroring::FileMethods
 [show source]
 </a>
 <pre id='method-i-trigger_mirror_upload-source'>   <span class="ruby-comment"># File lib/shrine/plugins/mirroring.rb</span>
-<span class="line-num">64</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">trigger_mirror_upload</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">64</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">trigger_mirror_upload</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">65</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirrors</span>[<span class="ruby-identifier">storage_key</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_upload?</span>
 <span class="line-num">66</span> 
 <span class="line-num">67</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_upload_block</span>
-<span class="line-num">68</span>     <span class="ruby-identifier">mirror_upload_background</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">68</span>     <span class="ruby-identifier">mirror_upload_background</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">69</span>   <span class="ruby-keyword">else</span>
-<span class="line-num">70</span>     <span class="ruby-identifier">mirror_upload</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">70</span>     <span class="ruby-identifier">mirror_upload</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">71</span>   <span class="ruby-keyword">end</span>
 <span class="line-num">72</span> <span class="ruby-keyword">end</span></pre>
 </div>
@@ -240,7 +241,7 @@ Shrine::Plugins::Mirroring::FileMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

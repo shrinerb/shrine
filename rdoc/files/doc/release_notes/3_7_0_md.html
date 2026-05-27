@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>3.7.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>3.7.0.md
+</h1>
+<div class='paths'>
+doc/release_notes/3.7.0.md
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>—</p>
+
+<span id="label-title-3A+Shrine+3.7.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-370"><a href="#title-shrine-370">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_7_0_md.html">3.7.0</a></a></h2>
+
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
+<ul><li>
+<p>The <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> plugin now supports expiring URLs. Configure a <code>secret_key</code> and optionally a default <code>expires_in</code> on the plugin, then pass <code>expires_in:</code> when generating a URL. The URL is signed with HMAC-SHA256, and the endpoint will reject requests with an expired or tampered signature.</p>
+</li></ul>
+
+<p><code>rb  plugin :download_endpoint,    prefix: &quot;downloads&quot;,    secret_key: &quot;&lt;your-secret-key&gt;&quot;,    expires_in: 5 * 60 # optional default; can be overridden per URL  </code></p>
+
+<p><code>rb  uploaded_file.download_url                      # uses the default expires_in  uploaded_file.download_url(expires_in: 10 * 60) # override per URL  # =&gt; &quot;https://example.com/downloads/&lt;token&gt;?signature=...&amp;expires_at=...&quot;  </code></p>
+<ul><li>
+<p>The <code>derivatives</code> plugin now accepts a <code>:keep_derivatives</code> option. When set to <code>true</code>, existing derivatives are kept when a new file is attached via <code>Attacher#change</code>, instead of being cleared.</p>
+</li></ul>
+
+<p><code>rb  plugin :derivatives, keep_derivatives: true  </code></p>
+
+<p><code>rb  attacher.derivatives #=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }  attacher.change(new_file)  attacher.derivatives #=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; } # preserved  </code></p>
+<ul><li>
+<p>The <a href="../../lib/shrine/plugins/refresh_metadata_rb.html">refresh_metadata</a> plugin now accepts a <code>replace:</code> keyword argument on <code>refresh_metadata!</code>. Passing <code>replace: true</code> replaces the file’s metadata entirely with the freshly extracted values, instead of merging them. This is useful when you want to remove stale custom metadata keys.</p>
+</li></ul>
+
+<p>“‘rb uploaded_file.metadata[“custom”] = “stale value”</p>
+
+<p>uploaded_file.refresh_metadata! # merge (default) uploaded_file.metadata[“custom”] #=&gt; “stale value” (preserved)</p>
+
+<p>uploaded_file.refresh_metadata!(replace: true) # replace uploaded_file.metadata[“custom”] #=&gt; nil (removed) “‘</p>
+
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
+<ul><li>
+<p>The <code>s3</code> storage now prefers using <code>TransferManager#upload_stream</code> over the deprecated upload_stream method on the S3 object, when <code>TransferManager</code> is available. This avoids deprecation warnings from newer versions of the AWS SDK.</p>
+</li><li>
+<p>The <code>column</code> plugin no longer attempts to deserialize an empty string as JSON. Previously this would raise a parse error; now the attachment is treated as blank.</p>
+</li><li>
+<p>The <code>backgrounding</code> plugin now correctly forwards keyword arguments passed to <code>Attacher#promote_cached</code> into the <code>promote_block</code> callback.</p>
+</li></ul>
+
+<p>“‘rb Shrine::Attacher.promote_block do |attacher:, my_option:, **| # my_option was previously not forwarded here SomePromoteJob.perform_async(attacher.dump, my_option: my_option) end</p>
+
+<p>attacher.promote_cached(my_option: “value”) # now forwarded correctly “‘</p>
+<ul><li>
+<p><code>UploadedFile</code> no longer produces URI default parser warnings (<code>URI::RFC3986_PARSER.make_regexp is obsolete</code>) when verbose warnings are enabled.</p>
+</li></ul>
+
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
+<ul><li>
+<p>Support for Ruby versions below 3.2 has been dropped. Ruby &gt;= 3.2 is now required.</p>
+</li><li>
+<p>ImageProcessing 2.0 made <code>mini_magick</code> and <code>ruby-vips</code> soft dependencies that are no longer loaded automatically. If you use either gem for image processing, you will need to add it explicitly to your <code>Gemfile</code>:</p>
+</li></ul>
+
+<p><code>rb  gem &quot;mini_magick&quot;  # or  gem &quot;ruby-vips&quot;  </code></p>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
+</div>
+</body>
+</html>

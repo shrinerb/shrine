@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.6.1.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,24 +29,22 @@
 <div class='paths'>
 doc/release_notes/2.6.1.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.6.1">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_6_1_md.html">2.6.1</a><span><a href="#label-title-3A+Shrine+2.6.1">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.6.1" class="legacy-anchor"></span>
+<h2 id="title-shrine-261"><a href="#title-shrine-261">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_6_1_md.html">2.6.1</a></a></h2>
 
-<h2 id="label-Bug+fixes">Bug fixes<span><a href="#label-Bug+fixes">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Bug+fixes" class="legacy-anchor"></span>
+<h2 id="bug-fixes"><a href="#bug-fixes">Bug fixes</a></h2>
 <ul><li>
-<p>When <code>download_endpoint</code> streams file content into the response body, with  certain storages (FileSystem, SQL) it will use a buffer object when reading  each chunk, which will make that, instead of each read chunk allocating a new  string object, ever new chunk is read into the same buffer string object,  replacing the content from the previous chunk.</p>
+<p>When <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> streams file content into the response body, with certain storages (FileSystem, SQL) it will use a buffer object when reading each chunk, which will make that, instead of each read chunk allocating a new string object, ever new chunk is read into the same buffer string object, replacing the content from the previous chunk.</p>
 </li></ul>
 
-<p>Unfortunately, there are some parts of the Rack/Rails stack which rely on all  chunks co-existing in the memory at the same time (for example the  <code>Rack::ContentLenth</code> middleware). For that reason, and to be consistent in  behaviour and memory usage when used with other storages (S3), we modify  <code>download_endpoint</code> not to use the buffer object, and have each read chunk be  a new string object.</p>
+<p>Unfortunately, there are some parts of the Rack/Rails stack which rely on all chunks co-existing in the memory at the same time (for example the <code>Rack::ContentLenth</code> middleware). For that reason, and to be consistent in behaviour and memory usage when used with other storages (S3), we modify <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> not to use the buffer object, and have each read chunk be a new string object.</p>
 </div>
 <div id='context'>
 </div>
@@ -56,7 +55,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

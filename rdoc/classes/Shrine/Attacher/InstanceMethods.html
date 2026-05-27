@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Attacher::InstanceMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -49,12 +50,15 @@ Shrine::Attacher::InstanceMethods
 <li><a href="#method-i-attached-3F">attached?</a></li>
 <li><a href="#method-i-cache">cache</a></li>
 <li><a href="#method-i-cache_key">cache_key</a></li>
+<li><a href="#method-i-cached">cached</a></li>
 <li><a href="#method-i-cached-3F">cached?</a></li>
 <li><a href="#method-i-change">change</a></li>
+<li><a href="#method-i-change-3F">change?</a></li>
 <li><a href="#method-i-changed-3F">changed?</a></li>
 <li><a href="#attribute-i-context">context</a></li>
 <li><a href="#method-i-data">data</a></li>
 <li><a href="#method-i-destroy">destroy</a></li>
+<li><a href="#method-i-destroy-3F">destroy?</a></li>
 <li><a href="#method-i-destroy_attached">destroy_attached</a></li>
 <li><a href="#method-i-destroy_previous">destroy_previous</a></li>
 <li><a href="#attribute-i-file">file</a></li>
@@ -62,8 +66,10 @@ Shrine::Attacher::InstanceMethods
 <li><a href="#method-i-file-3D">file=</a></li>
 <li><a href="#method-i-finalize">finalize</a></li>
 <li><a href="#method-i-get">get</a></li>
+<li><a href="#method-i-initialize_copy">initialize_copy</a></li>
 <li><a href="#method-i-load_data">load_data</a></li>
 <li><a href="#method-i-promote">promote</a></li>
+<li><a href="#method-i-promote-3F">promote?</a></li>
 <li><a href="#method-i-promote_cached">promote_cached</a></li>
 <li><a href="#method-i-save">save</a></li>
 <li><a href="#method-i-set">set</a></li>
@@ -72,11 +78,18 @@ Shrine::Attacher::InstanceMethods
 <li><a href="#method-i-store_key">store_key</a></li>
 <li><a href="#method-i-stored-3F">stored?</a></li>
 <li><a href="#method-i-upload">upload</a></li>
+<li><a href="#method-i-uploaded-3F">uploaded?</a></li>
 <li><a href="#method-i-uploaded_file">uploaded_file</a></li>
 <li><a href="#method-i-url">url</a></li>
 </ol>
 </div>
 <div id='context'>
+<div id='includes'>
+<h2>Included modules</h2>
+<ol>
+<li><a href="InstanceMethods.html">InstanceMethods</a></li>
+</ol>
+</div>
 </div>
 <div id='section'>
 <div id='attribute-list'>
@@ -135,7 +148,7 @@ Shrine::Attacher::InstanceMethods
 <div class='method public-instance' id='method-method-i-assign'>
 <a name='method-i-assign'></a>
 <div class='synopsis'>
-<span class='name'>assign</span><span class='arguments'>(value, **options)</span>
+<span class='name'>assign</span><span class='arguments'>(value, **)</span>
 
 </div>
 <div class='description'>
@@ -156,21 +169,21 @@ attacher.assign(&quot;&quot;)</pre>
 [show source]
 </a>
 <pre id='method-i-assign-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num">70</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">70</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">71</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-comment"># skip empty hidden field</span>
 <span class="line-num">72</span> 
 <span class="line-num">73</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
 <span class="line-num">74</span>     <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">file</span> <span class="ruby-comment"># skip assignment for current file</span>
 <span class="line-num">75</span>   <span class="ruby-keyword">end</span>
 <span class="line-num">76</span> 
-<span class="line-num">77</span>   <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">77</span>   <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">78</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-attach'>
 <a name='method-i-attach'></a>
 <div class='synopsis'>
-<span class='name'>attach</span><span class='arguments'>(io, storage: store_key, **options)</span>
+<span class='name'>attach</span><span class='arguments'>(io, storage: store_key, **)</span>
 
 </div>
 <div class='description'>
@@ -196,8 +209,8 @@ attacher.assign(&quot;&quot;)</pre>
 [show source]
 </a>
 <pre id='method-i-attach-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num">116</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">117</span>   <span class="ruby-identifier">file</span> = <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>
+<span class="line-num">116</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">117</span>   <span class="ruby-identifier">file</span> = <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>
 <span class="line-num">118</span> 
 <span class="line-num">119</span>   <span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)
 <span class="line-num">120</span> <span class="ruby-keyword">end</span></pre>
@@ -206,14 +219,14 @@ attacher.assign(&quot;&quot;)</pre>
 <div class='method public-instance' id='method-method-i-attach_cached'>
 <a name='method-i-attach_cached'></a>
 <div class='synopsis'>
-<span class='name'>attach_cached</span><span class='arguments'>(value, **options)</span>
+<span class='name'>attach_cached</span><span class='arguments'>(value, **)</span>
 
 </div>
 <div class='description'>
 
 <p>Sets an existing cached file, or uploads an IO object to temporary storage and sets it via <a href="InstanceMethods.html#method-i-attach"><code>attach</code></a>. Forwards any additional options to</p>
 
-<h1 id="method-i-attach_cached-label-attach.">attach.<span><a href="#method-i-attach_cached-label-attach.">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<p><a href="InstanceMethods.html#method-i-attach"><code>attach</code></a>.</p>
 
 <pre># upload file to temporary storage and set the uploaded file.
 attacher.attach_cached(File.open(...))
@@ -233,11 +246,11 @@ attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quo
 [show source]
 </a>
 <pre id='method-i-attach_cached-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num"> 95</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num"> 95</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
 <span class="line-num"> 96</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
-<span class="line-num"> 97</span>     <span class="ruby-identifier">change</span>(<span class="ruby-identifier">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>))
+<span class="line-num"> 97</span>     <span class="ruby-identifier">change</span>(<span class="ruby-identifier">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>))
 <span class="line-num"> 98</span>   <span class="ruby-keyword">else</span>
-<span class="line-num"> 99</span>     <span class="ruby-identifier">attach</span>(<span class="ruby-identifier">value</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">cache_key</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:cache</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num"> 99</span>     <span class="ruby-identifier">attach</span>(<span class="ruby-identifier">value</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">cache_key</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:cache</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">100</span>   <span class="ruby-keyword">end</span>
 <span class="line-num">101</span> <span class="ruby-keyword">end</span></pre>
 </div>
@@ -273,7 +286,7 @@ attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quo
 <div class='method public-instance' id='method-method-i-cache'>
 <a name='method-i-cache'></a>
 <div class='synopsis'>
-<span class='name'>cache</span><span class='arguments'>()</span>
+<span class='name'>cache</span><span class='arguments'>(= shrine_class.new(cache_key))</span>
 
 </div>
 <div class='description'>
@@ -285,14 +298,355 @@ attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quo
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-cache-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-cache-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num">55</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache</span>; <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cache_key</span>); <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-cache-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num"> 55</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cache_key</span>)
+<span class="line-num"> 56</span>     <span class="ruby-comment"># Returns the uploader that is used for the permanent storage.</span>
+<span class="line-num"> 57</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store_key</span>)
+<span class="line-num"> 58</span> 
+<span class="line-num"> 59</span>     <span class="ruby-comment"># Calls #attach_cached, but skips if value is an empty string (this is</span>
+<span class="line-num"> 60</span>     <span class="ruby-comment"># useful when the uploaded file comes from form fields). Forwards any</span>
+<span class="line-num"> 61</span>     <span class="ruby-comment"># additional options to #attach_cached.</span>
+<span class="line-num"> 62</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 63</span>     <span class="ruby-comment">#     attacher.assign(File.open(...))</span>
+<span class="line-num"> 64</span>     <span class="ruby-comment">#     attacher.assign(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num"> 65</span>     <span class="ruby-comment">#     attacher.assign(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num"> 66</span>     <span class="ruby-comment">#     attacher.assign({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num"> 67</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 68</span>     <span class="ruby-comment">#     # ignores the assignment when a blank string is given</span>
+<span class="line-num"> 69</span>     <span class="ruby-comment">#     attacher.assign(&quot;&quot;)</span>
+<span class="line-num"> 70</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 71</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-comment"># skip empty hidden field</span>
+<span class="line-num"> 72</span> 
+<span class="line-num"> 73</span>       <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
+<span class="line-num"> 74</span>         <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">file</span> <span class="ruby-comment"># skip assignment for current file</span>
+<span class="line-num"> 75</span>       <span class="ruby-keyword">end</span>
+<span class="line-num"> 76</span> 
+<span class="line-num"> 77</span>       <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 78</span>     <span class="ruby-keyword">end</span>
+<span class="line-num"> 79</span> 
+<span class="line-num"> 80</span>     <span class="ruby-comment"># Sets an existing cached file, or uploads an IO object to temporary</span>
+<span class="line-num"> 81</span>     <span class="ruby-comment"># storage and sets it via #attach. Forwards any additional options to</span>
+<span class="line-num"> 82</span>     <span class="ruby-comment"># #attach.</span>
+<span class="line-num"> 83</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 84</span>     <span class="ruby-comment">#     # upload file to temporary storage and set the uploaded file.</span>
+<span class="line-num"> 85</span>     <span class="ruby-comment">#     attacher.attach_cached(File.open(...))</span>
+<span class="line-num"> 86</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 87</span>     <span class="ruby-comment">#     # foward additional options to the uploader</span>
+<span class="line-num"> 88</span>     <span class="ruby-comment">#     attacher.attach_cached(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num"> 89</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 90</span>     <span class="ruby-comment">#     # sets an existing cached file from JSON data</span>
+<span class="line-num"> 91</span>     <span class="ruby-comment">#     attacher.attach_cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num"> 92</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 93</span>     <span class="ruby-comment">#     # sets an existing cached file from Hash data</span>
+<span class="line-num"> 94</span>     <span class="ruby-comment">#     attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num"> 95</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 96</span>       <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
+<span class="line-num"> 97</span>         <span class="ruby-identifier">change</span>(<span class="ruby-identifier">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>))
+<span class="line-num"> 98</span>       <span class="ruby-keyword">else</span>
+<span class="line-num"> 99</span>         <span class="ruby-identifier">attach</span>(<span class="ruby-identifier">value</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">cache_key</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:cache</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">100</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">101</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">102</span> 
+<span class="line-num">103</span>     <span class="ruby-comment"># Uploads given IO object and changes the uploaded file.</span>
+<span class="line-num">104</span>     <span class="ruby-comment">#</span>
+<span class="line-num">105</span>     <span class="ruby-comment">#     # uploads the file to permanent storage</span>
+<span class="line-num">106</span>     <span class="ruby-comment">#     attacher.attach(io)</span>
+<span class="line-num">107</span>     <span class="ruby-comment">#</span>
+<span class="line-num">108</span>     <span class="ruby-comment">#     # uploads the file to specified storage</span>
+<span class="line-num">109</span>     <span class="ruby-comment">#     attacher.attach(io, storage: :other_store)</span>
+<span class="line-num">110</span>     <span class="ruby-comment">#</span>
+<span class="line-num">111</span>     <span class="ruby-comment">#     # forwards additional options to the uploader</span>
+<span class="line-num">112</span>     <span class="ruby-comment">#     attacher.attach(io, upload_options: { acl: &quot;public-read&quot; }, metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num">113</span>     <span class="ruby-comment">#</span>
+<span class="line-num">114</span>     <span class="ruby-comment">#     # removes the attachment</span>
+<span class="line-num">115</span>     <span class="ruby-comment">#     attacher.attach(nil)</span>
+<span class="line-num">116</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">117</span>       <span class="ruby-identifier">file</span> = <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>
+<span class="line-num">118</span> 
+<span class="line-num">119</span>       <span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">120</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">121</span> 
+<span class="line-num">122</span>     <span class="ruby-comment"># Deletes any previous file and promotes newly attached cached file.</span>
+<span class="line-num">123</span>     <span class="ruby-comment"># It also clears any dirty tracking.</span>
+<span class="line-num">124</span>     <span class="ruby-comment">#</span>
+<span class="line-num">125</span>     <span class="ruby-comment">#     # promoting cached file</span>
+<span class="line-num">126</span>     <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">127</span>     <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">128</span>     <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">129</span>     <span class="ruby-comment">#     attacher.stored?</span>
+<span class="line-num">130</span>     <span class="ruby-comment">#</span>
+<span class="line-num">131</span>     <span class="ruby-comment">#     # deleting previous file</span>
+<span class="line-num">132</span>     <span class="ruby-comment">#     previous_file = attacher.file</span>
+<span class="line-num">133</span>     <span class="ruby-comment">#     previous_file.exists? #=&gt; true</span>
+<span class="line-num">134</span>     <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">135</span>     <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">136</span>     <span class="ruby-comment">#     previous_file.exists? #=&gt; false</span>
+<span class="line-num">137</span>     <span class="ruby-comment">#</span>
+<span class="line-num">138</span>     <span class="ruby-comment">#     # clearing dirty tracking</span>
+<span class="line-num">139</span>     <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">140</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">141</span>     <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">142</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">143</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">finalize</span>
+<span class="line-num">144</span>       <span class="ruby-identifier">destroy_previous</span>
+<span class="line-num">145</span>       <span class="ruby-identifier">promote_cached</span>
+<span class="line-num">146</span>       <span class="ruby-ivar">@previous</span> = <span class="ruby-keyword">nil</span>
+<span class="line-num">147</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">148</span> 
+<span class="line-num">149</span>     <span class="ruby-comment"># Plugins can override this if they want something to be done in a</span>
+<span class="line-num">150</span>     <span class="ruby-comment"># &quot;before save&quot; callback.</span>
+<span class="line-num">151</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save</span>
+<span class="line-num">152</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">153</span> 
+<span class="line-num">154</span>     <span class="ruby-comment"># If a new cached file has been attached, uploads it to permanent storage.</span>
+<span class="line-num">155</span>     <span class="ruby-comment"># Any additional options are forwarded to #promote.</span>
+<span class="line-num">156</span>     <span class="ruby-comment">#</span>
+<span class="line-num">157</span>     <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">158</span>     <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">159</span>     <span class="ruby-comment">#     attacher.promote_cached</span>
+<span class="line-num">160</span>     <span class="ruby-comment">#     attacher.stored? #=&gt; true</span>
+<span class="line-num">161</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_cached</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">162</span>       <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>
+<span class="line-num">163</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">164</span> 
+<span class="line-num">165</span>     <span class="ruby-comment"># Uploads current file to permanent storage and sets the stored file.</span>
+<span class="line-num">166</span>     <span class="ruby-comment">#</span>
+<span class="line-num">167</span>     <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">168</span>     <span class="ruby-comment">#     attacher.promote</span>
+<span class="line-num">169</span>     <span class="ruby-comment">#     attacher.stored? #=&gt; true</span>
+<span class="line-num">170</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">171</span>       <span class="ruby-identifier">set</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:store</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">172</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">173</span> 
+<span class="line-num">174</span>     <span class="ruby-comment"># Delegates to `Shrine.upload`, passing the #context.</span>
+<span class="line-num">175</span>     <span class="ruby-comment">#</span>
+<span class="line-num">176</span>     <span class="ruby-comment">#     # upload file to specified storage</span>
+<span class="line-num">177</span>     <span class="ruby-comment">#     attacher.upload(io, :store) #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">178</span>     <span class="ruby-comment">#</span>
+<span class="line-num">179</span>     <span class="ruby-comment">#     # pass additional options for the uploader</span>
+<span class="line-num">180</span>     <span class="ruby-comment">#     attacher.upload(io, :store, metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num">181</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span> = <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">182</span>       <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">183</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">184</span> 
+<span class="line-num">185</span>     <span class="ruby-comment"># If a new file was attached, deletes previously attached file if any.</span>
+<span class="line-num">186</span>     <span class="ruby-comment">#</span>
+<span class="line-num">187</span>     <span class="ruby-comment">#     previous_file = attacher.file</span>
+<span class="line-num">188</span>     <span class="ruby-comment">#     attacher.attach(file)</span>
+<span class="line-num">189</span>     <span class="ruby-comment">#     attacher.destroy_previous</span>
+<span class="line-num">190</span>     <span class="ruby-comment">#     previous_file.exists? #=&gt; false</span>
+<span class="line-num">191</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_previous</span>
+<span class="line-num">192</span>       <span class="ruby-ivar">@previous</span>.<span class="ruby-identifier">destroy_attached</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">changed?</span>
+<span class="line-num">193</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">194</span> 
+<span class="line-num">195</span>     <span class="ruby-comment"># Destroys the attached file if it exists and is uploaded to permanent</span>
+<span class="line-num">196</span>     <span class="ruby-comment"># storage.</span>
+<span class="line-num">197</span>     <span class="ruby-comment">#</span>
+<span class="line-num">198</span>     <span class="ruby-comment">#     attacher.file.exists? #=&gt; true</span>
+<span class="line-num">199</span>     <span class="ruby-comment">#     attacher.destroy_attached</span>
+<span class="line-num">200</span>     <span class="ruby-comment">#     attacher.file.exists? #=&gt; false</span>
+<span class="line-num">201</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_attached</span>
+<span class="line-num">202</span>       <span class="ruby-identifier">destroy</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">destroy?</span>
+<span class="line-num">203</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">204</span> 
+<span class="line-num">205</span>     <span class="ruby-comment"># Destroys the attachment.</span>
+<span class="line-num">206</span>     <span class="ruby-comment">#</span>
+<span class="line-num">207</span>     <span class="ruby-comment">#     attacher.file.exists? #=&gt; true</span>
+<span class="line-num">208</span>     <span class="ruby-comment">#     attacher.destroy</span>
+<span class="line-num">209</span>     <span class="ruby-comment">#     attacher.file.exists? #=&gt; false</span>
+<span class="line-num">210</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>
+<span class="line-num">211</span>       <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">delete</span>
+<span class="line-num">212</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">213</span> 
+<span class="line-num">214</span>     <span class="ruby-comment"># Sets the uploaded file with dirty tracking, and runs validations.</span>
+<span class="line-num">215</span>     <span class="ruby-comment">#</span>
+<span class="line-num">216</span>     <span class="ruby-comment">#     attacher.change(uploaded_file)</span>
+<span class="line-num">217</span>     <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">218</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">219</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">220</span>       <span class="ruby-ivar">@previous</span> = <span class="ruby-identifier">dup</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">change?</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">221</span>       <span class="ruby-identifier">set</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">222</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">223</span> 
+<span class="line-num">224</span>     <span class="ruby-comment"># Sets the uploaded file.</span>
+<span class="line-num">225</span>     <span class="ruby-comment">#</span>
+<span class="line-num">226</span>     <span class="ruby-comment">#     attacher.set(uploaded_file)</span>
+<span class="line-num">227</span>     <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">228</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">229</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">230</span>       <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">231</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">232</span> 
+<span class="line-num">233</span>     <span class="ruby-comment"># Returns the attached file.</span>
+<span class="line-num">234</span>     <span class="ruby-comment">#</span>
+<span class="line-num">235</span>     <span class="ruby-comment">#     # when a file is attached</span>
+<span class="line-num">236</span>     <span class="ruby-comment">#     attacher.get #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">237</span>     <span class="ruby-comment">#</span>
+<span class="line-num">238</span>     <span class="ruby-comment">#     # when no file is attached</span>
+<span class="line-num">239</span>     <span class="ruby-comment">#     attacher.get #=&gt; nil</span>
+<span class="line-num">240</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">get</span>
+<span class="line-num">241</span>       <span class="ruby-identifier">file</span>
+<span class="line-num">242</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">243</span> 
+<span class="line-num">244</span>     <span class="ruby-comment"># If a file is attached, returns the uploaded file URL, otherwise returns</span>
+<span class="line-num">245</span>     <span class="ruby-comment"># nil. Any options are forwarded to the storage.</span>
+<span class="line-num">246</span>     <span class="ruby-comment">#</span>
+<span class="line-num">247</span>     <span class="ruby-comment">#     attacher.file = file</span>
+<span class="line-num">248</span>     <span class="ruby-comment">#     attacher.url #=&gt; &quot;https://...&quot;</span>
+<span class="line-num">249</span>     <span class="ruby-comment">#</span>
+<span class="line-num">250</span>     <span class="ruby-comment">#     attacher.file = nil</span>
+<span class="line-num">251</span>     <span class="ruby-comment">#     attacher.url #=&gt; nil</span>
+<span class="line-num">252</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">253</span>       <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">254</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">255</span> 
+<span class="line-num">256</span>     <span class="ruby-comment"># Returns whether the attachment has changed.</span>
+<span class="line-num">257</span>     <span class="ruby-comment">#</span>
+<span class="line-num">258</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">259</span>     <span class="ruby-comment">#     attacher.attach(file)</span>
+<span class="line-num">260</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">261</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">changed?</span>
+<span class="line-num">262</span>       <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-ivar">@previous</span>
+<span class="line-num">263</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">264</span> 
+<span class="line-num">265</span>     <span class="ruby-comment"># Returns whether a file is attached.</span>
+<span class="line-num">266</span>     <span class="ruby-comment">#</span>
+<span class="line-num">267</span>     <span class="ruby-comment">#     attacher.attach(io)</span>
+<span class="line-num">268</span>     <span class="ruby-comment">#     attacher.attached? #=&gt; true</span>
+<span class="line-num">269</span>     <span class="ruby-comment">#</span>
+<span class="line-num">270</span>     <span class="ruby-comment">#     attacher.attach(nil)</span>
+<span class="line-num">271</span>     <span class="ruby-comment">#     attacher.attached? #=&gt; false</span>
+<span class="line-num">272</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attached?</span>
+<span class="line-num">273</span>       <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">file</span>
+<span class="line-num">274</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">275</span> 
+<span class="line-num">276</span>     <span class="ruby-comment"># Returns whether the file is uploaded to temporary storage.</span>
+<span class="line-num">277</span>     <span class="ruby-comment">#</span>
+<span class="line-num">278</span>     <span class="ruby-comment">#     attacher.cached?       # checks current file</span>
+<span class="line-num">279</span>     <span class="ruby-comment">#     attacher.cached?(file) # checks given file</span>
+<span class="line-num">280</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)
+<span class="line-num">281</span>       <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">cache_key</span>)
+<span class="line-num">282</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">283</span> 
+<span class="line-num">284</span>     <span class="ruby-comment"># Returns whether the file is uploaded to permanent storage.</span>
+<span class="line-num">285</span>     <span class="ruby-comment">#</span>
+<span class="line-num">286</span>     <span class="ruby-comment">#     attacher.stored?       # checks current file</span>
+<span class="line-num">287</span>     <span class="ruby-comment">#     attacher.stored?(file) # checks given file</span>
+<span class="line-num">288</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">stored?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)
+<span class="line-num">289</span>       <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">store_key</span>)
+<span class="line-num">290</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">291</span> 
+<span class="line-num">292</span>     <span class="ruby-comment"># Generates serializable data for the attachment.</span>
+<span class="line-num">293</span>     <span class="ruby-comment">#</span>
+<span class="line-num">294</span>     <span class="ruby-comment">#     attacher.data #=&gt; { &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot;: { ... } }</span>
+<span class="line-num">295</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
+<span class="line-num">296</span>       <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">data</span>
+<span class="line-num">297</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">298</span> 
+<span class="line-num">299</span>     <span class="ruby-comment"># Loads the uploaded file from data generated by `Attacher#data`.</span>
+<span class="line-num">300</span>     <span class="ruby-comment">#</span>
+<span class="line-num">301</span>     <span class="ruby-comment">#     attacher.file #=&gt; nil</span>
+<span class="line-num">302</span>     <span class="ruby-comment">#     attacher.load_data({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... } })</span>
+<span class="line-num">303</span>     <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">304</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_data</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">305</span>       <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">data</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">306</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">307</span> 
+<span class="line-num">308</span>     <span class="ruby-comment"># Saves the given uploaded file to an instance variable.</span>
+<span class="line-num">309</span>     <span class="ruby-comment">#</span>
+<span class="line-num">310</span>     <span class="ruby-comment">#     attacher.file = uploaded_file</span>
+<span class="line-num">311</span>     <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">312</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file=</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">313</span>       <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">nil?</span>
+<span class="line-num">314</span>         <span class="ruby-identifier">fail</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;expected file to be a Shrine::UploadedFile or nil, got #{file.inspect}&quot;</span>
+<span class="line-num">315</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">316</span> 
+<span class="line-num">317</span>       <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">318</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">319</span> 
+<span class="line-num">320</span>     <span class="ruby-comment"># Returns attached file or raises an exception if no file is attached.</span>
+<span class="line-num">321</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file!</span>
+<span class="line-num">322</span>       <span class="ruby-identifier">file</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;no file is attached&quot;</span>
+<span class="line-num">323</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">324</span> 
+<span class="line-num">325</span>     <span class="ruby-comment"># Converts JSON or Hash data into a Shrine::UploadedFile object.</span>
+<span class="line-num">326</span>     <span class="ruby-comment">#</span>
+<span class="line-num">327</span>     <span class="ruby-comment">#     attacher.uploaded_file(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num">328</span>     <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+<span class="line-num">329</span>     <span class="ruby-comment">#</span>
+<span class="line-num">330</span>     <span class="ruby-comment">#     attacher.uploaded_file({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num">331</span>     <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+<span class="line-num">332</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">333</span>       <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">334</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">335</span> 
+<span class="line-num">336</span>     <span class="ruby-comment"># Returns the Shrine class that this attacher&#39;s class is namespaced</span>
+<span class="line-num">337</span>     <span class="ruby-comment"># under.</span>
+<span class="line-num">338</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>
+<span class="line-num">339</span>       <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>
+<span class="line-num">340</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">341</span> 
+<span class="line-num">342</span>     <span class="ruby-identifier">private</span>
+<span class="line-num">343</span> 
+<span class="line-num">344</span>     <span class="ruby-comment"># The copy constructor that&#39;s called on #dup and #clone</span>
+<span class="line-num">345</span>     <span class="ruby-comment"># We need to duplicate the context to prevent it from being shared</span>
+<span class="line-num">346</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize_copy</span>(<span class="ruby-identifier">other</span>)
+<span class="line-num">347</span>       <span class="ruby-keyword">super</span>
+<span class="line-num">348</span>       <span class="ruby-ivar">@context</span> = <span class="ruby-ivar">@context</span>.<span class="ruby-identifier">dup</span>
+<span class="line-num">349</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">350</span> 
+<span class="line-num">351</span>     <span class="ruby-comment"># Converts a String or Hash value into an UploadedFile object and ensures</span>
+<span class="line-num">352</span>     <span class="ruby-comment"># it&#39;s uploaded to temporary storage.</span>
+<span class="line-num">353</span>     <span class="ruby-comment">#</span>
+<span class="line-num">354</span>     <span class="ruby-comment">#     # from JSON data</span>
+<span class="line-num">355</span>     <span class="ruby-comment">#     attacher.cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num">356</span>     <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">357</span>     <span class="ruby-comment">#</span>
+<span class="line-num">358</span>     <span class="ruby-comment">#     # from Hash data</span>
+<span class="line-num">359</span>     <span class="ruby-comment">#     attacher.cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; { ... } })</span>
+<span class="line-num">360</span>     <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">361</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">362</span>       <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">363</span> 
+<span class="line-num">364</span>       <span class="ruby-comment"># reject files not uploaded to temporary storage, because otherwise</span>
+<span class="line-num">365</span>       <span class="ruby-comment"># attackers could hijack other users&#39; attachments</span>
+<span class="line-num">366</span>       <span class="ruby-keyword">unless</span> <span class="ruby-identifier">cached?</span>(<span class="ruby-identifier">uploaded_file</span>)
+<span class="line-num">367</span>         <span class="ruby-identifier">fail</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;expected cached file, got #{uploaded_file.inspect}&quot;</span>
+<span class="line-num">368</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">369</span> 
+<span class="line-num">370</span>       <span class="ruby-identifier">uploaded_file</span>
+<span class="line-num">371</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">372</span> 
+<span class="line-num">373</span>     <span class="ruby-comment"># Whether attached file should be uploaded to permanent storage.</span>
+<span class="line-num">374</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote?</span>
+<span class="line-num">375</span>       <span class="ruby-identifier">changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cached?</span>
+<span class="line-num">376</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">377</span> 
+<span class="line-num">378</span>     <span class="ruby-comment"># Whether attached file should be deleted.</span>
+<span class="line-num">379</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy?</span>
+<span class="line-num">380</span>       <span class="ruby-identifier">attached?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cached?</span>
+<span class="line-num">381</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">382</span> 
+<span class="line-num">383</span>     <span class="ruby-comment"># Whether assigning the given file is considered a change.</span>
+<span class="line-num">384</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change?</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">385</span>       <span class="ruby-ivar">@file</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">file</span>
+<span class="line-num">386</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">387</span> 
+<span class="line-num">388</span>     <span class="ruby-comment"># Returns whether the file is uploaded to specified storage.</span>
+<span class="line-num">389</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage_key</span>)
+<span class="line-num">390</span>       <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">storage_key</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">storage_key</span>
+<span class="line-num">391</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">392</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">393</span> 
+<span class="line-num">394</span>   <span class="ruby-identifier">extend</span> <span class="ruby-constant">ClassMethods</span>
+<span class="line-num">395</span>   <span class="ruby-identifier">include</span> <span class="ruby-constant">InstanceMethods</span>
+<span class="line-num">396</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-cache_key'>
 <a name='method-i-cache_key'></a>
 <div class='synopsis'>
-<span class='name'>cache_key</span><span class='arguments'>()</span>
+<span class='name'>cache_key</span><span class='arguments'>(= @cache.to_sym)</span>
 
 </div>
 <div class='description'>
@@ -304,8 +658,391 @@ attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quo
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-cache_key-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-cache_key-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num">50</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache_key</span>; <span class="ruby-ivar">@cache</span>.<span class="ruby-identifier">to_sym</span>; <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-cache_key-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num"> 50</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache_key</span> = <span class="ruby-ivar">@cache</span>.<span class="ruby-identifier">to_sym</span>
+<span class="line-num"> 51</span>     <span class="ruby-comment"># Returns the permanent storage identifier.</span>
+<span class="line-num"> 52</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store_key</span> = <span class="ruby-ivar">@store</span>.<span class="ruby-identifier">to_sym</span>
+<span class="line-num"> 53</span> 
+<span class="line-num"> 54</span>     <span class="ruby-comment"># Returns the uploader that is used for the temporary storage.</span>
+<span class="line-num"> 55</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cache_key</span>)
+<span class="line-num"> 56</span>     <span class="ruby-comment"># Returns the uploader that is used for the permanent storage.</span>
+<span class="line-num"> 57</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store_key</span>)
+<span class="line-num"> 58</span> 
+<span class="line-num"> 59</span>     <span class="ruby-comment"># Calls #attach_cached, but skips if value is an empty string (this is</span>
+<span class="line-num"> 60</span>     <span class="ruby-comment"># useful when the uploaded file comes from form fields). Forwards any</span>
+<span class="line-num"> 61</span>     <span class="ruby-comment"># additional options to #attach_cached.</span>
+<span class="line-num"> 62</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 63</span>     <span class="ruby-comment">#     attacher.assign(File.open(...))</span>
+<span class="line-num"> 64</span>     <span class="ruby-comment">#     attacher.assign(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num"> 65</span>     <span class="ruby-comment">#     attacher.assign(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num"> 66</span>     <span class="ruby-comment">#     attacher.assign({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num"> 67</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 68</span>     <span class="ruby-comment">#     # ignores the assignment when a blank string is given</span>
+<span class="line-num"> 69</span>     <span class="ruby-comment">#     attacher.assign(&quot;&quot;)</span>
+<span class="line-num"> 70</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 71</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-comment"># skip empty hidden field</span>
+<span class="line-num"> 72</span> 
+<span class="line-num"> 73</span>       <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
+<span class="line-num"> 74</span>         <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">file</span> <span class="ruby-comment"># skip assignment for current file</span>
+<span class="line-num"> 75</span>       <span class="ruby-keyword">end</span>
+<span class="line-num"> 76</span> 
+<span class="line-num"> 77</span>       <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 78</span>     <span class="ruby-keyword">end</span>
+<span class="line-num"> 79</span> 
+<span class="line-num"> 80</span>     <span class="ruby-comment"># Sets an existing cached file, or uploads an IO object to temporary</span>
+<span class="line-num"> 81</span>     <span class="ruby-comment"># storage and sets it via #attach. Forwards any additional options to</span>
+<span class="line-num"> 82</span>     <span class="ruby-comment"># #attach.</span>
+<span class="line-num"> 83</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 84</span>     <span class="ruby-comment">#     # upload file to temporary storage and set the uploaded file.</span>
+<span class="line-num"> 85</span>     <span class="ruby-comment">#     attacher.attach_cached(File.open(...))</span>
+<span class="line-num"> 86</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 87</span>     <span class="ruby-comment">#     # foward additional options to the uploader</span>
+<span class="line-num"> 88</span>     <span class="ruby-comment">#     attacher.attach_cached(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num"> 89</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 90</span>     <span class="ruby-comment">#     # sets an existing cached file from JSON data</span>
+<span class="line-num"> 91</span>     <span class="ruby-comment">#     attacher.attach_cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num"> 92</span>     <span class="ruby-comment">#</span>
+<span class="line-num"> 93</span>     <span class="ruby-comment">#     # sets an existing cached file from Hash data</span>
+<span class="line-num"> 94</span>     <span class="ruby-comment">#     attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num"> 95</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 96</span>       <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
+<span class="line-num"> 97</span>         <span class="ruby-identifier">change</span>(<span class="ruby-identifier">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>))
+<span class="line-num"> 98</span>       <span class="ruby-keyword">else</span>
+<span class="line-num"> 99</span>         <span class="ruby-identifier">attach</span>(<span class="ruby-identifier">value</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">cache_key</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:cache</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">100</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">101</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">102</span> 
+<span class="line-num">103</span>     <span class="ruby-comment"># Uploads given IO object and changes the uploaded file.</span>
+<span class="line-num">104</span>     <span class="ruby-comment">#</span>
+<span class="line-num">105</span>     <span class="ruby-comment">#     # uploads the file to permanent storage</span>
+<span class="line-num">106</span>     <span class="ruby-comment">#     attacher.attach(io)</span>
+<span class="line-num">107</span>     <span class="ruby-comment">#</span>
+<span class="line-num">108</span>     <span class="ruby-comment">#     # uploads the file to specified storage</span>
+<span class="line-num">109</span>     <span class="ruby-comment">#     attacher.attach(io, storage: :other_store)</span>
+<span class="line-num">110</span>     <span class="ruby-comment">#</span>
+<span class="line-num">111</span>     <span class="ruby-comment">#     # forwards additional options to the uploader</span>
+<span class="line-num">112</span>     <span class="ruby-comment">#     attacher.attach(io, upload_options: { acl: &quot;public-read&quot; }, metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num">113</span>     <span class="ruby-comment">#</span>
+<span class="line-num">114</span>     <span class="ruby-comment">#     # removes the attachment</span>
+<span class="line-num">115</span>     <span class="ruby-comment">#     attacher.attach(nil)</span>
+<span class="line-num">116</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">117</span>       <span class="ruby-identifier">file</span> = <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>
+<span class="line-num">118</span> 
+<span class="line-num">119</span>       <span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">120</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">121</span> 
+<span class="line-num">122</span>     <span class="ruby-comment"># Deletes any previous file and promotes newly attached cached file.</span>
+<span class="line-num">123</span>     <span class="ruby-comment"># It also clears any dirty tracking.</span>
+<span class="line-num">124</span>     <span class="ruby-comment">#</span>
+<span class="line-num">125</span>     <span class="ruby-comment">#     # promoting cached file</span>
+<span class="line-num">126</span>     <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">127</span>     <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">128</span>     <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">129</span>     <span class="ruby-comment">#     attacher.stored?</span>
+<span class="line-num">130</span>     <span class="ruby-comment">#</span>
+<span class="line-num">131</span>     <span class="ruby-comment">#     # deleting previous file</span>
+<span class="line-num">132</span>     <span class="ruby-comment">#     previous_file = attacher.file</span>
+<span class="line-num">133</span>     <span class="ruby-comment">#     previous_file.exists? #=&gt; true</span>
+<span class="line-num">134</span>     <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">135</span>     <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">136</span>     <span class="ruby-comment">#     previous_file.exists? #=&gt; false</span>
+<span class="line-num">137</span>     <span class="ruby-comment">#</span>
+<span class="line-num">138</span>     <span class="ruby-comment">#     # clearing dirty tracking</span>
+<span class="line-num">139</span>     <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">140</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">141</span>     <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">142</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">143</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">finalize</span>
+<span class="line-num">144</span>       <span class="ruby-identifier">destroy_previous</span>
+<span class="line-num">145</span>       <span class="ruby-identifier">promote_cached</span>
+<span class="line-num">146</span>       <span class="ruby-ivar">@previous</span> = <span class="ruby-keyword">nil</span>
+<span class="line-num">147</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">148</span> 
+<span class="line-num">149</span>     <span class="ruby-comment"># Plugins can override this if they want something to be done in a</span>
+<span class="line-num">150</span>     <span class="ruby-comment"># &quot;before save&quot; callback.</span>
+<span class="line-num">151</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save</span>
+<span class="line-num">152</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">153</span> 
+<span class="line-num">154</span>     <span class="ruby-comment"># If a new cached file has been attached, uploads it to permanent storage.</span>
+<span class="line-num">155</span>     <span class="ruby-comment"># Any additional options are forwarded to #promote.</span>
+<span class="line-num">156</span>     <span class="ruby-comment">#</span>
+<span class="line-num">157</span>     <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">158</span>     <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">159</span>     <span class="ruby-comment">#     attacher.promote_cached</span>
+<span class="line-num">160</span>     <span class="ruby-comment">#     attacher.stored? #=&gt; true</span>
+<span class="line-num">161</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_cached</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">162</span>       <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>
+<span class="line-num">163</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">164</span> 
+<span class="line-num">165</span>     <span class="ruby-comment"># Uploads current file to permanent storage and sets the stored file.</span>
+<span class="line-num">166</span>     <span class="ruby-comment">#</span>
+<span class="line-num">167</span>     <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">168</span>     <span class="ruby-comment">#     attacher.promote</span>
+<span class="line-num">169</span>     <span class="ruby-comment">#     attacher.stored? #=&gt; true</span>
+<span class="line-num">170</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">171</span>       <span class="ruby-identifier">set</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:store</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">172</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">173</span> 
+<span class="line-num">174</span>     <span class="ruby-comment"># Delegates to `Shrine.upload`, passing the #context.</span>
+<span class="line-num">175</span>     <span class="ruby-comment">#</span>
+<span class="line-num">176</span>     <span class="ruby-comment">#     # upload file to specified storage</span>
+<span class="line-num">177</span>     <span class="ruby-comment">#     attacher.upload(io, :store) #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">178</span>     <span class="ruby-comment">#</span>
+<span class="line-num">179</span>     <span class="ruby-comment">#     # pass additional options for the uploader</span>
+<span class="line-num">180</span>     <span class="ruby-comment">#     attacher.upload(io, :store, metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num">181</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span> = <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">182</span>       <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">183</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">184</span> 
+<span class="line-num">185</span>     <span class="ruby-comment"># If a new file was attached, deletes previously attached file if any.</span>
+<span class="line-num">186</span>     <span class="ruby-comment">#</span>
+<span class="line-num">187</span>     <span class="ruby-comment">#     previous_file = attacher.file</span>
+<span class="line-num">188</span>     <span class="ruby-comment">#     attacher.attach(file)</span>
+<span class="line-num">189</span>     <span class="ruby-comment">#     attacher.destroy_previous</span>
+<span class="line-num">190</span>     <span class="ruby-comment">#     previous_file.exists? #=&gt; false</span>
+<span class="line-num">191</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_previous</span>
+<span class="line-num">192</span>       <span class="ruby-ivar">@previous</span>.<span class="ruby-identifier">destroy_attached</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">changed?</span>
+<span class="line-num">193</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">194</span> 
+<span class="line-num">195</span>     <span class="ruby-comment"># Destroys the attached file if it exists and is uploaded to permanent</span>
+<span class="line-num">196</span>     <span class="ruby-comment"># storage.</span>
+<span class="line-num">197</span>     <span class="ruby-comment">#</span>
+<span class="line-num">198</span>     <span class="ruby-comment">#     attacher.file.exists? #=&gt; true</span>
+<span class="line-num">199</span>     <span class="ruby-comment">#     attacher.destroy_attached</span>
+<span class="line-num">200</span>     <span class="ruby-comment">#     attacher.file.exists? #=&gt; false</span>
+<span class="line-num">201</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_attached</span>
+<span class="line-num">202</span>       <span class="ruby-identifier">destroy</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">destroy?</span>
+<span class="line-num">203</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">204</span> 
+<span class="line-num">205</span>     <span class="ruby-comment"># Destroys the attachment.</span>
+<span class="line-num">206</span>     <span class="ruby-comment">#</span>
+<span class="line-num">207</span>     <span class="ruby-comment">#     attacher.file.exists? #=&gt; true</span>
+<span class="line-num">208</span>     <span class="ruby-comment">#     attacher.destroy</span>
+<span class="line-num">209</span>     <span class="ruby-comment">#     attacher.file.exists? #=&gt; false</span>
+<span class="line-num">210</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>
+<span class="line-num">211</span>       <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">delete</span>
+<span class="line-num">212</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">213</span> 
+<span class="line-num">214</span>     <span class="ruby-comment"># Sets the uploaded file with dirty tracking, and runs validations.</span>
+<span class="line-num">215</span>     <span class="ruby-comment">#</span>
+<span class="line-num">216</span>     <span class="ruby-comment">#     attacher.change(uploaded_file)</span>
+<span class="line-num">217</span>     <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">218</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">219</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">220</span>       <span class="ruby-ivar">@previous</span> = <span class="ruby-identifier">dup</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">change?</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">221</span>       <span class="ruby-identifier">set</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">222</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">223</span> 
+<span class="line-num">224</span>     <span class="ruby-comment"># Sets the uploaded file.</span>
+<span class="line-num">225</span>     <span class="ruby-comment">#</span>
+<span class="line-num">226</span>     <span class="ruby-comment">#     attacher.set(uploaded_file)</span>
+<span class="line-num">227</span>     <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">228</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">229</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">230</span>       <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">231</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">232</span> 
+<span class="line-num">233</span>     <span class="ruby-comment"># Returns the attached file.</span>
+<span class="line-num">234</span>     <span class="ruby-comment">#</span>
+<span class="line-num">235</span>     <span class="ruby-comment">#     # when a file is attached</span>
+<span class="line-num">236</span>     <span class="ruby-comment">#     attacher.get #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">237</span>     <span class="ruby-comment">#</span>
+<span class="line-num">238</span>     <span class="ruby-comment">#     # when no file is attached</span>
+<span class="line-num">239</span>     <span class="ruby-comment">#     attacher.get #=&gt; nil</span>
+<span class="line-num">240</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">get</span>
+<span class="line-num">241</span>       <span class="ruby-identifier">file</span>
+<span class="line-num">242</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">243</span> 
+<span class="line-num">244</span>     <span class="ruby-comment"># If a file is attached, returns the uploaded file URL, otherwise returns</span>
+<span class="line-num">245</span>     <span class="ruby-comment"># nil. Any options are forwarded to the storage.</span>
+<span class="line-num">246</span>     <span class="ruby-comment">#</span>
+<span class="line-num">247</span>     <span class="ruby-comment">#     attacher.file = file</span>
+<span class="line-num">248</span>     <span class="ruby-comment">#     attacher.url #=&gt; &quot;https://...&quot;</span>
+<span class="line-num">249</span>     <span class="ruby-comment">#</span>
+<span class="line-num">250</span>     <span class="ruby-comment">#     attacher.file = nil</span>
+<span class="line-num">251</span>     <span class="ruby-comment">#     attacher.url #=&gt; nil</span>
+<span class="line-num">252</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">253</span>       <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">254</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">255</span> 
+<span class="line-num">256</span>     <span class="ruby-comment"># Returns whether the attachment has changed.</span>
+<span class="line-num">257</span>     <span class="ruby-comment">#</span>
+<span class="line-num">258</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">259</span>     <span class="ruby-comment">#     attacher.attach(file)</span>
+<span class="line-num">260</span>     <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">261</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">changed?</span>
+<span class="line-num">262</span>       <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-ivar">@previous</span>
+<span class="line-num">263</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">264</span> 
+<span class="line-num">265</span>     <span class="ruby-comment"># Returns whether a file is attached.</span>
+<span class="line-num">266</span>     <span class="ruby-comment">#</span>
+<span class="line-num">267</span>     <span class="ruby-comment">#     attacher.attach(io)</span>
+<span class="line-num">268</span>     <span class="ruby-comment">#     attacher.attached? #=&gt; true</span>
+<span class="line-num">269</span>     <span class="ruby-comment">#</span>
+<span class="line-num">270</span>     <span class="ruby-comment">#     attacher.attach(nil)</span>
+<span class="line-num">271</span>     <span class="ruby-comment">#     attacher.attached? #=&gt; false</span>
+<span class="line-num">272</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attached?</span>
+<span class="line-num">273</span>       <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">file</span>
+<span class="line-num">274</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">275</span> 
+<span class="line-num">276</span>     <span class="ruby-comment"># Returns whether the file is uploaded to temporary storage.</span>
+<span class="line-num">277</span>     <span class="ruby-comment">#</span>
+<span class="line-num">278</span>     <span class="ruby-comment">#     attacher.cached?       # checks current file</span>
+<span class="line-num">279</span>     <span class="ruby-comment">#     attacher.cached?(file) # checks given file</span>
+<span class="line-num">280</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)
+<span class="line-num">281</span>       <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">cache_key</span>)
+<span class="line-num">282</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">283</span> 
+<span class="line-num">284</span>     <span class="ruby-comment"># Returns whether the file is uploaded to permanent storage.</span>
+<span class="line-num">285</span>     <span class="ruby-comment">#</span>
+<span class="line-num">286</span>     <span class="ruby-comment">#     attacher.stored?       # checks current file</span>
+<span class="line-num">287</span>     <span class="ruby-comment">#     attacher.stored?(file) # checks given file</span>
+<span class="line-num">288</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">stored?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)
+<span class="line-num">289</span>       <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">store_key</span>)
+<span class="line-num">290</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">291</span> 
+<span class="line-num">292</span>     <span class="ruby-comment"># Generates serializable data for the attachment.</span>
+<span class="line-num">293</span>     <span class="ruby-comment">#</span>
+<span class="line-num">294</span>     <span class="ruby-comment">#     attacher.data #=&gt; { &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot;: { ... } }</span>
+<span class="line-num">295</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
+<span class="line-num">296</span>       <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">data</span>
+<span class="line-num">297</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">298</span> 
+<span class="line-num">299</span>     <span class="ruby-comment"># Loads the uploaded file from data generated by `Attacher#data`.</span>
+<span class="line-num">300</span>     <span class="ruby-comment">#</span>
+<span class="line-num">301</span>     <span class="ruby-comment">#     attacher.file #=&gt; nil</span>
+<span class="line-num">302</span>     <span class="ruby-comment">#     attacher.load_data({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... } })</span>
+<span class="line-num">303</span>     <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">304</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_data</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">305</span>       <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">data</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">306</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">307</span> 
+<span class="line-num">308</span>     <span class="ruby-comment"># Saves the given uploaded file to an instance variable.</span>
+<span class="line-num">309</span>     <span class="ruby-comment">#</span>
+<span class="line-num">310</span>     <span class="ruby-comment">#     attacher.file = uploaded_file</span>
+<span class="line-num">311</span>     <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">312</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file=</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">313</span>       <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">nil?</span>
+<span class="line-num">314</span>         <span class="ruby-identifier">fail</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;expected file to be a Shrine::UploadedFile or nil, got #{file.inspect}&quot;</span>
+<span class="line-num">315</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">316</span> 
+<span class="line-num">317</span>       <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">318</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">319</span> 
+<span class="line-num">320</span>     <span class="ruby-comment"># Returns attached file or raises an exception if no file is attached.</span>
+<span class="line-num">321</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file!</span>
+<span class="line-num">322</span>       <span class="ruby-identifier">file</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;no file is attached&quot;</span>
+<span class="line-num">323</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">324</span> 
+<span class="line-num">325</span>     <span class="ruby-comment"># Converts JSON or Hash data into a Shrine::UploadedFile object.</span>
+<span class="line-num">326</span>     <span class="ruby-comment">#</span>
+<span class="line-num">327</span>     <span class="ruby-comment">#     attacher.uploaded_file(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num">328</span>     <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+<span class="line-num">329</span>     <span class="ruby-comment">#</span>
+<span class="line-num">330</span>     <span class="ruby-comment">#     attacher.uploaded_file({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num">331</span>     <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+<span class="line-num">332</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">333</span>       <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">334</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">335</span> 
+<span class="line-num">336</span>     <span class="ruby-comment"># Returns the Shrine class that this attacher&#39;s class is namespaced</span>
+<span class="line-num">337</span>     <span class="ruby-comment"># under.</span>
+<span class="line-num">338</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>
+<span class="line-num">339</span>       <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>
+<span class="line-num">340</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">341</span> 
+<span class="line-num">342</span>     <span class="ruby-identifier">private</span>
+<span class="line-num">343</span> 
+<span class="line-num">344</span>     <span class="ruby-comment"># The copy constructor that&#39;s called on #dup and #clone</span>
+<span class="line-num">345</span>     <span class="ruby-comment"># We need to duplicate the context to prevent it from being shared</span>
+<span class="line-num">346</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize_copy</span>(<span class="ruby-identifier">other</span>)
+<span class="line-num">347</span>       <span class="ruby-keyword">super</span>
+<span class="line-num">348</span>       <span class="ruby-ivar">@context</span> = <span class="ruby-ivar">@context</span>.<span class="ruby-identifier">dup</span>
+<span class="line-num">349</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">350</span> 
+<span class="line-num">351</span>     <span class="ruby-comment"># Converts a String or Hash value into an UploadedFile object and ensures</span>
+<span class="line-num">352</span>     <span class="ruby-comment"># it&#39;s uploaded to temporary storage.</span>
+<span class="line-num">353</span>     <span class="ruby-comment">#</span>
+<span class="line-num">354</span>     <span class="ruby-comment">#     # from JSON data</span>
+<span class="line-num">355</span>     <span class="ruby-comment">#     attacher.cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num">356</span>     <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">357</span>     <span class="ruby-comment">#</span>
+<span class="line-num">358</span>     <span class="ruby-comment">#     # from Hash data</span>
+<span class="line-num">359</span>     <span class="ruby-comment">#     attacher.cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; { ... } })</span>
+<span class="line-num">360</span>     <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">361</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">362</span>       <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">363</span> 
+<span class="line-num">364</span>       <span class="ruby-comment"># reject files not uploaded to temporary storage, because otherwise</span>
+<span class="line-num">365</span>       <span class="ruby-comment"># attackers could hijack other users&#39; attachments</span>
+<span class="line-num">366</span>       <span class="ruby-keyword">unless</span> <span class="ruby-identifier">cached?</span>(<span class="ruby-identifier">uploaded_file</span>)
+<span class="line-num">367</span>         <span class="ruby-identifier">fail</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;expected cached file, got #{uploaded_file.inspect}&quot;</span>
+<span class="line-num">368</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">369</span> 
+<span class="line-num">370</span>       <span class="ruby-identifier">uploaded_file</span>
+<span class="line-num">371</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">372</span> 
+<span class="line-num">373</span>     <span class="ruby-comment"># Whether attached file should be uploaded to permanent storage.</span>
+<span class="line-num">374</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote?</span>
+<span class="line-num">375</span>       <span class="ruby-identifier">changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cached?</span>
+<span class="line-num">376</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">377</span> 
+<span class="line-num">378</span>     <span class="ruby-comment"># Whether attached file should be deleted.</span>
+<span class="line-num">379</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy?</span>
+<span class="line-num">380</span>       <span class="ruby-identifier">attached?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cached?</span>
+<span class="line-num">381</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">382</span> 
+<span class="line-num">383</span>     <span class="ruby-comment"># Whether assigning the given file is considered a change.</span>
+<span class="line-num">384</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change?</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">385</span>       <span class="ruby-ivar">@file</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">file</span>
+<span class="line-num">386</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">387</span> 
+<span class="line-num">388</span>     <span class="ruby-comment"># Returns whether the file is uploaded to specified storage.</span>
+<span class="line-num">389</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage_key</span>)
+<span class="line-num">390</span>       <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">storage_key</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">storage_key</span>
+<span class="line-num">391</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">392</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">393</span> 
+<span class="line-num">394</span>   <span class="ruby-identifier">extend</span> <span class="ruby-constant">ClassMethods</span>
+<span class="line-num">395</span>   <span class="ruby-identifier">include</span> <span class="ruby-constant">InstanceMethods</span>
+<span class="line-num">396</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-cached'>
+<a name='method-i-cached'></a>
+<div class='synopsis'>
+<span class='name'>cached</span><span class='arguments'>(value, **)</span>
+
+</div>
+<div class='description'>
+
+<p>Converts a String or Hash value into an <a href="../UploadedFile.html"><code>UploadedFile</code></a> object and ensures it’s uploaded to temporary storage.</p>
+
+<pre># from JSON data
+attacher.cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)
+#=&gt; #&lt;Shrine::UploadedFile&gt;
+
+# from Hash data
+attacher.cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; { ... } })
+#=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-cached-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-cached-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">361</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">362</span>   <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">363</span> 
+<span class="line-num">364</span>   <span class="ruby-comment"># reject files not uploaded to temporary storage, because otherwise</span>
+<span class="line-num">365</span>   <span class="ruby-comment"># attackers could hijack other users&#39; attachments</span>
+<span class="line-num">366</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">cached?</span>(<span class="ruby-identifier">uploaded_file</span>)
+<span class="line-num">367</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;expected cached file, got #{uploaded_file.inspect}&quot;</span>
+<span class="line-num">368</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">369</span> 
+<span class="line-num">370</span>   <span class="ruby-identifier">uploaded_file</span>
+<span class="line-num">371</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-cached-3F'>
@@ -358,6 +1095,27 @@ attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quo
 <span class="line-num">220</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-identifier">dup</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">change?</span>(<span class="ruby-identifier">file</span>)
 <span class="line-num">221</span>   <span class="ruby-identifier">set</span>(<span class="ruby-identifier">file</span>)
 <span class="line-num">222</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-change-3F'>
+<a name='method-i-change-3F'></a>
+<div class='synopsis'>
+<span class='name'>change?</span><span class='arguments'>(file)</span>
+
+</div>
+<div class='description'>
+
+<p>Whether assigning the given file is considered a change.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-change-3F-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-change-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">384</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change?</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">385</span>   <span class="ruby-ivar">@file</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">file</span>
+<span class="line-num">386</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-changed-3F'>
@@ -434,6 +1192,27 @@ attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quo
 <span class="line-num">210</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>
 <span class="line-num">211</span>   <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">delete</span>
 <span class="line-num">212</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-destroy-3F'>
+<a name='method-i-destroy-3F'></a>
+<div class='synopsis'>
+<span class='name'>destroy?</span><span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Whether attached file should be deleted.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-destroy-3F-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-destroy-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">379</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy?</span>
+<span class="line-num">380</span>   <span class="ruby-identifier">attached?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cached?</span>
+<span class="line-num">381</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-destroy_attached'>
@@ -610,6 +1389,28 @@ attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quo
 <span class="line-num">242</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
+<div class='method public-instance' id='method-method-i-initialize_copy'>
+<a name='method-i-initialize_copy'></a>
+<div class='synopsis'>
+<span class='name'>initialize_copy</span><span class='arguments'>(other)</span>
+
+</div>
+<div class='description'>
+
+<p>The copy constructor that’s called on dup and clone We need to duplicate the context to prevent it from being shared</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-initialize_copy-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-initialize_copy-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">346</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize_copy</span>(<span class="ruby-identifier">other</span>)
+<span class="line-num">347</span>   <span class="ruby-keyword">super</span>
+<span class="line-num">348</span>   <span class="ruby-ivar">@context</span> = <span class="ruby-ivar">@context</span>.<span class="ruby-identifier">dup</span>
+<span class="line-num">349</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
 <div class='method public-instance' id='method-method-i-load_data'>
 <a name='method-i-load_data'></a>
 <div class='synopsis'>
@@ -638,7 +1439,7 @@ attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 <div class='method public-instance' id='method-method-i-promote'>
 <a name='method-i-promote'></a>
 <div class='synopsis'>
-<span class='name'>promote</span><span class='arguments'>(storage: store_key, **options)</span>
+<span class='name'>promote</span><span class='arguments'>(storage: store_key, **)</span>
 
 </div>
 <div class='description'>
@@ -656,15 +1457,36 @@ attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 [show source]
 </a>
 <pre id='method-i-promote-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num">170</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">171</span>   <span class="ruby-identifier">set</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:store</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">170</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">171</span>   <span class="ruby-identifier">set</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:store</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">172</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-promote-3F'>
+<a name='method-i-promote-3F'></a>
+<div class='synopsis'>
+<span class='name'>promote?</span><span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Whether attached file should be uploaded to permanent storage.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-promote-3F-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-promote-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">374</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote?</span>
+<span class="line-num">375</span>   <span class="ruby-identifier">changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cached?</span>
+<span class="line-num">376</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-promote_cached'>
 <a name='method-i-promote_cached'></a>
 <div class='synopsis'>
-<span class='name'>promote_cached</span><span class='arguments'>(**options)</span>
+<span class='name'>promote_cached</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -683,8 +1505,8 @@ attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 [show source]
 </a>
 <pre id='method-i-promote_cached-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num">161</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_cached</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">162</span>   <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>
+<span class="line-num">161</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_cached</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">162</span>   <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>
 <span class="line-num">163</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -758,39 +1580,715 @@ attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 <div class='method public-instance' id='method-method-i-store'>
 <a name='method-i-store'></a>
 <div class='synopsis'>
-<span class='name'>store</span><span class='arguments'>()</span>
+<span class='name'>store</span><span class='arguments'>(= shrine_class.new(store_key))</span>
 
 </div>
 <div class='description'>
-
-<p>Returns the uploader that is used for the permanent storage.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-store-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-store-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num">57</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store</span>; <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store_key</span>); <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-store-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num"> 57</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store_key</span>)
+<span class="line-num"> 58</span> 
+<span class="line-num"> 59</span>   <span class="ruby-comment"># Calls #attach_cached, but skips if value is an empty string (this is</span>
+<span class="line-num"> 60</span>   <span class="ruby-comment"># useful when the uploaded file comes from form fields). Forwards any</span>
+<span class="line-num"> 61</span>   <span class="ruby-comment"># additional options to #attach_cached.</span>
+<span class="line-num"> 62</span>   <span class="ruby-comment">#</span>
+<span class="line-num"> 63</span>   <span class="ruby-comment">#     attacher.assign(File.open(...))</span>
+<span class="line-num"> 64</span>   <span class="ruby-comment">#     attacher.assign(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num"> 65</span>   <span class="ruby-comment">#     attacher.assign(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num"> 66</span>   <span class="ruby-comment">#     attacher.assign({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num"> 67</span>   <span class="ruby-comment">#</span>
+<span class="line-num"> 68</span>   <span class="ruby-comment">#     # ignores the assignment when a blank string is given</span>
+<span class="line-num"> 69</span>   <span class="ruby-comment">#     attacher.assign(&quot;&quot;)</span>
+<span class="line-num"> 70</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 71</span>     <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-comment"># skip empty hidden field</span>
+<span class="line-num"> 72</span> 
+<span class="line-num"> 73</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
+<span class="line-num"> 74</span>       <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">file</span> <span class="ruby-comment"># skip assignment for current file</span>
+<span class="line-num"> 75</span>     <span class="ruby-keyword">end</span>
+<span class="line-num"> 76</span> 
+<span class="line-num"> 77</span>     <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 78</span>   <span class="ruby-keyword">end</span>
+<span class="line-num"> 79</span> 
+<span class="line-num"> 80</span>   <span class="ruby-comment"># Sets an existing cached file, or uploads an IO object to temporary</span>
+<span class="line-num"> 81</span>   <span class="ruby-comment"># storage and sets it via #attach. Forwards any additional options to</span>
+<span class="line-num"> 82</span>   <span class="ruby-comment"># #attach.</span>
+<span class="line-num"> 83</span>   <span class="ruby-comment">#</span>
+<span class="line-num"> 84</span>   <span class="ruby-comment">#     # upload file to temporary storage and set the uploaded file.</span>
+<span class="line-num"> 85</span>   <span class="ruby-comment">#     attacher.attach_cached(File.open(...))</span>
+<span class="line-num"> 86</span>   <span class="ruby-comment">#</span>
+<span class="line-num"> 87</span>   <span class="ruby-comment">#     # foward additional options to the uploader</span>
+<span class="line-num"> 88</span>   <span class="ruby-comment">#     attacher.attach_cached(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num"> 89</span>   <span class="ruby-comment">#</span>
+<span class="line-num"> 90</span>   <span class="ruby-comment">#     # sets an existing cached file from JSON data</span>
+<span class="line-num"> 91</span>   <span class="ruby-comment">#     attacher.attach_cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num"> 92</span>   <span class="ruby-comment">#</span>
+<span class="line-num"> 93</span>   <span class="ruby-comment">#     # sets an existing cached file from Hash data</span>
+<span class="line-num"> 94</span>   <span class="ruby-comment">#     attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num"> 95</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 96</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
+<span class="line-num"> 97</span>       <span class="ruby-identifier">change</span>(<span class="ruby-identifier">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>))
+<span class="line-num"> 98</span>     <span class="ruby-keyword">else</span>
+<span class="line-num"> 99</span>       <span class="ruby-identifier">attach</span>(<span class="ruby-identifier">value</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">cache_key</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:cache</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">100</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">101</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">102</span> 
+<span class="line-num">103</span>   <span class="ruby-comment"># Uploads given IO object and changes the uploaded file.</span>
+<span class="line-num">104</span>   <span class="ruby-comment">#</span>
+<span class="line-num">105</span>   <span class="ruby-comment">#     # uploads the file to permanent storage</span>
+<span class="line-num">106</span>   <span class="ruby-comment">#     attacher.attach(io)</span>
+<span class="line-num">107</span>   <span class="ruby-comment">#</span>
+<span class="line-num">108</span>   <span class="ruby-comment">#     # uploads the file to specified storage</span>
+<span class="line-num">109</span>   <span class="ruby-comment">#     attacher.attach(io, storage: :other_store)</span>
+<span class="line-num">110</span>   <span class="ruby-comment">#</span>
+<span class="line-num">111</span>   <span class="ruby-comment">#     # forwards additional options to the uploader</span>
+<span class="line-num">112</span>   <span class="ruby-comment">#     attacher.attach(io, upload_options: { acl: &quot;public-read&quot; }, metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num">113</span>   <span class="ruby-comment">#</span>
+<span class="line-num">114</span>   <span class="ruby-comment">#     # removes the attachment</span>
+<span class="line-num">115</span>   <span class="ruby-comment">#     attacher.attach(nil)</span>
+<span class="line-num">116</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">117</span>     <span class="ruby-identifier">file</span> = <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>
+<span class="line-num">118</span> 
+<span class="line-num">119</span>     <span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">120</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">121</span> 
+<span class="line-num">122</span>   <span class="ruby-comment"># Deletes any previous file and promotes newly attached cached file.</span>
+<span class="line-num">123</span>   <span class="ruby-comment"># It also clears any dirty tracking.</span>
+<span class="line-num">124</span>   <span class="ruby-comment">#</span>
+<span class="line-num">125</span>   <span class="ruby-comment">#     # promoting cached file</span>
+<span class="line-num">126</span>   <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">127</span>   <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">128</span>   <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">129</span>   <span class="ruby-comment">#     attacher.stored?</span>
+<span class="line-num">130</span>   <span class="ruby-comment">#</span>
+<span class="line-num">131</span>   <span class="ruby-comment">#     # deleting previous file</span>
+<span class="line-num">132</span>   <span class="ruby-comment">#     previous_file = attacher.file</span>
+<span class="line-num">133</span>   <span class="ruby-comment">#     previous_file.exists? #=&gt; true</span>
+<span class="line-num">134</span>   <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">135</span>   <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">136</span>   <span class="ruby-comment">#     previous_file.exists? #=&gt; false</span>
+<span class="line-num">137</span>   <span class="ruby-comment">#</span>
+<span class="line-num">138</span>   <span class="ruby-comment">#     # clearing dirty tracking</span>
+<span class="line-num">139</span>   <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">140</span>   <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">141</span>   <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">142</span>   <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">143</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">finalize</span>
+<span class="line-num">144</span>     <span class="ruby-identifier">destroy_previous</span>
+<span class="line-num">145</span>     <span class="ruby-identifier">promote_cached</span>
+<span class="line-num">146</span>     <span class="ruby-ivar">@previous</span> = <span class="ruby-keyword">nil</span>
+<span class="line-num">147</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">148</span> 
+<span class="line-num">149</span>   <span class="ruby-comment"># Plugins can override this if they want something to be done in a</span>
+<span class="line-num">150</span>   <span class="ruby-comment"># &quot;before save&quot; callback.</span>
+<span class="line-num">151</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save</span>
+<span class="line-num">152</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">153</span> 
+<span class="line-num">154</span>   <span class="ruby-comment"># If a new cached file has been attached, uploads it to permanent storage.</span>
+<span class="line-num">155</span>   <span class="ruby-comment"># Any additional options are forwarded to #promote.</span>
+<span class="line-num">156</span>   <span class="ruby-comment">#</span>
+<span class="line-num">157</span>   <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">158</span>   <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">159</span>   <span class="ruby-comment">#     attacher.promote_cached</span>
+<span class="line-num">160</span>   <span class="ruby-comment">#     attacher.stored? #=&gt; true</span>
+<span class="line-num">161</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_cached</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">162</span>     <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>
+<span class="line-num">163</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">164</span> 
+<span class="line-num">165</span>   <span class="ruby-comment"># Uploads current file to permanent storage and sets the stored file.</span>
+<span class="line-num">166</span>   <span class="ruby-comment">#</span>
+<span class="line-num">167</span>   <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">168</span>   <span class="ruby-comment">#     attacher.promote</span>
+<span class="line-num">169</span>   <span class="ruby-comment">#     attacher.stored? #=&gt; true</span>
+<span class="line-num">170</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">171</span>     <span class="ruby-identifier">set</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:store</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">172</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">173</span> 
+<span class="line-num">174</span>   <span class="ruby-comment"># Delegates to `Shrine.upload`, passing the #context.</span>
+<span class="line-num">175</span>   <span class="ruby-comment">#</span>
+<span class="line-num">176</span>   <span class="ruby-comment">#     # upload file to specified storage</span>
+<span class="line-num">177</span>   <span class="ruby-comment">#     attacher.upload(io, :store) #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">178</span>   <span class="ruby-comment">#</span>
+<span class="line-num">179</span>   <span class="ruby-comment">#     # pass additional options for the uploader</span>
+<span class="line-num">180</span>   <span class="ruby-comment">#     attacher.upload(io, :store, metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num">181</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span> = <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">182</span>     <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">183</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">184</span> 
+<span class="line-num">185</span>   <span class="ruby-comment"># If a new file was attached, deletes previously attached file if any.</span>
+<span class="line-num">186</span>   <span class="ruby-comment">#</span>
+<span class="line-num">187</span>   <span class="ruby-comment">#     previous_file = attacher.file</span>
+<span class="line-num">188</span>   <span class="ruby-comment">#     attacher.attach(file)</span>
+<span class="line-num">189</span>   <span class="ruby-comment">#     attacher.destroy_previous</span>
+<span class="line-num">190</span>   <span class="ruby-comment">#     previous_file.exists? #=&gt; false</span>
+<span class="line-num">191</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_previous</span>
+<span class="line-num">192</span>     <span class="ruby-ivar">@previous</span>.<span class="ruby-identifier">destroy_attached</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">changed?</span>
+<span class="line-num">193</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">194</span> 
+<span class="line-num">195</span>   <span class="ruby-comment"># Destroys the attached file if it exists and is uploaded to permanent</span>
+<span class="line-num">196</span>   <span class="ruby-comment"># storage.</span>
+<span class="line-num">197</span>   <span class="ruby-comment">#</span>
+<span class="line-num">198</span>   <span class="ruby-comment">#     attacher.file.exists? #=&gt; true</span>
+<span class="line-num">199</span>   <span class="ruby-comment">#     attacher.destroy_attached</span>
+<span class="line-num">200</span>   <span class="ruby-comment">#     attacher.file.exists? #=&gt; false</span>
+<span class="line-num">201</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_attached</span>
+<span class="line-num">202</span>     <span class="ruby-identifier">destroy</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">destroy?</span>
+<span class="line-num">203</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">204</span> 
+<span class="line-num">205</span>   <span class="ruby-comment"># Destroys the attachment.</span>
+<span class="line-num">206</span>   <span class="ruby-comment">#</span>
+<span class="line-num">207</span>   <span class="ruby-comment">#     attacher.file.exists? #=&gt; true</span>
+<span class="line-num">208</span>   <span class="ruby-comment">#     attacher.destroy</span>
+<span class="line-num">209</span>   <span class="ruby-comment">#     attacher.file.exists? #=&gt; false</span>
+<span class="line-num">210</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>
+<span class="line-num">211</span>     <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">delete</span>
+<span class="line-num">212</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">213</span> 
+<span class="line-num">214</span>   <span class="ruby-comment"># Sets the uploaded file with dirty tracking, and runs validations.</span>
+<span class="line-num">215</span>   <span class="ruby-comment">#</span>
+<span class="line-num">216</span>   <span class="ruby-comment">#     attacher.change(uploaded_file)</span>
+<span class="line-num">217</span>   <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">218</span>   <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">219</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">220</span>     <span class="ruby-ivar">@previous</span> = <span class="ruby-identifier">dup</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">change?</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">221</span>     <span class="ruby-identifier">set</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">222</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">223</span> 
+<span class="line-num">224</span>   <span class="ruby-comment"># Sets the uploaded file.</span>
+<span class="line-num">225</span>   <span class="ruby-comment">#</span>
+<span class="line-num">226</span>   <span class="ruby-comment">#     attacher.set(uploaded_file)</span>
+<span class="line-num">227</span>   <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">228</span>   <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">229</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">230</span>     <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">231</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">232</span> 
+<span class="line-num">233</span>   <span class="ruby-comment"># Returns the attached file.</span>
+<span class="line-num">234</span>   <span class="ruby-comment">#</span>
+<span class="line-num">235</span>   <span class="ruby-comment">#     # when a file is attached</span>
+<span class="line-num">236</span>   <span class="ruby-comment">#     attacher.get #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">237</span>   <span class="ruby-comment">#</span>
+<span class="line-num">238</span>   <span class="ruby-comment">#     # when no file is attached</span>
+<span class="line-num">239</span>   <span class="ruby-comment">#     attacher.get #=&gt; nil</span>
+<span class="line-num">240</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">get</span>
+<span class="line-num">241</span>     <span class="ruby-identifier">file</span>
+<span class="line-num">242</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">243</span> 
+<span class="line-num">244</span>   <span class="ruby-comment"># If a file is attached, returns the uploaded file URL, otherwise returns</span>
+<span class="line-num">245</span>   <span class="ruby-comment"># nil. Any options are forwarded to the storage.</span>
+<span class="line-num">246</span>   <span class="ruby-comment">#</span>
+<span class="line-num">247</span>   <span class="ruby-comment">#     attacher.file = file</span>
+<span class="line-num">248</span>   <span class="ruby-comment">#     attacher.url #=&gt; &quot;https://...&quot;</span>
+<span class="line-num">249</span>   <span class="ruby-comment">#</span>
+<span class="line-num">250</span>   <span class="ruby-comment">#     attacher.file = nil</span>
+<span class="line-num">251</span>   <span class="ruby-comment">#     attacher.url #=&gt; nil</span>
+<span class="line-num">252</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">253</span>     <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">254</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">255</span> 
+<span class="line-num">256</span>   <span class="ruby-comment"># Returns whether the attachment has changed.</span>
+<span class="line-num">257</span>   <span class="ruby-comment">#</span>
+<span class="line-num">258</span>   <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">259</span>   <span class="ruby-comment">#     attacher.attach(file)</span>
+<span class="line-num">260</span>   <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">261</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">changed?</span>
+<span class="line-num">262</span>     <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-ivar">@previous</span>
+<span class="line-num">263</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">264</span> 
+<span class="line-num">265</span>   <span class="ruby-comment"># Returns whether a file is attached.</span>
+<span class="line-num">266</span>   <span class="ruby-comment">#</span>
+<span class="line-num">267</span>   <span class="ruby-comment">#     attacher.attach(io)</span>
+<span class="line-num">268</span>   <span class="ruby-comment">#     attacher.attached? #=&gt; true</span>
+<span class="line-num">269</span>   <span class="ruby-comment">#</span>
+<span class="line-num">270</span>   <span class="ruby-comment">#     attacher.attach(nil)</span>
+<span class="line-num">271</span>   <span class="ruby-comment">#     attacher.attached? #=&gt; false</span>
+<span class="line-num">272</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attached?</span>
+<span class="line-num">273</span>     <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">file</span>
+<span class="line-num">274</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">275</span> 
+<span class="line-num">276</span>   <span class="ruby-comment"># Returns whether the file is uploaded to temporary storage.</span>
+<span class="line-num">277</span>   <span class="ruby-comment">#</span>
+<span class="line-num">278</span>   <span class="ruby-comment">#     attacher.cached?       # checks current file</span>
+<span class="line-num">279</span>   <span class="ruby-comment">#     attacher.cached?(file) # checks given file</span>
+<span class="line-num">280</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)
+<span class="line-num">281</span>     <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">cache_key</span>)
+<span class="line-num">282</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">283</span> 
+<span class="line-num">284</span>   <span class="ruby-comment"># Returns whether the file is uploaded to permanent storage.</span>
+<span class="line-num">285</span>   <span class="ruby-comment">#</span>
+<span class="line-num">286</span>   <span class="ruby-comment">#     attacher.stored?       # checks current file</span>
+<span class="line-num">287</span>   <span class="ruby-comment">#     attacher.stored?(file) # checks given file</span>
+<span class="line-num">288</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">stored?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)
+<span class="line-num">289</span>     <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">store_key</span>)
+<span class="line-num">290</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">291</span> 
+<span class="line-num">292</span>   <span class="ruby-comment"># Generates serializable data for the attachment.</span>
+<span class="line-num">293</span>   <span class="ruby-comment">#</span>
+<span class="line-num">294</span>   <span class="ruby-comment">#     attacher.data #=&gt; { &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot;: { ... } }</span>
+<span class="line-num">295</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
+<span class="line-num">296</span>     <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">data</span>
+<span class="line-num">297</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">298</span> 
+<span class="line-num">299</span>   <span class="ruby-comment"># Loads the uploaded file from data generated by `Attacher#data`.</span>
+<span class="line-num">300</span>   <span class="ruby-comment">#</span>
+<span class="line-num">301</span>   <span class="ruby-comment">#     attacher.file #=&gt; nil</span>
+<span class="line-num">302</span>   <span class="ruby-comment">#     attacher.load_data({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... } })</span>
+<span class="line-num">303</span>   <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">304</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_data</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">305</span>     <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">data</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">306</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">307</span> 
+<span class="line-num">308</span>   <span class="ruby-comment"># Saves the given uploaded file to an instance variable.</span>
+<span class="line-num">309</span>   <span class="ruby-comment">#</span>
+<span class="line-num">310</span>   <span class="ruby-comment">#     attacher.file = uploaded_file</span>
+<span class="line-num">311</span>   <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">312</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file=</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">313</span>     <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">nil?</span>
+<span class="line-num">314</span>       <span class="ruby-identifier">fail</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;expected file to be a Shrine::UploadedFile or nil, got #{file.inspect}&quot;</span>
+<span class="line-num">315</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">316</span> 
+<span class="line-num">317</span>     <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">318</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">319</span> 
+<span class="line-num">320</span>   <span class="ruby-comment"># Returns attached file or raises an exception if no file is attached.</span>
+<span class="line-num">321</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file!</span>
+<span class="line-num">322</span>     <span class="ruby-identifier">file</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;no file is attached&quot;</span>
+<span class="line-num">323</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">324</span> 
+<span class="line-num">325</span>   <span class="ruby-comment"># Converts JSON or Hash data into a Shrine::UploadedFile object.</span>
+<span class="line-num">326</span>   <span class="ruby-comment">#</span>
+<span class="line-num">327</span>   <span class="ruby-comment">#     attacher.uploaded_file(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num">328</span>   <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+<span class="line-num">329</span>   <span class="ruby-comment">#</span>
+<span class="line-num">330</span>   <span class="ruby-comment">#     attacher.uploaded_file({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num">331</span>   <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+<span class="line-num">332</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">333</span>     <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">334</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">335</span> 
+<span class="line-num">336</span>   <span class="ruby-comment"># Returns the Shrine class that this attacher&#39;s class is namespaced</span>
+<span class="line-num">337</span>   <span class="ruby-comment"># under.</span>
+<span class="line-num">338</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>
+<span class="line-num">339</span>     <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>
+<span class="line-num">340</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">341</span> 
+<span class="line-num">342</span>   <span class="ruby-identifier">private</span>
+<span class="line-num">343</span> 
+<span class="line-num">344</span>   <span class="ruby-comment"># The copy constructor that&#39;s called on #dup and #clone</span>
+<span class="line-num">345</span>   <span class="ruby-comment"># We need to duplicate the context to prevent it from being shared</span>
+<span class="line-num">346</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize_copy</span>(<span class="ruby-identifier">other</span>)
+<span class="line-num">347</span>     <span class="ruby-keyword">super</span>
+<span class="line-num">348</span>     <span class="ruby-ivar">@context</span> = <span class="ruby-ivar">@context</span>.<span class="ruby-identifier">dup</span>
+<span class="line-num">349</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">350</span> 
+<span class="line-num">351</span>   <span class="ruby-comment"># Converts a String or Hash value into an UploadedFile object and ensures</span>
+<span class="line-num">352</span>   <span class="ruby-comment"># it&#39;s uploaded to temporary storage.</span>
+<span class="line-num">353</span>   <span class="ruby-comment">#</span>
+<span class="line-num">354</span>   <span class="ruby-comment">#     # from JSON data</span>
+<span class="line-num">355</span>   <span class="ruby-comment">#     attacher.cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num">356</span>   <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">357</span>   <span class="ruby-comment">#</span>
+<span class="line-num">358</span>   <span class="ruby-comment">#     # from Hash data</span>
+<span class="line-num">359</span>   <span class="ruby-comment">#     attacher.cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; { ... } })</span>
+<span class="line-num">360</span>   <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">361</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">362</span>     <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">363</span> 
+<span class="line-num">364</span>     <span class="ruby-comment"># reject files not uploaded to temporary storage, because otherwise</span>
+<span class="line-num">365</span>     <span class="ruby-comment"># attackers could hijack other users&#39; attachments</span>
+<span class="line-num">366</span>     <span class="ruby-keyword">unless</span> <span class="ruby-identifier">cached?</span>(<span class="ruby-identifier">uploaded_file</span>)
+<span class="line-num">367</span>       <span class="ruby-identifier">fail</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;expected cached file, got #{uploaded_file.inspect}&quot;</span>
+<span class="line-num">368</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">369</span> 
+<span class="line-num">370</span>     <span class="ruby-identifier">uploaded_file</span>
+<span class="line-num">371</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">372</span> 
+<span class="line-num">373</span>   <span class="ruby-comment"># Whether attached file should be uploaded to permanent storage.</span>
+<span class="line-num">374</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote?</span>
+<span class="line-num">375</span>     <span class="ruby-identifier">changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cached?</span>
+<span class="line-num">376</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">377</span> 
+<span class="line-num">378</span>   <span class="ruby-comment"># Whether attached file should be deleted.</span>
+<span class="line-num">379</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy?</span>
+<span class="line-num">380</span>     <span class="ruby-identifier">attached?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cached?</span>
+<span class="line-num">381</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">382</span> 
+<span class="line-num">383</span>   <span class="ruby-comment"># Whether assigning the given file is considered a change.</span>
+<span class="line-num">384</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change?</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">385</span>     <span class="ruby-ivar">@file</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">file</span>
+<span class="line-num">386</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">387</span> 
+<span class="line-num">388</span>   <span class="ruby-comment"># Returns whether the file is uploaded to specified storage.</span>
+<span class="line-num">389</span>   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage_key</span>)
+<span class="line-num">390</span>     <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">storage_key</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">storage_key</span>
+<span class="line-num">391</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">392</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-store_key'>
 <a name='method-i-store_key'></a>
 <div class='synopsis'>
-<span class='name'>store_key</span><span class='arguments'>()</span>
+<span class='name'>store_key</span><span class='arguments'>(= @store.to_sym)</span>
 
 </div>
 <div class='description'>
-
-<p>Returns the permanent storage identifier.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-store_key-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-store_key-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num">52</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store_key</span>; <span class="ruby-ivar">@store</span>.<span class="ruby-identifier">to_sym</span>; <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-store_key-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num"> 52</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store_key</span> = <span class="ruby-ivar">@store</span>.<span class="ruby-identifier">to_sym</span>
+<span class="line-num"> 53</span> 
+<span class="line-num"> 54</span>       <span class="ruby-comment"># Returns the uploader that is used for the temporary storage.</span>
+<span class="line-num"> 55</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cache_key</span>)
+<span class="line-num"> 56</span>       <span class="ruby-comment"># Returns the uploader that is used for the permanent storage.</span>
+<span class="line-num"> 57</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store_key</span>)
+<span class="line-num"> 58</span> 
+<span class="line-num"> 59</span>       <span class="ruby-comment"># Calls #attach_cached, but skips if value is an empty string (this is</span>
+<span class="line-num"> 60</span>       <span class="ruby-comment"># useful when the uploaded file comes from form fields). Forwards any</span>
+<span class="line-num"> 61</span>       <span class="ruby-comment"># additional options to #attach_cached.</span>
+<span class="line-num"> 62</span>       <span class="ruby-comment">#</span>
+<span class="line-num"> 63</span>       <span class="ruby-comment">#     attacher.assign(File.open(...))</span>
+<span class="line-num"> 64</span>       <span class="ruby-comment">#     attacher.assign(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num"> 65</span>       <span class="ruby-comment">#     attacher.assign(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num"> 66</span>       <span class="ruby-comment">#     attacher.assign({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num"> 67</span>       <span class="ruby-comment">#</span>
+<span class="line-num"> 68</span>       <span class="ruby-comment">#     # ignores the assignment when a blank string is given</span>
+<span class="line-num"> 69</span>       <span class="ruby-comment">#     attacher.assign(&quot;&quot;)</span>
+<span class="line-num"> 70</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 71</span>         <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-comment"># skip empty hidden field</span>
+<span class="line-num"> 72</span> 
+<span class="line-num"> 73</span>         <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
+<span class="line-num"> 74</span>           <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">file</span> <span class="ruby-comment"># skip assignment for current file</span>
+<span class="line-num"> 75</span>         <span class="ruby-keyword">end</span>
+<span class="line-num"> 76</span> 
+<span class="line-num"> 77</span>         <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 78</span>       <span class="ruby-keyword">end</span>
+<span class="line-num"> 79</span> 
+<span class="line-num"> 80</span>       <span class="ruby-comment"># Sets an existing cached file, or uploads an IO object to temporary</span>
+<span class="line-num"> 81</span>       <span class="ruby-comment"># storage and sets it via #attach. Forwards any additional options to</span>
+<span class="line-num"> 82</span>       <span class="ruby-comment"># #attach.</span>
+<span class="line-num"> 83</span>       <span class="ruby-comment">#</span>
+<span class="line-num"> 84</span>       <span class="ruby-comment">#     # upload file to temporary storage and set the uploaded file.</span>
+<span class="line-num"> 85</span>       <span class="ruby-comment">#     attacher.attach_cached(File.open(...))</span>
+<span class="line-num"> 86</span>       <span class="ruby-comment">#</span>
+<span class="line-num"> 87</span>       <span class="ruby-comment">#     # foward additional options to the uploader</span>
+<span class="line-num"> 88</span>       <span class="ruby-comment">#     attacher.attach_cached(File.open(...), metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num"> 89</span>       <span class="ruby-comment">#</span>
+<span class="line-num"> 90</span>       <span class="ruby-comment">#     # sets an existing cached file from JSON data</span>
+<span class="line-num"> 91</span>       <span class="ruby-comment">#     attacher.attach_cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num"> 92</span>       <span class="ruby-comment">#</span>
+<span class="line-num"> 93</span>       <span class="ruby-comment">#     # sets an existing cached file from Hash data</span>
+<span class="line-num"> 94</span>       <span class="ruby-comment">#     attacher.attach_cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num"> 95</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 96</span>         <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
+<span class="line-num"> 97</span>           <span class="ruby-identifier">change</span>(<span class="ruby-identifier">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>))
+<span class="line-num"> 98</span>         <span class="ruby-keyword">else</span>
+<span class="line-num"> 99</span>           <span class="ruby-identifier">attach</span>(<span class="ruby-identifier">value</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">cache_key</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:cache</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">100</span>         <span class="ruby-keyword">end</span>
+<span class="line-num">101</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">102</span> 
+<span class="line-num">103</span>       <span class="ruby-comment"># Uploads given IO object and changes the uploaded file.</span>
+<span class="line-num">104</span>       <span class="ruby-comment">#</span>
+<span class="line-num">105</span>       <span class="ruby-comment">#     # uploads the file to permanent storage</span>
+<span class="line-num">106</span>       <span class="ruby-comment">#     attacher.attach(io)</span>
+<span class="line-num">107</span>       <span class="ruby-comment">#</span>
+<span class="line-num">108</span>       <span class="ruby-comment">#     # uploads the file to specified storage</span>
+<span class="line-num">109</span>       <span class="ruby-comment">#     attacher.attach(io, storage: :other_store)</span>
+<span class="line-num">110</span>       <span class="ruby-comment">#</span>
+<span class="line-num">111</span>       <span class="ruby-comment">#     # forwards additional options to the uploader</span>
+<span class="line-num">112</span>       <span class="ruby-comment">#     attacher.attach(io, upload_options: { acl: &quot;public-read&quot; }, metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num">113</span>       <span class="ruby-comment">#</span>
+<span class="line-num">114</span>       <span class="ruby-comment">#     # removes the attachment</span>
+<span class="line-num">115</span>       <span class="ruby-comment">#     attacher.attach(nil)</span>
+<span class="line-num">116</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">117</span>         <span class="ruby-identifier">file</span> = <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>
+<span class="line-num">118</span> 
+<span class="line-num">119</span>         <span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">120</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">121</span> 
+<span class="line-num">122</span>       <span class="ruby-comment"># Deletes any previous file and promotes newly attached cached file.</span>
+<span class="line-num">123</span>       <span class="ruby-comment"># It also clears any dirty tracking.</span>
+<span class="line-num">124</span>       <span class="ruby-comment">#</span>
+<span class="line-num">125</span>       <span class="ruby-comment">#     # promoting cached file</span>
+<span class="line-num">126</span>       <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">127</span>       <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">128</span>       <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">129</span>       <span class="ruby-comment">#     attacher.stored?</span>
+<span class="line-num">130</span>       <span class="ruby-comment">#</span>
+<span class="line-num">131</span>       <span class="ruby-comment">#     # deleting previous file</span>
+<span class="line-num">132</span>       <span class="ruby-comment">#     previous_file = attacher.file</span>
+<span class="line-num">133</span>       <span class="ruby-comment">#     previous_file.exists? #=&gt; true</span>
+<span class="line-num">134</span>       <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">135</span>       <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">136</span>       <span class="ruby-comment">#     previous_file.exists? #=&gt; false</span>
+<span class="line-num">137</span>       <span class="ruby-comment">#</span>
+<span class="line-num">138</span>       <span class="ruby-comment">#     # clearing dirty tracking</span>
+<span class="line-num">139</span>       <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">140</span>       <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">141</span>       <span class="ruby-comment">#     attacher.finalize</span>
+<span class="line-num">142</span>       <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">143</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">finalize</span>
+<span class="line-num">144</span>         <span class="ruby-identifier">destroy_previous</span>
+<span class="line-num">145</span>         <span class="ruby-identifier">promote_cached</span>
+<span class="line-num">146</span>         <span class="ruby-ivar">@previous</span> = <span class="ruby-keyword">nil</span>
+<span class="line-num">147</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">148</span> 
+<span class="line-num">149</span>       <span class="ruby-comment"># Plugins can override this if they want something to be done in a</span>
+<span class="line-num">150</span>       <span class="ruby-comment"># &quot;before save&quot; callback.</span>
+<span class="line-num">151</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save</span>
+<span class="line-num">152</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">153</span> 
+<span class="line-num">154</span>       <span class="ruby-comment"># If a new cached file has been attached, uploads it to permanent storage.</span>
+<span class="line-num">155</span>       <span class="ruby-comment"># Any additional options are forwarded to #promote.</span>
+<span class="line-num">156</span>       <span class="ruby-comment">#</span>
+<span class="line-num">157</span>       <span class="ruby-comment">#     attacher.assign(io)</span>
+<span class="line-num">158</span>       <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">159</span>       <span class="ruby-comment">#     attacher.promote_cached</span>
+<span class="line-num">160</span>       <span class="ruby-comment">#     attacher.stored? #=&gt; true</span>
+<span class="line-num">161</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_cached</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">162</span>         <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>
+<span class="line-num">163</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">164</span> 
+<span class="line-num">165</span>       <span class="ruby-comment"># Uploads current file to permanent storage and sets the stored file.</span>
+<span class="line-num">166</span>       <span class="ruby-comment">#</span>
+<span class="line-num">167</span>       <span class="ruby-comment">#     attacher.cached? #=&gt; true</span>
+<span class="line-num">168</span>       <span class="ruby-comment">#     attacher.promote</span>
+<span class="line-num">169</span>       <span class="ruby-comment">#     attacher.stored? #=&gt; true</span>
+<span class="line-num">170</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">171</span>         <span class="ruby-identifier">set</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:store</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">172</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">173</span> 
+<span class="line-num">174</span>       <span class="ruby-comment"># Delegates to `Shrine.upload`, passing the #context.</span>
+<span class="line-num">175</span>       <span class="ruby-comment">#</span>
+<span class="line-num">176</span>       <span class="ruby-comment">#     # upload file to specified storage</span>
+<span class="line-num">177</span>       <span class="ruby-comment">#     attacher.upload(io, :store) #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">178</span>       <span class="ruby-comment">#</span>
+<span class="line-num">179</span>       <span class="ruby-comment">#     # pass additional options for the uploader</span>
+<span class="line-num">180</span>       <span class="ruby-comment">#     attacher.upload(io, :store, metadata: { &quot;foo&quot; =&gt; &quot;bar&quot; })</span>
+<span class="line-num">181</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span> = <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">182</span>         <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">183</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">184</span> 
+<span class="line-num">185</span>       <span class="ruby-comment"># If a new file was attached, deletes previously attached file if any.</span>
+<span class="line-num">186</span>       <span class="ruby-comment">#</span>
+<span class="line-num">187</span>       <span class="ruby-comment">#     previous_file = attacher.file</span>
+<span class="line-num">188</span>       <span class="ruby-comment">#     attacher.attach(file)</span>
+<span class="line-num">189</span>       <span class="ruby-comment">#     attacher.destroy_previous</span>
+<span class="line-num">190</span>       <span class="ruby-comment">#     previous_file.exists? #=&gt; false</span>
+<span class="line-num">191</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_previous</span>
+<span class="line-num">192</span>         <span class="ruby-ivar">@previous</span>.<span class="ruby-identifier">destroy_attached</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">changed?</span>
+<span class="line-num">193</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">194</span> 
+<span class="line-num">195</span>       <span class="ruby-comment"># Destroys the attached file if it exists and is uploaded to permanent</span>
+<span class="line-num">196</span>       <span class="ruby-comment"># storage.</span>
+<span class="line-num">197</span>       <span class="ruby-comment">#</span>
+<span class="line-num">198</span>       <span class="ruby-comment">#     attacher.file.exists? #=&gt; true</span>
+<span class="line-num">199</span>       <span class="ruby-comment">#     attacher.destroy_attached</span>
+<span class="line-num">200</span>       <span class="ruby-comment">#     attacher.file.exists? #=&gt; false</span>
+<span class="line-num">201</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_attached</span>
+<span class="line-num">202</span>         <span class="ruby-identifier">destroy</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">destroy?</span>
+<span class="line-num">203</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">204</span> 
+<span class="line-num">205</span>       <span class="ruby-comment"># Destroys the attachment.</span>
+<span class="line-num">206</span>       <span class="ruby-comment">#</span>
+<span class="line-num">207</span>       <span class="ruby-comment">#     attacher.file.exists? #=&gt; true</span>
+<span class="line-num">208</span>       <span class="ruby-comment">#     attacher.destroy</span>
+<span class="line-num">209</span>       <span class="ruby-comment">#     attacher.file.exists? #=&gt; false</span>
+<span class="line-num">210</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>
+<span class="line-num">211</span>         <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">delete</span>
+<span class="line-num">212</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">213</span> 
+<span class="line-num">214</span>       <span class="ruby-comment"># Sets the uploaded file with dirty tracking, and runs validations.</span>
+<span class="line-num">215</span>       <span class="ruby-comment">#</span>
+<span class="line-num">216</span>       <span class="ruby-comment">#     attacher.change(uploaded_file)</span>
+<span class="line-num">217</span>       <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">218</span>       <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">219</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">220</span>         <span class="ruby-ivar">@previous</span> = <span class="ruby-identifier">dup</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">change?</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">221</span>         <span class="ruby-identifier">set</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">222</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">223</span> 
+<span class="line-num">224</span>       <span class="ruby-comment"># Sets the uploaded file.</span>
+<span class="line-num">225</span>       <span class="ruby-comment">#</span>
+<span class="line-num">226</span>       <span class="ruby-comment">#     attacher.set(uploaded_file)</span>
+<span class="line-num">227</span>       <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">228</span>       <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">229</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">230</span>         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">231</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">232</span> 
+<span class="line-num">233</span>       <span class="ruby-comment"># Returns the attached file.</span>
+<span class="line-num">234</span>       <span class="ruby-comment">#</span>
+<span class="line-num">235</span>       <span class="ruby-comment">#     # when a file is attached</span>
+<span class="line-num">236</span>       <span class="ruby-comment">#     attacher.get #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">237</span>       <span class="ruby-comment">#</span>
+<span class="line-num">238</span>       <span class="ruby-comment">#     # when no file is attached</span>
+<span class="line-num">239</span>       <span class="ruby-comment">#     attacher.get #=&gt; nil</span>
+<span class="line-num">240</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">get</span>
+<span class="line-num">241</span>         <span class="ruby-identifier">file</span>
+<span class="line-num">242</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">243</span> 
+<span class="line-num">244</span>       <span class="ruby-comment"># If a file is attached, returns the uploaded file URL, otherwise returns</span>
+<span class="line-num">245</span>       <span class="ruby-comment"># nil. Any options are forwarded to the storage.</span>
+<span class="line-num">246</span>       <span class="ruby-comment">#</span>
+<span class="line-num">247</span>       <span class="ruby-comment">#     attacher.file = file</span>
+<span class="line-num">248</span>       <span class="ruby-comment">#     attacher.url #=&gt; &quot;https://...&quot;</span>
+<span class="line-num">249</span>       <span class="ruby-comment">#</span>
+<span class="line-num">250</span>       <span class="ruby-comment">#     attacher.file = nil</span>
+<span class="line-num">251</span>       <span class="ruby-comment">#     attacher.url #=&gt; nil</span>
+<span class="line-num">252</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">253</span>         <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">254</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">255</span> 
+<span class="line-num">256</span>       <span class="ruby-comment"># Returns whether the attachment has changed.</span>
+<span class="line-num">257</span>       <span class="ruby-comment">#</span>
+<span class="line-num">258</span>       <span class="ruby-comment">#     attacher.changed? #=&gt; false</span>
+<span class="line-num">259</span>       <span class="ruby-comment">#     attacher.attach(file)</span>
+<span class="line-num">260</span>       <span class="ruby-comment">#     attacher.changed? #=&gt; true</span>
+<span class="line-num">261</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">changed?</span>
+<span class="line-num">262</span>         <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-ivar">@previous</span>
+<span class="line-num">263</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">264</span> 
+<span class="line-num">265</span>       <span class="ruby-comment"># Returns whether a file is attached.</span>
+<span class="line-num">266</span>       <span class="ruby-comment">#</span>
+<span class="line-num">267</span>       <span class="ruby-comment">#     attacher.attach(io)</span>
+<span class="line-num">268</span>       <span class="ruby-comment">#     attacher.attached? #=&gt; true</span>
+<span class="line-num">269</span>       <span class="ruby-comment">#</span>
+<span class="line-num">270</span>       <span class="ruby-comment">#     attacher.attach(nil)</span>
+<span class="line-num">271</span>       <span class="ruby-comment">#     attacher.attached? #=&gt; false</span>
+<span class="line-num">272</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attached?</span>
+<span class="line-num">273</span>         <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">file</span>
+<span class="line-num">274</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">275</span> 
+<span class="line-num">276</span>       <span class="ruby-comment"># Returns whether the file is uploaded to temporary storage.</span>
+<span class="line-num">277</span>       <span class="ruby-comment">#</span>
+<span class="line-num">278</span>       <span class="ruby-comment">#     attacher.cached?       # checks current file</span>
+<span class="line-num">279</span>       <span class="ruby-comment">#     attacher.cached?(file) # checks given file</span>
+<span class="line-num">280</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)
+<span class="line-num">281</span>         <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">cache_key</span>)
+<span class="line-num">282</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">283</span> 
+<span class="line-num">284</span>       <span class="ruby-comment"># Returns whether the file is uploaded to permanent storage.</span>
+<span class="line-num">285</span>       <span class="ruby-comment">#</span>
+<span class="line-num">286</span>       <span class="ruby-comment">#     attacher.stored?       # checks current file</span>
+<span class="line-num">287</span>       <span class="ruby-comment">#     attacher.stored?(file) # checks given file</span>
+<span class="line-num">288</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">stored?</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">file</span>)
+<span class="line-num">289</span>         <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">store_key</span>)
+<span class="line-num">290</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">291</span> 
+<span class="line-num">292</span>       <span class="ruby-comment"># Generates serializable data for the attachment.</span>
+<span class="line-num">293</span>       <span class="ruby-comment">#</span>
+<span class="line-num">294</span>       <span class="ruby-comment">#     attacher.data #=&gt; { &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot;: { ... } }</span>
+<span class="line-num">295</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
+<span class="line-num">296</span>         <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">data</span>
+<span class="line-num">297</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">298</span> 
+<span class="line-num">299</span>       <span class="ruby-comment"># Loads the uploaded file from data generated by `Attacher#data`.</span>
+<span class="line-num">300</span>       <span class="ruby-comment">#</span>
+<span class="line-num">301</span>       <span class="ruby-comment">#     attacher.file #=&gt; nil</span>
+<span class="line-num">302</span>       <span class="ruby-comment">#     attacher.load_data({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... } })</span>
+<span class="line-num">303</span>       <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">304</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_data</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">305</span>         <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">data</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">306</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">307</span> 
+<span class="line-num">308</span>       <span class="ruby-comment"># Saves the given uploaded file to an instance variable.</span>
+<span class="line-num">309</span>       <span class="ruby-comment">#</span>
+<span class="line-num">310</span>       <span class="ruby-comment">#     attacher.file = uploaded_file</span>
+<span class="line-num">311</span>       <span class="ruby-comment">#     attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">312</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file=</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">313</span>         <span class="ruby-keyword">unless</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">nil?</span>
+<span class="line-num">314</span>           <span class="ruby-identifier">fail</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;expected file to be a Shrine::UploadedFile or nil, got #{file.inspect}&quot;</span>
+<span class="line-num">315</span>         <span class="ruby-keyword">end</span>
+<span class="line-num">316</span> 
+<span class="line-num">317</span>         <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">318</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">319</span> 
+<span class="line-num">320</span>       <span class="ruby-comment"># Returns attached file or raises an exception if no file is attached.</span>
+<span class="line-num">321</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file!</span>
+<span class="line-num">322</span>         <span class="ruby-identifier">file</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;no file is attached&quot;</span>
+<span class="line-num">323</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">324</span> 
+<span class="line-num">325</span>       <span class="ruby-comment"># Converts JSON or Hash data into a Shrine::UploadedFile object.</span>
+<span class="line-num">326</span>       <span class="ruby-comment">#</span>
+<span class="line-num">327</span>       <span class="ruby-comment">#     attacher.uploaded_file(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num">328</span>       <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+<span class="line-num">329</span>       <span class="ruby-comment">#</span>
+<span class="line-num">330</span>       <span class="ruby-comment">#     attacher.uploaded_file({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; {} })</span>
+<span class="line-num">331</span>       <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+<span class="line-num">332</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">333</span>         <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">334</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">335</span> 
+<span class="line-num">336</span>       <span class="ruby-comment"># Returns the Shrine class that this attacher&#39;s class is namespaced</span>
+<span class="line-num">337</span>       <span class="ruby-comment"># under.</span>
+<span class="line-num">338</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>
+<span class="line-num">339</span>         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>
+<span class="line-num">340</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">341</span> 
+<span class="line-num">342</span>       <span class="ruby-identifier">private</span>
+<span class="line-num">343</span> 
+<span class="line-num">344</span>       <span class="ruby-comment"># The copy constructor that&#39;s called on #dup and #clone</span>
+<span class="line-num">345</span>       <span class="ruby-comment"># We need to duplicate the context to prevent it from being shared</span>
+<span class="line-num">346</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize_copy</span>(<span class="ruby-identifier">other</span>)
+<span class="line-num">347</span>         <span class="ruby-keyword">super</span>
+<span class="line-num">348</span>         <span class="ruby-ivar">@context</span> = <span class="ruby-ivar">@context</span>.<span class="ruby-identifier">dup</span>
+<span class="line-num">349</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">350</span> 
+<span class="line-num">351</span>       <span class="ruby-comment"># Converts a String or Hash value into an UploadedFile object and ensures</span>
+<span class="line-num">352</span>       <span class="ruby-comment"># it&#39;s uploaded to temporary storage.</span>
+<span class="line-num">353</span>       <span class="ruby-comment">#</span>
+<span class="line-num">354</span>       <span class="ruby-comment">#     # from JSON data</span>
+<span class="line-num">355</span>       <span class="ruby-comment">#     attacher.cached(&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)</span>
+<span class="line-num">356</span>       <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">357</span>       <span class="ruby-comment">#</span>
+<span class="line-num">358</span>       <span class="ruby-comment">#     # from Hash data</span>
+<span class="line-num">359</span>       <span class="ruby-comment">#     attacher.cached({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; { ... } })</span>
+<span class="line-num">360</span>       <span class="ruby-comment">#     #=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="line-num">361</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">362</span>         <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>)
+<span class="line-num">363</span> 
+<span class="line-num">364</span>         <span class="ruby-comment"># reject files not uploaded to temporary storage, because otherwise</span>
+<span class="line-num">365</span>         <span class="ruby-comment"># attackers could hijack other users&#39; attachments</span>
+<span class="line-num">366</span>         <span class="ruby-keyword">unless</span> <span class="ruby-identifier">cached?</span>(<span class="ruby-identifier">uploaded_file</span>)
+<span class="line-num">367</span>           <span class="ruby-identifier">fail</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;expected cached file, got #{uploaded_file.inspect}&quot;</span>
+<span class="line-num">368</span>         <span class="ruby-keyword">end</span>
+<span class="line-num">369</span> 
+<span class="line-num">370</span>         <span class="ruby-identifier">uploaded_file</span>
+<span class="line-num">371</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">372</span> 
+<span class="line-num">373</span>       <span class="ruby-comment"># Whether attached file should be uploaded to permanent storage.</span>
+<span class="line-num">374</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote?</span>
+<span class="line-num">375</span>         <span class="ruby-identifier">changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cached?</span>
+<span class="line-num">376</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">377</span> 
+<span class="line-num">378</span>       <span class="ruby-comment"># Whether attached file should be deleted.</span>
+<span class="line-num">379</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy?</span>
+<span class="line-num">380</span>         <span class="ruby-identifier">attached?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cached?</span>
+<span class="line-num">381</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">382</span> 
+<span class="line-num">383</span>       <span class="ruby-comment"># Whether assigning the given file is considered a change.</span>
+<span class="line-num">384</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change?</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">385</span>         <span class="ruby-ivar">@file</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">file</span>
+<span class="line-num">386</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">387</span> 
+<span class="line-num">388</span>       <span class="ruby-comment"># Returns whether the file is uploaded to specified storage.</span>
+<span class="line-num">389</span>       <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage_key</span>)
+<span class="line-num">390</span>         <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">storage_key</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">storage_key</span>
+<span class="line-num">391</span>       <span class="ruby-keyword">end</span>
+<span class="line-num">392</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">393</span> 
+<span class="line-num">394</span>     <span class="ruby-identifier">extend</span> <span class="ruby-constant">ClassMethods</span>
+<span class="line-num">395</span>     <span class="ruby-identifier">include</span> <span class="ruby-constant">InstanceMethods</span>
+<span class="line-num">396</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">397</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-stored-3F'>
@@ -821,12 +2319,12 @@ attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 <div class='method public-instance' id='method-method-i-upload'>
 <a name='method-i-upload'></a>
 <div class='synopsis'>
-<span class='name'>upload</span><span class='arguments'>(io, storage = store_key, **options)</span>
+<span class='name'>upload</span><span class='arguments'>(io, storage = store_key, **)</span>
 
 </div>
 <div class='description'>
 
-<p>Delegates to <code>Shrine.upload</code>, passing the <a href="InstanceMethods.html#attribute-i-context"><code>context</code></a>.</p>
+<p>Delegates to <a href="../InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>, passing the <a href="InstanceMethods.html#attribute-i-context"><code>context</code></a>.</p>
 
 <pre class="ruby"><span class="ruby-comment"># upload file to specified storage</span>
 <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:store</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
@@ -841,9 +2339,30 @@ attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 [show source]
 </a>
 <pre id='method-i-upload-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num">181</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span> = <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">182</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">181</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span> = <span class="ruby-identifier">store_key</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">182</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">183</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-uploaded-3F'>
+<a name='method-i-uploaded-3F'></a>
+<div class='synopsis'>
+<span class='name'>uploaded?</span><span class='arguments'>(file, storage_key)</span>
+
+</div>
+<div class='description'>
+
+<p>Returns whether the file is uploaded to specified storage.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-uploaded-3F-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-uploaded-3F-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
+<span class="line-num">389</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage_key</span>)
+<span class="line-num">390</span>   <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">storage_key</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">storage_key</span>
+<span class="line-num">391</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-uploaded_file'>
@@ -877,7 +2396,7 @@ attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 <div class='method public-instance' id='method-method-i-url'>
 <a name='method-i-url'></a>
 <div class='synopsis'>
-<span class='name'>url</span><span class='arguments'>(**options)</span>
+<span class='name'>url</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -897,8 +2416,8 @@ attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 [show source]
 </a>
 <pre id='method-i-url-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>
-<span class="line-num">252</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">253</span>   <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">252</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">253</span>   <span class="ruby-identifier">file</span>&amp;.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">254</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -911,7 +2430,7 @@ attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

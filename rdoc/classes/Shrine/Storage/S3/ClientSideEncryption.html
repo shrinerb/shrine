@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Storage::S3::ClientSideEncryption</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -70,7 +71,7 @@ Shrine::Storage::S3::ClientSideEncryption
 <div class='method public-class' id='method-method-c-new'>
 <a name='method-c-new'></a>
 <div class='synopsis'>
-<span class='name'>new</span><span class='arguments'>(client: nil, **options)</span>
+<span class='name'>new</span><span class='arguments'>(client: nil, **)</span>
 
 </div>
 <div class='description'>
@@ -83,12 +84,12 @@ Shrine::Storage::S3::ClientSideEncryption
 [show source]
 </a>
 <pre id='method-c-new-source'>    <span class="ruby-comment"># File lib/shrine/storage/s3.rb</span>
-<span class="line-num">355</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">client:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">356</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;Aws::S3::Encryption&quot;</span>)
-<span class="line-num">357</span> 
-<span class="line-num">358</span>   <span class="ruby-keyword">super</span>(<span class="ruby-value">client:</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">client</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">359</span>   <span class="ruby-ivar">@encryption_client</span> = <span class="ruby-identifier">client</span>
-<span class="line-num">360</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">370</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">client:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">371</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;Aws::S3::Encryption&quot;</span>)
+<span class="line-num">372</span> 
+<span class="line-num">373</span>   <span class="ruby-keyword">super</span>(<span class="ruby-value">client:</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">client</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">374</span>   <span class="ruby-ivar">@encryption_client</span> = <span class="ruby-identifier">client</span>
+<span class="line-num">375</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -100,7 +101,7 @@ Shrine::Storage::S3::ClientSideEncryption
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

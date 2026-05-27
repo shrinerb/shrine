@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>changing_derivatives.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,17 +29,14 @@
 <div class='paths'>
 doc/changing_derivatives.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>— id: changing-derivatives</p>
 
-<h2 id="label-title-3A+Managing+Derivatives">title: Managing Derivatives<span><a href="#label-title-3A+Managing+Derivatives">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Managing+Derivatives" class="legacy-anchor"></span>
+<h2 id="title-managing-derivatives"><a href="#title-managing-derivatives">title: Managing Derivatives</a></h2>
 
 <p>This guide shows how to add, create, update, and remove <a target="_top" href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a> for an app in production already handling file attachments, with zero downtime.</p>
 
@@ -58,14 +56,16 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Adding+derivatives">Adding derivatives<span><a href="#label-Adding+derivatives">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Adding+derivatives" class="legacy-anchor"></span>
+<h2 id="adding-derivatives"><a href="#adding-derivatives">Adding derivatives</a></h2>
 
 <p><em>Scenario: Your app is currently working only with original files, and you want to introduce derivatives.</em></p>
 
 <p>You’ll first want to start creating the derivatives in production, without yet generating URLs for them (because existing attachments won’t yet have derivatives generated). Let’s assume you’re generating image thumbnails:</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>
-<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;image_processing&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.8&quot;</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;image_processing&quot;</span>, <span class="ruby-string">&quot;~&gt; 2.0&quot;</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;mini_magick&quot;</span>, <span class="ruby-string">&quot;~&gt; 5.0&quot;</span>
 </pre>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>
@@ -109,13 +109,14 @@ Last Update:
 
 <p>Now all attachments should have correctly generated derivatives. You can update the attachment URLs to use derivatives as needed.</p>
 
-<h2 id="label-Reprocessing+all+derivatives">Reprocessing all derivatives<span><a href="#label-Reprocessing+all+derivatives">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Reprocessing+all+derivatives" class="legacy-anchor"></span>
+<h2 id="reprocessing-all-derivatives"><a href="#reprocessing-all-derivatives">Reprocessing all derivatives</a></h2>
 
 <p><em>Scenario: The processing logic has changed for all or most derivatives, and now you want to reprocess them for existing attachments.</em></p>
 
 <p>Let’s assume we’ve made the following change and have deployed it to production:</p>
 
-<pre>Attacher.derivatives do |original|
+<pre class="diff">Attacher.derivatives do |original|
    magick = ImageProcessing::MiniMagick.source(original)
 +   .saver(quality: 85)
 
@@ -148,13 +149,14 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Reprocessing+certain+derivatives">Reprocessing certain derivatives<span><a href="#label-Reprocessing+certain+derivatives">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Reprocessing+certain+derivatives" class="legacy-anchor"></span>
+<h2 id="reprocessing-certain-derivatives"><a href="#reprocessing-certain-derivatives">Reprocessing certain derivatives</a></h2>
 
 <p><em>Scenario: The processing logic has changed for specific derivatives, and now you want to reprocess them for existing attachments.</em></p>
 
 <p>Let’s assume we’ve made a following change and have deployed it to production:</p>
 
-<pre>Attacher.derivatives do |original|
+<pre class="diff">Attacher.derivatives do |original|
    magick = ImageProcessing::MiniMagick.source(original)
 
    {
@@ -191,13 +193,14 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Adding+new+derivatives">Adding new derivatives<span><a href="#label-Adding+new+derivatives">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Adding+new+derivatives" class="legacy-anchor"></span>
+<h2 id="adding-new-derivatives"><a href="#adding-new-derivatives">Adding new derivatives</a></h2>
 
 <p><em>Scenario: A new derivative has been added to the processor, and now you want to add it to existing attachments.</em></p>
 
 <p>Let’s assume we’ve made a following change and have deployed it to production:</p>
 
-<pre>Attacher.derivatives do |original|
+<pre class="diff">Attacher.derivatives do |original|
    magick = ImageProcessing::MiniMagick.source(original)
 
    {
@@ -234,13 +237,14 @@ Last Update:
 
 <p>Now all attachments should have the new derivative and you can start generating URLs for it.</p>
 
-<h2 id="label-Removing+derivatives">Removing derivatives<span><a href="#label-Removing+derivatives">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Removing+derivatives" class="legacy-anchor"></span>
+<h2 id="removing-derivatives"><a href="#removing-derivatives">Removing derivatives</a></h2>
 
 <p><em>Scenario: A derivative isn’t being used anymore, so we want to delete it for existing attachments.</em></p>
 
 <p>Let’s assume we’ve made the following change and have deployed it to production:</p>
 
-<pre>Attacher.derivatives do |original|
+<pre class="diff">Attacher.derivatives do |original|
    magick = ImageProcessing::MiniMagick.source(original)
 
    {
@@ -268,7 +272,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backgrounding" class="legacy-anchor"></span>
+<h2 id="backgrounding"><a href="#backgrounding">Backgrounding</a></h2>
 
 <p>For faster migration, we can also delay any of the operations above into a background job:</p>
 
@@ -309,7 +314,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

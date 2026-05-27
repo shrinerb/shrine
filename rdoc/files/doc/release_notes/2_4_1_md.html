@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.4.1.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,33 +29,33 @@
 <div class='paths'>
 doc/release_notes/2.4.1.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.4.1">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_4_1_md.html">2.4.1</a><span><a href="#label-title-3A+Shrine+2.4.1">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.4.1" class="legacy-anchor"></span>
+<h2 id="title-shrine-241"><a href="#title-shrine-241">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_4_1_md.html">2.4.1</a></a></h2>
 
-<h2 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Regressions" class="legacy-anchor"></span>
+<h2 id="regressions"><a href="#regressions">Regressions</a></h2>
 <ul><li>
-<p>Prior to version <a href="2_4_0_md.html">2.4.0</a>, the conversion of uploaded file data to JSON was  happening in <code>Attacher#_set</code>, and <code>Attacher#write</code> simply assigned the value  that it received to the data attribute of the model instance. During  refactoring for <a href="2_4_0_md.html">2.4.0</a>, the JSON conversion was accidentally moved to  <code>Attacher#write</code>, which affects anyone who was using <code>Attacher#write</code>  directly and passing it a JSON string, by resulting in a double-encoded  string being assigned to the data attribute. This has now been reverted.</p>
+<p>Prior to version <a href="2_4_0_md.html">2.4.0</a>, the conversion of uploaded file data to JSON was happening in <code>Attacher#_set</code>, and <code>Attacher#write</code> simply assigned the value that it received to the data attribute of the model instance. During refactoring for <a href="2_4_0_md.html">2.4.0</a>, the JSON conversion was accidentally moved to <code>Attacher#write</code>, which affects anyone who was using <code>Attacher#write</code> directly and passing it a JSON string, by resulting in a double-encoded string being assigned to the data attribute. This has now been reverted.</p>
 </li></ul>
 
-<h2 id="label-Improvements">Improvements<span><a href="#label-Improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Improvements" class="legacy-anchor"></span>
+<h2 id="improvements"><a href="#improvements">Improvements</a></h2>
 <ul><li>
-<p>The <code>remove_invalid</code> plugin will now assign back a previous attachment if it  was there, in case the assigned cached file was invalid. Before <code>nil</code> was  always assigned. This enables you to display the previous attachment to the  user in case of file validation errors.</p>
+<p>The <a href="../../lib/shrine/plugins/remove_invalid_rb.html">remove_invalid</a> plugin will now assign back a previous attachment if it was there, in case the assigned cached file was invalid. Before <code>nil</code> was always assigned. This enables you to display the previous attachment to the user in case of file validation errors.</p>
 </li><li>
-<p><code>UploadedFile#download</code> will now create the Tempfile using  <code>UploadedFile#extension</code>, which handles the case when <code>#id</code> doesn’t have  extension, but <code>#original_filename</code> has (which could be the behaviour of  some custom storages)</p>
+<p><code>UploadedFile#download</code> will now create the Tempfile using <code>UploadedFile#extension</code>, which handles the case when id doesn’t have extension, but original_filename has (which could be the behaviour of some custom storages)</p>
 </li></ul>
 
-<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
 <ul><li>
-<p>The <code>FileSystem#download</code> method has been deprecated, and will be removed in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3. The replacement is to simply use <code>UploadedFile#download</code>, which will  use <code>FileSystem#open</code> to create a Tempfile in the same way  <code>FileSystem#download</code> did previously. This shouldn't affect you unless you  were using <code>FileSystem#download</code> directly.</p>
+<p>The <code>FileSystem#download</code> method has been deprecated, and will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3. The replacement is to simply use <code>UploadedFile#download</code>, which will use <code>FileSystem#open</code> to create a Tempfile in the same way <code>FileSystem#download</code> did previously. This shouldn’t affect you unless you were using <code>FileSystem#download</code> directly.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -66,7 +67,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

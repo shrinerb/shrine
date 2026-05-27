@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>1.4.2.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,28 +29,27 @@
 <div class='paths'>
 doc/release_notes/1.4.2.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+1.4.2">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_4_2_md.html">1.4.2</a><span><a href="#label-title-3A+Shrine+1.4.2">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+1.4.2" class="legacy-anchor"></span>
+<h2 id="title-shrine-142"><a href="#title-shrine-142">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_4_2_md.html">1.4.2</a></a></h2>
 
-<h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Regressions" class="legacy-anchor"></span>
+<h1 id="regressions"><a href="#regressions">Regressions</a></h1>
 <ul><li>
-<p>Version <a href="1_4_1_md.html">1.4.1</a> introduced handling optimistic locking in ActiveRecord plugin,  however the implementation wasn't stable and wouldn't work correctly in  some cases, so we revert the behaviour as it was in version 1.4.0. Developers  can still handle optimistic locking themselves inside background jobs.</p>
+<p>Version <a href="1_4_1_md.html">1.4.1</a> introduced handling optimistic locking in ActiveRecord plugin, however the implementation wasn’t stable and wouldn’t work correctly in some cases, so we revert the behaviour as it was in version 1.4.0. Developers can still handle optimistic locking themselves inside background jobs.</p>
 </li><li>
-<p>Version <a href="1_4_1_md.html">1.4.1</a> introduced an instance filter of cached attachment in Sequel  plugin, which makes the same record instance unupdateable after promoting,  even when not using backgrounding, so we revert the behaviour as it was in  version 1.4.0. This is only a problem if you're doing something with the  record instance after updating attachment.</p>
+<p>Version <a href="1_4_1_md.html">1.4.1</a> introduced an instance filter of cached attachment in Sequel plugin, which makes the same record instance unupdateable after promoting, even when not using backgrounding, so we revert the behaviour as it was in version 1.4.0. This is only a problem if you’re doing something with the record instance after updating attachment.</p>
 </li></ul>
 
-<h1 id="label-Improvements">Improvements<span><a href="#label-Improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Improvements" class="legacy-anchor"></span>
+<h1 id="improvements"><a href="#improvements">Improvements</a></h1>
 <ul><li>
-<p>The Sequel plugin now doesn’t rescue every <code>Sequel::Error</code> on promoting, it  just rescues “Record not found” ones (in Sequel 4.28+ this is a  <code>Sequel::NoExistingObject</code>, but prior to that was a generic <code>Sequel::Error</code>).</p>
+<p>The Sequel plugin now doesn’t rescue every <code>Sequel::Error</code> on promoting, it just rescues “Record not found” ones (in Sequel 4.28+ this is a <code>Sequel::NoExistingObject</code>, but prior to that was a generic <code>Sequel::Error</code>).</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -61,7 +61,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

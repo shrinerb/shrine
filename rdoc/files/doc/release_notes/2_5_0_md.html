@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.5.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,21 +29,19 @@
 <div class='paths'>
 doc/release_notes/2.5.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.5.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_5_0_md.html">2.5.0</a><span><a href="#label-title-3A+Shrine+2.5.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.5.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-250"><a href="#title-shrine-250">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_5_0_md.html">2.5.0</a></a></h2>
 
-<h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
 <ul><li>
-<p>The <code>add_metadata</code> plugin has been extended to enable extracting and saving  multiple metadata values at once. This is useful when you have tools which  extract various metadata in a single command.</p>
+<p>The <a href="../../lib/shrine/plugins/add_metadata_rb.html">add_metadata</a> plugin has been extended to enable extracting and saving multiple metadata values at once. This is useful when you have tools which extract various metadata in a single command.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>
@@ -60,7 +59,7 @@ Last Update:
 <span class="ruby-identifier">metadata_method</span> <span class="ruby-value">:duration</span>, <span class="ruby-value">:bitrate</span>, <span class="ruby-value">:resolution</span>, <span class="ruby-value">:frame_rate</span>
 </pre>
 <ul><li>
-<p>The <code>UploadedFile#dimensions</code> method will now be added when loading the  <code>store_dimensions</code> plugin, which returns a two-element array of width and  height.</p>
+<p>The <code>UploadedFile#dimensions</code> method will now be added when loading the <a href="../../lib/shrine/plugins/store_dimensions_rb.html">store_dimensions</a> plugin, which returns a two-element array of width and height.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>
@@ -73,13 +72,13 @@ Last Update:
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">dimensions</span> <span class="ruby-comment">#=&gt; [500, 400] (new)</span>
 </pre>
 <ul><li>
-<p>The <code>:fallback_original_option</code> has been added to <code>versions</code> plugin, allowing  you to disable automatic fallback to the cached file when using backgrounding,  so that you can use a default URL instead.</p>
+<p>The <code>:fallback_original_option</code> has been added to <code>versions</code> plugin, allowing you to disable automatic fallback to the cached file when using backgrounding, so that you can use a default URL instead.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>, <span class="ruby-value">fallback_to_original:</span> <span class="ruby-keyword">false</span>
 </pre>
 <ul><li>
-<p>The <code>rack_file</code> plugin now enables the uploaders themselves to accept Rack  uploaded file hashes for upload, in addition to attachers.</p>
+<p>The <a href="../../lib/shrine/plugins/rack_file_rb.html">rack_file</a> plugin now enables the uploaders themselves to accept Rack uploaded file hashes for upload, in addition to attachers.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>
@@ -92,9 +91,10 @@ Last Update:
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>
 </pre>
 
-<h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
 <ul><li>
-<p>The validation helper methods now also return whether the validation  suceeded, which makes it much easier to do conditional validation.</p>
+<p>The validation helper methods now also return whether the validation suceeded, which makes it much easier to do conditional validation.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>
@@ -106,7 +106,7 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p>A <code>Attacher.default_url</code> method has been added to <code>default_url</code> plugin, as a  new idiomatic way of declaring the default URL. This API better communicates  that the default URL functionality is tied only to the attacher. This block  is now also evaluated in the context of a <code>Shrine::Attacher</code> instance.</p>
+<p>A <code>Attacher.default_url</code> method has been added to <a href="../../lib/shrine/plugins/default_url_rb.html">default_url</a> plugin, as a new idiomatic way of declaring the default URL. This API better communicates that the default URL functionality is tied only to the attacher. This block is now also evaluated in the context of a <a href="../../../classes/Shrine/Attacher.html"><code>Shrine::Attacher</code></a> instance.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>
@@ -120,22 +120,23 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p>The <code>validation_helpers</code> plugin will now match the file extension in a case  insensitive way, so if you do <code>validate_extension_inclusion [&quot;jpg&quot;]</code>, that  will now also pass for a file named <code>nature.JPG</code>.</p>
+<p>The <a href="../../lib/shrine/plugins/validation_helpers_rb.html">validation_helpers</a> plugin will now match the file extension in a case insensitive way, so if you do <code>validate_extension_inclusion [&quot;jpg&quot;]</code>, that will now also pass for a file named <code>nature.JPG</code>.</p>
 </li><li>
-<p>The <code>backgrounding</code> plugin now also works for plain models, without an ORM.  Specifically, it doesn’t depend on <code>Attacher.find_record</code> being defined  anymore.</p>
+<p>The <code>backgrounding</code> plugin now also works for plain models, without an ORM. Specifically, it doesn’t depend on <code>Attacher.find_record</code> being defined anymore.</p>
 </li><li>
-<p>The presign endpoint in the <code>direct_upload</code> plugin now allows the <code>extension</code>  query parameter to be passed without a dot.</p>
+<p>The presign endpoint in the <code>direct_upload</code> plugin now allows the <code>extension</code> query parameter to be passed without a dot.</p>
 </li><li>
-<p>If the data hash used for instantiating a <code>Shrine::UploadedFile</code> is not  valid, an explanatory <code>Shrine::Error</code> will now be raised. Previously <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  would raise a <code>KeyError</code> for a key that was missing.</p>
+<p>If the data hash used for instantiating a <a href="../../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a> is not valid, an explanatory <a href="../../../classes/Shrine/Error.html"><code>Shrine::Error</code></a> will now be raised. Previously <a href="../../../classes/Shrine.html"><code>Shrine</code></a> would raise a <code>KeyError</code> for a key that was missing.</p>
 </li><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now detects whether two versions point to the same IO object, and  raises a <code>Shrine::Error</code>. Previously the upload would fail with an <code>IOError</code>  when the same IO object would attempt to be uploaded the second time, which  wasn’t very descriptive.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now detects whether two versions point to the same IO object, and raises a <a href="../../../classes/Shrine/Error.html"><code>Shrine::Error</code></a>. Previously the upload would fail with an <code>IOError</code> when the same IO object would attempt to be uploaded the second time, which wasn’t very descriptive.</p>
 </li><li>
-<p>When <code>remove_invalid</code> plugin removes an invalid cached file, it now also  removes the dirty state from the attacher.</p>
+<p>When <a href="../../lib/shrine/plugins/remove_invalid_rb.html">remove_invalid</a> plugin removes an invalid cached file, it now also removes the dirty state from the attacher.</p>
 </li></ul>
 
-<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
 <ul><li>
-<p>Passing a block when loading the <code>default_url</code> plugin is now deprecated over  the new <code>Attacher.default_url</code>.</p>
+<p>Passing a block when loading the <a href="../../lib/shrine/plugins/default_url_rb.html">default_url</a> plugin is now deprecated over the new <code>Attacher.default_url</code>.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-comment"># deprecated</span>
@@ -144,9 +145,10 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Documentation">Documentation<span><a href="#label-Documentation">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Documentation" class="legacy-anchor"></span>
+<h2 id="documentation"><a href="#documentation">Documentation</a></h2>
 <ul><li>
-<p>Added the “Multiple Files” guide describing how to set up multiple file  uploads using nested association attributes.</p>
+<p>Added the “Multiple Files” guide describing how to set up multiple file uploads using nested association attributes.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -158,7 +160,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

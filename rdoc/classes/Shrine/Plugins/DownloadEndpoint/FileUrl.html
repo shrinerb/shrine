@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::DownloadEndpoint::FileUrl</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -84,16 +85,16 @@ Superclass:
 [show source]
 </a>
 <pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>
-<span class="line-num">64</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">file</span>)
-<span class="line-num">65</span>   <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">file</span>
-<span class="line-num">66</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">67</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">file</span>)
+<span class="line-num">68</span>   <span class="ruby-ivar">@file</span> = <span class="ruby-identifier">file</span>
+<span class="line-num">69</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
 <div class='method public-instance' id='method-method-i-call'>
 <a name='method-i-call'></a>
 <div class='synopsis'>
-<span class='name'>call</span><span class='arguments'>(host: self.host)</span>
+<span class='name'>call</span><span class='arguments'>(host: self.host, expires_in: nil)</span>
 
 </div>
 <div class='description'>
@@ -104,9 +105,15 @@ Superclass:
 [show source]
 </a>
 <pre id='method-i-call-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>
-<span class="line-num">68</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-value">host:</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">host</span>)
-<span class="line-num">69</span>   [<span class="ruby-identifier">host</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">prefix</span>, <span class="ruby-identifier">path</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)
-<span class="line-num">70</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">71</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-value">host:</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">host</span>, <span class="ruby-value">expires_in:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">72</span>   <span class="ruby-identifier">path</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">urlsafe_dump</span>(<span class="ruby-value">metadata:</span> <span class="ruby-node">%w[filename size mime_type]</span>)
+<span class="line-num">73</span> 
+<span class="line-num">74</span>   <span class="ruby-identifier">query</span> = <span class="ruby-identifier">signature_as_query</span>(<span class="ruby-value">path:</span> <span class="ruby-identifier">path</span>, <span class="ruby-value">expires_in:</span> <span class="ruby-identifier">expires_in</span>)
+<span class="line-num">75</span> 
+<span class="line-num">76</span>   <span class="ruby-identifier">path</span> = [<span class="ruby-identifier">host</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">prefix</span>, <span class="ruby-identifier">path</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)
+<span class="line-num">77</span>   <span class="ruby-identifier">path</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot;?#{query}&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">query</span>
+<span class="line-num">78</span>   <span class="ruby-identifier">path</span>
+<span class="line-num">79</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -118,7 +125,7 @@ Superclass:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

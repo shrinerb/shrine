@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::Model::AttachmentMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -54,7 +55,7 @@ Shrine::Plugins::Model::AttachmentMethods
 <div class='method public-class' id='method-method-c-new'>
 <a name='method-c-new'></a>
 <div class='synopsis'>
-<span class='name'>new</span><span class='arguments'>(name, model: true, **options)</span>
+<span class='name'>new</span><span class='arguments'>(name, model: true, **)</span>
 
 </div>
 <div class='description'>
@@ -71,8 +72,8 @@ Shrine::Plugins::Model::AttachmentMethods
 [show source]
 </a>
 <pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>
-<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">model:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">22</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">model:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">22</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">23</span>   <span class="ruby-ivar">@model</span> = <span class="ruby-identifier">model</span>
 <span class="line-num">24</span> <span class="ruby-keyword">end</span></pre>
 </div>
@@ -109,7 +110,7 @@ Shrine::Plugins::Model::AttachmentMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

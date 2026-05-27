@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>advantages.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,23 +29,21 @@
 <div class='paths'>
 doc/advantages.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Advantages+of+Shrine">title: Advantages of <a href="../../classes/Shrine.html"><code>Shrine</code></a><span><a href="#label-title-3A+Advantages+of+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Advantages+of+Shrine" class="legacy-anchor"></span>
+<h2 id="title-advantages-of-shrine"><a href="#title-advantages-of-shrine">title: Advantages of <a href="../../classes/Shrine.html"><code>Shrine</code></a></a></h2>
 
 <p>There are many existing file upload solutions for Ruby out there. This guide will attempt to cover some of the main advantages that <a href="../../classes/Shrine.html"><code>Shrine</code></a> offers compared to these alternatives.</p>
 
 <p>For a more direct comparison with specific file attachment libraries, there are more specialized guides for <a target="_top" href="https://shrinerb.com/docs/carrierwave">CarrierWave</a>, <a target="_top" href="https://shrinerb.com/docs/paperclip">Paperclip</a>, and <a target="_top" href="https://shrinerb.com/docs/refile">Refile</a> users.</p>
 
-<h2 id="label-Generality">Generality<span><a href="#label-Generality">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Generality" class="legacy-anchor"></span>
+<h2 id="generality"><a href="#generality">Generality</a></h2>
 
 <p>Many alternative file upload solutions are coupled to either Rails (Active Storage) or Active Record itself (Paperclip, Dragonfly). This is not ideal, as Rails-specific solutions fragment the Ruby community between developers that use Rails and developers that don’t. There are many great web frameworks (<a target="_top" href="http://sinatrarb.com">Sinatra</a>, <a target="_top" href="http://roda.jeremyevans.net">Roda</a>, <a target="_top" href="http://cuba.is">Cuba</a>, <a target="_top" href="http://hanamirb.org">Hanami</a>, <a target="_top" href="https://github.com/ruby-grape/grape">Grape</a>) and persistence libraries (<a target="_top" href="http://sequel.jeremyevans.net">Sequel</a>, <a target="_top" href="http://rom-rb.org">ROM</a>, <a target="_top" href="https://github.com/hanami/model">Hanami::Model</a>) out there that people use instead of Rails and Active Record.</p>
 
@@ -66,7 +65,8 @@ Last Update:
 <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:hanami</span> <span class="ruby-comment"># https://github.com/katafrakt/hanami-shrine</span>
 </pre>
 
-<h2 id="label-Simplicity">Simplicity<span><a href="#label-Simplicity">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Simplicity" class="legacy-anchor"></span>
+<h2 id="simplicity"><a href="#simplicity">Simplicity</a></h2>
 
 <p>Where some popular file attachment libraries have <a target="_top" href="https://en.wikipedia.org/wiki/God_object">god objects</a> (<code>CarrierWave::Uploader::Base</code> and <code>Paperclip::Attachment</code>), <a href="../../classes/Shrine.html"><code>Shrine</code></a> distributes responsibilities across multiple core classes:</p>
 
@@ -79,23 +79,23 @@ Last Update:
 </thead>
 <tbody>
 <tr>
-<td align="left">‘Shrine::Storage::*`</td>
+<td align="left"><code>Shrine::Storage::*</code></td>
 <td align="left">Encapsulate file operations for the underlying service</td>
 </tr>
 <tr>
-<td align="left">‘Shrine`</td>
+<td align="left"><a href="../../classes/Shrine.html"><code>Shrine</code></a></td>
 <td align="left">Wraps uploads and handles loading plugins</td>
 </tr>
 <tr>
-<td align="left">‘Shrine::UploadedFile`</td>
+<td align="left"><a href="../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a></td>
 <td align="left">Represents a file that was uploaded to a storage</td>
 </tr>
 <tr>
-<td align="left">‘Shrine::Attacher`</td>
+<td align="left"><a href="../../classes/Shrine/Attacher.html"><code>Shrine::Attacher</code></a></td>
 <td align="left">Handles attaching files to records</td>
 </tr>
 <tr>
-<td align="left">‘Shrine::Attachment`</td>
+<td align="left"><a href="../../classes/Shrine/Attachment.html"><code>Shrine::Attachment</code></a></td>
 <td align="left">Adds convenience attachment methods to model instances</td>
 </tr>
 </tbody>
@@ -110,7 +110,8 @@ Last Update:
 
 <p>The attachment functionality is decoupled from persistence and storage, which makes it much easier to reason about. Also, special care was taken to make integrating new storages and persistence libraries as easy as possible.</p>
 
-<h2 id="label-Modularity">Modularity<span><a href="#label-Modularity">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Modularity" class="legacy-anchor"></span>
+<h2 id="modularity"><a href="#modularity">Modularity</a></h2>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> uses a <a target="_top" href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">plugin system</a> that allows you to pick and choose the features that you want. Moreover, you’ll only be loading code for the features you’ve selected, which means that <a href="../../classes/Shrine.html"><code>Shrine</code></a> will generally load much faster than the alternatives.</p>
 
@@ -127,29 +128,32 @@ Last Update:
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> recommends a certain type of attachment flow, but it still offers good low-level abstractions that give you the flexibility to build your own flow.</p>
 
-<pre>uploaded_file = ImageUploader.upload(image, :store) # metadata extraction, upload location generation
-uploaded_file.id       #=&gt; &quot;44ccafc10ce6a4ff22829e8f579ee6b9.jpg&quot;
-uploaded_file.metadata #=&gt; { ... extracted metadata ... }
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>, <span class="ruby-value">:store</span>) <span class="ruby-comment"># metadata extraction, upload location generation</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">id</span>       <span class="ruby-comment">#=&gt; &quot;44ccafc10ce6a4ff22829e8f579ee6b9.jpg&quot;</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; { ... extracted metadata ... }</span>
 
-data = uploaded_file.to_json # serialization
-# ...
-uploaded_file = ImageUploader.uploaded_file(data) # deserialization
+<span class="ruby-identifier">data</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_json</span> <span class="ruby-comment"># serialization</span>
+<span class="ruby-comment"># ...</span>
+<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>) <span class="ruby-comment"># deserialization</span>
 
-uploaded_file.url #=&gt; &quot;https://...&quot;
-uploaded_file.download { |tempfile| ... } # streaming download
-uploaded_file.delete</pre>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;https://...&quot;</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">tempfile</span><span class="ruby-operator">|</span> <span class="ruby-operator">...</span> } <span class="ruby-comment"># streaming download</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">delete</span>
+</pre>
 
-<h3 id="label-Dependencies">Dependencies<span><a href="#label-Dependencies">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Dependencies" class="legacy-anchor"></span>
+<h3 id="dependencies"><a href="#dependencies">Dependencies</a></h3>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> is very diligent when it comes to dependencies. It has two mandatory dependencies – <a target="_top" href="https://github.com/janko/down">Down</a> and <a target="_top" href="https://github.com/shrinerb/content_disposition">ContentDisposition</a> – which are loaded only by components that need them. Some <a href="../../classes/Shrine.html"><code>Shrine</code></a> plugins also require additional dependencies, but you only need to load them if you’re using those plugins.</p>
 
-<p>Moreover, <a href="../../classes/Shrine.html"><code>Shrine</code></a> often gives you the ability choose between multiple alternative dependencies for doing the same task. For example, the <code>determine_mime_type</code> plugin allows you to choose between the {<code>file</code><a target="_top" href="http://linux.die.net/man/1/file">}</a> command, <a target="_top" href="https://github.com/blackwinter/ruby-filemagic">FileMagic</a>, <a target="_top" href="https://github.com/sdsykes/fastimage">FastImage</a>, <a target="_top" href="https://github.com/minad/mimemagic">MimeMagic</a>, or <a target="_top" href="https://github.com/basecamp/marcel">Marcel</a> gem for determining the MIME type, while the <code>store_dimensions</code> plugin can extract dimensions using <a target="_top" href="https://github.com/sdsykes/fastimage">FastImage</a>, <a target="_top" href="https://github.com/minimagick/minimagick">MiniMagick</a>, or <a target="_top" href="https://github.com/libvips/ruby-vips">ruby-vips</a> gem.</p>
+<p>Moreover, <a href="../../classes/Shrine.html"><code>Shrine</code></a> often gives you the ability choose between multiple alternative dependencies for doing the same task. For example, the <a href="../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin allows you to choose between the <a target="_top" href="http://linux.die.net/man/1/file"><code>file</code></a> command, <a target="_top" href="https://github.com/blackwinter/ruby-filemagic">FileMagic</a>, <a target="_top" href="https://github.com/sdsykes/fastimage">FastImage</a>, <a target="_top" href="https://github.com/minad/mimemagic">MimeMagic</a>, or <a target="_top" href="https://github.com/basecamp/marcel">Marcel</a> gem for determining the MIME type, while the <a href="../lib/shrine/plugins/store_dimensions_rb.html">store_dimensions</a> plugin can extract dimensions using <a target="_top" href="https://github.com/sdsykes/fastimage">FastImage</a>, <a target="_top" href="https://github.com/minimagick/minimagick">MiniMagick</a>, or <a target="_top" href="https://github.com/libvips/ruby-vips">ruby-vips</a> gem.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:marcel</span>
 <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>,    <span class="ruby-value">analyzer:</span> <span class="ruby-value">:mini_magick</span>
 </pre>
 
-<h2 id="label-Inheritance">Inheritance<span><a href="#label-Inheritance">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Inheritance" class="legacy-anchor"></span>
+<h2 id="inheritance"><a href="#inheritance">Inheritance</a></h2>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> is designed to handle any types of files. If you’re accepting uploads of multiple types of files, such as videos and images, chances are that the logic for handling them will differ:</p>
 <ul><li>
@@ -179,7 +183,8 @@ uploaded_file.delete</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Processing" class="legacy-anchor"></span>
+<h2 id="processing"><a href="#processing">Processing</a></h2>
 
 <p>Most file attachment libraries allow you to process files either “eagerly” (Paperclip, CarrierWave) or “on-the-fly” (Dragonfly, Refile, Active Storage). However, each approach is suitable for different requirements. For instance, while on-the-fly processing is suitable for fast processing (image thumbnails, document previews), longer running processing (video transcoding, raw images) should be moved into a background job.</p>
 
@@ -217,9 +222,10 @@ uploaded_file.delete</pre>
 <span class="ruby-comment">#=&gt; &quot;.../thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=...&quot;</span>
 </pre>
 
-<h3 id="label-ImageMagick">ImageMagick<span><a href="#label-ImageMagick">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-ImageMagick" class="legacy-anchor"></span>
+<h3 id="imagemagick"><a href="#imagemagick">ImageMagick</a></h3>
 
-<p>Many file attachment libraries, such as CarrierWave, Paperclip, Dragonfly and Refile, implement their own image processing macros. Rather than building yet another in-house implementation, a general purpose <strong>{ImageProcessing}[https://github.com/janko/image_processing]</strong> gem was created instead, which works great with <a href="../../classes/Shrine.html"><code>Shrine</code></a>.</p>
+<p>Many file attachment libraries, such as CarrierWave, Paperclip, Dragonfly and Refile, implement their own image processing macros. Rather than building yet another in-house implementation, a general purpose <strong><a target="_top" href="https://github.com/janko/image_processing">ImageProcessing</a></strong> gem was created instead, which works great with <a href="../../classes/Shrine.html"><code>Shrine</code></a>.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>
 
@@ -233,9 +239,10 @@ uploaded_file.delete</pre>
 
 <p>It takes care of many details for you, such as <a target="_top" href="https://www.imagemagick.org/script/command-line-options.php#auto-orient">auto orienting</a> the input image and applying <a target="_top" href="https://photography.tutsplus.com/tutorials/what-is-image-sharpening--cms-26627">sharpening</a> to resized images. It also has support for <a href="#libvips">libvips</a>.</p>
 
-<h3 id="label-libvips">libvips<span><a href="#label-libvips">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-libvips" class="legacy-anchor"></span>
+<h3 id="libvips"><a href="#libvips">libvips</a></h3>
 
-<p><strong>{libvips}[http://libvips.github.io/libvips/]</strong> is a full-featured image processing library like ImageMagick, with <a target="_top" href="https://github.com/libvips/libvips/wiki/Speed-and-memory-use#results">great performance characteristics</a>. It’s often <strong>multiple times faster</strong> than ImageMagick, and also has lower memory usage. For more details, see <a target="_top" href="https://github.com/libvips/libvips/wiki/Why-is-libvips-quick">Why is libvips quick</a>.</p>
+<p><strong><a target="_top" href="http://libvips.github.io/libvips/">libvips</a></strong> is a full-featured image processing library like ImageMagick, with <a target="_top" href="https://github.com/libvips/libvips/wiki/Speed-and-memory-use#results">great performance characteristics</a>. It’s often <strong>multiple times faster</strong> than ImageMagick, and also has lower memory usage. For more details, see <a target="_top" href="https://github.com/libvips/libvips/wiki/Why-is-libvips-quick">Why is libvips quick</a>.</p>
 
 <p>The ImageProcessing gem provides libvips support as an alternative <code>ImageProcessing::Vips</code> backend, sharing the same API as the <code>ImageProcessing::MiniMagick</code> backend.</p>
 
@@ -247,7 +254,8 @@ uploaded_file.delete</pre>
   .<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">400</span>, <span class="ruby-value">400</span>)
 </pre>
 
-<h3 id="label-Other+processors">Other processors<span><a href="#label-Other+processors">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Other+processors" class="legacy-anchor"></span>
+<h3 id="other-processors"><a href="#other-processors">Other processors</a></h3>
 
 <p>In contrast to most file attachment libraries, file processing in <a href="../../classes/Shrine.html"><code>Shrine</code></a> is just a functional transformation, where you receive the source file on the input and return processed files on the output. This makes it easier to use custom processing tools and encourages building generic processors that can be reused outside of <a href="../../classes/Shrine.html"><code>Shrine</code></a>.</p>
 
@@ -278,7 +286,8 @@ uploaded_file.delete</pre>
 <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">video</span>(<span class="ruby-value">:screenshot</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile id=&quot;8f3136.jpg&quot; ...&gt;</span>
 </pre>
 
-<h2 id="label-Metadata">Metadata<span><a href="#label-Metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Metadata" class="legacy-anchor"></span>
+<h2 id="metadata"><a href="#metadata">Metadata</a></h2>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> automatically <a target="_top" href="https://shrinerb.com/docs/metadata">extracts metadata</a> from each uploaded file, including derivatives like image thumbnails, and saves them into the database column. In addition to filename, filesize, and MIME type that are extracted by default, you can also extract <a target="_top" href="https://shrinerb.com/docs/plugins/store_dimensions">image dimensions</a>, or your own <a target="_top" href="https://shrinerb.com/docs/plugins/add_metadata">custom metadata</a>.</p>
 
@@ -305,7 +314,8 @@ uploaded_file.delete</pre>
 <span class="ruby-comment"># }</span>
 </pre>
 
-<h2 id="label-Validation">Validation<span><a href="#label-Validation">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Validation" class="legacy-anchor"></span>
+<h2 id="validation"><a href="#validation">Validation</a></h2>
 
 <p>For file validations there are <a target="_top" href="https://shrinerb.com/docs/plugins/validation_helpers">built-in validators</a>, but you can also just use plain Ruby code:</p>
 
@@ -327,9 +337,10 @@ uploaded_file.delete</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backgrounding" class="legacy-anchor"></span>
+<h2 id="backgrounding"><a href="#backgrounding">Backgrounding</a></h2>
 
-<p>In most file upload solutions, support for background processing was an afterthought, which resulted in complex and unreliable implementations. <a href="../../classes/Shrine.html"><code>Shrine</code></a> was designed with backgrounding feature in mind from day one. It is supported via the {<code>backgrounding</code><a target="_top" href="https://shrinerb.com/docs/plugins/backgrounding">}</a> plugin and can be used with <a target="_top" href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">any backgrounding library</a>.</p>
+<p>In most file upload solutions, support for background processing was an afterthought, which resulted in complex and unreliable implementations. <a href="../../classes/Shrine.html"><code>Shrine</code></a> was designed with backgrounding feature in mind from day one. It is supported via the <a target="_top" href="https://shrinerb.com/docs/plugins/backgrounding"><code>backgrounding</code></a> plugin and can be used with <a target="_top" href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">any backgrounding library</a>.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>
 <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote_block</span> <span class="ruby-keyword">do</span>
@@ -362,9 +373,10 @@ uploaded_file.delete</pre>
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:large</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt; (processing has finished)</span>
 </pre>
 
-<h2 id="label-Direct+Uploads">Direct Uploads<span><a href="#label-Direct+Uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Direct+Uploads" class="legacy-anchor"></span>
+<h2 id="direct-uploads"><a href="#direct-uploads">Direct Uploads</a></h2>
 
-<p>For client side uploads, <a href="../../classes/Shrine.html"><code>Shrine</code></a> adopts <strong>{Uppy}[https://uppy.io]</strong>, a modern JavaScript file upload library. This gives the developer a lot more power in customizing the user experience compared to a custom JavaScript solution implemented by Refile and Active Storage.</p>
+<p>For client side uploads, <a href="../../classes/Shrine.html"><code>Shrine</code></a> adopts <strong><a target="_top" href="https://uppy.io">Uppy</a></strong>, a modern JavaScript file upload library. This gives the developer a lot more power in customizing the user experience compared to a custom JavaScript solution implemented by Refile and Active Storage.</p>
 
 <p>Uppy supports direct uploads to <a target="_top" href="https://uppy.io/docs/aws-s3/">AWS S3</a> or to a <a target="_top" href="https://uppy.io/docs/xhr-upload/">custom endpoint</a>. It also supports <strong>resumable</strong> uploads, either <a target="_top" href="https://uppy.io/docs/aws-s3-multipart/">directly to S3</a> or via the <a target="_top" href="https://tus.io">tus protocol</a>. For the UI you can choose from various components, ranging from a simple <a target="_top" href="https://uppy.io/examples/statusbar/">status bar</a> to a full-featured <a target="_top" href="https://uppy.io/examples/dashboard/">dashboard</a>.</p>
 
@@ -380,19 +392,19 @@ uploaded_file.delete</pre>
 <tbody>
 <tr>
 <td align="left">[XHRUpload][Uppy XHRUpload]</td>
-<td align="left">[‘<a href="upload_endpoint">upload_endpoint`]</a></td>
+<td align="left">[<a href="../lib/shrine/plugins/upload_endpoint_rb.html">upload_endpoint</a>][upload_endpoint]</td>
 </tr>
 <tr>
 <td align="left">[AwsS3][Uppy AwsS3]</td>
-<td align="left">[‘<a href="presign_endpoint">presign_endpoint`]</a></td>
+<td align="left">[<a href="../lib/shrine/plugins/presign_endpoint_rb.html">presign_endpoint</a>][presign_endpoint]</td>
 </tr>
 <tr>
 <td align="left">[AwsS3Multipart][Uppy AwsS3Multipart]</td>
-<td align="left">[‘<a href="uppy-s3_multipart">uppy-s3_multipart`]</a></td>
+<td align="left">[<code>uppy-s3_multipart</code>][uppy-s3_multipart]</td>
 </tr>
 <tr>
 <td align="left">[Tus][Uppy Tus]</td>
-<td align="left">[‘<a href="tus-ruby-server">tus-ruby-server`]</a></td>
+<td align="left">[<code>tus-ruby-server</code>][tus-ruby-server]</td>
 </tr>
 </tbody>
 </table>
@@ -406,7 +418,7 @@ uploaded_file.delete</pre>
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

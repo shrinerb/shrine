@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>changing_location.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,17 +29,14 @@
 <div class='paths'>
 doc/changing_location.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>— id: changing-location</p>
 
-<h2 id="label-title-3A+Migrating+File+Locations">title: Migrating File Locations<span><a href="#label-title-3A+Migrating+File+Locations">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Migrating+File+Locations" class="legacy-anchor"></span>
+<h2 id="title-migrating-file-locations"><a href="#title-migrating-file-locations">title: Migrating File Locations</a></h2>
 
 <p>This guide shows how to migrate the location of uploaded files on the same storage in production, with zero downtime.</p>
 
@@ -57,22 +55,31 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-1.+Update+the+location+generation">1. Update the location generation<span><a href="#label-1.+Update+the+location+generation">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-1.+Update+the+location+generation" class="legacy-anchor"></span>
+<h2 id="1-update-the-location-generation"><a href="#1-update-the-location-generation">1. Update the location generation</a></h2>
 
-<p>Since <a href="../../classes/Shrine.html"><code>Shrine</code></a> generates the location only once during upload, it is safe to change the <code>Shrine#generate_location</code> method. All the existing files will still continue to work with the previously stored urls because the files have not been migrated.</p>
+<p>Since <a href="../../classes/Shrine.html"><code>Shrine</code></a> generates the location only once during upload, it is safe to change the <a href="../../classes/Shrine/InstanceMethods.html#method-i-generate_location"><code>Shrine#generate_location</code></a> method. All the existing files will still continue to work with the previously stored urls because the files have not been migrated.</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-    <span class="ruby-comment"># change location generation</span>
+    <span class="ruby-comment"># change location generation, eg....</span>
+    [
+      <span class="ruby-identifier">options</span>[<span class="ruby-value">:record</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:record</span>].<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">underscore</span>,
+      <span class="ruby-identifier">option</span>[<span class="ruby-value">:record</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:record</span>].<span class="ruby-identifier">id</span>,
+      <span class="ruby-keyword">super</span>
+    ].<span class="ruby-identifier">compact</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)
   <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span>
 </pre>
 
 <p>We can now deploy this change to production so new file uploads will be stored in the new location.</p>
 
-<h2 id="label-2.+Move+existing+files">2. Move existing files<span><a href="#label-2.+Move+existing+files">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<p>As seen above, we can call <code>super</code> to get the include the default location, which uses ruby <code>SecureRandom.hex</code> to have a unique immutable storage location. While it isn’t strictly required to have a unique immutable storage location, it makes many things work smoother when different content will get a different storage location, and is recommended. One approach is using fixed directory/prefix as above.</p>
 
-<p>To move existing files to new location, run the following script. It fetches the photos in batches, downloads the image, and re-uploads it to the new location. We only need to migrate the files in <code>:store</code> storage need to be migrated as the files in <code>:cache</code> storage will be uploaded to the new location on promotion.</p>
+<span id="label-2.+Move+existing+files" class="legacy-anchor"></span>
+<h2 id="2-move-existing-files"><a href="#2-move-existing-files">2. Move existing files</a></h2>
+
+<p>To move existing files to new location, run the following script. It fetches the photos in batches, downloads the image, and re-uploads it to the new location. Only the files in <code>:store</code> storage need to be migrated as the files in <code>:cache</code> storage will be uploaded to the new location on promotion.</p>
 
 <pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>
   <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>
@@ -97,7 +104,8 @@ Last Update:
 
 <p>Now all your existing attachments should be happily living on new locations.</p>
 
-<h3 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Backgrounding" class="legacy-anchor"></span>
+<h3 id="backgrounding"><a href="#backgrounding">Backgrounding</a></h3>
 
 <p>For faster migration, we can also delay moving files into a background job:</p>
 
@@ -147,7 +155,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

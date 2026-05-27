@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::StoreDimensions::ClassMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -80,7 +81,7 @@ Shrine::Plugins::StoreDimensions::ClassMethods
 <span class="line-num">57</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dimensions_analyzer</span>(<span class="ruby-identifier">name</span>)
 <span class="line-num">58</span>   <span class="ruby-identifier">on_error</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:store_dimensions</span>][<span class="ruby-value">:on_error</span>]
 <span class="line-num">59</span> 
-<span class="line-num">60</span>   <span class="ruby-constant">DimensionsAnalyzer</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">on_error:</span> <span class="ruby-identifier">on_error</span>).<span class="ruby-identifier">method</span>(<span class="ruby-value">:call</span>)
+<span class="line-num">60</span>   <span class="ruby-constant">DimensionsAnalyzer</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">on_error:</span>).<span class="ruby-identifier">method</span>(<span class="ruby-value">:call</span>)
 <span class="line-num">61</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -92,7 +93,7 @@ Shrine::Plugins::StoreDimensions::ClassMethods
 </div>
 <div class='description'>
 
-<p>Returns a hash of built-in dimensions analyzers, where keys are analyzer names and values are <code>#call</code>-able objects which accepts the IO object.</p>
+<p>Returns a hash of built-in dimensions analyzers, where keys are analyzer names and values are call-able objects which accepts the IO object.</p>
 
 </div>
 <div class='source'>
@@ -144,7 +145,7 @@ Shrine::Plugins::StoreDimensions::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

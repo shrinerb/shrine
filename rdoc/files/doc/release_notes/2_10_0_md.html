@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.10.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,27 +29,25 @@
 <div class='paths'>
 doc/release_notes/2.10.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.10.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_10_0_md.html">2.10.0</a><span><a href="#label-title-3A+Shrine+2.10.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.10.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-2100"><a href="#title-shrine-2100">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_10_0_md.html">2.10.0</a></a></h2>
 
-<h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
 <ul><li>
-<p>The <code>:mini_magick</code> analyzer has been added to the <code>store_dimensions</code> plugin,  which uses the <a target="_top" href="https://github.com/minimagick/minimagick">MiniMagick</a> gem to extract image dimensions.</p>
+<p>The <code>:mini_magick</code> analyzer has been added to the <a href="../../lib/shrine/plugins/store_dimensions_rb.html">store_dimensions</a> plugin, which uses the <a target="_top" href="https://github.com/minimagick/minimagick">MiniMagick</a> gem to extract image dimensions.</p>
 </li><li>
-<p>The <code>:ruby_vips</code> analyzer has been added to the <code>store_dimensions</code> plugin,  which uses the <a target="_top" href="https://github.com/libvips/ruby-vips">ruby-vips</a> gem to extract image dimensions.</p>
+<p>The <code>:ruby_vips</code> analyzer has been added to the <a href="../../lib/shrine/plugins/store_dimensions_rb.html">store_dimensions</a> plugin, which uses the <a target="_top" href="https://github.com/libvips/ruby-vips">ruby-vips</a> gem to extract image dimensions.</p>
 </li><li>
-<p>The <code>:fastimage</code> analyzer has been added to the <code>determine_mime_type</code> plugin,  which uses the <a target="_top" href="https://github.com/sdsykes/fastimage">FastImage</a> gem to determine the MIME type of the file.</p>
+<p>The <code>:fastimage</code> analyzer has been added to the <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin, which uses the <a target="_top" href="https://github.com/sdsykes/fastimage">FastImage</a> gem to determine the MIME type of the file.</p>
 </li><li>
-<p><code>Shrine::UploadedFile#download</code> now accepts a block for downloading an  uploaded file temporarily. This is useful when wanting to validate whether an  uploaded image is valid or corrupted, or when generating thumbnails.</p>
+<p><a href="../../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-download"><code>Shrine::UploadedFile#download</code></a> now accepts a block for downloading an uploaded file temporarily. This is useful when wanting to validate whether an uploaded image is valid or corrupted, or when generating thumbnails.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">tempfile</span><span class="ruby-operator">|</span>
@@ -56,24 +55,26 @@ Last Update:
 <span class="ruby-keyword">end</span> <span class="ruby-comment"># tempfile is deleted</span>
 </pre>
 
-<h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
 <ul><li>
-<p>It's not required that IO objects respond to <code>#size</code> anymore. This is  useful when uploading streams of data where the size is not known.</p>
+<p>It’s not required that IO objects respond to size anymore. This is useful when uploading streams of data where the size is not known.</p>
 </li><li>
-<p>The S3 storage now supports IO objects with unknown size. Under the hood it  will use multipart upload.</p>
+<p>The S3 storage now supports IO objects with unknown size. Under the hood it will use multipart upload.</p>
 </li><li>
-<p>The logger is now properly inherited and shared between <code>Shrine</code> subclasses.</p>
+<p>The logger is now properly inherited and shared between <a href="../../../classes/Shrine.html"><code>Shrine</code></a> subclasses.</p>
 </li><li>
-<p>The attachment URL generated by <code>download_endpoint</code> now stays the same  regardless of the order of elements in the metadata hash. Previously it could  change after the uploaded file data is loaded from the database, because the  order of the metadata hash elements would change, which is not desirable for  caching.</p>
+<p>The attachment URL generated by <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> now stays the same regardless of the order of elements in the metadata hash. Previously it could change after the uploaded file data is loaded from the database, because the order of the metadata hash elements would change, which is not desirable for caching.</p>
 </li></ul>
 
-<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
 <ul><li>
-<p>The <code>:rack_mime</code> extension inferrer has been removed from the  <code>infer_extension</code> plugin, due to not having acceptable behaviour. The new  default extension inferrer is <code>:mime_types</code>.</p>
+<p>The <code>:rack_mime</code> extension inferrer has been removed from the <a href="../../lib/shrine/plugins/infer_extension_rb.html">infer_extension</a> plugin, due to not having acceptable behaviour. The new default extension inferrer is <code>:mime_types</code>.</p>
 </li><li>
-<p>The <code>:heroku</code> formatter in the <code>logging</code> plugin has been soft-renamed to  <code>:logfmt</code>. The <code>:heroku</code> alias will stop being supported in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
+<p>The <code>:heroku</code> formatter in the <code>logging</code> plugin has been soft-renamed to <code>:logfmt</code>. The <code>:heroku</code> alias will stop being supported in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li><li>
-<p>The <code>Shrine::IO_METHODS</code> constant has been depreacted, and will become  private in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
+<p>The <code>Shrine::IO_METHODS</code> constant has been depreacted, and will become private in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -85,7 +86,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

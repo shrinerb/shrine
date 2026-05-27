@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::UploadedFile::InstanceMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -78,6 +79,20 @@ Shrine::UploadedFile::InstanceMethods
 <div id='context'>
 </div>
 <div id='section'>
+<div id='constants-list'>
+<h2>Constants</h2>
+<div class='name-list'>
+<table summary='Constants'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>RFC2396_PARSER</td>
+<td>=</td>
+<td class='context-item-value'>URI::RFC2396_Parser.new</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'></td>
+</tr>
+</table>
+</div>
+</div>
 <div id='aliases-list'>
 <h2>Public Instance Aliases</h2>
 <div class='name-list'>
@@ -147,15 +162,15 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">35</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">data</span>)
-<span class="line-num">36</span>   <span class="ruby-ivar">@id</span>          = <span class="ruby-identifier">data</span>[<span class="ruby-value">:id</span>]              <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;id&quot;</span>]
-<span class="line-num">37</span>   <span class="ruby-ivar">@storage_key</span> = <span class="ruby-identifier">data</span>[<span class="ruby-value">:storage</span>]&amp;.<span class="ruby-identifier">to_sym</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;storage&quot;</span>]&amp;.<span class="ruby-identifier">to_sym</span>
-<span class="line-num">38</span>   <span class="ruby-ivar">@metadata</span>    = <span class="ruby-identifier">data</span>[<span class="ruby-value">:metadata</span>]        <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;metadata&quot;</span>]        <span class="ruby-operator">||</span> {}
-<span class="line-num">39</span> 
-<span class="line-num">40</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;#{data.inspect} isn&#39;t valid uploaded file data&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@id</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@storage_key</span>
+<span class="line-num">37</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">38</span>   <span class="ruby-ivar">@id</span>          = <span class="ruby-identifier">data</span>[<span class="ruby-value">:id</span>]              <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;id&quot;</span>]
+<span class="line-num">39</span>   <span class="ruby-ivar">@storage_key</span> = <span class="ruby-identifier">data</span>[<span class="ruby-value">:storage</span>]&amp;.<span class="ruby-identifier">to_sym</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;storage&quot;</span>]&amp;.<span class="ruby-identifier">to_sym</span>
+<span class="line-num">40</span>   <span class="ruby-ivar">@metadata</span>    = <span class="ruby-identifier">data</span>[<span class="ruby-value">:metadata</span>]        <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;metadata&quot;</span>]        <span class="ruby-operator">||</span> {}
 <span class="line-num">41</span> 
-<span class="line-num">42</span>   <span class="ruby-identifier">storage</span> <span class="ruby-comment"># ensure storage is registered</span>
-<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">42</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;#{data.inspect} isn&#39;t valid uploaded file data&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@id</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@storage_key</span>
+<span class="line-num">43</span> 
+<span class="line-num">44</span>   <span class="ruby-identifier">storage</span> <span class="ruby-comment"># ensure storage is registered</span>
+<span class="line-num">45</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -175,11 +190,11 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-3D-3D-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">225</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">==</span>(<span class="ruby-identifier">other</span>)
-<span class="line-num">226</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>       <span class="ruby-operator">==</span> <span class="ruby-identifier">other</span>.<span class="ruby-identifier">class</span>       <span class="ruby-operator">&amp;&amp;</span>
-<span class="line-num">227</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">id</span>          <span class="ruby-operator">==</span> <span class="ruby-identifier">other</span>.<span class="ruby-identifier">id</span>          <span class="ruby-operator">&amp;&amp;</span>
-<span class="line-num">228</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">other</span>.<span class="ruby-identifier">storage_key</span>
-<span class="line-num">229</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">228</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">==</span>(<span class="ruby-identifier">other</span>)
+<span class="line-num">229</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>       <span class="ruby-operator">==</span> <span class="ruby-identifier">other</span>.<span class="ruby-identifier">class</span>       <span class="ruby-operator">&amp;&amp;</span>
+<span class="line-num">230</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">id</span>          <span class="ruby-operator">==</span> <span class="ruby-identifier">other</span>.<span class="ruby-identifier">id</span>          <span class="ruby-operator">&amp;&amp;</span>
+<span class="line-num">231</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">other</span>.<span class="ruby-identifier">storage_key</span>
+<span class="line-num">232</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-5B-5D'>
@@ -198,15 +213,15 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-5B-5D-source'>   <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">71</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">[]</span>(<span class="ruby-identifier">key</span>)
-<span class="line-num">72</span>   <span class="ruby-identifier">metadata</span>[<span class="ruby-identifier">key</span>]
-<span class="line-num">73</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">73</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">[]</span>(<span class="ruby-identifier">key</span>)
+<span class="line-num">74</span>   <span class="ruby-identifier">metadata</span>[<span class="ruby-identifier">key</span>]
+<span class="line-num">75</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-as_json'>
 <a name='method-i-as_json'></a>
 <div class='synopsis'>
-<span class='name'>as_json</span><span class='arguments'>(*args)</span>
+<span class='name'>as_json</span><span class='arguments'>(*)</span>
 
 </div>
 <div class='description'>
@@ -219,9 +234,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-as_json-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">214</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">as_json</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
-<span class="line-num">215</span>   <span class="ruby-identifier">data</span>
-<span class="line-num">216</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">217</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">as_json</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">218</span>   <span class="ruby-identifier">data</span>
+<span class="line-num">219</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-close'>
@@ -240,9 +255,10 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-close-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">171</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">close</span>
-<span class="line-num">172</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">close</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">opened?</span>
-<span class="line-num">173</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">173</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">close</span>
+<span class="line-num">174</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">close</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">opened?</span>
+<span class="line-num">175</span>   <span class="ruby-ivar">@io</span> = <span class="ruby-keyword">nil</span>
+<span class="line-num">176</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-data'>
@@ -261,9 +277,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-data-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">219</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
-<span class="line-num">220</span>   { <span class="ruby-string">&quot;id&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">id</span>, <span class="ruby-string">&quot;storage&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">storage_key</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-string">&quot;metadata&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">metadata</span> }
-<span class="line-num">221</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">222</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data</span>
+<span class="line-num">223</span>   { <span class="ruby-string">&quot;id&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">id</span>, <span class="ruby-string">&quot;storage&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">storage_key</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-string">&quot;metadata&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">metadata</span> }
+<span class="line-num">224</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-delete'>
@@ -274,7 +290,7 @@ Shrine::UploadedFile::InstanceMethods
 </div>
 <div class='description'>
 
-<p>Calls <code>#delete</code> on the storage, which deletes the file from the storage.</p>
+<p>Calls <a href="InstanceMethods.html#method-i-delete"><code>delete</code></a> on the storage, which deletes the file from the storage.</p>
 
 </div>
 <div class='source'>
@@ -282,15 +298,15 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-delete-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">198</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete</span>
-<span class="line-num">199</span>   <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)
-<span class="line-num">200</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">201</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete</span>
+<span class="line-num">202</span>   <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)
+<span class="line-num">203</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-download'>
 <a name='method-i-download'></a>
 <div class='synopsis'>
-<span class='name'>download</span><span class='arguments'>(**options)</span>
+<span class='name'>download</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -315,15 +331,15 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-download-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">121</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">122</span>   <span class="ruby-identifier">tempfile</span> = <span class="ruby-constant">Tempfile</span>.<span class="ruby-identifier">new</span>([<span class="ruby-string">&quot;shrine&quot;</span>, <span class="ruby-node">&quot;.#{extension}&quot;</span>], <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>)
-<span class="line-num">123</span>   <span class="ruby-identifier">stream</span>(<span class="ruby-identifier">tempfile</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">124</span>   <span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">open</span>
-<span class="line-num">125</span> 
-<span class="line-num">126</span>   <span class="ruby-identifier">block_given?</span> <span class="ruby-operator">?</span> <span class="ruby-keyword">yield</span>(<span class="ruby-identifier">tempfile</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">tempfile</span>
-<span class="line-num">127</span> <span class="ruby-keyword">ensure</span>
-<span class="line-num">128</span>   <span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">close!</span> <span class="ruby-keyword">if</span> (<span class="ruby-identifier">$!</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">block_given?</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">tempfile</span>
-<span class="line-num">129</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">123</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">124</span>   <span class="ruby-identifier">tempfile</span> = <span class="ruby-constant">Tempfile</span>.<span class="ruby-identifier">new</span>([<span class="ruby-string">&quot;shrine&quot;</span>, <span class="ruby-node">&quot;.#{extension}&quot;</span>], <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>)
+<span class="line-num">125</span>   <span class="ruby-identifier">stream</span>(<span class="ruby-identifier">tempfile</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">126</span>   <span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">open</span>
+<span class="line-num">127</span> 
+<span class="line-num">128</span>   <span class="ruby-identifier">block_given?</span> <span class="ruby-operator">?</span> <span class="ruby-keyword">yield</span>(<span class="ruby-identifier">tempfile</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">tempfile</span>
+<span class="line-num">129</span> <span class="ruby-keyword">ensure</span>
+<span class="line-num">130</span>   <span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">close!</span> <span class="ruby-keyword">if</span> (<span class="ruby-identifier">$!</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">block_given?</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">tempfile</span>
+<span class="line-num">131</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-eof-3F'>
@@ -342,9 +358,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-eof-3F-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">159</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">eof?</span>
-<span class="line-num">160</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">eof?</span>
-<span class="line-num">161</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">161</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">eof?</span>
+<span class="line-num">162</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">eof?</span>
+<span class="line-num">163</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-exists-3F'>
@@ -355,7 +371,7 @@ Shrine::UploadedFile::InstanceMethods
 </div>
 <div class='description'>
 
-<p>Calls <code>#exists?</code> on the storage, which checks whether the file exists on the storage.</p>
+<p>Calls <a href="InstanceMethods.html#method-i-exists-3F"><code>exists?</code></a> on the storage, which checks whether the file exists on the storage.</p>
 
 </div>
 <div class='source'>
@@ -363,9 +379,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-exists-3F-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">187</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">exists?</span>
-<span class="line-num">188</span>   <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)
-<span class="line-num">189</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">190</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">exists?</span>
+<span class="line-num">191</span>   <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)
+<span class="line-num">192</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-extension'>
@@ -384,12 +400,12 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-extension-source'>   <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">52</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extension</span>
-<span class="line-num">53</span>   <span class="ruby-identifier">identifier</span> = <span class="ruby-identifier">id</span> <span class="ruby-operator">=~</span> <span class="ruby-constant">URI</span><span class="ruby-operator">::</span><span class="ruby-constant">DEFAULT_PARSER</span>.<span class="ruby-identifier">make_regexp</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">id</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/\?.+$/</span>, <span class="ruby-string">&quot;&quot;</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">id</span> <span class="ruby-comment"># strip query params for shrine-url</span>
-<span class="line-num">54</span>   <span class="ruby-identifier">result</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">identifier</span>)[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>]
-<span class="line-num">55</span>   <span class="ruby-identifier">result</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">original_filename</span>.<span class="ruby-identifier">to_s</span>)[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>]
-<span class="line-num">56</span>   <span class="ruby-identifier">result</span>.<span class="ruby-identifier">downcase</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">result</span>
-<span class="line-num">57</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">54</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extension</span>
+<span class="line-num">55</span>   <span class="ruby-identifier">identifier</span> = <span class="ruby-identifier">id</span> <span class="ruby-operator">=~</span> <span class="ruby-constant">RFC2396_PARSER</span>.<span class="ruby-identifier">make_regexp</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">id</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/\?.+$/</span>, <span class="ruby-string">&quot;&quot;</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">id</span> <span class="ruby-comment"># strip query params for shrine-url</span>
+<span class="line-num">56</span>   <span class="ruby-identifier">result</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">identifier</span>)[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>]
+<span class="line-num">57</span>   <span class="ruby-identifier">result</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">original_filename</span>.<span class="ruby-identifier">to_s</span>)[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>]
+<span class="line-num">58</span>   <span class="ruby-identifier">result</span>.<span class="ruby-identifier">downcase</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">result</span>
+<span class="line-num">59</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-hash'>
@@ -408,9 +424,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-hash-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">233</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">hash</span>
-<span class="line-num">234</span>   [<span class="ruby-identifier">id</span>, <span class="ruby-identifier">storage_key</span>].<span class="ruby-identifier">hash</span>
-<span class="line-num">235</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">236</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">hash</span>
+<span class="line-num">237</span>   [<span class="ruby-identifier">id</span>, <span class="ruby-identifier">storage_key</span>].<span class="ruby-identifier">hash</span>
+<span class="line-num">238</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-inspect'>
@@ -429,9 +445,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-inspect-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">253</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>
-<span class="line-num">254</span>   <span class="ruby-node">&quot;#&lt;#{self.class.inspect} storage=#{storage_key.inspect} id=#{id.inspect} metadata=#{metadata.inspect}&gt;&quot;</span>
-<span class="line-num">255</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">256</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>
+<span class="line-num">257</span>   <span class="ruby-node">&quot;#&lt;#{self.class.inspect} storage=#{storage_key.inspect} id=#{id.inspect} metadata=#{metadata.inspect}&gt;&quot;</span>
+<span class="line-num">258</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-mime_type'>
@@ -450,20 +466,20 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-mime_type-source'>   <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">65</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mime_type</span>
-<span class="line-num">66</span>   <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;mime_type&quot;</span>]
-<span class="line-num">67</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">67</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mime_type</span>
+<span class="line-num">68</span>   <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;mime_type&quot;</span>]
+<span class="line-num">69</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-open'>
 <a name='method-i-open'></a>
 <div class='synopsis'>
-<span class='name'>open</span><span class='arguments'>(**options)</span>
+<span class='name'>open</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
 
-<p>Calls <code>#open</code> on the storage to open the uploaded file for reading. Most storages will return a lazy IO object which dynamically retrieves file content from the storage as the object is being read.</p>
+<p>Calls <a href="InstanceMethods.html#method-i-open"><code>open</code></a> on the storage to open the uploaded file for reading. Most storages will return a lazy IO object which dynamically retrieves file content from the storage as the object is being read.</p>
 
 <p>If a block is given, the opened IO object is yielded to the block, and at the end of the block it’s automatically closed. In this case the return value of the method is the block return value.</p>
 
@@ -484,19 +500,19 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-open-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num"> 92</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">open</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num"> 93</span>   <span class="ruby-ivar">@io</span>.<span class="ruby-identifier">close</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@io</span>
-<span class="line-num"> 94</span>   <span class="ruby-ivar">@io</span> = <span class="ruby-identifier">_open</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num"> 95</span> 
-<span class="line-num"> 96</span>   <span class="ruby-keyword">return</span> <span class="ruby-ivar">@io</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">block_given?</span>
+<span class="line-num"> 94</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">open</span>(<span class="ruby-operator">**</span>)
+<span class="line-num"> 95</span>   <span class="ruby-ivar">@io</span>.<span class="ruby-identifier">close</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@io</span>
+<span class="line-num"> 96</span>   <span class="ruby-ivar">@io</span> = <span class="ruby-identifier">_open</span>(<span class="ruby-operator">**</span>)
 <span class="line-num"> 97</span> 
-<span class="line-num"> 98</span>   <span class="ruby-keyword">begin</span>
-<span class="line-num"> 99</span>     <span class="ruby-keyword">yield</span> <span class="ruby-ivar">@io</span>
-<span class="line-num">100</span>   <span class="ruby-keyword">ensure</span>
-<span class="line-num">101</span>     <span class="ruby-identifier">close</span>
-<span class="line-num">102</span>     <span class="ruby-ivar">@io</span> = <span class="ruby-keyword">nil</span>
-<span class="line-num">103</span>   <span class="ruby-keyword">end</span>
-<span class="line-num">104</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num"> 98</span>   <span class="ruby-keyword">return</span> <span class="ruby-ivar">@io</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">block_given?</span>
+<span class="line-num"> 99</span> 
+<span class="line-num">100</span>   <span class="ruby-keyword">begin</span>
+<span class="line-num">101</span>     <span class="ruby-keyword">yield</span> <span class="ruby-ivar">@io</span>
+<span class="line-num">102</span>   <span class="ruby-keyword">ensure</span>
+<span class="line-num">103</span>     <span class="ruby-identifier">close</span>
+<span class="line-num">104</span>     <span class="ruby-ivar">@io</span> = <span class="ruby-keyword">nil</span>
+<span class="line-num">105</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">106</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-opened-3F'>
@@ -515,9 +531,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-opened-3F-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">176</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">opened?</span>
-<span class="line-num">177</span>   <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-ivar">@io</span>
-<span class="line-num">178</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">179</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">opened?</span>
+<span class="line-num">180</span>   <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-ivar">@io</span>
+<span class="line-num">181</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-original_filename'>
@@ -536,15 +552,15 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-original_filename-source'>   <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">46</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">original_filename</span>
-<span class="line-num">47</span>   <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;filename&quot;</span>]
-<span class="line-num">48</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">48</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">original_filename</span>
+<span class="line-num">49</span>   <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;filename&quot;</span>]
+<span class="line-num">50</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-read'>
 <a name='method-i-read'></a>
 <div class='synopsis'>
-<span class='name'>read</span><span class='arguments'>(*args)</span>
+<span class='name'>read</span><span class='arguments'>(*)</span>
 
 </div>
 <div class='description'>
@@ -557,15 +573,15 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-read-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">153</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">read</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
-<span class="line-num">154</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
-<span class="line-num">155</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">155</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">read</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">156</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">157</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-replace'>
 <a name='method-i-replace'></a>
 <div class='synopsis'>
-<span class='name'>replace</span><span class='arguments'>(io, **options)</span>
+<span class='name'>replace</span><span class='arguments'>(io, **)</span>
 
 </div>
 <div class='description'>
@@ -578,9 +594,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-replace-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">192</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">replace</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">193</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-value">location:</span> <span class="ruby-identifier">id</span>)
-<span class="line-num">194</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">195</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">replace</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">196</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span>, <span class="ruby-value">location:</span> <span class="ruby-identifier">id</span>)
+<span class="line-num">197</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-rewind'>
@@ -599,9 +615,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-rewind-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">165</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">rewind</span>
-<span class="line-num">166</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>
-<span class="line-num">167</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">167</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">rewind</span>
+<span class="line-num">168</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>
+<span class="line-num">169</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-shrine_class'>
@@ -620,9 +636,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-shrine_class-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">248</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>
-<span class="line-num">249</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>
-<span class="line-num">250</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">251</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>
+<span class="line-num">252</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>
+<span class="line-num">253</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-size'>
@@ -641,9 +657,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-size-source'>   <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">60</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">size</span>
-<span class="line-num">61</span>   (<span class="ruby-ivar">@io</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@io</span>.<span class="ruby-identifier">size</span>) <span class="ruby-operator">||</span> (<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">Integer</span>(<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>]))
-<span class="line-num">62</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">62</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">size</span>
+<span class="line-num">63</span>   (<span class="ruby-ivar">@io</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@io</span>.<span class="ruby-identifier">size</span>) <span class="ruby-operator">||</span> (<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">Integer</span>(<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>]))
+<span class="line-num">64</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-storage'>
@@ -662,20 +678,20 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-storage-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">243</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">storage</span>
-<span class="line-num">244</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">find_storage</span>(<span class="ruby-identifier">storage_key</span>)
-<span class="line-num">245</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">246</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">storage</span>
+<span class="line-num">247</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">find_storage</span>(<span class="ruby-identifier">storage_key</span>)
+<span class="line-num">248</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-stream'>
 <a name='method-i-stream'></a>
 <div class='synopsis'>
-<span class='name'>stream</span><span class='arguments'>(destination, **options)</span>
+<span class='name'>stream</span><span class='arguments'>(destination, **)</span>
 
 </div>
 <div class='description'>
 
-<p>Streams uploaded file content into the specified destination. The destination object is given directly to <code>IO.copy_stream</code>, so it can be either a path on disk or an object that responds to <code>#write</code>.</p>
+<p>Streams uploaded file content into the specified destination. The destination object is given directly to <code>IO.copy_stream</code>, so it can be either a path on disk or an object that responds to write.</p>
 
 <p>If the uploaded file is already opened, it will be simply rewinded after streaming finishes. Otherwise the uploaded file is opened and then closed after streaming.</p>
 
@@ -690,14 +706,14 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-stream-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">142</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">stream</span>(<span class="ruby-identifier">destination</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">143</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">opened?</span>
-<span class="line-num">144</span>     <span class="ruby-constant">IO</span>.<span class="ruby-identifier">copy_stream</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">destination</span>)
-<span class="line-num">145</span>     <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>
-<span class="line-num">146</span>   <span class="ruby-keyword">else</span>
-<span class="line-num">147</span>     <span class="ruby-identifier">open</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-constant">IO</span>.<span class="ruby-identifier">copy_stream</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">destination</span>) }
-<span class="line-num">148</span>   <span class="ruby-keyword">end</span>
-<span class="line-num">149</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">144</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">stream</span>(<span class="ruby-identifier">destination</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">145</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">opened?</span>
+<span class="line-num">146</span>     <span class="ruby-constant">IO</span>.<span class="ruby-identifier">copy_stream</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">destination</span>)
+<span class="line-num">147</span>     <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>
+<span class="line-num">148</span>   <span class="ruby-keyword">else</span>
+<span class="line-num">149</span>     <span class="ruby-identifier">open</span>(<span class="ruby-operator">**</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-constant">IO</span>.<span class="ruby-identifier">copy_stream</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">destination</span>) }
+<span class="line-num">150</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">151</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-to_io'>
@@ -716,15 +732,15 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-to_io-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">203</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_io</span>
-<span class="line-num">204</span>   <span class="ruby-identifier">io</span>
-<span class="line-num">205</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">206</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_io</span>
+<span class="line-num">207</span>   <span class="ruby-identifier">io</span>
+<span class="line-num">208</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-to_json'>
 <a name='method-i-to_json'></a>
 <div class='synopsis'>
-<span class='name'>to_json</span><span class='arguments'>(*args)</span>
+<span class='name'>to_json</span><span class='arguments'>(*)</span>
 
 </div>
 <div class='description'>
@@ -737,9 +753,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-to_json-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">209</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_json</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
-<span class="line-num">210</span>   <span class="ruby-identifier">data</span>.<span class="ruby-identifier">to_json</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
-<span class="line-num">211</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">212</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_json</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">213</span>   <span class="ruby-identifier">data</span>.<span class="ruby-identifier">to_json</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">214</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-uploader'>
@@ -758,20 +774,20 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-uploader-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">238</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploader</span>
-<span class="line-num">239</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">storage_key</span>)
-<span class="line-num">240</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">241</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploader</span>
+<span class="line-num">242</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">storage_key</span>)
+<span class="line-num">243</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-url'>
 <a name='method-i-url'></a>
 <div class='synopsis'>
-<span class='name'>url</span><span class='arguments'>(**options)</span>
+<span class='name'>url</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
 
-<p>Calls <code>#url</code> on the storage, forwarding any given URL options.</p>
+<p>Calls <a href="InstanceMethods.html#method-i-url"><code>url</code></a> on the storage, forwarding any given URL options.</p>
 
 </div>
 <div class='source'>
@@ -779,9 +795,9 @@ Shrine::UploadedFile::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-url-source'>    <span class="ruby-comment"># File lib/shrine/uploaded_file.rb</span>
-<span class="line-num">181</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">182</span>   <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">183</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">184</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span>)
+<span class="line-num">185</span>   <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">186</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -793,7 +809,7 @@ Shrine::UploadedFile::InstanceMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

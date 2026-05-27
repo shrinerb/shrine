@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.0.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,21 +29,19 @@
 <div class='paths'>
 doc/release_notes/2.0.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.0.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_0_0_md.html">2.0.0</a><span><a href="#label-title-3A+Shrine+2.0.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.0.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-200"><a href="#title-shrine-200">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_0_0_md.html">2.0.0</a></a></h2>
 
-<h1 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h1 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h1>
 <ul><li>
-<p>Metadata and upload options are now differently passed to storages, so the  new signature of <code>#upload</code> and <code>#move</code> methods on the storage class should  be:</p>
+<p>Metadata and upload options are now differently passed to storages, so the new signature of upload and move methods on the storage class should be:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-value">shrine_metadata:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">upload_options</span>)
@@ -54,58 +53,61 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p>The <code>Shrine::Confirm</code> functionality has been removed from storages'  specification, storages should update <code>clear!</code> to remove the confirmation.</p>
+<p>The <code>Shrine::Confirm</code> functionality has been removed from storages’ specification, storages should update <code>clear!</code> to remove the confirmation.</p>
 </li><li>
 <p>The <code>:delegate</code> option in migration_helpers now defaults to false.</p>
 </li><li>
-<p>The migration_helpers plugin has been deprecated, <code>Shrine::Attacher#cached?</code>  and <code>Shrine::Attacher#stored?</code> have been moved to base functionality.</p>
+<p>The migration_helpers plugin has been deprecated, <code>Shrine::Attacher#cached?</code> and <code>Shrine::Attacher#stored?</code> have been moved to base functionality.</p>
 </li><li>
-<p>The "background_helpers" alias for the backgrounding plugin has been  deprecated and will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
+<p>The “background_helpers” alias for the backgrounding plugin has been deprecated and will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li><li>
-<p>In backgrounding plugin the "attachment" key has been renamed to  "name", and "uploaded_file" has been renamed to "attachment" in the data  hash in background job argument.</p>
+<p>In backgrounding plugin the “attachment” key has been renamed to “name”, and “uploaded_file” has been renamed to “attachment” in the data hash in background job argument.</p>
 </li><li>
-<p><code>Shrine::Attacher.promote</code> and <code>Shrine::Attacher.delete</code> from backgrounding  plugin now return a <code>Shrine::Attacher</code> instance instead of the model  instance.</p>
+<p><code>Shrine::Attacher.promote</code> and <code>Shrine::Attacher.delete</code> from backgrounding plugin now return a <a href="../../../classes/Shrine/Attacher.html"><code>Shrine::Attacher</code></a> instance instead of the model instance.</p>
 </li><li>
-<p>The moving plugin doesn't delete files that aren't movable anymore. You should  use delete_raw and/or delete_promoted plugins for this functionality.</p>
+<p>The moving plugin doesn’t delete files that aren’t movable anymore. You should use <a href="../../lib/shrine/plugins/delete_raw_rb.html">delete_raw</a> and/or delete_promoted plugins for this functionality.</p>
 </li><li>
-<p>The deprecated "delete_uploaded" alias for delete_raw plugin has been removed.</p>
+<p>The deprecated “delete_uploaded” alias for <a href="../../lib/shrine/plugins/delete_raw_rb.html">delete_raw</a> plugin has been removed.</p>
 </li><li>
-<p>The deprecated "restore_cached" alias for restore_cached_data plugin has been  removed.</p>
+<p>The deprecated “restore_cached” alias for <a href="../../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> plugin has been removed.</p>
 </li><li>
 <p>The deprecated keep_location plugin has been removed.</p>
 </li><li>
 <p>The deprecated <code>:subdirectory</code> option in FileSystem storage has been removed.</p>
 </li><li>
-<p>The deprecated <code>Shrine#default_url</code> has been removed (specifying a default  URL by overriding <code>#default_url</code> on the uploader), the default_url plugin  should be used instead.</p>
+<p>The deprecated <code>Shrine#default_url</code> has been removed (specifying a default URL by overriding default_url on the uploader), the <a href="../../lib/shrine/plugins/default_url_rb.html">default_url</a> plugin should be used instead.</p>
 </li><li>
-<p>The deprecated <code>Shrine.direct_endpoint</code> alias for <code>Shrine::UploadEndpoint</code>  in direct_upload plugin has been removed.</p>
+<p>The deprecated <code>Shrine.direct_endpoint</code> alias for <a href="../../../classes/Shrine/UploadEndpoint.html"><code>Shrine::UploadEndpoint</code></a> in direct_upload plugin has been removed.</p>
 </li><li>
-<p>The <code>:presign</code> option in direct_upload plugin cannot be used for specifying  presign options anymore; <code>:presign_options</code> should be used instead.</p>
+<p>The <code>:presign</code> option in direct_upload plugin cannot be used for specifying presign options anymore; <code>:presign_options</code> should be used instead.</p>
 </li><li>
-<p><code>Shrine::Attacher#set</code> and <code>#assign</code> methods don’t return the assigned  uploaded file anymore.</p>
+<p><code>Shrine::Attacher#set</code> and assign methods don’t return the assigned uploaded file anymore.</p>
 </li><li>
-<p><code>Shrine::Attacher#delete!</code> doesn’t spawn a background job anymore with  backgrounding plugin, plugin writers should switch to <code>#_delete</code> instead.</p>
+<p><code>Shrine::Attacher#delete!</code> doesn’t spawn a background job anymore with backgrounding plugin, plugin writers should switch to _delete instead.</p>
 </li><li>
 <p>The phases when files are internally deleted have been renamed.</p>
 </li><li>
 <p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn’t officially support Rubinius anymore.</p>
 </li></ul>
 
-<h1 id="label-New+plugins">New plugins<span><a href="#label-New+plugins">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-New+plugins" class="legacy-anchor"></span>
+<h1 id="new-plugins"><a href="#new-plugins">New plugins</a></h1>
 <ul><li>
-<p>The <a target="_top" href="https://github.com/shrinerb/shrine-reform">shrine-reform</a> plugin has been released, which makes <a href="../../../classes/Shrine.html"><code>Shrine</code></a> attachments  work with <a target="_top" href="https://github.com/apotonick/reform">Reform</a> objects.</p>
+<p>The <a target="_top" href="https://github.com/shrinerb/shrine-reform">shrine-reform</a> plugin has been released, which makes <a href="../../../classes/Shrine.html"><code>Shrine</code></a> attachments work with <a target="_top" href="https://github.com/apotonick/reform">Reform</a> objects.</p>
 </li><li>
-<p>The <a target="_top" href="https://github.com/shrinerb/shrine-mongoid">shrine-mongoid</a> plugin has been released, which makes <a href="../../../classes/Shrine.html"><code>Shrine</code></a> attachments  work with <a target="_top" href="https://github.com/mongodb/mongoid">Mongoid</a> models.</p>
+<p>The <a target="_top" href="https://github.com/shrinerb/shrine-mongoid">shrine-mongoid</a> plugin has been released, which makes <a href="../../../classes/Shrine.html"><code>Shrine</code></a> attachments work with <a target="_top" href="https://github.com/mongodb/mongoid">Mongoid</a> models.</p>
 </li></ul>
 
-<h1 id="label-New+storages">New storages<span><a href="#label-New+storages">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-New+storages" class="legacy-anchor"></span>
+<h1 id="new-storages"><a href="#new-storages">New storages</a></h1>
 <ul><li>
-<p>The <a target="_top" href="https://github.com/shrinerb/shrine-memory">shrine-memory</a> storage has been released, which saves uploaded files  in memory (useful in tests).</p>
+<p>The <a target="_top" href="https://github.com/shrinerb/shrine-memory">shrine-memory</a> storage has been released, which saves uploaded files in memory (useful in tests).</p>
 </li></ul>
 
-<h1 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-New+features" class="legacy-anchor"></span>
+<h1 id="new-features"><a href="#new-features">New features</a></h1>
 <ul><li>
-<p>The built-in analyzers can now be used when implementing a custom MIME type  analyzer in determine_mime_type plugin.</p>
+<p>The built-in analyzers can now be used when implementing a custom MIME type analyzer in <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>
@@ -113,7 +115,7 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p>The built-in analyzers can now be used when implementing a custom dimensions  analyzer in store_dimensions plugin.</p>
+<p>The built-in analyzers can now be used when implementing a custom dimensions analyzer in <a href="../../lib/shrine/plugins/store_dimensions_rb.html">store_dimensions</a> plugin.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>
@@ -122,32 +124,33 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p><code>Shrine::Attacher#cache!</code>, <code>#store!</code> and <code>#delete!</code> are now public (they are  wrappers for <code>Shrine#upload</code> and <code>Shrine#delete</code> with context passed in).</p>
+<p><code>Shrine::Attacher#cache!</code>, store! and delete! are now public (they are wrappers for <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a> and <code>Shrine#delete</code> with context passed in).</p>
 </li><li>
-<p><code>Shrine::Attacher#_delete</code> has been added as a wrapper around <code>#delete!</code>,  which the backgrounding plugin overrides and makes aynchronous. This nicely  complements the <code>Shrine::Attacher#_promote</code> wrapper around <code>#promote</code>.</p>
+<p><code>Shrine::Attacher#_delete</code> has been added as a wrapper around delete!, which the backgrounding plugin overrides and makes aynchronous. This nicely complements the <code>Shrine::Attacher#_promote</code> wrapper around promote.</p>
 </li></ul>
 
-<h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h1 id="other-improvements"><a href="#other-improvements">Other improvements</a></h1>
 <ul><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now prints a security warning when determine_mime_type plugin isn’t  loaded.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now prints a security warning when <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin isn’t loaded.</p>
 </li><li>
-<p>Don't error in determine_mime_type with <code>:mimemagic</code> analyzer when MimeMagic  cannot determine MIME of the file.</p>
+<p>Don’t error in <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> with <code>:mimemagic</code> analyzer when MimeMagic cannot determine MIME of the file.</p>
 </li><li>
-<p>When <code>:host</code> is given to S3 storage, URLs will now include the query  parameters, unless <code>:public</code> is given, just like without <code>:host</code>.</p>
+<p>When <code>:host</code> is given to S3 storage, URLs will now include the query parameters, unless <code>:public</code> is given, just like without <code>:host</code>.</p>
 </li><li>
-<p>The Down version has been bumped to <a href="2_2_0_md.html">2.2.0</a>, which means the remote_url plugin  now follows redirects (maximum of 2 redirects by default).</p>
+<p>The Down version has been bumped to <a href="2_2_0_md.html">2.2.0</a>, which means the <a href="../../lib/shrine/plugins/remote_url_rb.html">remote_url</a> plugin now follows redirects (maximum of 2 redirects by default).</p>
 </li><li>
-<p>The <code>Shrine::Attacher#_promote</code> and <code>Shrine::Attacher#promote</code> now have the  same generalized method signature.</p>
+<p>The <code>Shrine::Attacher#_promote</code> and <code>Shrine::Attacher#promote</code> now have the same generalized method signature.</p>
 </li><li>
-<p>The restore_cached_data plugin functionality won't get triggered anymore when  form is submitted with already saved cached attachmnet (e.g. due to  background processing).</p>
+<p>The <a href="../../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> plugin functionality won’t get triggered anymore when form is submitted with already saved cached attachmnet (e.g. due to background processing).</p>
 </li><li>
-<p>The restore_cached_data plugin now doesn't check anymore if the cached file  exists (which saves an HTTP request with remote storages).</p>
+<p>The <a href="../../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> plugin now doesn’t check anymore if the cached file exists (which saves an HTTP request with remote storages).</p>
 </li><li>
-<p>The download_endpoint now makes only one HTTP request when downloading files  from remote storages.</p>
+<p>The <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> now makes only one HTTP request when downloading files from remote storages.</p>
 </li><li>
-<p>The activerecord plugin now allows attachment modules to be included in  non-ActiveRecord models.</p>
+<p>The activerecord plugin now allows attachment modules to be included in non-ActiveRecord models.</p>
 </li><li>
-<p>The sequel plugin now allows attachment modules to be included in  non-Sequel models.</p>
+<p>The sequel plugin now allows attachment modules to be included in non-Sequel models.</p>
 </li><li>
 <p>Plugin options are now persisted when reapplying plugins.</p>
 </li></ul>
@@ -160,13 +163,13 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p>The <code>:include_error</code> has been removed from remote_url plugin, the error will  now be included in the second argument depending on lambda's arity.</p>
+<p>The <code>:include_error</code> has been removed from <a href="../../lib/shrine/plugins/remote_url_rb.html">remote_url</a> plugin, the error will now be included in the second argument depending on lambda’s arity.</p>
 </li><li>
-<p>The dynamic_storage plugin doesn't cache the instantiated storages anymore,  which enables use cases like storing storage definitions in the database.</p>
+<p>The <a href="../../lib/shrine/plugins/dynamic_storage_rb.html">dynamic_storage</a> plugin doesn’t cache the instantiated storages anymore, which enables use cases like storing storage definitions in the database.</p>
 </li><li>
-<p>The determine_mime_type plugin with <code>:file</code> analyzer now handles filenames  that start with a dash ("-").</p>
+<p>The <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin with <code>:file</code> analyzer now handles filenames that start with a dash (“-”).</p>
 </li><li>
-<p><code>Shrine::Attacher</code> now allocates less strings.</p>
+<p><a href="../../../classes/Shrine/Attacher.html"><code>Shrine::Attacher</code></a> now allocates less strings.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -178,7 +181,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

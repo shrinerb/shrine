@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>validation.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,19 +29,16 @@
 <div class='paths'>
 doc/validation.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+File+Validation">title: File Validation<span><a href="#label-title-3A+File+Validation">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+File+Validation" class="legacy-anchor"></span>
+<h2 id="title-file-validation"><a href="#title-file-validation">title: File Validation</a></h2>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> allows validating assigned files using the {<code>validation</code><a target="_top" href="https://shrinerb.com/docs/plugins/validation">}</a> plugin. Validation code is defined inside an <code>Attacher.validate</code> block:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> allows validating assigned files using the <a target="_top" href="https://shrinerb.com/docs/plugins/validation"><code>validation</code></a> plugin. Validation code is defined inside an <code>Attacher.validate</code> block:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation</span>
 </pre>
@@ -52,7 +50,7 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>The validation block is run when a new file is assigned, and any validation errors are stored in <code>Shrine::Attacher#errors</code>. Persistence plugins like <code>sequel</code> and <code>activerecord</code> will automatically merge these validation errors into the <code>#errors</code> hash on the model instance.</p>
+<p>The validation block is run when a new file is assigned, and any validation errors are stored in <code>Shrine::Attacher#errors</code>. Persistence plugins like <code>sequel</code> and <code>activerecord</code> will automatically merge these validation errors into the errors hash on the model instance.</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">image_file</span>
@@ -60,9 +58,10 @@ Last Update:
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">errors</span>[<span class="ruby-value">:image</span>] <span class="ruby-comment">#=&gt; [...]</span>
 </pre>
 
-<h2 id="label-Validation+helpers">Validation helpers<span><a href="#label-Validation+helpers">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Validation+helpers" class="legacy-anchor"></span>
+<h2 id="validation-helpers"><a href="#validation-helpers">Validation helpers</a></h2>
 
-<p>The {<code>validation_helpers</code><a target="_top" href="https://shrinerb.com/docs/plugins/validation_helpers">}</a> plugin provides convenient validators for built-in metadata:</p>
+<p>The <a target="_top" href="https://shrinerb.com/docs/plugins/validation_helpers"><code>validation_helpers</code></a> plugin provides convenient validators for built-in metadata:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>
 </pre>
@@ -76,11 +75,12 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>Note that for secure MIME type validation it’s recommended to also load <code>determine_mime_type</code> and <code>restore_cached_data</code> plugins.</p>
+<p>Note that for secure MIME type validation it’s recommended to also load <a href="../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> and <a href="../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> plugins.</p>
 
-<p>See the {<code>validation_helpers</code><a target="_top" href="https://shrinerb.com/docs/plugins/validation_helpers">}</a> plugin documentation for more details.</p>
+<p>See the <a target="_top" href="https://shrinerb.com/docs/plugins/validation_helpers"><code>validation_helpers</code></a> plugin documentation for more details.</p>
 
-<h2 id="label-Custom+validations">Custom validations<span><a href="#label-Custom+validations">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Custom+validations" class="legacy-anchor"></span>
+<h2 id="custom-validations"><a href="#custom-validations">Custom validations</a></h2>
 
 <p>You can also do your own custom validations:</p>
 
@@ -106,7 +106,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Inheritance">Inheritance<span><a href="#label-Inheritance">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Inheritance" class="legacy-anchor"></span>
+<h2 id="inheritance"><a href="#inheritance">Inheritance</a></h2>
 
 <p>Validations are inherited from superclasses, but you need to call them manually when defining more validations:</p>
 
@@ -123,9 +124,10 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Removing+invalid+files">Removing invalid files<span><a href="#label-Removing+invalid+files">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Removing+invalid+files" class="legacy-anchor"></span>
+<h2 id="removing-invalid-files"><a href="#removing-invalid-files">Removing invalid files</a></h2>
 
-<p>By default, an invalid file will remain assigned after validation failed, but you can have it automatically removed and deleted by loading the <code>remove_invalid</code> plugin.</p>
+<p>By default, an invalid file will remain assigned after validation failed, but you can have it automatically removed and deleted by loading the <a href="../lib/shrine/plugins/remove_invalid_rb.html">remove_invalid</a> plugin.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:remove_invalid</span> <span class="ruby-comment"># remove and delete files that failed validation</span>
 </pre>
@@ -139,7 +141,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

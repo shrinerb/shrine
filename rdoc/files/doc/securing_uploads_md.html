@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>securing_uploads.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,25 +29,23 @@
 <div class='paths'>
 doc/securing_uploads.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>— id: securing-uploads</p>
 
-<h2 id="label-title-3A+Securing+Uploads">title: Securing Uploads<span><a href="#label-title-3A+Securing+Uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Securing+Uploads" class="legacy-anchor"></span>
+<h2 id="title-securing-uploads"><a href="#title-securing-uploads">title: Securing Uploads</a></h2>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> does a lot to make your file uploads secure, but there are still a lot of security measures that could be added by the user on the application’s side. This guide will try to cover some well-known security issues, ranging from the obvious ones to not-so-obvious ones, and try to provide solutions.</p>
 
-<h2 id="label-Validate+file+type">Validate file type<span><a href="#label-Validate+file+type">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Validate+file+type" class="legacy-anchor"></span>
+<h2 id="validate-file-type"><a href="#validate-file-type">Validate file type</a></h2>
 
 <p>Almost always you will be accepting certain types of files, and it’s a good idea to create a whitelist (or a blacklist) of extensions and MIME types.</p>
 
-<p>By default <a href="../../classes/Shrine.html"><code>Shrine</code></a> stores the MIME type derived from the extension, which means it’s not guaranteed to hold the actual MIME type of the the file. However, you can load the <code>determine_mime_type</code> plugin to determine MIME type from magic file headers.</p>
+<p>By default <a href="../../classes/Shrine.html"><code>Shrine</code></a> stores the MIME type derived from the extension, which means it’s not guaranteed to hold the actual MIME type of the the file. However, you can load the <a href="../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin to determine MIME type from magic file headers.</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>
 <span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;marcel&quot;</span>, <span class="ruby-string">&quot;~&gt; 0.3&quot;</span>
@@ -63,7 +62,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Limit+filesize">Limit filesize<span><a href="#label-Limit+filesize">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Limit+filesize" class="legacy-anchor"></span>
+<h2 id="limit-filesize"><a href="#limit-filesize">Limit filesize</a></h2>
 
 <p>It’s a good idea to generally limit the filesize of uploaded files, so that attackers cannot easily flood your storage. There are various layers at which you can apply filesize limits, depending on how you’re accepting uploads. For starters you can add a filesize validation to prevent large files from being uploaded to <code>:store</code>:</p>
 
@@ -78,21 +78,23 @@ Last Update:
 
 <p>In the following sections we talk about various strategies to prevent files from being uploaded to Shrine’s temporary storage and the system’s temporary directory.</p>
 
-<h3 id="label-Limiting+filesize+in+direct+uploads">Limiting filesize in direct uploads<span><a href="#label-Limiting+filesize+in+direct+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Limiting+filesize+in+direct+uploads" class="legacy-anchor"></span>
+<h3 id="limiting-filesize-in-direct-uploads"><a href="#limiting-filesize-in-direct-uploads">Limiting filesize in direct uploads</a></h3>
 
-<p>If you’re doing direct uploads with the <code>upload_endpoint</code> plugin, you can pass in the <code>:max_size</code> option to reject files that are larger than the specified limit:</p>
+<p>If you’re doing direct uploads with the <a href="../lib/shrine/plugins/upload_endpoint_rb.html">upload_endpoint</a> plugin, you can pass in the <code>:max_size</code> option to reject files that are larger than the specified limit:</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span>, <span class="ruby-value">max_size:</span> <span class="ruby-value">100</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 100 MB</span>
 </pre>
 
-<p>If you’re doing direct uploads to Amazon S3 using the <code>presign_endpoint</code> plugin, you can pass in the <code>:content_length_range</code> presign option:</p>
+<p>If you’re doing direct uploads to Amazon S3 using the <a href="../lib/shrine/plugins/presign_endpoint_rb.html">presign_endpoint</a> plugin, you can pass in the <code>:content_length_range</code> presign option:</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>, <span class="ruby-value">presign_options:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>
   { <span class="ruby-value">content_length_range:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">100</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> }
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h3 id="label-Limiting+filesize+at+application+level">Limiting filesize at application level<span><a href="#label-Limiting+filesize+at+application+level">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Limiting+filesize+at+application+level" class="legacy-anchor"></span>
+<h3 id="limiting-filesize-at-application-level"><a href="#limiting-filesize-at-application-level">Limiting filesize at application level</a></h3>
 
 <p>If your application is accepting file uploads, it’s good practice to limit the maximum allowed <code>Content-Length</code> before calling <code>params</code> for the first time, to avoid Rack parsing the multipart request parameters and creating a Tempfile for uploads that are obviously attempts of attacks.</p>
 
@@ -105,14 +107,15 @@ Last Update:
 <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span> <span class="ruby-comment"># Rack parses the multipart request params</span>
 </pre>
 
-<p>Alternatively you can allow uploads of any size to temporary <a href="../../classes/Shrine.html"><code>Shrine</code></a> storage, but tell <a href="../../classes/Shrine.html"><code>Shrine</code></a> to immediately delete the file if it failed validations by loading the <code>remove_invalid</code> plugin.</p>
+<p>Alternatively you can allow uploads of any size to temporary <a href="../../classes/Shrine.html"><code>Shrine</code></a> storage, but tell <a href="../../classes/Shrine.html"><code>Shrine</code></a> to immediately delete the file if it failed validations by loading the <a href="../lib/shrine/plugins/remove_invalid_rb.html">remove_invalid</a> plugin.</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:remove_invalid</span>
 </pre>
 
-<h3 id="label-Failsafe+filesize+limiting">Failsafe filesize limiting<span><a href="#label-Failsafe+filesize+limiting">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Failsafe+filesize+limiting" class="legacy-anchor"></span>
+<h3 id="failsafe-filesize-limiting"><a href="#failsafe-filesize-limiting">Failsafe filesize limiting</a></h3>
 
-<p>If you want to make sure that no large files ever get to your storages, and you don’t really care about the error message, you can override <code>Shrine#upload</code>:</p>
+<p>If you want to make sure that no large files ever get to your storages, and you don’t really care about the error message, you can override <a href="../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a>:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
@@ -123,7 +126,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Limit+image+dimensions">Limit image dimensions<span><a href="#label-Limit+image+dimensions">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Limit+image+dimensions" class="legacy-anchor"></span>
+<h2 id="limit-image-dimensions"><a href="#limit-image-dimensions">Limit image dimensions</a></h2>
 
 <p>It’s possible to create so-called <a target="_top" href="https://www.bamsoftware.com/hacks/deflate.html">image bombs</a>, which are images that have a small filesize but very large dimensions. These are dangerous if you’re doing image processing, since processing them can take a lot of time and memory. This makes it trivial to DoS the application which doesn’t have any protection against them.</p>
 
@@ -161,16 +165,18 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Prevent+metadata+tampering">Prevent metadata tampering<span><a href="#label-Prevent+metadata+tampering">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Prevent+metadata+tampering" class="legacy-anchor"></span>
+<h2 id="prevent-metadata-tampering"><a href="#prevent-metadata-tampering">Prevent metadata tampering</a></h2>
 
 <p>When cached file is retained on validation errors or it was direct uploaded, the uploaded file representation is assigned to the attacher. This also includes any file metadata. By default <a href="../../classes/Shrine.html"><code>Shrine</code></a> won’t attempt to re-extract metadata, because for remote storages that requires an additional HTTP request, which might not be feasible depending on the application requirements.</p>
 
-<p>However, this means that the attacker can directly upload a malicious file (because direct uploads aren’t validated), and then modify the metadata hash so that it passes <a href="../../classes/Shrine.html"><code>Shrine</code></a> validations, before submitting the cached file to your app. To guard yourself from such attacks, you can load the <code>restore_cached_data</code> plugin, which will automatically re-extract metadata from cached files on assignment and override the received metadata.</p>
+<p>However, this means that the attacker can directly upload a malicious file (because direct uploads aren’t validated), and then modify the metadata hash so that it passes <a href="../../classes/Shrine.html"><code>Shrine</code></a> validations, before submitting the cached file to your app. To guard yourself from such attacks, you can load the <a href="../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> plugin, which will automatically re-extract metadata from cached files on assignment and override the received metadata.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:restore_cached_data</span>
 </pre>
 
-<h2 id="label-Limit+number+of+files">Limit number of files<span><a href="#label-Limit+number+of+files">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Limit+number+of+files" class="legacy-anchor"></span>
+<h2 id="limit-number-of-files"><a href="#limit-number-of-files">Limit number of files</a></h2>
 
 <p>When doing direct uploads, it’s a good idea to apply some kind of throttling to the endpoint, to ensure the attacker cannot upload an unlimited number files, because even with a filesize limit it would allow flooding the storage. A good library for throttling requests is <a target="_top" href="https://github.com/kickstarter/rack-attack">rack-attack</a>.</p>
 
@@ -186,7 +192,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-References">References<span><a href="#label-References">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-References" class="legacy-anchor"></span>
+<h2 id="references"><a href="#references">References</a></h2>
 <ul><li>
 <p><a target="_top" href="https://nvisium.com/blog/2015/10/13/secure-file-uploads/">Nvisium: Secure File Uploads</a></p>
 </li><li>
@@ -204,7 +211,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

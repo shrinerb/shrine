@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>1.4.1.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,21 +29,19 @@
 <div class='paths'>
 doc/release_notes/1.4.1.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+1.4.1">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_4_1_md.html">1.4.1</a><span><a href="#label-title-3A+Shrine+1.4.1">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+1.4.1" class="legacy-anchor"></span>
+<h2 id="title-shrine-141"><a href="#title-shrine-141">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_4_1_md.html">1.4.1</a></a></h2>
 
-<h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Regressions" class="legacy-anchor"></span>
+<h1 id="regressions"><a href="#regressions">Regressions</a></h1>
 <ul><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_4_0_md.html">1.4.0</a> introduced a regression where it didn’t trigger callbacks for  promoting files anymore. This was done in order to eliminate a tiny chance  for a race condition when same attachment is updated subsequently with  backgrounding. We bring back triggering callbacks on promote. For Sequel we  eliminate the chance of a race condition, while ActiveRecord users can now  add optimistic locking to prevent this.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_4_0_md.html">1.4.0</a> introduced a regression where it didn’t trigger callbacks for promoting files anymore. This was done in order to eliminate a tiny chance for a race condition when same attachment is updated subsequently with backgrounding. We bring back triggering callbacks on promote. For Sequel we eliminate the chance of a race condition, while ActiveRecord users can now add optimistic locking to prevent this.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -54,7 +53,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

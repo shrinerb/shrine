@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>carrierwave.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,17 +29,14 @@
 <div class='paths'>
 doc/carrierwave.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Upgrading+from+CarrierWave">title: Upgrading from CarrierWave<span><a href="#label-title-3A+Upgrading+from+CarrierWave">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Upgrading+from+CarrierWave" class="legacy-anchor"></span>
+<h2 id="title-upgrading-from-carrierwave"><a href="#title-upgrading-from-carrierwave">title: Upgrading from CarrierWave</a></h2>
 
 <p>This guide is aimed at helping CarrierWave users transition to <a href="../../classes/Shrine.html"><code>Shrine</code></a>, and it consists of three parts:</p>
 <ol><li>
@@ -49,9 +47,11 @@ Last Update:
 <p>Extensive reference of CarrierWave’s interface with <a href="../../classes/Shrine.html"><code>Shrine</code></a> equivalents</p>
 </li></ol>
 
-<h2 id="label-Overview">Overview<span><a href="#label-Overview">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Overview" class="legacy-anchor"></span>
+<h2 id="overview"><a href="#overview">Overview</a></h2>
 
-<h3 id="label-Uploader">Uploader<span><a href="#label-Uploader">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Uploader" class="legacy-anchor"></span>
+<h3 id="uploader"><a href="#uploader">Uploader</a></h3>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> shares CarrierWave’s concept of <strong>uploaders</strong>, classes which encapsulate file attachment logic for different file types:</p>
 
@@ -71,15 +71,15 @@ Last Update:
 </thead>
 <tbody>
 <tr>
-<td align="left">‘Shrine`</td>
+<td align="left"><a href="../../classes/Shrine.html"><code>Shrine</code></a></td>
 <td align="left">handles uploads, metadata extraction, location generation</td>
 </tr>
 <tr>
-<td align="left">‘Shrine::UploadedFile`</td>
+<td align="left"><a href="../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a></td>
 <td align="left">exposes metadata, implements downloading, URL generation, deletion</td>
 </tr>
 <tr>
-<td align="left">‘Shrine::Attacher`</td>
+<td align="left"><a href="../../classes/Shrine/Attacher.html"><code>Shrine::Attacher</code></a></td>
 <td align="left">handles caching &amp; storing, dirty tracking, persistence, versions</td>
 </tr>
 </tbody>
@@ -94,7 +94,8 @@ Last Update:
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-comment">#=&gt; #&lt;File:/tmp/path/to/file&gt;</span>
 </pre>
 
-<h3 id="label-Storage">Storage<span><a href="#label-Storage">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Storage" class="legacy-anchor"></span>
+<h3 id="storage"><a href="#storage">Storage</a></h3>
 
 <p>In CarrierWave, you configure storage in global configuration:</p>
 
@@ -120,7 +121,8 @@ Last Update:
 )
 </pre>
 
-<h4 id="label-Temporary+storage">Temporary storage<span><a href="#label-Temporary+storage">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-Temporary+storage" class="legacy-anchor"></span>
+<h4 id="temporary-storage"><a href="#temporary-storage">Temporary storage</a></h4>
 
 <p>Where CarrierWave’s temporary storage is hardcoded to disk, <a href="../../classes/Shrine.html"><code>Shrine</code></a> can use any storage for temporary storage. So, if you have multiple servers or want to do <a target="_top" href="https://shrinerb.com/docs/getting-started#direct-uploads">direct uploads</a>, you can use AWS S3 as temporary storage:</p>
 
@@ -130,7 +132,8 @@ Last Update:
 }
 </pre>
 
-<h3 id="label-Persistence">Persistence<span><a href="#label-Persistence">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Persistence" class="legacy-anchor"></span>
+<h3 id="persistence"><a href="#persistence">Persistence</a></h3>
 
 <p>While CarrierWave persists only the filename of the original uploaded file, <a href="../../classes/Shrine.html"><code>Shrine</code></a> persists storage and metadata information as well:</p>
 
@@ -156,13 +159,15 @@ Last Update:
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>
 </pre>
 
-<h4 id="label-Location">Location<span><a href="#label-Location">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-Location" class="legacy-anchor"></span>
+<h4 id="location"><a href="#location">Location</a></h4>
 
 <p>CarrierWave persists only the filename of the uploaded file, and recalculates the full location dynamically based on location configuration. This can be dangerous, because if some component of the location happens to change, all existing links might become invalid.</p>
 
 <p>To avoid this, <a href="../../classes/Shrine.html"><code>Shrine</code></a> persists the full location on attachment, and uses it when generating file URL. So, even if you change how file locations are generated, existing files that are on old locations will still remain accessible.</p>
 
-<h3 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Processing" class="legacy-anchor"></span>
+<h3 id="processing"><a href="#processing">Processing</a></h3>
 
 <p>CarrierWave uses a class-level DSL for generating versions, which internally uses uploader subclassing and does in-place processing.</p>
 
@@ -202,7 +207,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-Retrieving+versions">Retrieving versions<span><a href="#label-Retrieving+versions">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-Retrieving+versions" class="legacy-anchor"></span>
+<h4 id="retrieving-versions"><a href="#retrieving-versions">Retrieving versions</a></h4>
 
 <p>When retrieving versions, CarrierWave returns a list of declared versions which may or may not have been generated. In contrast, <a href="../../classes/Shrine.html"><code>Shrine</code></a> persists data of uploaded processed files into the database (including any extracted metadata), which then becomes the source of truth on which versions have been generated.</p>
 
@@ -218,13 +224,15 @@ Last Update:
 <span class="ruby-comment"># }</span>
 </pre>
 
-<h4 id="label-Reprocessing+versions">Reprocessing versions<span><a href="#label-Reprocessing+versions">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-Reprocessing+versions" class="legacy-anchor"></span>
+<h4 id="reprocessing-versions"><a href="#reprocessing-versions">Reprocessing versions</a></h4>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> doesn’t have a built-in way of regenerating versions, because that has to be written and optimized differently depending on what versions have changed which persistence library you’re using, how many records there are in the table etc.</p>
 
 <p>However, there is an extensive guide for <a target="_top" href="https://shrinerb.com/docs/changing-derivatives">Managing Derivatives</a>, which provides instructions on how to make these changes safely and with zero downtime.</p>
 
-<h3 id="label-Validation">Validation<span><a href="#label-Validation">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Validation" class="legacy-anchor"></span>
+<h3 id="validation"><a href="#validation">Validation</a></h3>
 
 <p>File validation in <a href="../../classes/Shrine.html"><code>Shrine</code></a> is also instance-level, which allows using conditionals:</p>
 
@@ -257,7 +265,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-Custom+metadata">Custom metadata<span><a href="#label-Custom+metadata">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-Custom+metadata" class="legacy-anchor"></span>
+<h4 id="custom-metadata"><a href="#custom-metadata">Custom metadata</a></h4>
 
 <p>With <a href="../../classes/Shrine.html"><code>Shrine</code></a> you can also extract and validate any custom metadata:</p>
 
@@ -277,79 +286,84 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h3 id="label-Multiple+uploads">Multiple uploads<span><a href="#label-Multiple+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Multiple+uploads" class="legacy-anchor"></span>
+<h3 id="multiple-uploads"><a href="#multiple-uploads">Multiple uploads</a></h3>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> doesn’t have support for multiple uploads out-of-the-box like CarrierWave does. Instead, you can implement them using a separate table with a one-to-many relationship to which the files will be attached. The <a target="_top" href="https://shrinerb.com/docs/multiple-files">Multiple Files</a> guide explains this setup in more detail.</p>
 
-<h2 id="label-Migrating+from+CarrierWave">Migrating from CarrierWave<span><a href="#label-Migrating+from+CarrierWave">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Migrating+from+CarrierWave" class="legacy-anchor"></span>
+<h2 id="migrating-from-carrierwave"><a href="#migrating-from-carrierwave">Migrating from CarrierWave</a></h2>
 
 <p>You have an existing app using CarrierWave and you want to transfer it to <a href="../../classes/Shrine.html"><code>Shrine</code></a>. Let’s assume we have a <code>Photo</code> model with the “image” attachment.</p>
 
-<h3 id="label-1.+Add+Shrine+column">1. Add <a href="../../classes/Shrine.html"><code>Shrine</code></a> column<span><a href="#label-1.+Add+Shrine+column">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-1.+Add+Shrine+column" class="legacy-anchor"></span>
+<h3 id="1-add-shrine-column"><a href="#1-add-shrine-column">1. Add <a href="../../classes/Shrine.html"><code>Shrine</code></a> column</a></h3>
 
 <p>First we need to create the <code>image_data</code> column for Shrine:</p>
 
 <pre class="ruby"><span class="ruby-identifier">add_column</span> <span class="ruby-value">:photos</span>, <span class="ruby-value">:image_data</span>, <span class="ruby-value">:text</span> <span class="ruby-comment"># or :json or :jsonb if supported</span>
 </pre>
 
-<h3 id="label-2.+Dual+write">2. Dual write<span><a href="#label-2.+Dual+write">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-2.+Dual+write" class="legacy-anchor"></span>
+<h3 id="2-dual-write"><a href="#2-dual-write">2. Dual write</a></h3>
 
 <p>Next, we need to make new CarrierWave attachments write to the <code>image_data</code> column. This can be done by including the below module to all models that have CarrierWave attachments:</p>
 
-<pre># config/initializers/shrine.rb (Rails)
-require &quot;shrine&quot;
+<pre class="ruby"><span class="ruby-comment"># config/initializers/shrine.rb (Rails)</span>
+<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine&quot;</span>
 
-Shrine.storages = {
-  cache: ...,
-  store: ...,
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {
+  <span class="ruby-value">cache:</span> <span class="ruby-operator">...</span>,
+  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-operator">...</span>,
 }
 
-Shrine.plugin :model
-Shrine.plugin :derivatives
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:model</span>
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivatives</span>
 
-module CarrierwaveShrineSynchronization
-  def self.included(model)
-    model.before_save do
-      self.class.uploaders.each_key do |name|
-        write_shrine_data(name) if changes.key?(name)
-      end
-    end
-  end
+<span class="ruby-keyword">module</span> <span class="ruby-constant">CarrierwaveShrineSynchronization</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">model</span>)
+    <span class="ruby-identifier">model</span>.<span class="ruby-identifier">before_save</span> <span class="ruby-keyword">do</span>
+      <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">uploaders</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">write_shrine_data</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">changes</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">name</span>)
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
 
-  def write_shrine_data(name)
-    uploader = send(name)
-    attacher = Shrine::Attacher.from_model(self, name)
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">write_shrine_data</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-identifier">uploader</span> = <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_model</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">name</span>)
 
-    if read_attribute(name).present?
-      attacher.set shrine_file(uploader)
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">read_attribute</span>(<span class="ruby-identifier">name</span>).<span class="ruby-identifier">present?</span>
+      <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span> <span class="ruby-identifier">shrine_file</span>(<span class="ruby-identifier">uploader</span>)
 
-      uploader.versions.each do |version_name, version|
-        attacher.merge_derivatives(version_name =&gt; shrine_file(version))
-      end
-    else
-      attacher.set nil
-    end
-  end
+      <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">versions</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">version_name</span>, <span class="ruby-identifier">version</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">merge_derivatives</span>(<span class="ruby-identifier">version_name</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">shrine_file</span>(<span class="ruby-identifier">version</span>))
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span> <span class="ruby-keyword">nil</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
 
-  private
+  <span class="ruby-identifier">private</span>
 
-  def shrine_file(uploader)
-    name     = uploader.mounted_as
-    filename = read_attribute(name)
-    location = uploader.store_path(filename)
-    location = location.sub(%r{^#{storage.prefix}/}, &quot;&quot;) if storage.prefix
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_file</span>(<span class="ruby-identifier">uploader</span>)
+    <span class="ruby-identifier">name</span>     = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">mounted_as</span>
+    <span class="ruby-identifier">filename</span> = <span class="ruby-identifier">read_attribute</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-identifier">location</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">store_path</span>(<span class="ruby-identifier">filename</span>)
+    <span class="ruby-identifier">location</span> = <span class="ruby-identifier">location</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-regexp">%r{^#{storage.prefix}/}</span>, <span class="ruby-string">&quot;&quot;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">prefix</span>
 
-    Shrine.uploaded_file(
-      storage:  :store,
-      id:       location,
-      metadata: { &quot;filename&quot; =&gt; filename },
+    <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">uploaded_file</span>(
+      <span class="ruby-value">storage:</span>  <span class="ruby-value">:store</span>,
+      <span class="ruby-value">id:</span>       <span class="ruby-identifier">location</span>,
+      <span class="ruby-value">metadata:</span> { <span class="ruby-string">&quot;filename&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">filename</span> },
     )
-  end
+  <span class="ruby-keyword">end</span>
 
-  def storage
-    Shrine.storages[:store]
-  end
-end</pre>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">storage</span>
+    <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:store</span>]
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>
   <span class="ruby-identifier">mount_uploader</span> <span class="ruby-value">:image</span>, <span class="ruby-constant">ImageUploader</span>
@@ -359,7 +373,8 @@ end</pre>
 
 <p>After you deploy this code, the <code>image_data</code> column should now be successfully synchronized with new attachments.</p>
 
-<h3 id="label-3.+Data+migration">3. Data migration<span><a href="#label-3.+Data+migration">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-3.+Data+migration" class="legacy-anchor"></span>
+<h3 id="3-data-migration"><a href="#3-data-migration">3. Data migration</a></h3>
 
 <p>Next step is to run a script which writes all existing CarrierWave attachments to <code>image_data</code>:</p>
 
@@ -369,11 +384,13 @@ end</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h3 id="label-4.+Rewrite+code">4. Rewrite code<span><a href="#label-4.+Rewrite+code">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-4.+Rewrite+code" class="legacy-anchor"></span>
+<h3 id="4-rewrite-code"><a href="#4-rewrite-code">4. Rewrite code</a></h3>
 
 <p>Now you should be able to rewrite your application so that it uses <a href="../../classes/Shrine.html"><code>Shrine</code></a> instead of CarrierWave (you can consult the reference in the next section). You can remove the <code>CarrierwaveShrineSynchronization</code> module as well.</p>
 
-<h3 id="label-5.+Backfill+metadata">5. Backfill metadata<span><a href="#label-5.+Backfill+metadata">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-5.+Backfill+metadata" class="legacy-anchor"></span>
+<h3 id="5-backfill-metadata"><a href="#5-backfill-metadata">5. Backfill metadata</a></h3>
 
 <p>You’ll notice that <a href="../../classes/Shrine.html"><code>Shrine</code></a> metadata will be absent from the migrated files’ data. You can run a script that will fill in any missing metadata defined in your <a href="../../classes/Shrine.html"><code>Shrine</code></a> uploader:</p>
 
@@ -386,20 +403,24 @@ end</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h3 id="label-6.+Remove+CarrierWave+column">6. Remove CarrierWave column<span><a href="#label-6.+Remove+CarrierWave+column">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-6.+Remove+CarrierWave+column" class="legacy-anchor"></span>
+<h3 id="6-remove-carrierwave-column"><a href="#6-remove-carrierwave-column">6. Remove CarrierWave column</a></h3>
 
 <p>If everything is looking good, we can remove the CarrierWave column:</p>
 
 <pre class="ruby"><span class="ruby-identifier">remove_column</span> <span class="ruby-value">:photos</span>, <span class="ruby-value">:image</span>
 </pre>
 
-<h2 id="label-CarrierWave+to+Shrine+direct+mapping">CarrierWave to <a href="../../classes/Shrine.html"><code>Shrine</code></a> direct mapping<span><a href="#label-CarrierWave+to+Shrine+direct+mapping">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-CarrierWave+to+Shrine+direct+mapping" class="legacy-anchor"></span>
+<h2 id="carrierwave-to-shrine-direct-mapping"><a href="#carrierwave-to-shrine-direct-mapping">CarrierWave to <a href="../../classes/Shrine.html"><code>Shrine</code></a> direct mapping</a></h2>
 
-<h3 id="label-CarrierWave-3A-3AUploader-3A-3ABase"><code>CarrierWave::Uploader::Base</code><span><a href="#label-CarrierWave-3A-3AUploader-3A-3ABase">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-CarrierWave-3A-3AUploader-3A-3ABase" class="legacy-anchor"></span>
+<h3 id="carrierwaveuploaderbase"><a href="#carrierwaveuploaderbase"><code>CarrierWave::Uploader::Base</code></a></h3>
 
-<h4 id="label-.storage"><code>.storage</code><span><a href="#label-.storage">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-.storage" class="legacy-anchor"></span>
+<h4 id="storage-1"><a href="#storage-1"><code>.storage</code></a></h4>
 
-<p>When using models, by default all storages use <code>:cache</code> for cache, and <code>:store</code> for store. If you want to change that, you can use the <code>default_storage</code> plugin:</p>
+<p>When using models, by default all storages use <code>:cache</code> for cache, and <code>:store</code> for store. If you want to change that, you can use the <a href="../lib/shrine/plugins/default_storage_rb.html">default_storage</a> plugin:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:foo</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Foo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
 </pre>
@@ -409,7 +430,8 @@ end</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-.process-2C+.version"><code>.process</code>, <code>.version</code><span><a href="#label-.process-2C+.version">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-.process-2C+.version" class="legacy-anchor"></span>
+<h4 id="process-version"><a href="#process-version"><code>.process</code>, <code>.version</code></a></h4>
 
 <p>Processing is defined by using the <code>derivatives</code> plugin:</p>
 
@@ -428,48 +450,54 @@ end</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-.before-2C+.after"><code>.before</code>, <code>.after</code><span><a href="#label-.before-2C+.after">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-.before-2C+.after" class="legacy-anchor"></span>
+<h4 id="before-after"><a href="#before-after"><code>.before</code>, <code>.after</code></a></h4>
 
 <p>There is no <a href="../../classes/Shrine.html"><code>Shrine</code></a> equivalent for CarrierWave’s callbacks.</p>
 
-<h4 id="label-23store-21-2C+-23cache-21"><code>#store!</code>, <code>#cache!</code><span><a href="#label-23store-21-2C+-23cache-21">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23store-21-2C+-23cache-21" class="legacy-anchor"></span>
+<h4 id="store-cache"><a href="#store-cache">store!, cache!</a></h4>
 
-<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> you store and cache files by passing the corresponding storage to <code>Shrine.upload</code>:</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> you store and cache files by passing the corresponding storage to <a href="../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>:</p>
 
 <pre class="ruby"><span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:cache</span>)
 <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:store</span>)
 </pre>
 
-<p>Note that in <a href="../../classes/Shrine.html"><code>Shrine</code></a> you cannot pass in a path to the file, you always have to pass an IO-like object, which is required to respond to: <code>#read(*args)</code>, <code>#size</code>, <code>#eof?</code>, <code>#rewind</code> and <code>#close</code>.</p>
+<p>Note that in <a href="../../classes/Shrine.html"><code>Shrine</code></a> you cannot pass in a path to the file, you always have to pass an IO-like object, which is required to respond to: read(*args), size, eof?, rewind and close.</p>
 
-<h4 id="label-23retrieve_from_store-21+and+-23retrieve_from_cache-21"><code>#retrieve_from_store!</code> and <code>#retrieve_from_cache!</code><span><a href="#label-23retrieve_from_store-21+and+-23retrieve_from_cache-21">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23retrieve_from_store-21+and+-23retrieve_from_cache-21" class="legacy-anchor"></span>
+<h4 id="retrievefromstore-and-retrievefromcache"><a href="#retrievefromstore-and-retrievefromcache">retrieve_from_store! and retrieve_from_cache!</a></h4>
 
-<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> you simply call <code>#download</code> on the uploaded file:</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> you simply call download on the uploaded file:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:store</span>)
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile:/path/to/file&gt;</span>
 </pre>
 
-<h4 id="label-23url"><code>#url</code><span><a href="#label-23url">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23url" class="legacy-anchor"></span>
+<h4 id="url"><a href="#url">url</a></h4>
 
-<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> you call <code>#url</code> on uploaded files:</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> you call url on uploaded files:</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>     <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;/uploads/398454ujedfggf.jpg&quot;</span>
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span> <span class="ruby-comment">#=&gt; &quot;/uploads/398454ujedfggf.jpg&quot; (shorthand)</span>
 </pre>
 
-<h4 id="label-23identifier"><code>#identifier</code><span><a href="#label-23identifier">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23identifier" class="legacy-anchor"></span>
+<h4 id="identifier"><a href="#identifier">identifier</a></h4>
 
-<p>This method corresponds to <code>#original_filename</code> on the uploaded file:</p>
+<p>This method corresponds to original_filename on the uploaded file:</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>                   <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;avatar.jpg&quot;</span>
 </pre>
 
-<h4 id="label-23store_dir-2C+-23cache_dir"><code>#store_dir</code>, <code>#cache_dir</code><span><a href="#label-23store_dir-2C+-23cache_dir">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23store_dir-2C+-23cache_dir" class="legacy-anchor"></span>
+<h4 id="storedir-cachedir"><a href="#storedir-cachedir">store_dir, cache_dir</a></h4>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> here provides a single <code>#generate_location</code> method that’s triggered for all storages:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> here provides a single generate_location method that’s triggered for all storages:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
   <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">record:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">name:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)
@@ -486,11 +514,12 @@ end</pre>
 store/user/456/7f99669fde1e01fc/kitten.jpg
 ...</pre>
 
-<p>You might also want to use the <code>pretty_location</code> plugin for automatically generating an organized folder structure.</p>
+<p>You might also want to use the <a href="../lib/shrine/plugins/pretty_location_rb.html">pretty_location</a> plugin for automatically generating an organized folder structure.</p>
 
-<h4 id="label-23default_url"><code>#default_url</code><span><a href="#label-23default_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23default_url" class="legacy-anchor"></span>
+<h4 id="defaulturl"><a href="#defaulturl">default_url</a></h4>
 
-<p>For default URLs you can use the <code>default_url</code> plugin:</p>
+<p>For default URLs you can use the <a href="../lib/shrine/plugins/default_url_rb.html">default_url</a> plugin:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
   <span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>
@@ -501,9 +530,10 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-23extension_white_list-2C+-23extension_black_list"><code>#extension_white_list</code>, <code>#extension_black_list</code><span><a href="#label-23extension_white_list-2C+-23extension_black_list">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23extension_white_list-2C+-23extension_black_list" class="legacy-anchor"></span>
+<h4 id="extensionwhitelist-extensionblacklist"><a href="#extensionwhitelist-extensionblacklist">extension_white_list, extension_black_list</a></h4>
 
-<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a>, extension whitelisting/blacklisting is a part of validations, and is provided by the <code>validation_helpers</code> plugin:</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a>, extension whitelisting/blacklisting is a part of validations, and is provided by the <a href="../lib/shrine/plugins/validation_helpers_rb.html">validation_helpers</a> plugin:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
   <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>
@@ -515,9 +545,10 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-23content_type_whitelist-2C+-23content_type_blacklist"><code>#content_type_whitelist</code>, <code>#content_type_blacklist</code><span><a href="#label-23content_type_whitelist-2C+-23content_type_blacklist">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23content_type_whitelist-2C+-23content_type_blacklist" class="legacy-anchor"></span>
+<h4 id="contenttypewhitelist-contenttypeblacklist"><a href="#contenttypewhitelist-contenttypeblacklist">content_type_whitelist, content_type_blacklist</a></h4>
 
-<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a>, MIME type whitelisting/blacklisting is part of validations, and is provided by the <code>validation_helpers</code> plugin, though it doesn’t support regexes:</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a>, MIME type whitelisting/blacklisting is part of validations, and is provided by the <a href="../lib/shrine/plugins/validation_helpers_rb.html">validation_helpers</a> plugin, though it doesn’t support regexes:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
   <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>
@@ -529,7 +560,7 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>Make sure to also load the <code>determine_mime_type</code> plugin to detect MIME type from file content.</p>
+<p>Make sure to also load the <a href="../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin to detect MIME type from file content.</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>
 <span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;mimemagic&quot;</span>
@@ -538,9 +569,10 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:mimemagic</span>
 </pre>
 
-<h4 id="label-23size_range"><code>#size_range</code><span><a href="#label-23size_range">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23size_range" class="legacy-anchor"></span>
+<h4 id="sizerange"><a href="#sizerange">size_range</a></h4>
 
-<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> file size validations are typically done using the <code>validation_helpers</code> plugin:</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> file size validations are typically done using the <a href="../lib/shrine/plugins/validation_helpers_rb.html">validation_helpers</a> plugin:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
   <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>
@@ -551,15 +583,18 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-23recreate_versions-21"><code>#recreate_versions!</code><span><a href="#label-23recreate_versions-21">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23recreate_versions-21" class="legacy-anchor"></span>
+<h4 id="recreateversions"><a href="#recreateversions">recreate_versions!</a></h4>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> doesn’t have a built-in way of regenerating versions, because that’s very individual and depends on what versions you want regenerated, what ORM are you using, how many records there are in your database etc. The <a target="_top" href="https://shrinerb.com/docs/changing-derivatives">Managing Derivatives</a> guide provides some useful tips on this task.</p>
 
-<h3 id="label-Models">Models<span><a href="#label-Models">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Models" class="legacy-anchor"></span>
+<h3 id="models"><a href="#models">Models</a></h3>
 
 <p>The only thing that <a href="../../classes/Shrine.html"><code>Shrine</code></a> requires from your models is a <code>&lt;attachment&gt;_data</code> column (e.g. if your attachment is “image”, you need the <code>image_data</code> column).</p>
 
-<h4 id="label-.mount_uploader"><code>.mount_uploader</code><span><a href="#label-.mount_uploader">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-.mount_uploader" class="legacy-anchor"></span>
+<h4 id="mountuploader"><a href="#mountuploader"><code>.mount_uploader</code></a></h4>
 
 <p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> you make include attachment modules directly:</p>
 
@@ -571,7 +606,8 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-23-3Cattachment-3E-3D"><code>#&lt;attachment&gt;=</code><span><a href="#label-23-3Cattachment-3E-3D">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23-3Cattachment-3E-3D" class="legacy-anchor"></span>
+<h4 id="attachment"><a href="#attachment"><code>#&lt;attachment&gt;=</code></a></h4>
 
 <p>The attachment module adds an attachment setter:</p>
 
@@ -580,9 +616,10 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 
 <p>Note that unlike CarrierWave, you cannot pass in file paths, the input needs to be an IO-like object.</p>
 
-<h4 id="label-23-3Cattachment-3E"><code>#&lt;attachment&gt;</code><span><a href="#label-23-3Cattachment-3E">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23-3Cattachment-3E" class="legacy-anchor"></span>
+<h4 id="attachment-1"><a href="#attachment-1"><code>#&lt;attachment&gt;</code></a></h4>
 
-<p>CarrierWave returns the uploader, but <a href="../../classes/Shrine.html"><code>Shrine</code></a> returns a <code>Shrine::UploadedFile</code>, a representation of the file uploaded to the storage:</p>
+<p>CarrierWave returns the uploader, but <a href="../../classes/Shrine.html"><code>Shrine</code></a> returns a <a href="../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a>, a representation of the file uploaded to the storage:</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">methods</span> <span class="ruby-comment">#=&gt; [:url, :download, :read, :exists?, :delete, ...]</span>
@@ -590,9 +627,10 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 
 <p>If attachment is missing, nil is returned.</p>
 
-<h4 id="label-23-3Cattachment-3E_url"><code>#&lt;attachment&gt;_url</code><span><a href="#label-23-3Cattachment-3E_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23-3Cattachment-3E_url" class="legacy-anchor"></span>
+<h4 id="attachmenturl"><a href="#attachmenturl"><code>#&lt;attachment&gt;_url</code></a></h4>
 
-<p>This method is simply a shorthand for “if attachment is present, call <code>#url</code> on it, otherwise return nil”:</p>
+<p>This method is simply a shorthand for “if attachment is present, call url on it, otherwise return nil”:</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span> <span class="ruby-comment">#=&gt; nil</span>
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;avatar.jpg&quot;</span>, <span class="ruby-string">&quot;rb&quot;</span>)
@@ -601,9 +639,10 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 
 <p>The <code>derivatives</code> plugin extends this method to also accept a version name as the argument (<code>photo.image_url(:thumb)</code>).</p>
 
-<h4 id="label-23-3Cattachment-3E_cache"><code>#&lt;attachment&gt;_cache</code><span><a href="#label-23-3Cattachment-3E_cache">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23-3Cattachment-3E_cache" class="legacy-anchor"></span>
+<h4 id="attachmentcache"><a href="#attachmentcache"><code>#&lt;attachment&gt;_cache</code></a></h4>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> has the <code>cached_attachment_data</code> plugin, which gives model a reader method that you can use for retaining the cached file:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> has the <a href="../lib/shrine/plugins/cached_attachment_data_rb.html">cached_attachment_data</a> plugin, which gives model a reader method that you can use for retaining the cached file:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:cached_attachment_data</span>
 </pre>
@@ -614,43 +653,51 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-23remote_-3Cattachment-3E_url"><code>#remote_&lt;attachment&gt;_url</code><span><a href="#label-23remote_-3Cattachment-3E_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23remote_-3Cattachment-3E_url" class="legacy-anchor"></span>
+<h4 id="remoteattachmenturl"><a href="#remoteattachmenturl"><code>#remote_&lt;attachment&gt;_url</code></a></h4>
 
-<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> this method is provided by the <code>remote_url</code> plugin.</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> this method is provided by the <a href="../lib/shrine/plugins/remote_url_rb.html">remote_url</a> plugin.</p>
 
-<h4 id="label-23remove_-3Cattachment-3E"><code>#remove_&lt;attachment&gt;</code><span><a href="#label-23remove_-3Cattachment-3E">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-23remove_-3Cattachment-3E" class="legacy-anchor"></span>
+<h4 id="removeattachment"><a href="#removeattachment"><code>#remove_&lt;attachment&gt;</code></a></h4>
 
-<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> this method is provided by the <code>remove_attachment</code> plugin.</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> this method is provided by the <a href="../lib/shrine/plugins/remove_attachment_rb.html">remove_attachment</a> plugin.</p>
 
-<h3 id="label-Configuration">Configuration<span><a href="#label-Configuration">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Configuration" class="legacy-anchor"></span>
+<h3 id="configuration"><a href="#configuration">Configuration</a></h3>
 
 <p>This section walks through various configuration options in CarrierWave, and shows what are Shrine’s equivalents.</p>
 
-<h4 id="label-root-2C+base_path-2C+permissions-2C+directory_permissions"><code>root</code>, <code>base_path</code>, <code>permissions</code>, <code>directory_permissions</code><span><a href="#label-root-2C+base_path-2C+permissions-2C+directory_permissions">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-root-2C+base_path-2C+permissions-2C+directory_permissions" class="legacy-anchor"></span>
+<h4 id="root-basepath-permissions-directorypermissions"><a href="#root-basepath-permissions-directorypermissions"><code>root</code>, <code>base_path</code>, <code>permissions</code>, <code>directory_permissions</code></a></h4>
 
 <p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> these are configured on the <code>FileSystem</code> storage directly.</p>
 
-<h4 id="label-storage-2C+storage_engines"><code>storage</code>, <code>storage_engines</code><span><a href="#label-storage-2C+storage_engines">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-storage-2C+storage_engines" class="legacy-anchor"></span>
+<h4 id="storage-storageengines"><a href="#storage-storageengines"><code>storage</code>, <code>storage_engines</code></a></h4>
 
-<p>As mentioned before, in <a href="../../classes/Shrine.html"><code>Shrine</code></a> you register storages through <code>Shrine.storages</code>, and the attachment storages will automatically be <code>:cache</code> and <code>:store</code>, but you can change this with the <code>default_storage</code> plugin.</p>
+<p>As mentioned before, in <a href="../../classes/Shrine.html"><code>Shrine</code></a> you register storages through <code>Shrine.storages</code>, and the attachment storages will automatically be <code>:cache</code> and <code>:store</code>, but you can change this with the <a href="../lib/shrine/plugins/default_storage_rb.html">default_storage</a> plugin.</p>
 
-<h4 id="label-delete_tmp_file_after_storage-2C+remove_previously_stored_file_after_update"><code>delete_tmp_file_after_storage</code>, <code>remove_previously_stored_file_after_update</code><span><a href="#label-delete_tmp_file_after_storage-2C+remove_previously_stored_file_after_update">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-delete_tmp_file_after_storage-2C+remove_previously_stored_file_after_update" class="legacy-anchor"></span>
+<h4 id="deletetmpfileafterstorage-removepreviouslystoredfileafterupdate"><a href="#deletetmpfileafterstorage-removepreviouslystoredfileafterupdate"><code>delete_tmp_file_after_storage</code>, <code>remove_previously_stored_file_after_update</code></a></h4>
 
-<p>By default <a href="../../classes/Shrine.html"><code>Shrine</code></a> deletes cached and replaced files, but you can choose to keep those files by loading the <code>keep_files</code> plugin:</p>
+<p>By default <a href="../../classes/Shrine.html"><code>Shrine</code></a> deletes cached and replaced files, but you can choose to keep those files by loading the <a href="../lib/shrine/plugins/keep_files_rb.html">keep_files</a> plugin:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:keep_files</span>
 </pre>
 
-<h4 id="label-move_to_cache-2C+move_to_store"><code>move_to_cache</code>, <code>move_to_store</code><span><a href="#label-move_to_cache-2C+move_to_store">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-move_to_cache-2C+move_to_store" class="legacy-anchor"></span>
+<h4 id="movetocache-movetostore"><a href="#movetocache-movetostore"><code>move_to_cache</code>, <code>move_to_store</code></a></h4>
 
 <p>You can tell the <code>FileSystem</code> storage that it should move files by specifying the <code>:move</code> upload option:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_options</span>, <span class="ruby-value">cache:</span> { <span class="ruby-value">move:</span> <span class="ruby-keyword">true</span> }, <span class="ruby-value">store:</span> { <span class="ruby-value">move:</span> <span class="ruby-keyword">true</span> }
 </pre>
 
-<h4 id="label-validate_integrity-2C+ignore_integrity_errors"><code>validate_integrity</code>, <code>ignore_integrity_errors</code><span><a href="#label-validate_integrity-2C+ignore_integrity_errors">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-validate_integrity-2C+ignore_integrity_errors" class="legacy-anchor"></span>
+<h4 id="validateintegrity-ignoreintegrityerrors"><a href="#validateintegrity-ignoreintegrityerrors"><code>validate_integrity</code>, <code>ignore_integrity_errors</code></a></h4>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> does this with validation, which are best done with the <code>validation_helpers</code> plugin:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> does this with validation, which are best done with the <a href="../lib/shrine/plugins/validation_helpers_rb.html">validation_helpers</a> plugin:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
   <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>
@@ -665,27 +712,33 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-validate_download-2C+ignore_download_errors"><code>validate_download</code>, <code>ignore_download_errors</code><span><a href="#label-validate_download-2C+ignore_download_errors">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-validate_download-2C+ignore_download_errors" class="legacy-anchor"></span>
+<h4 id="validatedownload-ignoredownloaderrors"><a href="#validatedownload-ignoredownloaderrors"><code>validate_download</code>, <code>ignore_download_errors</code></a></h4>
 
-<p>Shrine’s <code>remote_url</code> plugin always rescues download errors and transforms them to validation errors.</p>
+<p>Shrine’s <a href="../lib/shrine/plugins/remote_url_rb.html">remote_url</a> plugin always rescues download errors and transforms them to validation errors.</p>
 
-<h4 id="label-validate_processing-2C+ignore_processing_errors"><code>validate_processing</code>, <code>ignore_processing_errors</code><span><a href="#label-validate_processing-2C+ignore_processing_errors">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-validate_processing-2C+ignore_processing_errors" class="legacy-anchor"></span>
+<h4 id="validateprocessing-ignoreprocessingerrors"><a href="#validateprocessing-ignoreprocessingerrors"><code>validate_processing</code>, <code>ignore_processing_errors</code></a></h4>
 
 <p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> processing is performed <em>after</em> validations, and typically asynchronously in a background job, so it is expected that you validate files before processing.</p>
 
-<h4 id="label-enable_processing"><code>enable_processing</code><span><a href="#label-enable_processing">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-enable_processing" class="legacy-anchor"></span>
+<h4 id="enableprocessing"><a href="#enableprocessing"><code>enable_processing</code></a></h4>
 
 <p>You can just add conditionals in processing code.</p>
 
-<h4 id="label-ensure_multipart_form"><code>ensure_multipart_form</code><span><a href="#label-ensure_multipart_form">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-ensure_multipart_form" class="legacy-anchor"></span>
+<h4 id="ensuremultipartform"><a href="#ensuremultipartform"><code>ensure_multipart_form</code></a></h4>
 
 <p>No equivalent, it depends on your application whether you need the form to be multipart or not.</p>
 
-<h3 id="label-CarrierWave-3A-3AStorage-3A-3AFog"><code>CarrierWave::Storage::Fog</code><span><a href="#label-CarrierWave-3A-3AStorage-3A-3AFog">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-CarrierWave-3A-3AStorage-3A-3AFog" class="legacy-anchor"></span>
+<h3 id="carrierwavestoragefog"><a href="#carrierwavestoragefog"><code>CarrierWave::Storage::Fog</code></a></h3>
 
-<p>You can use {<code>Shrine::Storage::S3</code><a target="_top" href="https://shrinerb.com/docs/storage/s3">}</a> (built-in), {<code>Shrine::Storage::GoogleCloudStorage</code><a target="_top" href="https://github.com/renchap/shrine-google_cloud_storage">}</a>, or generic {<code>Shrine::Storage::Fog</code><a target="_top" href="https://github.com/shrinerb/shrine-fog">}</a> storage. The reference will assume you’re using S3 storage.</p>
+<p>You can use <a target="_top" href="https://shrinerb.com/docs/storage/s3"><code>Shrine::Storage::S3</code></a> (built-in), <a target="_top" href="https://github.com/renchap/shrine-google_cloud_storage"><code>Shrine::Storage::GoogleCloudStorage</code></a>, or generic <a target="_top" href="https://github.com/shrinerb/shrine-fog"><code>Shrine::Storage::Fog</code></a> storage. The reference will assume you’re using S3 storage.</p>
 
-<h4 id="label-3Afog_credentials-2C+-3Afog_directory"><code>:fog_credentials</code>, <code>:fog_directory</code><span><a href="#label-3Afog_credentials-2C+-3Afog_directory">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-3Afog_credentials-2C+-3Afog_directory" class="legacy-anchor"></span>
+<h4 id="fogcredentials-fogdirectory"><a href="#fogcredentials-fogdirectory"><code>:fog_credentials</code>, <code>:fog_directory</code></a></h4>
 
 <p>The S3 <a href="../../classes/Shrine.html"><code>Shrine</code></a> storage accepts <code>:access_key_id</code>, <code>:secret_access_key</code>, <code>:region</code>, and <code>:bucket</code> options in the initializer:</p>
 
@@ -697,28 +750,32 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 )
 </pre>
 
-<h4 id="label-3Afog_attributes"><code>:fog_attributes</code><span><a href="#label-3Afog_attributes">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-3Afog_attributes" class="legacy-anchor"></span>
+<h4 id="fogattributes"><a href="#fogattributes"><code>:fog_attributes</code></a></h4>
 
 <p>The object data can be configured via the <code>:upload_options</code> hash:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">upload_options:</span> { <span class="ruby-value">content_disposition:</span> <span class="ruby-string">&quot;attachment&quot;</span> }, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
 </pre>
 
-<h4 id="label-3Afog_public"><code>:fog_public</code><span><a href="#label-3Afog_public">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-3Afog_public" class="legacy-anchor"></span>
+<h4 id="fogpublic"><a href="#fogpublic"><code>:fog_public</code></a></h4>
 
 <p>The object permissions can be configured with the <code>:acl</code> upload option:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">upload_options:</span> { <span class="ruby-value">acl:</span> <span class="ruby-string">&quot;private&quot;</span> }, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
 </pre>
 
-<h4 id="label-3Afog_authenticated_url_expiration"><code>:fog_authenticated_url_expiration</code><span><a href="#label-3Afog_authenticated_url_expiration">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-3Afog_authenticated_url_expiration" class="legacy-anchor"></span>
+<h4 id="fogauthenticatedurlexpiration"><a href="#fogauthenticatedurlexpiration"><code>:fog_authenticated_url_expiration</code></a></h4>
 
-<p>The <code>#url</code> method accepts the <code>:expires_in</code> option, you can set the default expiration with the <code>url_options</code> plugin:</p>
+<p>The url method accepts the <code>:expires_in</code> option, you can set the default expiration with the <a href="../lib/shrine/plugins/url_options_rb.html">url_options</a> plugin:</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:url_options</span>, <span class="ruby-value">store:</span> { <span class="ruby-value">expires_in:</span> <span class="ruby-value">600</span> }
 </pre>
 
-<h4 id="label-3Afog_use_ssl_for_aws-2C+-3Afog_aws_accelerate"><code>:fog_use_ssl_for_aws</code>, <code>:fog_aws_accelerate</code><span><a href="#label-3Afog_use_ssl_for_aws-2C+-3Afog_aws_accelerate">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-3Afog_use_ssl_for_aws-2C+-3Afog_aws_accelerate" class="legacy-anchor"></span>
+<h4 id="fogusesslforaws-fogawsaccelerate"><a href="#fogusesslforaws-fogawsaccelerate"><code>:fog_use_ssl_for_aws</code>, <code>:fog_aws_accelerate</code></a></h4>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> allows you to override the S3 endpoint:</p>
 
@@ -734,7 +791,7 @@ store/user/456/7f99669fde1e01fc/kitten.jpg
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

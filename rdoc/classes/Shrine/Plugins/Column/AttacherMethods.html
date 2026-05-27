@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::Column::AttacherMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -72,7 +73,7 @@ Shrine::Plugins::Column::AttacherMethods
 <div class='method public-class' id='method-method-c-new'>
 <a name='method-c-new'></a>
 <div class='synopsis'>
-<span class='name'>new</span><span class='arguments'>(column_serializer: shrine_class.opts[:column][:serializer], **options)</span>
+<span class='name'>new</span><span class='arguments'>(column_serializer: shrine_class.opts[:column][:serializer], **)</span>
 
 </div>
 <div class='description'>
@@ -85,8 +86,8 @@ Shrine::Plugins::Column::AttacherMethods
 [show source]
 </a>
 <pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/column.rb</span>
-<span class="line-num">31</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">column_serializer:</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:column</span>][<span class="ruby-value">:serializer</span>], <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">32</span>   <span class="ruby-keyword">super</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">31</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">column_serializer:</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:column</span>][<span class="ruby-value">:serializer</span>], <span class="ruby-operator">**</span>)
+<span class="line-num">32</span>   <span class="ruby-keyword">super</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">33</span>   <span class="ruby-ivar">@column_serializer</span> = <span class="ruby-identifier">column_serializer</span>
 <span class="line-num">34</span> <span class="ruby-keyword">end</span></pre>
 </div>
@@ -151,7 +152,7 @@ Shrine::Plugins::Column::AttacherMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

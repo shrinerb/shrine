@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::InstanceMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -102,7 +103,7 @@ Shrine::InstanceMethods
 <div class='method public-instance' id='method-method-i-extract_metadata'>
 <a name='method-i-extract_metadata'></a>
 <div class='synopsis'>
-<span class='name'>extract_metadata</span><span class='arguments'>(io, **options)</span>
+<span class='name'>extract_metadata</span><span class='arguments'>(io, **)</span>
 
 </div>
 <div class='description'>
@@ -115,7 +116,7 @@ Shrine::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-extract_metadata-source'>    <span class="ruby-comment"># File lib/shrine.rb</span>
-<span class="line-num">228</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">228</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">229</span>   {
 <span class="line-num">230</span>     <span class="ruby-string">&quot;filename&quot;</span>  <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">extract_filename</span>(<span class="ruby-identifier">io</span>),
 <span class="line-num">231</span>     <span class="ruby-string">&quot;size&quot;</span>      <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">extract_size</span>(<span class="ruby-identifier">io</span>),
@@ -127,7 +128,7 @@ Shrine::InstanceMethods
 <div class='method public-instance' id='method-method-i-generate_location'>
 <a name='method-i-generate_location'></a>
 <div class='synopsis'>
-<span class='name'>generate_location</span><span class='arguments'>(io, metadata: {}, **options)</span>
+<span class='name'>generate_location</span><span class='arguments'>(io, metadata: {}, **)</span>
 
 </div>
 <div class='description'>
@@ -140,8 +141,8 @@ Shrine::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-generate_location-source'>    <span class="ruby-comment"># File lib/shrine.rb</span>
-<span class="line-num">222</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">metadata:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">223</span>   <span class="ruby-identifier">basic_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">metadata:</span> <span class="ruby-identifier">metadata</span>)
+<span class="line-num">222</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">metadata:</span> {}, <span class="ruby-operator">**</span>)
+<span class="line-num">223</span>   <span class="ruby-identifier">basic_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">metadata:</span>)
 <span class="line-num">224</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -190,14 +191,14 @@ Shrine::InstanceMethods
 <div class='method public-instance' id='method-method-i-upload'>
 <a name='method-i-upload'></a>
 <div class='synopsis'>
-<span class='name'>upload</span><span class='arguments'>(io, **options)</span>
+<span class='name'>upload</span><span class='arguments'>(io, **)</span>
 
 </div>
 <div class='description'>
 
 <p>The main method for uploading files. Takes an IO-like object and an optional context hash (used internally by <a href="Attacher.html"><code>Shrine::Attacher</code></a>). It calls user-defined process, and afterwards it calls store. The <code>io</code> is closed after upload.</p>
 
-<p>uploader.upload(io)  uploader.upload(io, metadata: { “foo” =&gt; “bar” }) # add metadata  uploader.upload(io, location: “path/to/file”) # specify location  uploader.upload(io, upload_options: { acl: “public-read” }) # add upload options</p>
+<p>uploader.upload(io) uploader.upload(io, metadata: { “foo” =&gt; “bar” }) # add metadata uploader.upload(io, location: “path/to/file”) # specify location uploader.upload(io, <a href="../../files/lib/shrine/plugins/upload_options_rb.html">upload_options</a>: { acl: “public-read” }) # add upload options</p>
 
 </div>
 <div class='source'>
@@ -205,13 +206,13 @@ Shrine::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-upload-source'>    <span class="ruby-comment"># File lib/shrine.rb</span>
-<span class="line-num">204</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">204</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">205</span>   <span class="ruby-identifier">_enforce_io</span>(<span class="ruby-identifier">io</span>)
 <span class="line-num">206</span> 
-<span class="line-num">207</span>   <span class="ruby-identifier">metadata</span> = <span class="ruby-identifier">get_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">208</span>   <span class="ruby-identifier">location</span> = <span class="ruby-identifier">get_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-value">metadata:</span> <span class="ruby-identifier">metadata</span>)
+<span class="line-num">207</span>   <span class="ruby-identifier">metadata</span> = <span class="ruby-identifier">get_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">208</span>   <span class="ruby-identifier">location</span> = <span class="ruby-identifier">get_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span>, <span class="ruby-value">metadata:</span>)
 <span class="line-num">209</span> 
-<span class="line-num">210</span>   <span class="ruby-identifier">_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-value">location:</span> <span class="ruby-identifier">location</span>, <span class="ruby-value">metadata:</span> <span class="ruby-identifier">metadata</span>)
+<span class="line-num">210</span>   <span class="ruby-identifier">_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span>, <span class="ruby-value">location:</span>, <span class="ruby-value">metadata:</span>)
 <span class="line-num">211</span> 
 <span class="line-num">212</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(
 <span class="line-num">213</span>     <span class="ruby-value">id:</span>       <span class="ruby-identifier">location</span>,
@@ -230,7 +231,7 @@ Shrine::InstanceMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

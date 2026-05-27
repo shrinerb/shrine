@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.4.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,21 +29,19 @@
 <div class='paths'>
 doc/release_notes/2.4.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.4.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_4_0_md.html">2.4.0</a><span><a href="#label-title-3A+Shrine+2.4.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.4.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-240"><a href="#title-shrine-240">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_4_0_md.html">2.4.0</a></a></h2>
 
-<h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
 <ul><li>
-<p>The <code>default_url_options</code> plugin accepts a block for dynamically generating options.</p>
+<p>The <a href="../../lib/shrine/plugins/default_url_options_rb.html">default_url_options</a> plugin accepts a block for dynamically generating options.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">do</span>
@@ -53,38 +52,40 @@ Last Update:
 <p>The <code>activerecord</code> plugin supports JSON and JSONB PostgreSQL columns.</p>
 </li></ul>
 
-<h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
 <ul><li>
-<p>The FileSystem storage doesn’t raise an error when attempting to delete a  file that doesn’t exist anymore. This behaviour has also been added to the  storage linter.</p>
+<p>The FileSystem storage doesn’t raise an error when attempting to delete a file that doesn’t exist anymore. This behaviour has also been added to the storage linter.</p>
 </li><li>
-<p>Fixed <code>copy</code> plugin running file validations when assigning copied file,  which makes it not work with <code>versions</code> plugin.</p>
+<p>Fixed <code>copy</code> plugin running file validations when assigning copied file, which makes it not work with <code>versions</code> plugin.</p>
 </li><li>
-<p>The S3 storage automatically sets the <code>Content-Disposition</code> header with the  original filename when uploading files.</p>
+<p>The S3 storage automatically sets the <code>Content-Disposition</code> header with the original filename when uploading files.</p>
 </li><li>
-<p>The <code>&lt;attachment&gt;_data</code> attribute name has been extracted into  <code>Attacher#data_attribute</code>, so that it’s possible to override.</p>
+<p>The <code>&lt;attachment&gt;_data</code> attribute name has been extracted into <code>Attacher#data_attribute</code>, so that it’s possible to override.</p>
 </li><li>
-<p>The value conversion around the data attribute has been refactored into  <code>#convert_before_write</code> and <code>#convert_after_read</code> on the Attacher, so that  it can be easily overriden in ORM plugins.</p>
+<p>The value conversion around the data attribute has been refactored into convert_before_write and convert_after_read on the Attacher, so that it can be easily overriden in ORM plugins.</p>
 </li><li>
-<p>Work around aws-sdk gem failing if the <code>:content_disposition</code> upload option  was passed to the S3 storage containing non-ASCII characters. This is also  handled better when generating an URL or presign using the  <code>:response_content_disposition</code> option, by URL-encoding the header value.</p>
+<p>Work around aws-sdk gem failing if the <code>:content_disposition</code> upload option was passed to the S3 storage containing non-ASCII characters. This is also handled better when generating an URL or presign using the <code>:response_content_disposition</code> option, by URL-encoding the header value.</p>
 </li><li>
-<p>The previous change also makes the <code>Content-Disposition</code> option handle  properly filenames with double quotes.</p>
+<p>The previous change also makes the <code>Content-Disposition</code> option handle properly filenames with double quotes.</p>
 </li><li>
-<p><code>UploadedFile#open</code> and <code>UploadedFile#download</code> don’t swallow errors raised  by <code>Storage#open</code> anymore.</p>
+<p><code>UploadedFile#open</code> and <code>UploadedFile#download</code> don’t swallow errors raised by <code>Storage#open</code> anymore.</p>
 </li><li>
-<p>The <code>sequel</code> plugin now uses less memory when creating large amount of  records (see the <a target="_top" href="https://github.com/jeremyevans/sequel/commit/ead5e5e09e647f3089ea9e161e99b608c2c6ee02">Sequel commit</a> for more details).</p>
+<p>The <code>sequel</code> plugin now uses less memory when creating large amount of records (see the <a target="_top" href="https://github.com/jeremyevans/sequel/commit/ead5e5e09e647f3089ea9e161e99b608c2c6ee02">Sequel commit</a> for more details).</p>
 </li><li>
-<p>The <code>download_endpoint</code> plugin uses Roda’s streaming endpoint, which  integrates better with EventMachine.</p>
+<p>The <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> plugin uses Roda’s streaming endpoint, which integrates better with EventMachine.</p>
 </li><li>
-<p><code>Shrine::Attachment#to_s</code> has been added for better introspection when listing  model ancestors with <code>puts</code>.</p>
+<p><a href="../../../classes/Shrine/Attachment/InstanceMethods.html#method-i-to_s"><code>Shrine::Attachment#to_s</code></a> has been added for better introspection when listing model ancestors with <code>puts</code>.</p>
 </li></ul>
 
-<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
 <ul><li>
-<p>The <code>download_endpoint</code> plugin doesn’t use the obsolete <code>Storage#stream</code>  method anymore, and instead relies on <code>Storage#open</code> to implement streaming.  All of the public <a href="../../../classes/Shrine.html"><code>Shrine</code></a> storages plugins already support streaming <code>#open</code>  for some time, by using <code>Down::ChunkedIO</code>.</p>
+<p>The <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> plugin doesn’t use the obsolete <code>Storage#stream</code> method anymore, and instead relies on <code>Storage#open</code> to implement streaming. All of the public <a href="../../../classes/Shrine.html"><code>Shrine</code></a> storages plugins already support streaming open for some time, by using <code>Down::ChunkedIO</code>.</p>
 </li><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn’t anymore explicitly unlink Tempfiles returned by <code>Storage#open</code>  after closing them. All external storages already use <code>Down::ChunkedIO</code> for  quite some time, which automatically unlinks the underlying Tempfile when  <code>#close</code> is called. But even if your storage returns Tempfiles, these should  be automatically unlinked on garbage collection by your Ruby implementation.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> doesn’t anymore explicitly unlink Tempfiles returned by <code>Storage#open</code> after closing them. All external storages already use <code>Down::ChunkedIO</code> for quite some time, which automatically unlinks the underlying Tempfile when close is called. But even if your storage returns Tempfiles, these should be automatically unlinked on garbage collection by your Ruby implementation.</p>
 </li><li>
-<p>The <code>:host</code> option on FileSystem and S3 storage has been moved from a  first-class storage option passed on <code>#initialize</code> to an URL option. The  original <code>:host</code> option still works, but will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
+<p>The <code>:host</code> option on FileSystem and S3 storage has been moved from a first-class storage option passed on initialize to an URL option. The original <code>:host</code> option still works, but will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-comment"># now deprecated</span>
@@ -98,7 +99,7 @@ Last Update:
 <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> {<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>}
 </pre>
 <ul><li>
-<p>Accepting data in form of a JSON string by <code>Shrine.uploaded_file</code> has been  deprecated, <code>Attacher#uploaded_file</code> should be used for it instead. Note that  <code>Shrine.uploaded_file</code> will still continue to accept Hash or <code>UploadedFile</code>  objects.</p>
+<p>Accepting data in form of a JSON string by <code>Shrine.uploaded_file</code> has been deprecated, <code>Attacher#uploaded_file</code> should be used for it instead. Note that <code>Shrine.uploaded_file</code> will still continue to accept Hash or <code>UploadedFile</code> objects.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -110,7 +111,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

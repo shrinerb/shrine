@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::Versions::Utils</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -73,7 +74,7 @@ Shrine::Plugins::Versions::Utils
 <span class="line-num">150</span>       <span class="ruby-identifier">key</span>    = <span class="ruby-identifier">key</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">transform_keys</span>)
 <span class="line-num">151</span>       <span class="ruby-identifier">result</span> = <span class="ruby-keyword">yield</span> [<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">key</span>], <span class="ruby-identifier">value</span>
 <span class="line-num">152</span> 
-<span class="line-num">153</span>       <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">merge!</span> <span class="ruby-identifier">key</span> <span class="ruby-operator">=&gt;</span> (<span class="ruby-identifier">result</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">deep_map</span>(<span class="ruby-identifier">value</span>, [<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">key</span>], <span class="ruby-value">transform_keys:</span> <span class="ruby-identifier">transform_keys</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>))
+<span class="line-num">153</span>       <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">merge!</span> <span class="ruby-identifier">key</span> <span class="ruby-operator">=&gt;</span> (<span class="ruby-identifier">result</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">deep_map</span>(<span class="ruby-identifier">value</span>, [<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">key</span>], <span class="ruby-value">transform_keys:</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>))
 <span class="line-num">154</span>     <span class="ruby-keyword">end</span>
 <span class="line-num">155</span>   <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)
 <span class="line-num">156</span>     <span class="ruby-identifier">result</span> = <span class="ruby-keyword">yield</span> <span class="ruby-identifier">path</span>, <span class="ruby-identifier">object</span>
@@ -83,7 +84,7 @@ Shrine::Plugins::Versions::Utils
 <span class="line-num">160</span>     <span class="ruby-identifier">object</span>.<span class="ruby-identifier">map</span>.<span class="ruby-identifier">with_index</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">value</span>, <span class="ruby-identifier">idx</span><span class="ruby-operator">|</span>
 <span class="line-num">161</span>       <span class="ruby-identifier">result</span> = <span class="ruby-keyword">yield</span> [<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">idx</span>], <span class="ruby-identifier">value</span>
 <span class="line-num">162</span> 
-<span class="line-num">163</span>       <span class="ruby-identifier">result</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">deep_map</span>(<span class="ruby-identifier">value</span>, [<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">idx</span>], <span class="ruby-value">transform_keys:</span> <span class="ruby-identifier">transform_keys</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">163</span>       <span class="ruby-identifier">result</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">deep_map</span>(<span class="ruby-identifier">value</span>, [<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">idx</span>], <span class="ruby-value">transform_keys:</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
 <span class="line-num">164</span>     <span class="ruby-keyword">end</span>
 <span class="line-num">165</span>   <span class="ruby-keyword">else</span>
 <span class="line-num">166</span>     <span class="ruby-identifier">result</span> = <span class="ruby-keyword">yield</span> <span class="ruby-identifier">path</span>, <span class="ruby-identifier">object</span>
@@ -132,7 +133,7 @@ Shrine::Plugins::Versions::Utils
 <pre id='method-i-map_file-source'>    <span class="ruby-comment"># File lib/shrine/plugins/versions.rb</span>
 <span class="line-num">131</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">map_file</span>(<span class="ruby-identifier">object</span>, <span class="ruby-value">transform_keys:</span> <span class="ruby-value">:to_sym</span>)
 <span class="line-num">132</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)
-<span class="line-num">133</span>     <span class="ruby-identifier">deep_map</span>(<span class="ruby-identifier">object</span>, <span class="ruby-value">transform_keys:</span> <span class="ruby-identifier">transform_keys</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
+<span class="line-num">133</span>     <span class="ruby-identifier">deep_map</span>(<span class="ruby-identifier">object</span>, <span class="ruby-value">transform_keys:</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
 <span class="line-num">134</span>       <span class="ruby-keyword">yield</span> <span class="ruby-identifier">path</span>, <span class="ruby-identifier">value</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)
 <span class="line-num">135</span>     <span class="ruby-keyword">end</span>
 <span class="line-num">136</span>   <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">object</span>
@@ -152,7 +153,7 @@ Shrine::Plugins::Versions::Utils
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

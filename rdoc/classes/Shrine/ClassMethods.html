@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::ClassMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -112,7 +113,7 @@ Shrine::ClassMethods
 <div class='method public-instance' id='method-method-i-Attachment'>
 <a name='method-i-Attachment'></a>
 <div class='synopsis'>
-<span class='name'>Attachment</span><span class='arguments'>(name, **args)</span>
+<span class='name'>Attachment</span><span class='arguments'>(name, **)</span>
 
 </div>
 <div class='description'>
@@ -130,8 +131,8 @@ Shrine::ClassMethods
 [show source]
 </a>
 <pre id='method-i-Attachment-source'>    <span class="ruby-comment"># File lib/shrine.rb</span>
-<span class="line-num"> 98</span> <span class="ruby-keyword">def</span> <span class="ruby-constant">Attachment</span>(<span class="ruby-identifier ruby-title">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">args</span>)
-<span class="line-num"> 99</span>   <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">args</span>)
+<span class="line-num"> 98</span> <span class="ruby-keyword">def</span> <span class="ruby-constant">Attachment</span>(<span class="ruby-identifier ruby-title">name</span>, <span class="ruby-operator">**</span>)
+<span class="line-num"> 99</span>   <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">100</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -214,7 +215,7 @@ Shrine::ClassMethods
 <div class='method public-instance' id='method-method-i-plugin'>
 <a name='method-i-plugin'></a>
 <div class='synopsis'>
-<span class='name'>plugin</span><span class='arguments'>(plugin, *args, **kwargs, &block)</span>
+<span class='name'>plugin</span><span class='arguments'>(plugin, ...)</span>
 
 </div>
 <div class='description'>
@@ -231,9 +232,9 @@ Shrine::ClassMethods
 [show source]
 </a>
 <pre id='method-i-plugin-source'>   <span class="ruby-comment"># File lib/shrine.rb</span>
-<span class="line-num">71</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">plugin</span>(<span class="ruby-identifier">plugin</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">kwargs</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">71</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">plugin</span>(<span class="ruby-identifier">plugin</span>, <span class="ruby-operator">...</span>)
 <span class="line-num">72</span>   <span class="ruby-identifier">plugin</span> = <span class="ruby-constant">Plugins</span>.<span class="ruby-identifier">load_plugin</span>(<span class="ruby-identifier">plugin</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>)
-<span class="line-num">73</span>   <span class="ruby-constant">Plugins</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">plugin</span>, <span class="ruby-keyword">self</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">kwargs</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">73</span>   <span class="ruby-constant">Plugins</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">plugin</span>, <span class="ruby-keyword">self</span>, <span class="ruby-operator">...</span>)
 <span class="line-num">74</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">include</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">InstanceMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">InstanceMethods</span>)
 <span class="line-num">75</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">extend</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">ClassMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">ClassMethods</span>)
 <span class="line-num">76</span>   <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">include</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">FileMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">FileMethods</span>)
@@ -242,7 +243,7 @@ Shrine::ClassMethods
 <span class="line-num">79</span>   <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">extend</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentClassMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentClassMethods</span>)
 <span class="line-num">80</span>   <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">include</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttacherMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttacherMethods</span>)
 <span class="line-num">81</span>   <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">extend</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttacherClassMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttacherClassMethods</span>)
-<span class="line-num">82</span>   <span class="ruby-constant">Plugins</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">plugin</span>, <span class="ruby-keyword">self</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">kwargs</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">82</span>   <span class="ruby-constant">Plugins</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">plugin</span>, <span class="ruby-keyword">self</span>, <span class="ruby-operator">...</span>)
 <span class="line-num">83</span>   <span class="ruby-identifier">plugin</span>
 <span class="line-num">84</span> <span class="ruby-keyword">end</span></pre>
 </div>
@@ -250,12 +251,12 @@ Shrine::ClassMethods
 <div class='method public-instance' id='method-method-i-upload'>
 <a name='method-i-upload'></a>
 <div class='synopsis'>
-<span class='name'>upload</span><span class='arguments'>(io, storage, **options)</span>
+<span class='name'>upload</span><span class='arguments'>(io, storage, **)</span>
 
 </div>
 <div class='description'>
 
-<p>Uploads the file to the specified storage. It delegates to <code>Shrine#upload</code>.</p>
+<p>Uploads the file to the specified storage. It delegates to <a href="InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a>.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:store</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
 </pre>
@@ -266,8 +267,8 @@ Shrine::ClassMethods
 [show source]
 </a>
 <pre id='method-i-upload-source'>    <span class="ruby-comment"># File lib/shrine.rb</span>
-<span class="line-num">107</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">108</span>   <span class="ruby-identifier">new</span>(<span class="ruby-identifier">storage</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">107</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">108</span>   <span class="ruby-identifier">new</span>(<span class="ruby-identifier">storage</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">109</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -371,7 +372,7 @@ Shrine::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

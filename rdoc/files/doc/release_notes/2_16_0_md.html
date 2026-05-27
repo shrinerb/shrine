@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.16.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,51 +29,50 @@
 <div class='paths'>
 doc/release_notes/2.16.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.16.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_16_0_md.html">2.16.0</a><span><a href="#label-title-3A+Shrine+2.16.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.16.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-2160"><a href="#title-shrine-2160">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_16_0_md.html">2.16.0</a></a></h2>
 
-<h2 id="label-New+Features">New Features<span><a href="#label-New+Features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-New+Features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New Features</a></h2>
 <ul><li>
-<p>The <code>:download_options</code> option has been added to the <code>download_endpoint</code>  plugin, for specifying options passed to <code>Storage#open</code>.</p>
+<p>The <code>:download_options</code> option has been added to the <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> plugin, for specifying options passed to <code>Storage#open</code>.</p>
 </li></ul>
 
-<p><code>rb   plugin :download_endpoint,     download_options: {       sse_customer_algorithm: &quot;AES256&quot;,       sse_customer_key:       &quot;secret_key&quot;,       sse_customer_key_md5:   &quot;secret_key_md5&quot;,     } </code></p>
+<p><code>rb  plugin :download_endpoint,    download_options: {      sse_customer_algorithm: &quot;AES256&quot;,      sse_customer_key:       &quot;secret_key&quot;,      sse_customer_key_md5:   &quot;secret_key_md5&quot;,    }  </code></p>
 <ul><li>
-<p>The <code>:upload_open_options</code> option has been added to the <code>derivation_endpoint</code>  plugin, for specifying options passed to <code>Storage#open</code> when downloading a  cached derivation result.</p>
+<p>The <code>:upload_open_options</code> option has been added to the <a href="../../lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a> plugin, for specifying options passed to <code>Storage#open</code> when downloading a cached derivation result.</p>
 </li></ul>
 
-<p><code>rb   plugin :download_endpoint,     upload: true,     upload_open_options: { response_content_encoding: &quot;gzip&quot; } </code></p>
+<p><code>rb  plugin :download_endpoint,    upload: true,    upload_open_options: { response_content_encoding: &quot;gzip&quot; }  </code></p>
 
-<h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
 <ul><li>
-<p>The <code>rack_response</code> and <code>derivation_endpoint</code> plugins now don’t return any  <code>Content-Type</code> response header if the MIME type could not be determined from  the file extension. Previously it the <code>Content-Type</code> header would default to  <code>application/octet-stream</code>, which would force the browser to view the file  as generic binary content, as opposed to doing its own MIME type sniffing.</p>
+<p>The <a href="../../lib/shrine/plugins/rack_response_rb.html">rack_response</a> and <a href="../../lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a> plugins now don’t return any <code>Content-Type</code> response header if the MIME type could not be determined from the file extension. Previously it the <code>Content-Type</code> header would default to <code>application/octet-stream</code>, which would force the browser to view the file as generic binary content, as opposed to doing its own MIME type sniffing.</p>
 </li><li>
-<p>Fixed <code>delete_raw</code> plugin breaking <code>derivation_endpoint</code> when <code>:upload</code> was  enabled.</p>
+<p>Fixed <a href="../../lib/shrine/plugins/delete_raw_rb.html">delete_raw</a> plugin breaking <a href="../../lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a> when <code>:upload</code> was enabled.</p>
 </li><li>
-<p>Fixed a few things in the <code>Shrine::Derivation</code> API:</p>
+<p>Fixed a few things in the <a href="../../../classes/Shrine/Derivation.html"><code>Shrine::Derivation</code></a> API:</p>
 </li><li>
 <p><code>Derivation#upload</code> doesn’t close the input file anymore</p>
 </li><li>
-<p><code>Derivation#upload</code> now requires input file to respond to <code>#path</code></p>
+<p><code>Derivation#upload</code> now requires input file to respond to path</p>
 </li><li>
 <p><code>Derivation#upload</code> now deletes the internally generated derivation result</p>
 </li><li>
 <p><code>Derivation#processed</code> now works when derivation result is a <code>File</code> object</p>
 </li><li>
-<p>The official demo app now shows the <code>derivation_endpoint</code> plugin.</p>
+<p>The official demo app now shows the <a href="../../lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a> plugin.</p>
 </li><li>
-<p>The <code>#to_rack_response</code> method from the <code>rack_response</code> plugin now always  opens the <code>UploadedFile</code>, and does so upfront. This means if ther are any  download errors, they will bubble up from <code>#to_rack_response</code> as opposed to  when the response body is iterated over.</p>
+<p>The to_rack_response method from the <a href="../../lib/shrine/plugins/rack_response_rb.html">rack_response</a> plugin now always opens the <code>UploadedFile</code>, and does so upfront. This means if ther are any download errors, they will bubble up from to_rack_response as opposed to when the response body is iterated over.</p>
 </li><li>
-<p>When <code>store_dimensions</code> plugin was overriding <code>Shrine#extract_metadata</code>, it  made the second argument (the <code>context</code> hash) mandatory. This has been fixed,  now the second argument is optional again.</p>
+<p>When <a href="../../lib/shrine/plugins/store_dimensions_rb.html">store_dimensions</a> plugin was overriding <a href="../../../classes/Shrine/InstanceMethods.html#method-i-extract_metadata"><code>Shrine#extract_metadata</code></a>, it made the second argument (the <code>context</code> hash) mandatory. This has been fixed, now the second argument is optional again.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -84,7 +84,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

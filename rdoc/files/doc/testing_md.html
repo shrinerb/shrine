@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>testing.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,23 +29,21 @@
 <div class='paths'>
 doc/testing.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Testing+with+Shrine">title: Testing with <a href="../../classes/Shrine.html"><code>Shrine</code></a><span><a href="#label-title-3A+Testing+with+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Testing+with+Shrine" class="legacy-anchor"></span>
+<h2 id="title-testing-with-shrine"><a href="#title-testing-with-shrine">title: Testing with <a href="../../classes/Shrine.html"><code>Shrine</code></a></a></h2>
 
 <p>import Tabs from ‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;</p>
 
 <p>The goal of this guide is to provide some useful tips for testing file attachments implemented with <a href="../../classes/Shrine.html"><code>Shrine</code></a> in your application.</p>
 
-<h2 id="label-Callbacks">Callbacks<span><a href="#label-Callbacks">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Callbacks" class="legacy-anchor"></span>
+<h2 id="callbacks"><a href="#callbacks">Callbacks</a></h2>
 
 <p>When you first try to test file attachments, you might experience that files are not being promoted to permanent storage. This is because your tests are likely setup to be wrapped inside database transactions, and that doesn’t work with <a href="../../classes/Shrine.html"><code>Shrine</code></a> callbacks.</p>
 
@@ -64,9 +63,10 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Storage">Storage<span><a href="#label-Storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Storage" class="legacy-anchor"></span>
+<h2 id="storage"><a href="#storage">Storage</a></h2>
 
-<p>If you’re using FileSystem storage and your tests run in a single process, you can switch to <code>Shrine::Storage::Memory</code>, which is both faster and doesn’t require you to clean up anything between tests.</p>
+<p>If you’re using FileSystem storage and your tests run in a single process, you can switch to <a href="../../classes/Shrine/Storage/Memory.html"><code>Shrine::Storage::Memory</code></a>, which is both faster and doesn’t require you to clean up anything between tests.</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/memory&quot;</span>
 
@@ -78,7 +78,8 @@ Last Update:
 
 <p>If you’re using AWS S3 storage, you can use <a target="_top" href="https://min.io/">MinIO</a> (explained below) instead of S3, both in test and development environment. Alternatively, you can <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html">stub aws-sdk-s3 requests</a> in tests.</p>
 
-<h3 id="label-MinIO">MinIO<span><a href="#label-MinIO">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-MinIO" class="legacy-anchor"></span>
+<h3 id="minio"><a href="#minio">MinIO</a></h3>
 
 <p><a target="_top" href="https://min.io/">MinIO</a> is an open source object storage server with AWS S3 compatible API which you can run locally. The advantage of using MinIO for your development and test environments is that all AWS S3 functionality should still continue to work, including direct uploads, so you don’t need to update your code.</p>
 
@@ -90,7 +91,7 @@ Last Update:
 
 <pre>$ minio server data/</pre>
 
-<p>This command will print out the credentials for the running MinIO server, as well as a link to the MinIO web interface. Follow that link and create a new bucket. Once you’ve done that, you can configure <code>Shrine::Storage::S3</code> to use your MinIO server:</p>
+<p>This command will print out the credentials for the running MinIO server, as well as a link to the MinIO web interface. Follow that link and create a new bucket. Once you’ve done that, you can configure <a href="../../classes/Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> to use your MinIO server:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(
   <span class="ruby-value">access_key_id:</span>     <span class="ruby-string">&quot;&lt;MINIO_ACCESS_KEY&gt;&quot;</span>, <span class="ruby-comment"># &quot;AccessKey&quot; value</span>
@@ -104,7 +105,8 @@ Last Update:
 
 <p>The <code>:endpoint</code> option will make aws-sdk-s3 point all URLs to your MinIO server (instead of <code>s3.amazonaws.com</code>), and <code>:force_path_style</code> tells it not to use subdomains when generating URLs.</p>
 
-<h2 id="label-Test+data">Test data<span><a href="#label-Test+data">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Test+data" class="legacy-anchor"></span>
+<h2 id="test-data"><a href="#test-data">Test data</a></h2>
 
 <p>We want to keep our tests fast, so when we’re setting up files for tests, we want to avoid expensive operations such as file processing and metadata extraction.</p>
 
@@ -152,12 +154,13 @@ Last Update:
 
 <p>&lt;/TabItem&gt; &lt;TabItem value=“fixtures” label=“Rails YAML fixtures”&gt;</p>
 
-<pre>photo:
+<pre class="erb">photo:
   image_data: &lt;%= TestData.image_data %&gt;</pre>
 
 <p>&lt;/TabItem&gt; &lt;/Tabs&gt;</p>
 
-<h2 id="label-Unit+tests">Unit tests<span><a href="#label-Unit+tests">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Unit+tests" class="legacy-anchor"></span>
+<h2 id="unit-tests"><a href="#unit-tests">Unit tests</a></h2>
 
 <p>For testing attachment in your unit tests, you can assign plain <code>File</code> objects:</p>
 
@@ -182,7 +185,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Acceptance+tests">Acceptance tests<span><a href="#label-Acceptance+tests">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Acceptance+tests" class="legacy-anchor"></span>
+<h2 id="acceptance-tests"><a href="#acceptance-tests">Acceptance tests</a></h2>
 
 <p>In acceptance tests you’re testing your app end-to-end, and you likely want to also test file attachments here. Here are examples for some common use cases:</p>
 
@@ -207,7 +211,8 @@ Last Update:
 <span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-value">photo:</span> { <span class="ruby-value">image:</span> <span class="ruby-identifier">cached_file</span>.<span class="ruby-identifier">to_json</span> }
 </pre>
 
-<h2 id="label-Background+jobs">Background jobs<span><a href="#label-Background+jobs">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Background+jobs" class="legacy-anchor"></span>
+<h2 id="background-jobs"><a href="#background-jobs">Background jobs</a></h2>
 
 <p>If you’re using background jobs with <a href="../../classes/Shrine.html"><code>Shrine</code></a>, you probably want to make them synchronous in tests. See your backgrounding library docs for how to make jobs synchronous.</p>
 
@@ -229,7 +234,8 @@ Last Update:
 
 <p>&lt;/TabItem&gt; &lt;/Tabs&gt;</p>
 
-<h2 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Processing" class="legacy-anchor"></span>
+<h2 id="processing"><a href="#processing">Processing</a></h2>
 
 <p>If you’re testing your attachment flow which includes processing <a target="_top" href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a>, you might want to disable the processing for certain tests. You can do this by temporarily overriding the processor:</p>
 
@@ -254,7 +260,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Testing+direct+upload">Testing direct upload<span><a href="#label-Testing+direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Testing+direct+upload" class="legacy-anchor"></span>
+<h2 id="testing-direct-upload"><a href="#testing-direct-upload">Testing direct upload</a></h2>
 
 <p>If you’d like to unit-test direct upload on the server side, you can emulate it by uploading a file to <code>cache</code> and then assigning it to the record.</p>
 
@@ -271,7 +278,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>creating_storages.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,19 +29,16 @@
 <div class='paths'>
 doc/creating_storages.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>— id: creating-storages</p>
 
-<h2 id="label-title-3A+Writing+a+Storage">title: Writing a Storage<span><a href="#label-title-3A+Writing+a+Storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Writing+a+Storage" class="legacy-anchor"></span>
+<h2 id="title-writing-a-storage"><a href="#title-writing-a-storage">title: Writing a Storage</a></h2>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> ships with the FileSystem and S3 storages, but it’s also easy to create your own. A storage is a class which needs to implement <code>#upload</code>, <code>#url</code>, <code>#open</code>, <code>#exists?</code>, and <code>#delete</code> methods.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> ships with the FileSystem and S3 storages, but it’s also easy to create your own. A storage is a class which needs to implement upload, url, open, exists?, and delete methods.</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>
   <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>
@@ -69,9 +67,10 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Upload">Upload<span><a href="#label-Upload">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Upload" class="legacy-anchor"></span>
+<h2 id="upload"><a href="#upload">Upload</a></h2>
 
-<p>The <code>#upload</code> storage method is called by <code>Shrine#upload</code>, it accepts an IO object (<code>io</code>) and upload location (<code>id</code>) and is expected to upload the IO content to the specified location. It’s also given <code>:shrine_metadata</code> that was extracted from the IO, which can be used for specifying request headers on upload. The storage can also support custom upload options (which can be utilized with the <code>upload_options</code> plugin).</p>
+<p>The upload storage method is called by <a href="../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a>, it accepts an IO object (<code>io</code>) and upload location (<code>id</code>) and is expected to upload the IO content to the specified location. It’s also given <code>:shrine_metadata</code> that was extracted from the IO, which can be used for specifying request headers on upload. The storage can also support custom upload options (which can be utilized with the <a href="../lib/shrine/plugins/upload_options_rb.html">upload_options</a> plugin).</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>
   <span class="ruby-comment"># ...</span>
@@ -110,9 +109,10 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Open">Open<span><a href="#label-Open">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Open" class="legacy-anchor"></span>
+<h2 id="open"><a href="#open">Open</a></h2>
 
-<p>The <code>#open</code> storage method is called by various <code>Shrine::UploadedFile</code> methods that retrieve uploaded file content. It accepts the file location and is expected to return an IO-like object (that implements <code>#read</code>, <code>#size</code>, <code>#rewind</code>, <code>#eof?</code>, and <code>#close</code>) that represents the uploaded file.</p>
+<p>The open storage method is called by various <a href="../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a> methods that retrieve uploaded file content. It accepts the file location and is expected to return an IO-like object (that implements read, size, rewind, eof?, and close) that represents the uploaded file.</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>
   <span class="ruby-comment"># ...</span>
@@ -125,15 +125,16 @@ Last Update:
 
 <p>Ideally, the returned IO object should lazily retrieve uploaded content, so that in cases where metadata needs to be extracted from an uploaded file, only a small portion of the file will be downloaded.</p>
 
-<p>It’s recommended to use the <a target="_top" href="https://github.com/janko/down">Down</a> gem for this. If the storage exposes its files over HTTP, you can use <code>Down.open</code>, otherwise if it’s possible to stream chunks of content from the storage, that can be wrapped in a <code>Down::ChunkedIO</code>. It’s recommended to use the {<code>Down::Http</code><a target="_top" href="https://github.com/janko/down#httprb">}</a> backend, as the <a target="_top" href="https://github.com/httprb/http">HTTP.rb</a> gem allocates an order of magnitude less memory when reading the response body compared to <code>Net::HTTP</code>.</p>
+<p>It’s recommended to use the <a target="_top" href="https://github.com/janko/down">Down</a> gem for this. If the storage exposes its files over HTTP, you can use <code>Down.open</code>, otherwise if it’s possible to stream chunks of content from the storage, that can be wrapped in a <code>Down::ChunkedIO</code>. It’s recommended to use the <a target="_top" href="https://github.com/janko/down#httprb"><code>Down::Http</code></a> backend, as the <a target="_top" href="https://github.com/httprb/http">HTTP.rb</a> gem allocates an order of magnitude less memory when reading the response body compared to <code>Net::HTTP</code>.</p>
 
-<p>The storage can support additional options to customize how the file will be opened, <code>Shrine::UploadedFile#open</code> and <code>Shrine::UploadedFile#download</code> will forward any given options to <code>#open</code>.</p>
+<p>The storage can support additional options to customize how the file will be opened, <a href="../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-open"><code>Shrine::UploadedFile#open</code></a> and <a href="../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-download"><code>Shrine::UploadedFile#download</code></a> will forward any given options to open.</p>
 
-<p>When file is not found, <code>Shrine::FileNotFound</code> exception should be raised.</p>
+<p>When file is not found, <a href="../../classes/Shrine/FileNotFound.html"><code>Shrine::FileNotFound</code></a> exception should be raised.</p>
 
-<h2 id="label-Url">Url<span><a href="#label-Url">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Url" class="legacy-anchor"></span>
+<h2 id="url"><a href="#url">Url</a></h2>
 
-<p>The <code>#url</code> storage method is called by <code>Shrine::UploadedFile#url</code>, it accepts a file location and is expected to return a resolvable URL to the uploaded file. Custom URL options can be supported if needed, <code>Shrine::UploadedFile#url</code> will forward any given options to <code>#url</code>.</p>
+<p>The url storage method is called by <a href="../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-url"><code>Shrine::UploadedFile#url</code></a>, it accepts a file location and is expected to return a resolvable URL to the uploaded file. Custom URL options can be supported if needed, <a href="../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-url"><code>Shrine::UploadedFile#url</code></a> will forward any given options to url.</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>
   <span class="ruby-comment"># ...</span>
@@ -144,11 +145,12 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>If the storage does not have uploaded files accessible via HTTP, the <code>#url</code> method should return <code>nil</code>. Note that in this case users can use the <code>download_endpoint</code> or <code>rack_response</code> plugins to create a downloadable link, which are implemented in terms of <code>#open</code>.</p>
+<p>If the storage does not have uploaded files accessible via HTTP, the url method should return <code>nil</code>. Note that in this case users can use the <a href="../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> or <a href="../lib/shrine/plugins/rack_response_rb.html">rack_response</a> plugins to create a downloadable link, which are implemented in terms of open.</p>
 
-<h2 id="label-Exists">Exists<span><a href="#label-Exists">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Exists" class="legacy-anchor"></span>
+<h2 id="exists"><a href="#exists">Exists</a></h2>
 
-<p>The <code>#exists?</code> storage method is called by <code>Shrine::UploadedFile#exists?</code>, it accepts a file location and should return <code>true</code> if the file exists on the storage and <code>false</code> otherwise.</p>
+<p>The exists? storage method is called by <a href="../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-exists-3F"><code>Shrine::UploadedFile#exists?</code></a>, it accepts a file location and should return <code>true</code> if the file exists on the storage and <code>false</code> otherwise.</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>
   <span class="ruby-comment"># ...</span>
@@ -159,9 +161,10 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Delete">Delete<span><a href="#label-Delete">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Delete" class="legacy-anchor"></span>
+<h2 id="delete"><a href="#delete">Delete</a></h2>
 
-<p>The <code>#delete</code> storage method is called by <code>Shrine::UploadedFile#delete</code>, it accepts a file location and is expected to delete the file from the storage.</p>
+<p>The delete storage method is called by <a href="../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-delete"><code>Shrine::UploadedFile#delete</code></a>, it accepts a file location and is expected to delete the file from the storage.</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>
   <span class="ruby-comment"># ...</span>
@@ -174,9 +177,10 @@ Last Update:
 
 <p>For convenience of use, this method should not raise an exception if the file doesn’t exist.</p>
 
-<h2 id="label-Presign">Presign<span><a href="#label-Presign">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Presign" class="legacy-anchor"></span>
+<h2 id="presign"><a href="#presign">Presign</a></h2>
 
-<p>If the storage service supports direct uploads, and requires fetching additional information from the server, you can implement a <code>#presign</code> method, which will be called by the <code>presign_endpoint</code> plugin. The <code>#presign</code> method should return a Hash with the following keys:</p>
+<p>If the storage service supports direct uploads, and requires fetching additional information from the server, you can implement a presign method, which will be called by the <a href="../lib/shrine/plugins/presign_endpoint_rb.html">presign_endpoint</a> plugin. The presign method should return a Hash with the following keys:</p>
 <ul><li>
 <p><code>:method</code> – HTTP verb that should be used</p>
 </li><li>
@@ -196,13 +200,14 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>The storage can support additional options to customize how the presign will be generated, those can be forwarded via the <code>:presign_options</code> option on the <code>presign_endpoint</code> plugin.</p>
+<p>The storage can support additional options to customize how the presign will be generated, those can be forwarded via the <code>:presign_options</code> option on the <a href="../lib/shrine/plugins/presign_endpoint_rb.html">presign_endpoint</a> plugin.</p>
 
-<h2 id="label-Delete+Prefixed+and+Clear">Delete Prefixed and Clear<span><a href="#label-Delete+Prefixed+and+Clear">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Delete+Prefixed+and+Clear" class="legacy-anchor"></span>
+<h2 id="delete-prefixed-and-clear"><a href="#delete-prefixed-and-clear">Delete Prefixed and Clear</a></h2>
 
 <p>There are two methods that are not currently used by shrine, but which it’s good for storages to provide to allow client code to delete files from storage. If storages provide these conventional methods, then clients can delete files using consistent API for any storage.</p>
 
-<p><code>#clear!</code> deletes all files from storage, and <code>#delete_prefixed</code> will delete all files in a given directory/prefix/path. While not strictly required for shrine storage service functionality, storages should usually implement if possible.</p>
+<p>clear! deletes all files from storage, and delete_prefixed will delete all files in a given directory/prefix/path. While not strictly required for shrine storage service functionality, storages should usually implement if possible.</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>
   <span class="ruby-comment"># ...</span>
@@ -217,9 +222,10 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Update">Update<span><a href="#label-Update">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Update" class="legacy-anchor"></span>
+<h2 id="update"><a href="#update">Update</a></h2>
 
-<p>If your storage supports updating data of existing files (e.g. some metadata), the convention is to create an <code>#update</code> method:</p>
+<p>If your storage supports updating data of existing files (e.g. some metadata), the convention is to create an update method:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>
   <span class="ruby-comment"># ...</span>
@@ -230,9 +236,10 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Linter">Linter<span><a href="#label-Linter">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Linter" class="legacy-anchor"></span>
+<h2 id="linter"><a href="#linter">Linter</a></h2>
 
-<p>To check that your storage implements all these methods correctly, you can use <code>Shrine::Storage::Linter</code>:</p>
+<p>To check that your storage implements all these methods correctly, you can use <a href="../../classes/Shrine/Storage/Linter.html"><code>Shrine::Storage::Linter</code></a>:</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/linter&quot;</span>
 
@@ -241,7 +248,7 @@ Last Update:
 <span class="ruby-identifier">linter</span>.<span class="ruby-identifier">call</span>
 </pre>
 
-<p>The linter will test your methods with fake IO objects, and raise a <code>Shrine::LintError</code> if any part of the contract isn’t satisfied.</p>
+<p>The linter will test your methods with fake IO objects, and raise a <a href="../../classes/Shrine/LintError.html"><code>Shrine::LintError</code></a> if any part of the contract isn’t satisfied.</p>
 
 <p>If you want to specify the IO object to use for testing (e.g. you need the IO to be an actual image), you can pass in a lambda which returns the IO when called:</p>
 
@@ -264,7 +271,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

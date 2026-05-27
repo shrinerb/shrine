@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::RefreshMetadata::AttacherMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -50,7 +51,7 @@ Shrine::Plugins::RefreshMetadata::AttacherMethods
 <div class='method public-instance' id='method-method-i-refresh_metadata-21'>
 <a name='method-i-refresh_metadata-21'></a>
 <div class='synopsis'>
-<span class='name'>refresh_metadata!</span><span class='arguments'>(**options)</span>
+<span class='name'>refresh_metadata!</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -61,8 +62,8 @@ Shrine::Plugins::RefreshMetadata::AttacherMethods
 [show source]
 </a>
 <pre id='method-i-refresh_metadata-21-source'>   <span class="ruby-comment"># File lib/shrine/plugins/refresh_metadata.rb</span>
-<span class="line-num"> 8</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">refresh_metadata!</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num"> 9</span>   <span class="ruby-identifier">file!</span>.<span class="ruby-identifier">refresh_metadata!</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">context</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num"> 8</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">refresh_metadata!</span>(<span class="ruby-operator">**</span>)
+<span class="line-num"> 9</span>   <span class="ruby-identifier">file!</span>.<span class="ruby-identifier">refresh_metadata!</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">context</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">10</span>   <span class="ruby-identifier">set</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment"># trigger model write</span>
 <span class="line-num">11</span> <span class="ruby-keyword">end</span></pre>
 </div>
@@ -76,7 +77,7 @@ Shrine::Plugins::RefreshMetadata::AttacherMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

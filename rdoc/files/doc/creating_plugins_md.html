@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>creating_plugins.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,21 +29,19 @@
 <div class='paths'>
 doc/creating_plugins.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>— id: creating-plugins</p>
 
-<h2 id="label-title-3A+Writing+a+Plugin">title: Writing a Plugin<span><a href="#label-title-3A+Writing+a+Plugin">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Writing+a+Plugin" class="legacy-anchor"></span>
+<h2 id="title-writing-a-plugin"><a href="#title-writing-a-plugin">title: Writing a Plugin</a></h2>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> has a lot of plugins built-in, but you can use Shrine’s plugin system to create your own.</p>
 
-<h2 id="label-Definition">Definition<span><a href="#label-Definition">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Definition" class="legacy-anchor"></span>
+<h2 id="definition"><a href="#definition">Definition</a></h2>
 
 <p>Simply put, a plugin is a module:</p>
 
@@ -70,7 +69,8 @@ Last Update:
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:my_plugin</span>
 </pre>
 
-<h2 id="label-Methods">Methods<span><a href="#label-Methods">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Methods" class="legacy-anchor"></span>
+<h2 id="methods"><a href="#methods">Methods</a></h2>
 
 <p>The way to make plugins actually extend Shrine’s core classes is by defining special modules inside the plugin. Here’s a list of all “special” modules:</p>
 
@@ -100,9 +100,10 @@ Last Update:
 
 <p>Notice that we can call <code>super</code> to get the original behaviour.</p>
 
-<h2 id="label-Configuration">Configuration<span><a href="#label-Configuration">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Configuration" class="legacy-anchor"></span>
+<h2 id="configuration"><a href="#configuration">Configuration</a></h2>
 
-<p>You’ll likely want to make your plugin configurable. You can do that by overriding the <code>.configure</code> class method and storing received options into <code>Shrine.opts</code>:</p>
+<p>You’ll likely want to make your plugin configurable. You can do that by overriding the <code>.configure</code> class method and storing received options into <a href="../../classes/Shrine/InstanceMethods.html#method-i-opts"><code>Shrine.opts</code></a>:</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>
   <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)
@@ -124,7 +125,8 @@ Last Update:
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:my_plugin</span>, <span class="ruby-value">foo:</span> <span class="ruby-string">&quot;bar&quot;</span>
 </pre>
 
-<h2 id="label-Dependencies">Dependencies<span><a href="#label-Dependencies">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Dependencies" class="legacy-anchor"></span>
+<h2 id="dependencies"><a href="#dependencies">Dependencies</a></h2>
 
 <p>If your plugin depends on other plugins, you can load them inside of <code>.load_dependencies</code>:</p>
 
@@ -148,7 +150,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>metadata.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,19 +29,16 @@
 <div class='paths'>
 doc/metadata.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Extracting+Metadata">title: Extracting Metadata<span><a href="#label-title-3A+Extracting+Metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Extracting+Metadata" class="legacy-anchor"></span>
+<h2 id="title-extracting-metadata"><a href="#title-extracting-metadata">title: Extracting Metadata</a></h2>
 
-<p>Before a file is uploaded, <a href="../../classes/Shrine.html"><code>Shrine</code></a> automatically extracts metadata from it, and stores them in the <code>Shrine::UploadedFile</code> object.</p>
+<p>Before a file is uploaded, <a href="../../classes/Shrine.html"><code>Shrine</code></a> automatically extracts metadata from it, and stores them in the <a href="../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a> object.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt;</span>
@@ -51,7 +49,7 @@ Last Update:
 <span class="ruby-comment"># }</span>
 </pre>
 
-<p>Under the hood, <code>Shrine#upload</code> calls <code>Shrine#extract_metadata</code>, which you can also use directly to extract metadata from any IO object:</p>
+<p>Under the hood, <a href="../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a> calls <a href="../../classes/Shrine/InstanceMethods.html#method-i-extract_metadata"><code>Shrine#extract_metadata</code></a>, which you can also use directly to extract metadata from any IO object:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">extract_metadata</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment">#=&gt;</span>
 <span class="ruby-comment"># {</span>
@@ -72,21 +70,22 @@ Last Update:
 </thead>
 <tbody>
 <tr>
-<td align="left">‘filename`</td>
-<td align="left">extracted from ‘io.original_filename` or `io.path`</td>
+<td align="left"><code>filename</code></td>
+<td align="left">extracted from <code>io.original_filename</code> or <code>io.path</code></td>
 </tr>
 <tr>
-<td align="left">‘mime_type`</td>
-<td align="left">extracted from ‘io.content_type`</td>
+<td align="left"><code>mime_type</code></td>
+<td align="left">extracted from <code>io.content_type</code></td>
 </tr>
 <tr>
-<td align="left">‘size`</td>
-<td align="left">extracted from ‘io.size`</td>
+<td align="left"><code>size</code></td>
+<td align="left">extracted from <code>io.size</code></td>
 </tr>
 </tbody>
 </table>
 
-<h2 id="label-Accessing+metadata">Accessing metadata<span><a href="#label-Accessing+metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Accessing+metadata" class="legacy-anchor"></span>
+<h2 id="accessing-metadata"><a href="#accessing-metadata">Accessing metadata</a></h2>
 
 <p>You can access the stored metadata in three ways:</p>
 
@@ -106,9 +105,10 @@ Last Update:
 <span class="ruby-identifier">uploaded_file</span>[<span class="ruby-string">&quot;mime_type&quot;</span>]
 </pre>
 
-<h2 id="label-Controlling+extraction">Controlling extraction<span><a href="#label-Controlling+extraction">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Controlling+extraction" class="legacy-anchor"></span>
+<h2 id="controlling-extraction"><a href="#controlling-extraction">Controlling extraction</a></h2>
 
-<p><code>Shrine#upload</code> accepts a <code>:metadata</code> option which accepts the following values:</p>
+<p><a href="../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a> accepts a <code>:metadata</code> option which accepts the following values:</p>
 <ul><li>
 <p><code>Hash</code> – adds/overrides extracted metadata with the given hash</p>
 
@@ -123,20 +123,21 @@ Last Update:
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; {}</span>
 </pre>
 </li><li>
-<p><code>true</code> – forces metadata extraction when a <code>Shrine::UploadedFile</code> is being uploaded (by default metadata is simply copied over)</p>
+<p><code>true</code> – forces metadata extraction when a <a href="../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a> is being uploaded (by default metadata is simply copied over)</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-value">metadata:</span> <span class="ruby-keyword">true</span>)
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment"># re-extracted metadata</span>
 </pre>
 </li></ul>
 
-<h2 id="label-MIME+type">MIME type<span><a href="#label-MIME+type">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-MIME+type" class="legacy-anchor"></span>
+<h2 id="mime-type"><a href="#mime-type">MIME type</a></h2>
 
-<p>By default, the <code>mime_type</code> metadata will be copied over from the <code>#content_type</code> attribute of the input file (if present). However, since <code>#content_type</code> value comes from the <code>Content-Type</code> header of the upload request, it’s <em>not guaranteed</em> to hold the actual MIME type of the file (browser determines this header based on file extension).</p>
+<p>By default, the <code>mime_type</code> metadata will be copied over from the content_type attribute of the input file (if present). However, since content_type value comes from the <code>Content-Type</code> header of the upload request, it’s <em>not guaranteed</em> to hold the actual MIME type of the file (browser determines this header based on file extension).</p>
 
-<p>Moreover, only <code>ActionDispatch::Http::UploadedFile</code>, <code>Shrine::RackFile</code>, and <code>Shrine::DataFile</code> objects have <code>#content_type</code> defined, so when uploading objects such as <code>File</code>, the <code>mime_type</code> value will be nil by default.</p>
+<p>Moreover, only <code>ActionDispatch::Http::UploadedFile</code>, <a href="../../classes/Shrine/RackFile.html"><code>Shrine::RackFile</code></a>, and <a href="../../classes/Shrine/DataFile.html"><code>Shrine::DataFile</code></a> objects have content_type defined, so when uploading objects such as <code>File</code>, the <code>mime_type</code> value will be nil by default.</p>
 
-<p>To remedy that, <a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a {<code>determine_mime_type</code><a target="_top" href="https://shrinerb.com/docs/plugins/determine_mime_type">}</a> plugin which is able to extract the MIME type from IO <em>content</em>:</p>
+<p>To remedy that, <a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a <a target="_top" href="https://shrinerb.com/docs/plugins/determine_mime_type"><code>determine_mime_type</code></a> plugin which is able to extract the MIME type from IO <em>content</em>:</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>
 <span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;marcel&quot;</span>, <span class="ruby-string">&quot;~&gt; 0.3&quot;</span>
@@ -149,11 +150,12 @@ Last Update:
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span> <span class="ruby-comment">#=&gt; &quot;application/x-php&quot;</span>
 </pre>
 
-<p>You can choose different analyzers, and even mix-and-match them. See the {<code>determine_mime_type</code><a target="_top" href="https://shrinerb.com/docs/plugins/determine_mime_type">}</a> plugin docs for more details.</p>
+<p>You can choose different analyzers, and even mix-and-match them. See the <a target="_top" href="https://shrinerb.com/docs/plugins/determine_mime_type"><code>determine_mime_type</code></a> plugin docs for more details.</p>
 
-<h2 id="label-Image+Dimensions">Image Dimensions<span><a href="#label-Image+Dimensions">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Image+Dimensions" class="legacy-anchor"></span>
+<h2 id="image-dimensions"><a href="#image-dimensions">Image Dimensions</a></h2>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a {<code>store_dimensions</code><a target="_top" href="https://shrinerb.com/docs/plugins/store_dimensions">}</a> plugin for extracting image dimensions. It adds <code>width</code> and <code>height</code> metadata values, and also adds <code>#width</code>, <code>#height</code>, and <code>#dimensions</code> methods to the <code>Shrine::UploadedFile</code> object.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a <a target="_top" href="https://shrinerb.com/docs/plugins/store_dimensions"><code>store_dimensions</code></a> plugin for extracting image dimensions. It adds <code>width</code> and <code>height</code> metadata values, and also adds width, height, and dimensions methods to the <a href="../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a> object.</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>
 <span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;fastimage&quot;</span> <span class="ruby-comment"># default analyzer</span>
@@ -172,11 +174,12 @@ Last Update:
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">dimensions</span> <span class="ruby-comment">#=&gt; [1600, 900]</span>
 </pre>
 
-<p>By default, the plugin uses <a target="_top" href="https://github.com/sdsykes/fastimage">FastImage</a> to analyze dimensions, but you can also have it use <a target="_top" href="https://github.com/minimagick/minimagick">MiniMagick</a> or <a target="_top" href="https://github.com/libvips/ruby-vips">ruby-vips</a>. See the {<code>store_dimensions</code><a target="_top" href="https://shrinerb.com/docs/plugins/store_dimensions">}</a> plugin docs for more details.</p>
+<p>By default, the plugin uses <a target="_top" href="https://github.com/sdsykes/fastimage">FastImage</a> to analyze dimensions, but you can also have it use <a target="_top" href="https://github.com/minimagick/minimagick">MiniMagick</a> or <a target="_top" href="https://github.com/libvips/ruby-vips">ruby-vips</a>. See the <a target="_top" href="https://shrinerb.com/docs/plugins/store_dimensions"><code>store_dimensions</code></a> plugin docs for more details.</p>
 
-<h2 id="label-Custom+metadata">Custom metadata<span><a href="#label-Custom+metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Custom+metadata" class="legacy-anchor"></span>
+<h2 id="custom-metadata"><a href="#custom-metadata">Custom metadata</a></h2>
 
-<p>In addition to the built-in metadata, <a href="../../classes/Shrine.html"><code>Shrine</code></a> allows you to extract and store any custom metadata, using the {<code>add_metadata</code><a target="_top" href="https://shrinerb.com/docs/plugins/add_metadata">}</a> plugin (which internally extends <code>Shrine#extract_metadata</code>).</p>
+<p>In addition to the built-in metadata, <a href="../../classes/Shrine.html"><code>Shrine</code></a> allows you to extract and store any custom metadata, using the <a target="_top" href="https://shrinerb.com/docs/plugins/add_metadata"><code>add_metadata</code></a> plugin (which internally extends <a href="../../classes/Shrine/InstanceMethods.html#method-i-extract_metadata"><code>Shrine#extract_metadata</code></a>).</p>
 
 <p>For example, you might want to extract EXIF data from images:</p>
 
@@ -235,9 +238,10 @@ Last Update:
 <span class="ruby-comment"># }</span>
 </pre>
 
-<p>The yielded <code>io</code> object will not always be an object that responds to <code>#path</code>. For example, with the <code>data_uri</code> plugin the <code>io</code> can be a <code>StringIO</code> wrapper, while with <code>restore_cached_data</code> or <code>refresh_metadata</code> plugins the <code>io</code> might be a <code>Shrine::UploadedFile</code> object. So, we’re using <code>Shrine.with_file</code> to ensure we have a file object.</p>
+<p>The yielded <code>io</code> object will not always be an object that responds to path. For example, with the <a href="../lib/shrine/plugins/data_uri_rb.html">data_uri</a> plugin the <code>io</code> can be a <code>StringIO</code> wrapper, while with <a href="../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> or <a href="../lib/shrine/plugins/refresh_metadata_rb.html">refresh_metadata</a> plugins the <code>io</code> might be a <a href="../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a> object. So, we’re using <code>Shrine.with_file</code> to ensure we have a file object.</p>
 
-<h3 id="label-Adding+metadata">Adding metadata<span><a href="#label-Adding+metadata">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Adding+metadata" class="legacy-anchor"></span>
+<h3 id="adding-metadata"><a href="#adding-metadata">Adding metadata</a></h3>
 
 <p>If you wish to add metadata to an already attached file, you can do it as follows:</p>
 
@@ -246,9 +250,10 @@ Last Update:
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span> <span class="ruby-comment"># persist changes</span>
 </pre>
 
-<h2 id="label-Metadata+columns">Metadata columns<span><a href="#label-Metadata+columns">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Metadata+columns" class="legacy-anchor"></span>
+<h2 id="metadata-columns"><a href="#metadata-columns">Metadata columns</a></h2>
 
-<p>If you want to write any of the metadata values into a separate database column on the record, you can use the <code>metadata_attributes</code> plugin.</p>
+<p>If you want to write any of the metadata values into a separate database column on the record, you can use the <a href="../lib/shrine/plugins/metadata_attributes_rb.html">metadata_attributes</a> plugin.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>, <span class="ruby-value">:mime_type</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:type</span>
 </pre>
@@ -257,7 +262,8 @@ Last Update:
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_type</span> <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>
 </pre>
 
-<h2 id="label-Direct+uploads">Direct uploads<span><a href="#label-Direct+uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Direct+uploads" class="legacy-anchor"></span>
+<h2 id="direct-uploads"><a href="#direct-uploads">Direct uploads</a></h2>
 
 <p>When attaching files that were uploaded directly to the cloud or a <a target="_top" href="https://github.com/janko/tus-ruby-server">tus server</a>, <a href="../../classes/Shrine.html"><code>Shrine</code></a> won’t automatically extract metadata from them, instead it will copy any existing metadata that was set on the client side. The reason why this is the default behaviour is because metadata extraction requires (at least partially) retrieving file content from the storage, which could potentially be expensive depending on the storage and the type of metadata being extracted.</p>
 
@@ -265,9 +271,10 @@ Last Update:
 <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-string">&#39;{&quot;id&quot;:&quot;9e6581a4ea1.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;</span>
 </pre>
 
-<h3 id="label-Extracting+on+attachment">Extracting on attachment<span><a href="#label-Extracting+on+attachment">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Extracting+on+attachment" class="legacy-anchor"></span>
+<h3 id="extracting-on-attachment"><a href="#extracting-on-attachment">Extracting on attachment</a></h3>
 
-<p>If you want metadata to be automatically extracted on assignment (which is useful if you want to validate the extracted metadata or have it immediately available for any other reason), you can load the <code>restore_cached_data</code> plugin:</p>
+<p>If you want metadata to be automatically extracted on assignment (which is useful if you want to validate the extracted metadata or have it immediately available for any other reason), you can load the <a href="../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> plugin:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:restore_cached_data</span> <span class="ruby-comment"># automatically extract metadata from cached files on assignment</span>
 </pre>
@@ -281,11 +288,13 @@ Last Update:
 <span class="ruby-comment"># }</span>
 </pre>
 
-<h3 id="label-Extracting+in+the+background">Extracting in the background<span><a href="#label-Extracting+in+the+background">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Extracting+in+the+background" class="legacy-anchor"></span>
+<h3 id="extracting-in-the-background"><a href="#extracting-in-the-background">Extracting in the background</a></h3>
 
-<h4 id="label-A-29+Extracting+with+promotion">A) Extracting with promotion<span><a href="#label-A-29+Extracting+with+promotion">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-A-29+Extracting+with+promotion" class="legacy-anchor"></span>
+<h4 id="a-extracting-with-promotion"><a href="#a-extracting-with-promotion">A) Extracting with promotion</a></h4>
 
-<p>If you’re using <a target="_top" href="https://shrinerb.com/docs/plugins/backgrounding">backgrounding</a>, you can extract metadata during background promotion using the <code>refresh_metadata</code> plugin (which the <code>restore_cached_data</code> plugin uses internally):</p>
+<p>If you’re using <a target="_top" href="https://shrinerb.com/docs/plugins/backgrounding">backgrounding</a>, you can extract metadata during background promotion using the <a href="../lib/shrine/plugins/refresh_metadata_rb.html">refresh_metadata</a> plugin (which the <a href="../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> plugin uses internally):</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:refresh_metadata</span> <span class="ruby-comment"># allow re-extracting metadata</span>
 <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>
@@ -309,7 +318,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h4 id="label-B-29+Extracting+separately+from+promotion">B) Extracting separately from promotion<span><a href="#label-B-29+Extracting+separately+from+promotion">&para;</a> <a href="#top">&uarr;</a></span></h4>
+<span id="label-B-29+Extracting+separately+from+promotion" class="legacy-anchor"></span>
+<h4 id="b-extracting-separately-from-promotion"><a href="#b-extracting-separately-from-promotion">B) Extracting separately from promotion</a></h4>
 
 <p>You can also extract metadata in the background separately from promotion:</p>
 
@@ -336,7 +346,8 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h3 id="label-Combining+foreground+and+background">Combining foreground and background<span><a href="#label-Combining+foreground+and+background">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Combining+foreground+and+background" class="legacy-anchor"></span>
+<h3 id="combining-foreground-and-background"><a href="#combining-foreground-and-background">Combining foreground and background</a></h3>
 
 <p>If you have some metadata that you want to extract in the foreground and some that you want to extract in the background, you can use the uploader context:</p>
 
@@ -371,9 +382,10 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<p>Now triggering metadata extraction in the controller on attachment (using <code>restore_cached_data</code> or <code>refresh_metadata</code> plugin) will skip the video metadata block, which will be triggered later in the background job.</p>
+<p>Now triggering metadata extraction in the controller on attachment (using <a href="../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> or <a href="../lib/shrine/plugins/refresh_metadata_rb.html">refresh_metadata</a> plugin) will skip the video metadata block, which will be triggered later in the background job.</p>
 
-<h3 id="label-Optimizations">Optimizations<span><a href="#label-Optimizations">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<span id="label-Optimizations" class="legacy-anchor"></span>
+<h3 id="optimizations"><a href="#optimizations">Optimizations</a></h3>
 
 <p>If you want to do both metadata extraction and file processing during promotion, you can wrap both in an <code>UploadedFile#open</code> block to make sure the file content is retrieved from the storage only once.</p>
 
@@ -418,7 +430,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

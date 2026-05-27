@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::Derivatives::FileMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -61,13 +62,13 @@ Shrine::Plugins::Derivatives::FileMethods
 [show source]
 </a>
 <pre id='method-i-5B-5D-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
-<span class="line-num">619</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">[]</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">keys</span>)
-<span class="line-num">620</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">keys</span>.<span class="ruby-identifier">any?</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">key</span><span class="ruby-operator">|</span> <span class="ruby-identifier">key</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>) }
-<span class="line-num">621</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;Shrine::UploadedFile#[] doesn&#39;t accept symbol metadata names. Did you happen to call `record.attachment[:derivative_name]` when you meant to call `record.attachment(:derivative_name)`?&quot;</span>
-<span class="line-num">622</span>   <span class="ruby-keyword">else</span>
-<span class="line-num">623</span>     <span class="ruby-keyword">super</span>
-<span class="line-num">624</span>   <span class="ruby-keyword">end</span>
-<span class="line-num">625</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">623</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">[]</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">keys</span>)
+<span class="line-num">624</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">keys</span>.<span class="ruby-identifier">any?</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">key</span><span class="ruby-operator">|</span> <span class="ruby-identifier">key</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>) }
+<span class="line-num">625</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;Shrine::UploadedFile#[] doesn&#39;t accept symbol metadata names. Did you happen to call `record.attachment[:derivative_name]` when you meant to call `record.attachment(:derivative_name)`?&quot;</span>
+<span class="line-num">626</span>   <span class="ruby-keyword">else</span>
+<span class="line-num">627</span>     <span class="ruby-keyword">super</span>
+<span class="line-num">628</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">629</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -79,7 +80,7 @@ Shrine::Plugins::Derivatives::FileMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

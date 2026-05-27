@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.6.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,21 +29,19 @@
 <div class='paths'>
 doc/release_notes/2.6.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.6.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_6_0_md.html">2.6.0</a><span><a href="#label-title-3A+Shrine+2.6.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.6.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-260"><a href="#title-shrine-260">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_6_0_md.html">2.6.0</a></a></h2>
 
-<h2 id="label-New+plugins">New plugins<span><a href="#label-New+plugins">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-New+plugins" class="legacy-anchor"></span>
+<h2 id="new-plugins"><a href="#new-plugins">New plugins</a></h2>
 <ul><li>
-<p>Added <code>signature</code> plugin which allows you to calculate a  SHA{1,256,384,512}/MD5/CRC32 hash of a file, in raw, hex or base64 encoding.</p>
+<p>Added <code>signature</code> plugin which allows you to calculate a SHA{1,256,384,512}/MD5/CRC32 hash of a file, in raw, hex or base64 encoding.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:signature</span>
@@ -64,7 +63,7 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p>Added <code>metadata_attibutes</code> plugin which allows you to sync attachment  metadata to additional record attributes.</p>
+<p>Added <code>metadata_attibutes</code> plugin which allows you to sync attachment metadata to additional record attributes.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>
@@ -86,7 +85,7 @@ Last Update:
 <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_type</span> <span class="ruby-comment">#=&gt; nil</span>
 </pre>
 <ul><li>
-<p>Added <code>refresh_metadata</code> plugin (extracted from the <code>restore_cached_data</code>  plugin) which allows you to re-extract metadata from an uploaded file.</p>
+<p>Added <a href="../../lib/shrine/plugins/refresh_metadata_rb.html">refresh_metadata</a> plugin (extracted from the <a href="../../lib/shrine/plugins/restore_cached_data_rb.html">restore_cached_data</a> plugin) which allows you to re-extract metadata from an uploaded file.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:refresh_metadata</span>
@@ -97,9 +96,10 @@ Last Update:
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment"># re-extracted metadata</span>
 </pre>
 
-<h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
 <ul><li>
-<p>Added <code>Shrine.determine_mime_type</code> and <code>Shrine.mime_type_analyzers</code> methods  to <code>determine_mime_type</code> plugin for extracting MIME type from a file.</p>
+<p>Added <code>Shrine.determine_mime_type</code> and <code>Shrine.mime_type_analyzers</code> methods to <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin for extracting MIME type from a file.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>
@@ -111,7 +111,7 @@ Last Update:
 <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>
 </pre>
 <ul><li>
-<p>Added <code>Shrine.extract_dimensions</code> and <code>Shrine.dimensions_analyzers</code> methods  to <code>store_dimensions</code> plugin for extracting dimensions from a file.</p>
+<p>Added <code>Shrine.extract_dimensions</code> and <code>Shrine.dimensions_analyzers</code> methods to <a href="../../lib/shrine/plugins/store_dimensions_rb.html">store_dimensions</a> plugin for extracting dimensions from a file.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>
@@ -123,7 +123,7 @@ Last Update:
 <span class="ruby-comment">#=&gt; [300, 400]</span>
 </pre>
 <ul><li>
-<p>Added <code>Shrine.data_uri</code> method to <code>data_uri</code> plugin for converting a data URI  into an IO object.</p>
+<p>Added <code>Shrine.data_uri</code> method to <a href="../../lib/shrine/plugins/data_uri_rb.html">data_uri</a> plugin for converting a data URI into an IO object.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:data_uri</span>
@@ -133,7 +133,7 @@ Last Update:
 <span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span>         <span class="ruby-comment">#=&gt; 482</span>
 </pre>
 <ul><li>
-<p>Added <code>Shrine.rack_file</code> method to <code>rack_file</code> plugin for converting the Rack  uploaded file hash into an IO object.</p>
+<p>Added <code>Shrine.rack_file</code> method to <a href="../../lib/shrine/plugins/rack_file_rb.html">rack_file</a> plugin for converting the Rack uploaded file hash into an IO object.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>
@@ -153,77 +153,80 @@ Last Update:
 <span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 58342</span>
 </pre>
 
-<h2 id="label-Performance+improvements">Performance improvements<span><a href="#label-Performance+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Performance+improvements" class="legacy-anchor"></span>
+<h2 id="performance-improvements"><a href="#performance-improvements">Performance improvements</a></h2>
 <ul><li>
-<p>Improved performance of parsing data URIs up to 10x by switching from regex  matching to <code>StringScanner</code>, and the intermediary base64-encoded content  string is now deallocated after it's decoded.</p>
+<p>Improved performance of parsing data URIs up to 10x by switching from regex matching to <code>StringScanner</code>, and the intermediary base64-encoded content string is now deallocated after it’s decoded.</p>
 </li><li>
-<p><code>UploadedFile#base64</code> now deallocates the intermediary binary content string  after converting it to base64 format in <code>data_uri</code> plugin.</p>
+<p><code>UploadedFile#base64</code> now deallocates the intermediary binary content string after converting it to base64 format in <a href="../../lib/shrine/plugins/data_uri_rb.html">data_uri</a> plugin.</p>
 </li><li>
-<p>The default multipart copy threshold for <code>Shrine::Storage::S3</code> has been  bumped from 15MB to 100MB, which is about the size where parallelized  multipart copy starts being faster.</p>
+<p>The default multipart copy threshold for <a href="../../../classes/Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> has been bumped from 15MB to 100MB, which is about the size where parallelized multipart copy starts being faster.</p>
 </li><li>
-<p>Uploading files from <code>FileSystem</code> storage to <code>S3</code> storage will now utilize  aws-sdk's parallelized multipart upload on files with 15MB or above, which is  the scenario when your temporary storage is <code>FileSystem</code> and permanent  storage is <code>S3</code>.</p>
+<p>Uploading files from <code>FileSystem</code> storage to <code>S3</code> storage will now utilize aws-sdk’s parallelized multipart upload on files with 15MB or above, which is the scenario when your temporary storage is <code>FileSystem</code> and permanent storage is <code>S3</code>.</p>
 </li><li>
 <p><code>Shrine::Storage::S3#download</code> now uses only one file descriptor.</p>
 </li><li>
-<p>The <code>logging</code> plugin doesn't require the <code>benchmark</code> standard library anymore,  which reduces the memory footprint.</p>
+<p>The <code>logging</code> plugin doesn’t require the <code>benchmark</code> standard library anymore, which reduces the memory footprint.</p>
 </li></ul>
 
-<h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
 <ul><li>
-<p>Fixed wrong implementation of <code>FileSystem#clear!(older_than:   expiration_date)</code>, where in common scenarios it wouldn't delete old files, or  it would incorrectly delete files which still didn't pass the expiration  date.</p>
+<p>Fixed wrong implementation of <code>FileSystem#clear!(older_than:  expiration_date)</code>, where in common scenarios it wouldn’t delete old files, or it would incorrectly delete files which still didn’t pass the expiration date.</p>
 </li><li>
-<p>The <code>delete_raw</code> plugin now deletes any uploaded IO objects that respond to  <code>#path</code>, not just <code>Tempfile</code> objects (this includes <code>File</code>,  <code>ActionDispatch::Http::UploadedFile</code>, and  <code>Shrine::Plugins::RackFile::UploadedFile</code> objects).</p>
+<p>The <a href="../../lib/shrine/plugins/delete_raw_rb.html">delete_raw</a> plugin now deletes any uploaded IO objects that respond to path, not just <code>Tempfile</code> objects (this includes <code>File</code>, <code>ActionDispatch::Http::UploadedFile</code>, and <a href="../../../classes/Shrine/UploadedFile.html"><code>Shrine::Plugins::RackFile::UploadedFile</code></a> objects).</p>
 </li><li>
-<p>The <code>rack_file</code> plugin now works with Grape.</p>
+<p>The <a href="../../lib/shrine/plugins/rack_file_rb.html">rack_file</a> plugin now works with Grape.</p>
 </li><li>
-<p>The <code>data_uri</code> plugin now accepts URI-encoded raw data URIs.</p>
+<p>The <a href="../../lib/shrine/plugins/data_uri_rb.html">data_uri</a> plugin now accepts URI-encoded raw data URIs.</p>
 </li><li>
-<p>The <code>data_uri</code> plugin now accepts data URIs with additional media type params.</p>
+<p>The <a href="../../lib/shrine/plugins/data_uri_rb.html">data_uri</a> plugin now accepts data URIs with additional media type params.</p>
 </li><li>
-<p><code>Shrine::Storage::S3</code> now accepts separate multipart thresholds for uploading  and for copying.</p>
+<p><a href="../../../classes/Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> now accepts separate multipart thresholds for uploading and for copying.</p>
 </li><li>
-<p><code>Shrine::Storage::S3#object</code> is now public, which returns an <code>Aws::S3::Object</code>  representing the file.</p>
+<p><a href="../../../classes/Shrine/Storage/S3.html#method-i-object"><code>Shrine::Storage::S3#object</code></a> is now public, which returns an <code>Aws::S3::Object</code> representing the file.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">s3</span>.<span class="ruby-identifier">object</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; #&lt;Aws::S3::Object bucket_name=&quot;your-bucket&quot; key=&quot;image.jpg&quot;&gt;</span>
 </pre>
 <ul><li>
-<p>Added <code>Shrine::Storage::S3#client</code> method for quicker access to the  <code>Aws::S3::Client</code> instance.</p>
+<p>Added <a href="../../../classes/Shrine/Storage/S3.html#attribute-i-client"><code>Shrine::Storage::S3#client</code></a> method for quicker access to the <code>Aws::S3::Client</code> instance.</p>
 </li><li>
-<p>The "S3" component of the <code>aws-sdk</code> gem is now eagerly loaded in  <code>lib/shrine/storage/s3.rb</code>, to remove possibility of autoloading causing  errors in multi-threaded systems.</p>
+<p>The “S3” component of the <code>aws-sdk</code> gem is now eagerly loaded in <a href="../../lib/shrine/storage/s3_rb.html">lib/shrine/storage/s3.rb</a>, to remove possibility of autoloading causing errors in multi-threaded systems.</p>
 </li><li>
-<p><code>Shrine::Storage::FileSystem#path</code> is now public, which returns a <code>Pathname</code>  to the file.</p>
+<p><a href="../../../classes/Shrine/Storage/FileSystem.html#method-i-path"><code>Shrine::Storage::FileSystem#path</code></a> is now public, which returns a <code>Pathname</code> to the file.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">filesystem</span>.<span class="ruby-identifier">path</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; #&lt;Pathname:public/image.jpg&gt;</span>
 </pre>
 <ul><li>
-<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now checks whether <code>Shrine#generate_location</code> happened to return nil,  and raises <code>Shrine::Error</code>.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now checks whether <a href="../../../classes/Shrine/InstanceMethods.html#method-i-generate_location"><code>Shrine#generate_location</code></a> happened to return nil, and raises <a href="../../../classes/Shrine/Error.html"><code>Shrine::Error</code></a>.</p>
 </li><li>
 <p><code>Attacher#finalize</code> can now be called even when the attachment hasn’t changed.</p>
 </li><li>
 <p>Added <code>Attacher#changed?</code> alias to <code>Attacher#attached?</code>.</p>
 </li><li>
-<p>The logic for rejecting attachments that are already the current attachment  has been moved from <code>Attacher#assign</code> to <code>Attacher#set</code>.</p>
+<p>The logic for rejecting attachments that are already the current attachment has been moved from <code>Attacher#assign</code> to <code>Attacher#set</code>.</p>
 </li><li>
-<p>The <code>remove_invalid</code> plugin will now only remove new invalid attachments.</p>
+<p>The <a href="../../lib/shrine/plugins/remove_invalid_rb.html">remove_invalid</a> plugin will now only remove new invalid attachments.</p>
 </li><li>
-<p>The <code>tempfile</code> standard library is now correctly required in <code>lib/shrine.rb</code>.</p>
+<p>The <code>tempfile</code> standard library is now correctly required in <a href="../../lib/shrine_rb.html">lib/shrine.rb</a>.</p>
 </li><li>
-<p>Improved default validation error messages in <code>validation_helpers</code> plugin.</p>
+<p>Improved default validation error messages in <a href="../../lib/shrine/plugins/validation_helpers_rb.html">validation_helpers</a> plugin.</p>
 </li><li>
-<p>Blacklisted MIME types and extensions are now excluded from the default error  message for security reasons.</p>
+<p>Blacklisted MIME types and extensions are now excluded from the default error message for security reasons.</p>
 </li><li>
-<p>The <code>add_metadata</code> plugin now also accepts hashes with symbol keys.</p>
+<p>The <a href="../../lib/shrine/plugins/add_metadata_rb.html">add_metadata</a> plugin now also accepts hashes with symbol keys.</p>
 </li><li>
 <p>The loaded plugin module is now returned when calling <code>Shrine.plugin</code>.</p>
 </li><li>
 <p>Improved visibility of <a href="../../../classes/Shrine.html"><code>Shrine</code></a> deprecation warnings.</p>
 </li></ul>
 
-<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
 <ul><li>
-<p>Passing regexes to <code>validate_(mime_type|extension)_(inclusion|exclusion)</code> has  been deprecated due to lack of usefulness and for security reasons, from now  on you should always pass plain strings.</p>
+<p>Passing regexes to <code>validate_(mime_type|extension)_(inclusion|exclusion)</code> has been deprecated due to lack of usefulness and for security reasons, from now on you should always pass plain strings.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-comment"># deprecated</span>
@@ -235,7 +238,7 @@ Last Update:
 <span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif ...]</span>
 </pre>
 <ul><li>
-<p>Previously the <code>validate_(max|min)_(width|height)</code> validations would ignore  <code>width</code> or <code>height</code> being nil, but this is now deprecated and in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3  this will return an error. You should make sure that the file is of the right  type before validating dimensions.</p>
+<p>Previously the <code>validate_(max|min)_(width|height)</code> validations would ignore <code>width</code> or <code>height</code> being nil, but this is now deprecated and in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3 this will return an error. You should make sure that the file is of the right type before validating dimensions.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">if</span> <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>
@@ -244,13 +247,13 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p>Passing a Rack uploaded file hash to <code>Shrine#upload</code> and <code>Shrine#store</code> is  now deprecated in <code>rack_file</code> plugin, use <code>Shrine.rack_file</code> to first convert  the Rack hash into an IO object.</p>
+<p>Passing a Rack uploaded file hash to <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a> and <code>Shrine#store</code> is now deprecated in <a href="../../lib/shrine/plugins/rack_file_rb.html">rack_file</a> plugin, use <code>Shrine.rack_file</code> to first convert the Rack hash into an IO object.</p>
 </li><li>
-<p>Deprecated passing <code>:multipart_threshold</code> option as an integer in  <code>Shrine::Storage::S3</code>, use a hash with <code>:upload</code> and <code>:copy</code> keys.</p>
+<p>Deprecated passing <code>:multipart_threshold</code> option as an integer in <a href="../../../classes/Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a>, use a hash with <code>:upload</code> and <code>:copy</code> keys.</p>
 </li><li>
-<p>Deprecated <code>Shrine::Storage::S3#s3</code> in favour of  <code>Shrine::Storage::S3#client</code>.</p>
+<p>Deprecated <code>Shrine::Storage::S3#s3</code> in favour of <a href="../../../classes/Shrine/Storage/S3.html#attribute-i-client"><code>Shrine::Storage::S3#client</code></a>.</p>
 </li><li>
-<p>The <code>Shrine::Plugins::DataUri::DataFile</code> isn't a subclass of <code>StringIO</code>  anymore, instead it uses composition to delegate only a subset of IO methods  to the underlying <code>StringIO</code> object. This shouldn't cause any backwards  compatibility unless the user was relying on it to be a subclass of  <code>StringIO</code>.</p>
+<p>The <a href="../../../classes/Shrine/DataFile.html"><code>Shrine::Plugins::DataUri::DataFile</code></a> isn’t a subclass of <code>StringIO</code> anymore, instead it uses composition to delegate only a subset of IO methods to the underlying <code>StringIO</code> object. This shouldn’t cause any backwards compatibility unless the user was relying on it to be a subclass of <code>StringIO</code>.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -262,7 +265,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::UrlsafeSerialization::FileClassMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -51,7 +52,7 @@ Shrine::Plugins::UrlsafeSerialization::FileClassMethods
 <div class='method public-instance' id='method-method-i-urlsafe_dump'>
 <a name='method-i-urlsafe_dump'></a>
 <div class='synopsis'>
-<span class='name'>urlsafe_dump</span><span class='arguments'>(file, **options)</span>
+<span class='name'>urlsafe_dump</span><span class='arguments'>(file, **)</span>
 
 </div>
 <div class='description'>
@@ -62,8 +63,8 @@ Shrine::Plugins::UrlsafeSerialization::FileClassMethods
 [show source]
 </a>
 <pre id='method-i-urlsafe_dump-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb</span>
-<span class="line-num">48</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">urlsafe_dump</span>(<span class="ruby-identifier">file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">49</span>   <span class="ruby-identifier">data</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">urlsafe_data</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">48</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">urlsafe_dump</span>(<span class="ruby-identifier">file</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">49</span>   <span class="ruby-identifier">data</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">urlsafe_data</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">50</span> 
 <span class="line-num">51</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">urlsafe_serialize</span>(<span class="ruby-identifier">data</span>)
 <span class="line-num">52</span> <span class="ruby-keyword">end</span></pre>
@@ -99,7 +100,7 @@ Shrine::Plugins::UrlsafeSerialization::FileClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

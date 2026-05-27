@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Derivation</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -158,7 +159,7 @@ Superclass:
 </a>
 <pre id='method-c-option-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
 <span class="line-num">186</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">option</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">default:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">result:</span> <span class="ruby-keyword">nil</span>)
-<span class="line-num">187</span>   <span class="ruby-identifier">options</span>[<span class="ruby-identifier">name</span>] = { <span class="ruby-value">default:</span> <span class="ruby-identifier">default</span>, <span class="ruby-value">result:</span> <span class="ruby-identifier">result</span> }
+<span class="line-num">187</span>   <span class="ruby-identifier">options</span>[<span class="ruby-identifier">name</span>] = { <span class="ruby-value">default:</span>, <span class="ruby-value">result:</span> }
 <span class="line-num">188</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -371,7 +372,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-upload'>
 <a name='method-i-upload'></a>
 <div class='synopsis'>
-<span class='name'>upload</span><span class='arguments'>(file = nil, **options)</span>
+<span class='name'>upload</span><span class='arguments'>(file = nil, **)</span>
 
 </div>
 <div class='description'>
@@ -384,15 +385,15 @@ Superclass:
 [show source]
 </a>
 <pre id='method-i-upload-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
-<span class="line-num">161</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">162</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Upload</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">161</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">162</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Upload</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">file</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">163</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-url'>
 <a name='method-i-url'></a>
 <div class='synopsis'>
-<span class='name'>url</span><span class='arguments'>(**options)</span>
+<span class='name'>url</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -405,14 +406,14 @@ Superclass:
 [show source]
 </a>
 <pre id='method-i-url-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
-<span class="line-num">132</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">132</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">133</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Url</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>(
 <span class="line-num">134</span>     <span class="ruby-value">host:</span>       <span class="ruby-identifier">option</span>(<span class="ruby-value">:host</span>),
 <span class="line-num">135</span>     <span class="ruby-value">prefix:</span>     <span class="ruby-identifier">option</span>(<span class="ruby-value">:prefix</span>),
 <span class="line-num">136</span>     <span class="ruby-value">expires_in:</span> <span class="ruby-identifier">option</span>(<span class="ruby-value">:expires_in</span>),
 <span class="line-num">137</span>     <span class="ruby-value">version:</span>    <span class="ruby-identifier">option</span>(<span class="ruby-value">:version</span>),
 <span class="line-num">138</span>     <span class="ruby-value">metadata:</span>   <span class="ruby-identifier">option</span>(<span class="ruby-value">:metadata</span>),
-<span class="line-num">139</span>     <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>,
+<span class="line-num">139</span>     <span class="ruby-operator">**</span>,
 <span class="line-num">140</span>   )
 <span class="line-num">141</span> <span class="ruby-keyword">end</span></pre>
 </div>
@@ -426,7 +427,7 @@ Superclass:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

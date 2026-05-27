@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::PresignEndpoint::ClassMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -51,12 +52,12 @@ Shrine::Plugins::PresignEndpoint::ClassMethods
 <div class='method public-instance' id='method-method-i-presign_endpoint'>
 <a name='method-i-presign_endpoint'></a>
 <div class='synopsis'>
-<span class='name'>presign_endpoint</span><span class='arguments'>(storage_key, **options)</span>
+<span class='name'>presign_endpoint</span><span class='arguments'>(storage_key, **)</span>
 
 </div>
 <div class='description'>
 
-<p>Returns a Rack application (object that responds to <code>#call</code>) which accepts GET requests to the root URL, calls the specified storage to generate the presign, and returns that information in JSON format.</p>
+<p>Returns a Rack application (object that responds to call) which accepts GET requests to the root URL, calls the specified storage to generate the presign, and returns that information in JSON format.</p>
 
 <p>The <code>storage_key</code> needs to be one of the registered <a href="../../../Shrine.html"><code>Shrine</code></a> storages. Additional options can be given to override the options given on plugin initialization.</p>
 
@@ -66,12 +67,12 @@ Shrine::Plugins::PresignEndpoint::ClassMethods
 [show source]
 </a>
 <pre id='method-i-presign_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/presign_endpoint.rb</span>
-<span class="line-num">24</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">presign_endpoint</span>(<span class="ruby-identifier">storage_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">24</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">presign_endpoint</span>(<span class="ruby-identifier">storage_key</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">25</span>   <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">PresignEndpoint</span>.<span class="ruby-identifier">new</span>(
 <span class="line-num">26</span>     <span class="ruby-value">shrine_class:</span> <span class="ruby-keyword">self</span>,
 <span class="line-num">27</span>     <span class="ruby-value">storage_key:</span>  <span class="ruby-identifier">storage_key</span>,
 <span class="line-num">28</span>     <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint</span>],
-<span class="line-num">29</span>     <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>,
+<span class="line-num">29</span>     <span class="ruby-operator">**</span>,
 <span class="line-num">30</span>   )
 <span class="line-num">31</span> <span class="ruby-keyword">end</span></pre>
 </div>
@@ -79,7 +80,7 @@ Shrine::Plugins::PresignEndpoint::ClassMethods
 <div class='method public-instance' id='method-method-i-presign_response'>
 <a name='method-i-presign_response'></a>
 <div class='synopsis'>
-<span class='name'>presign_response</span><span class='arguments'>(storage_key, env, **options)</span>
+<span class='name'>presign_response</span><span class='arguments'>(storage_key, env, **)</span>
 
 </div>
 <div class='description'>
@@ -94,7 +95,7 @@ Shrine::Plugins::PresignEndpoint::ClassMethods
 [show source]
 </a>
 <pre id='method-i-presign_response-source'>   <span class="ruby-comment"># File lib/shrine/plugins/presign_endpoint.rb</span>
-<span class="line-num">39</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">presign_response</span>(<span class="ruby-identifier">storage_key</span>, <span class="ruby-identifier">env</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">39</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">presign_response</span>(<span class="ruby-identifier">storage_key</span>, <span class="ruby-identifier">env</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">40</span>   <span class="ruby-identifier">script_name</span> = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>]
 <span class="line-num">41</span>   <span class="ruby-identifier">path_info</span>   = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]
 <span class="line-num">42</span> 
@@ -102,7 +103,7 @@ Shrine::Plugins::PresignEndpoint::ClassMethods
 <span class="line-num">44</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] <span class="ruby-operator">+=</span> <span class="ruby-identifier">path_info</span>
 <span class="line-num">45</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]    = <span class="ruby-string">&quot;&quot;</span>
 <span class="line-num">46</span> 
-<span class="line-num">47</span>     <span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-identifier">storage_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)
+<span class="line-num">47</span>     <span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-identifier">storage_key</span>, <span class="ruby-operator">**</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)
 <span class="line-num">48</span>   <span class="ruby-keyword">ensure</span>
 <span class="line-num">49</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] = <span class="ruby-identifier">script_name</span>
 <span class="line-num">50</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]   = <span class="ruby-identifier">path_info</span>
@@ -119,7 +120,7 @@ Shrine::Plugins::PresignEndpoint::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

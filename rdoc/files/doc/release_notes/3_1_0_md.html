@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>3.1.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,58 +29,58 @@
 <div class='paths'>
 doc/release_notes/3.1.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+3.1.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_1_0_md.html">3.1.0</a><span><a href="#label-title-3A+Shrine+3.1.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+3.1.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-310"><a href="#title-shrine-310">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_1_0_md.html">3.1.0</a></a></h2>
 
-<h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
 <ul><li>
-<p>The <code>Attacher#create_derivatives</code> method now accepts a <code>:storage</code> option for  specifying the storage to which derivatives should be uploaded.</p>
+<p>The <code>Attacher#create_derivatives</code> method now accepts a <code>:storage</code> option for specifying the storage to which derivatives should be uploaded.</p>
 </li></ul>
 
-<p>“‘rb  # with attachment module  photo.image_derivatives!(storage: :other_store)</p>
+<p>“‘rb # with attachment module photo.image_derivatives!(storage: :other_store)</p>
 
-<p># with attacher  attacher.create_derivatives(storage: :other_store)  “‘</p>
+<p># with attacher attacher.create_derivatives(storage: :other_store) “‘</p>
 <ul><li>
-<p>The <code>Shrine.calculate_signature</code> now accepts a <code>:rewind</code> boolean option for  choosing whether the IO object should be rewinded after reading. This is  useful if you want to calculate signature from non-rewindable IO objects,  such as <code>IO.pipe</code>, <code>Socket</code>, non-rewindable <code>Down::ChunkedIO</code> etc.</p>
+<p>The <code>Shrine.calculate_signature</code> now accepts a <code>:rewind</code> boolean option for choosing whether the IO object should be rewinded after reading. This is useful if you want to calculate signature from non-rewindable IO objects, such as <code>IO.pipe</code>, <code>Socket</code>, non-rewindable <code>Down::ChunkedIO</code> etc.</p>
 </li></ul>
 
-<p><code>rb   Shrine.signature(io, rewind: false) </code></p>
+<p><code>rb  Shrine.signature(io, rewind: false)  </code></p>
 
-<h2 id="label-Improvements">Improvements<span><a href="#label-Improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Improvements" class="legacy-anchor"></span>
+<h2 id="improvements"><a href="#improvements">Improvements</a></h2>
 <ul><li>
-<p>The derivatives processor can now be registered with <code>Attacher.derivatives</code>,  which is just an alias for <code>Attacher.derivatives_processor</code>.</p>
+<p>The derivatives processor can now be registered with <code>Attacher.derivatives</code>, which is just an alias for <code>Attacher.derivatives_processor</code>.</p>
 </li></ul>
 
-<p>“‘rb  class ImageUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  Attacher.derivatives_processor do |original|  # …  end  end</p>
+<p>“‘rb class ImageUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a> Attacher.derivatives_processor do |original| # … end end</p>
 
 <p># can now be written as</p>
 
-<p>class ImageUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  Attacher.derivatives do |original|  # …  end  end  “‘</p>
+<p>class ImageUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a> Attacher.derivatives do |original| # … end end “‘</p>
 <ul><li>
-<p>The <code>Attacher#cached?</code> and <code>Attacher#stored?</code> methods now work correctly if  temporary/permanent storage identifiers were specified as strings.</p>
+<p>The <code>Attacher#cached?</code> and <code>Attacher#stored?</code> methods now work correctly if temporary/permanent storage identifiers were specified as strings.</p>
 </li><li>
-<p>The <code>store_dimensions</code> plugin now properly propagates exceptions when loading  the <code>ruby-vips</code> gem in <code>:vips</code> analyzer.</p>
+<p>The <a href="../../lib/shrine/plugins/store_dimensions_rb.html">store_dimensions</a> plugin now properly propagates exceptions when loading the <code>ruby-vips</code> gem in <code>:vips</code> analyzer.</p>
 </li><li>
-<p>The <code>add_metadata</code> plugin now respects inheritance again when defining  metadata methods on the <code>Shrine::UploadedFile</code> class. In <a href="2_19_0_md.html">2.19.0</a>, the  <code>add_metadata</code> plugin was changed to define metadata methods on the internal  <code>FileMethods</code> plugin module, which is shared across all uploaders. This  change has now been reverted.</p>
+<p>The <a href="../../lib/shrine/plugins/add_metadata_rb.html">add_metadata</a> plugin now respects inheritance again when defining metadata methods on the <a href="../../../classes/Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a> class. In <a href="2_19_0_md.html">2.19.0</a>, the <a href="../../lib/shrine/plugins/add_metadata_rb.html">add_metadata</a> plugin was changed to define metadata methods on the internal <code>FileMethods</code> plugin module, which is shared across all uploaders. This change has now been reverted.</p>
 </li></ul>
 
-<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
 <ul><li>
-<p>The <code>Attacher#cache_key</code> and <code>Attacher#store_key</code> methods now always return  symbol keys, even if the storage key that was specified was a string key.</p>
+<p>The <code>Attacher#cache_key</code> and <code>Attacher#store_key</code> methods now always return symbol keys, even if the storage key that was specified was a string key.</p>
 </li></ul>
 
-<p><code>rb   attacher = Shrine::Attacher.new(cache: &quot;cache&quot;, store: &quot;store&quot;)   attacher.cache_key #=&gt; :cache (previously &quot;cache&quot;)   attacher.store_key #=&gt; :store (previously &quot;store&quot;) </code></p>
+<p><code>rb  attacher = Shrine::Attacher.new(cache: &quot;cache&quot;, store: &quot;store&quot;)  attacher.cache_key #=&gt; :cache (previously &quot;cache&quot;)  attacher.store_key #=&gt; :store (previously &quot;store&quot;)  </code></p>
 <ul><li>
-<p>The <code>add_metadata</code> plugin now defines metadata methods directly on the  <code>UploadedFile</code> class, which means that if you happen to have been overriding  these metadata methods and calling <code>super</code>, this won’t work anymore.</p>
+<p>The <a href="../../lib/shrine/plugins/add_metadata_rb.html">add_metadata</a> plugin now defines metadata methods directly on the <code>UploadedFile</code> class, which means that if you happen to have been overriding these metadata methods and calling <code>super</code>, this won’t work anymore.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -91,7 +92,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

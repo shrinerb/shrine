@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::Column::AttacherClassMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -50,7 +51,7 @@ Shrine::Plugins::Column::AttacherClassMethods
 <div class='method public-instance' id='method-method-i-from_column'>
 <a name='method-i-from_column'></a>
 <div class='synopsis'>
-<span class='name'>from_column</span><span class='arguments'>(data, **options)</span>
+<span class='name'>from_column</span><span class='arguments'>(data, **)</span>
 
 </div>
 <div class='description'>
@@ -66,8 +67,8 @@ Shrine::Plugins::Column::AttacherClassMethods
 [show source]
 </a>
 <pre id='method-i-from_column-source'>   <span class="ruby-comment"># File lib/shrine/plugins/column.rb</span>
-<span class="line-num">19</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">from_column</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">20</span>   <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">19</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">from_column</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">20</span>   <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">21</span>   <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">load_column</span>(<span class="ruby-identifier">data</span>)
 <span class="line-num">22</span>   <span class="ruby-identifier">attacher</span>
 <span class="line-num">23</span> <span class="ruby-keyword">end</span></pre>
@@ -82,7 +83,7 @@ Shrine::Plugins::Column::AttacherClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

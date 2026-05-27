@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::Processing::InstanceMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -50,7 +51,7 @@ Shrine::Plugins::Processing::InstanceMethods
 <div class='method public-instance' id='method-method-i-upload'>
 <a name='method-i-upload'></a>
 <div class='synopsis'>
-<span class='name'>upload</span><span class='arguments'>(io, process: true, **options)</span>
+<span class='name'>upload</span><span class='arguments'>(io, process: true, **)</span>
 
 </div>
 <div class='description'>
@@ -61,14 +62,14 @@ Shrine::Plugins::Processing::InstanceMethods
 [show source]
 </a>
 <pre id='method-i-upload-source'>   <span class="ruby-comment"># File lib/shrine/plugins/processing.rb</span>
-<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">process:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">process:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">22</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">process</span>
-<span class="line-num">23</span>     <span class="ruby-identifier">input</span> = <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">23</span>     <span class="ruby-identifier">input</span> = <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">24</span>   <span class="ruby-keyword">else</span>
 <span class="line-num">25</span>     <span class="ruby-identifier">input</span> = <span class="ruby-identifier">io</span>
 <span class="line-num">26</span>   <span class="ruby-keyword">end</span>
 <span class="line-num">27</span> 
-<span class="line-num">28</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">input</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">28</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">input</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">29</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -81,7 +82,7 @@ Shrine::Plugins::Processing::InstanceMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

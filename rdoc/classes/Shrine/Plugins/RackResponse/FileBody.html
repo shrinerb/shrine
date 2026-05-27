@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::RackResponse::FileBody</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -49,6 +50,7 @@ Superclass:
 </ol>
 <h3>Public Instance</h3>
 <ol>
+<li><a href="#method-i-bytesize">bytesize</a></li>
 <li><a href="#method-i-close">close</a></li>
 <li><a href="#method-i-each">each</a></li>
 <li><a href="#attribute-i-file">file</a></li>
@@ -97,13 +99,32 @@ Superclass:
 [show source]
 </a>
 <pre id='method-c-new-source'>    <span class="ruby-comment"># File lib/shrine/plugins/rack_response.rb</span>
-<span class="line-num">125</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">range:</span> <span class="ruby-keyword">nil</span>)
-<span class="line-num">126</span>   <span class="ruby-ivar">@file</span>  = <span class="ruby-identifier">file</span>
-<span class="line-num">127</span>   <span class="ruby-ivar">@range</span> = <span class="ruby-identifier">range</span>
-<span class="line-num">128</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">127</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">range:</span> <span class="ruby-keyword">nil</span>)
+<span class="line-num">128</span>   <span class="ruby-ivar">@file</span>  = <span class="ruby-identifier">file</span>
+<span class="line-num">129</span>   <span class="ruby-ivar">@range</span> = <span class="ruby-identifier">range</span>
+<span class="line-num">130</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-bytesize'>
+<a name='method-i-bytesize'></a>
+<div class='synopsis'>
+<span class='name'>bytesize</span><span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-bytesize-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-bytesize-source'>    <span class="ruby-comment"># File lib/shrine/plugins/rack_response.rb</span>
+<span class="line-num">146</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">bytesize</span>
+<span class="line-num">147</span>   <span class="ruby-identifier">each</span>.<span class="ruby-identifier">inject</span>(<span class="ruby-value">0</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">sum</span>, <span class="ruby-identifier">chunk</span><span class="ruby-operator">|</span> <span class="ruby-identifier">sum</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">chunk</span>.<span class="ruby-identifier">length</span> }
+<span class="line-num">148</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
 <div class='method public-instance' id='method-method-i-close'>
 <a name='method-i-close'></a>
 <div class='synopsis'>
@@ -120,9 +141,9 @@ Superclass:
 [show source]
 </a>
 <pre id='method-i-close-source'>    <span class="ruby-comment"># File lib/shrine/plugins/rack_response.rb</span>
-<span class="line-num">140</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">close</span>
-<span class="line-num">141</span>   <span class="ruby-identifier">file</span>.<span class="ruby-identifier">close</span>
-<span class="line-num">142</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">142</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">close</span>
+<span class="line-num">143</span>   <span class="ruby-identifier">file</span>.<span class="ruby-identifier">close</span>
+<span class="line-num">144</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-each'>
@@ -141,13 +162,13 @@ Superclass:
 [show source]
 </a>
 <pre id='method-i-each-source'>    <span class="ruby-comment"># File lib/shrine/plugins/rack_response.rb</span>
-<span class="line-num">131</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">each</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-<span class="line-num">132</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">range</span>
-<span class="line-num">133</span>     <span class="ruby-identifier">read_partial_chunks</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-<span class="line-num">134</span>   <span class="ruby-keyword">else</span>
-<span class="line-num">135</span>     <span class="ruby-identifier">read_chunks</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-<span class="line-num">136</span>   <span class="ruby-keyword">end</span>
-<span class="line-num">137</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">133</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">each</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">134</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">range</span>
+<span class="line-num">135</span>     <span class="ruby-identifier">read_partial_chunks</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">136</span>   <span class="ruby-keyword">else</span>
+<span class="line-num">137</span>     <span class="ruby-identifier">read_chunks</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">138</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">139</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-method_missing'>
@@ -166,9 +187,9 @@ Superclass:
 [show source]
 </a>
 <pre id='method-i-method_missing-source'>    <span class="ruby-comment"># File lib/shrine/plugins/rack_response.rb</span>
-<span class="line-num">150</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">method_missing</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-<span class="line-num">151</span>   <span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-value">:to_path</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">path</span> <span class="ruby-keyword">or</span> <span class="ruby-keyword">super</span>
-<span class="line-num">152</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">156</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">method_missing</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">157</span>   <span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-value">:to_path</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">path</span> <span class="ruby-keyword">or</span> <span class="ruby-keyword">super</span>
+<span class="line-num">158</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-respond_to_missing-3F'>
@@ -187,9 +208,9 @@ Superclass:
 [show source]
 </a>
 <pre id='method-i-respond_to_missing-3F-source'>    <span class="ruby-comment"># File lib/shrine/plugins/rack_response.rb</span>
-<span class="line-num">145</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">respond_to_missing?</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">include_private</span> = <span class="ruby-keyword">false</span>)
-<span class="line-num">146</span>   <span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-value">:to_path</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">path</span>
-<span class="line-num">147</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">151</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">respond_to_missing?</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">include_private</span> = <span class="ruby-keyword">false</span>)
+<span class="line-num">152</span>   <span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-value">:to_path</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">path</span>
+<span class="line-num">153</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
@@ -201,7 +222,7 @@ Superclass:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

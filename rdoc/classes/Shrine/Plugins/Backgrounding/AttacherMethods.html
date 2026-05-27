@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::Backgrounding::AttacherMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -108,7 +109,7 @@ Shrine::Plugins::Backgrounding::AttacherMethods
 <div class='method public-instance' id='method-method-i-destroy_background'>
 <a name='method-i-destroy_background'></a>
 <div class='synopsis'>
-<span class='name'>destroy_background</span><span class='arguments'>(**options)</span>
+<span class='name'>destroy_background</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -121,10 +122,10 @@ Shrine::Plugins::Backgrounding::AttacherMethods
 [show source]
 </a>
 <pre id='method-i-destroy_background-source'>   <span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb</span>
-<span class="line-num">95</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_background</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">95</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_background</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">96</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;destroy block is not registered&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">destroy_block</span>
 <span class="line-num">97</span> 
-<span class="line-num">98</span>   <span class="ruby-identifier">background_block</span>(<span class="ruby-identifier">destroy_block</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">98</span>   <span class="ruby-identifier">background_block</span>(<span class="ruby-identifier">destroy_block</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">99</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -158,7 +159,7 @@ Shrine::Plugins::Backgrounding::AttacherMethods
 <div class='method public-instance' id='method-method-i-promote_background'>
 <a name='method-i-promote_background'></a>
 <div class='synopsis'>
-<span class='name'>promote_background</span><span class='arguments'>(**options)</span>
+<span class='name'>promote_background</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -171,10 +172,10 @@ Shrine::Plugins::Backgrounding::AttacherMethods
 [show source]
 </a>
 <pre id='method-i-promote_background-source'>   <span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb</span>
-<span class="line-num">79</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_background</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">79</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_background</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">80</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;promote block is not registered&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">promote_block</span>
 <span class="line-num">81</span> 
-<span class="line-num">82</span>   <span class="ruby-identifier">background_block</span>(<span class="ruby-identifier">promote_block</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">82</span>   <span class="ruby-identifier">background_block</span>(<span class="ruby-identifier">promote_block</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">83</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
@@ -211,7 +212,7 @@ end</pre>
 <div class='method public-instance' id='method-method-i-promote_cached'>
 <a name='method-i-promote_cached'></a>
 <div class='synopsis'>
-<span class='name'>promote_cached</span><span class='arguments'>(**options)</span>
+<span class='name'>promote_cached</span><span class='arguments'>(**)</span>
 
 </div>
 <div class='description'>
@@ -224,9 +225,9 @@ end</pre>
 [show source]
 </a>
 <pre id='method-i-promote_cached-source'>   <span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb</span>
-<span class="line-num">70</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_cached</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">70</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote_cached</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">71</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">promote_block</span>
-<span class="line-num">72</span>     <span class="ruby-identifier">promote_background</span>
+<span class="line-num">72</span>     <span class="ruby-identifier">promote_background</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">73</span>   <span class="ruby-keyword">else</span>
 <span class="line-num">74</span>     <span class="ruby-keyword">super</span>
 <span class="line-num">75</span>   <span class="ruby-keyword">end</span>
@@ -242,7 +243,7 @@ end</pre>
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

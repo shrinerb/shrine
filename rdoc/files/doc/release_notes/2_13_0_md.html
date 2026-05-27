@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.13.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,21 +29,19 @@
 <div class='paths'>
 doc/release_notes/2.13.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.13.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_13_0_md.html">2.13.0</a><span><a href="#label-title-3A+Shrine+2.13.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.13.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-2130"><a href="#title-shrine-2130">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_13_0_md.html">2.13.0</a></a></h2>
 
-<h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
 <ul><li>
-<p>The S3 object URLs can now be signed with a custom signer. This enables  serving private objects via AWS CloudFront by signing the URLs with the  signer from the <code>aws-sdk-cloudfront</code> gem.</p>
+<p>The S3 object URLs can now be signed with a custom signer. This enables serving private objects via AWS CloudFront by signing the URLs with the signer from the <code>aws-sdk-cloudfront</code> gem.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;aws-sdk-cloudfront&quot;</span>
@@ -55,7 +54,7 @@ Last Update:
 <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">signer:</span> <span class="ruby-identifier">signer</span>.<span class="ruby-identifier">method</span>(<span class="ruby-value">:signed_url</span>))
 </pre>
 <ul><li>
-<p>To make your S3 storage public, previously you needed to do two things: set  the <code>acl: &quot;public-read&quot;</code> upload option and set pass <code>public: true</code> when  generating a URL.</p>
+<p>To make your S3 storage public, previously you needed to do two things: set the <code>acl: &quot;public-read&quot;</code> upload option and set pass <code>public: true</code> when generating a URL.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {
@@ -68,7 +67,7 @@ Last Update:
   <span class="ruby-value">store:</span> { <span class="ruby-value">public:</span> <span class="ruby-keyword">true</span> }
 </pre>
 
-<p>Now you can achieve the same thing just by setting <code>public: true</code> when  initializing the S3 storage.</p>
+<p>Now you can achieve the same thing just by setting <code>public: true</code> when initializing the S3 storage.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {
   <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">public:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>),
@@ -76,34 +75,35 @@ Last Update:
 }
 </pre>
 <ul><li>
-<p>The <code>:force</code> option has been added to the <code>infer_extension</code> plugin, which  makes the extension always determined from the MIME type, regardless of  whether it exists or not.</p>
+<p>The <code>:force</code> option has been added to the <a href="../../lib/shrine/plugins/infer_extension_rb.html">infer_extension</a> plugin, which makes the extension always determined from the MIME type, regardless of whether it exists or not.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span>, <span class="ruby-value">force:</span> <span class="ruby-keyword">true</span>
 </pre>
 
-<p>This is useful for when you want to normalize the file extensions of uploaded  files.</p>
+<p>This is useful for when you want to normalize the file extensions of uploaded files.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>))  <span class="ruby-comment">#</span>
 <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;image.jpeg&quot;</span>)) <span class="ruby-comment"># all these will be uploaded with a .jpeg extension</span>
 <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;image.JPG&quot;</span>))  <span class="ruby-comment">#</span>
 </pre>
 <ul><li>
-<p><code>Shrine#upload</code> now accepts a <code>:metadata</code> option for manually overrding the  extracted metadata.</p>
+<p><a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a> now accepts a <code>:metadata</code> option for manually overrding the extracted metadata.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">metadata:</span> { <span class="ruby-string">&quot;filename&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;my-file.txt&quot;</span> })
 <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span>    <span class="ruby-comment">#=&gt; &quot;my-file.txt&quot;</span>
 </pre>
 
-<p>Furthermore, <code>Shrine::Attacher#assign</code> now forwards any additional options to  <code>Shrine#upload</code>, so you can also override metadata when attaching files.</p>
+<p>Furthermore, <code>Shrine::Attacher#assign</code> now forwards any additional options to <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a>, so you can also override metadata when attaching files.</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">metadata:</span> { <span class="ruby-string">&quot;mime_type&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;text/plain&quot;</span> })
 </pre>
 
-<h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
 <ul><li>
-<p>It’s now possible to use an S3 endpoint which requires bucket name to be in  the URI path (e.g. Minio) with CDNs where bucket name shouldn’t be in the URI  path (e.g. CloudFront). Since version <a href="2_11_0_md.html">2.11.0</a>, when initializing  <code>Shrine::Storage::S3</code> with <code>:endpoint</code> with <code>:force_path_style</code>, generating  an URL with a <code>:host</code> returned an URI with bucket name in the path. This  introduced a regression for anyone relying on previous behaviour, so that  change has been reverted, and this is the current behaviour:</p>
+<p>It’s now possible to use an S3 endpoint which requires bucket name to be in the URI path (e.g. Minio) with CDNs where bucket name shouldn’t be in the URI path (e.g. CloudFront). Since version <a href="2_11_0_md.html">2.11.0</a>, when initializing <a href="../../../classes/Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> with <code>:endpoint</code> with <code>:force_path_style</code>, generating an URL with a <code>:host</code> returned an URI with bucket name in the path. This introduced a regression for anyone relying on previous behaviour, so that change has been reverted, and this is the current behaviour:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">endpoint:</span> <span class="ruby-string">&quot;https://minio.example.com&quot;</span>)
@@ -115,7 +115,7 @@ Last Update:
 <span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;foo&quot;</span>, <span class="ruby-value">host:</span> <span class="ruby-string">&quot;https://123.cloudfront.net&quot;</span>) <span class="ruby-comment">#=&gt; &quot;https://123.cloudfront.net/foo&quot;</span>
 </pre>
 <ul><li>
-<p>The <code>:host</code> option to <code>Shrine::Storage::S3#url</code> now handles URLs with  path prefixes, provided that the URL ends with a slash.</p>
+<p>The <code>:host</code> option to <a href="../../../classes/Shrine/Storage/S3.html#method-i-url"><code>Shrine::Storage::S3#url</code></a> now handles URLs with path prefixes, provided that the URL ends with a slash.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-comment"># old behaviour</span>
@@ -124,33 +124,34 @@ Last Update:
 <span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;foo&quot;</span>, <span class="ruby-value">host:</span> <span class="ruby-string">&quot;https://example.com/prefix/&quot;</span>) <span class="ruby-comment">#=&gt; &quot;https://example.com/prefix/foo&quot;</span>
 </pre>
 <ul><li>
-<p>Fixed error that would happen when uploading a file with a filename that had  certain combination of UTF-8 characters to <code>upload_endpoint</code>.</p>
+<p>Fixed error that would happen when uploading a file with a filename that had certain combination of UTF-8 characters to <a href="../../lib/shrine/plugins/upload_endpoint_rb.html">upload_endpoint</a>.</p>
 </li><li>
-<p>The <code>Content-Type</code> header in <code>upload_endpoint</code> and <code>presign_endpoint</code>  responses now specifies <code>charset=utf-8</code>.</p>
+<p>The <code>Content-Type</code> header in <a href="../../lib/shrine/plugins/upload_endpoint_rb.html">upload_endpoint</a> and <a href="../../lib/shrine/plugins/presign_endpoint_rb.html">presign_endpoint</a> responses now specifies <code>charset=utf-8</code>.</p>
 </li><li>
-<p><code>Shrine::Storage::S3</code> now uses <code>Aws::S3::Object#upload_stream</code> if available  when uploading large IO streams which are not file objects, which uses  parallelized multipart upload. This can make such uploads finish up to 2x  faster.</p>
+<p><a href="../../../classes/Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> now uses <code>Aws::S3::Object#upload_stream</code> if available when uploading large IO streams which are not file objects, which uses parallelized multipart upload. This can make such uploads finish up to 2x faster.</p>
 </li><li>
-<p><code>Shrine::Storage::S3</code> now uses <code>Aws::S3::Object#upload_stream</code> if available  when uploading files of unknown size.</p>
+<p><a href="../../../classes/Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> now uses <code>Aws::S3::Object#upload_stream</code> if available when uploading files of unknown size.</p>
 </li><li>
-<p>The <code>file</code> command could sometimes exit successfully, but return a <code>cannot   open: No such file or directory</code> on stdout. This is now detected and a  <code>Shrine::Error</code> is raised.</p>
+<p>The <code>file</code> command could sometimes exit successfully, but return a <code>cannot  open: No such file or directory</code> on stdout. This is now detected and a <a href="../../../classes/Shrine/Error.html"><code>Shrine::Error</code></a> is raised.</p>
 </li><li>
-<p>The <code>upload_endpoint</code> now returns <code>Upload Not Valid</code> error message when file  parameter was present but not in correct format (previously <code>Upload Not   Found</code> was returned, which was a bit misleading).</p>
+<p>The <a href="../../lib/shrine/plugins/upload_endpoint_rb.html">upload_endpoint</a> now returns <code>Upload Not Valid</code> error message when file parameter was present but not in correct format (previously <code>Upload Not  Found</code> was returned, which was a bit misleading).</p>
 </li></ul>
 
-<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
 <ul><li>
-<p>When <code>Shrine::Storage::S3</code> is initialized with <code>:endpoint</code> with  <code>:force_path_style</code>, a file URL generated with a <code>:host</code> will not include the  bucket name in the URL path anymore. Users relying on this behaviour should  update their code to include the bucket name in the <code>:host</code> URL path.</p>
+<p>When <a href="../../../classes/Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> is initialized with <code>:endpoint</code> with <code>:force_path_style</code>, a file URL generated with a <code>:host</code> will not include the bucket name in the URL path anymore. Users relying on this behaviour should update their code to include the bucket name in the <code>:host</code> URL path.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;foo&quot;</span>, <span class="ruby-value">host:</span> <span class="ruby-string">&quot;https://example.com/my-bucket/&quot;</span>)
 </pre>
 <ul><li>
-<p>Using aws-sdk-s3 older than 1.14 with <code>Shrine::Storage::S3</code> when uploading  files with unknown size is now deprecated and won’t be supported in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
+<p>Using aws-sdk-s3 older than 1.14 with <a href="../../../classes/Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> when uploading files with unknown size is now deprecated and won’t be supported in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li></ul>
 
-<p>Also, in this case <code>Shrine::Storage::S3</code> will now first copy the whole file  onto disk before uploading it (previously only a chunk of the input file was  copied to disk at a time).</p>
+<p>Also, in this case <a href="../../../classes/Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> will now first copy the whole file onto disk before uploading it (previously only a chunk of the input file was copied to disk at a time).</p>
 
-<p>If you’re uploading files of unknown size (ones where <code>#size</code> is not defined  or returns <code>nil</code>), you should upgrade to aws-sdk-s3 1.14 or higher.</p>
+<p>If you’re uploading files of unknown size (ones where size is not defined or returns <code>nil</code>), you should upgrade to aws-sdk-s3 1.14 or higher.</p>
 </div>
 <div id='context'>
 </div>
@@ -161,7 +162,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

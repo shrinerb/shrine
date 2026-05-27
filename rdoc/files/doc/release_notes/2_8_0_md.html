@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.8.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,21 +29,19 @@
 <div class='paths'>
 doc/release_notes/2.8.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.8.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_8_0_md.html">2.8.0</a><span><a href="#label-title-3A+Shrine+2.8.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.8.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-280"><a href="#title-shrine-280">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_8_0_md.html">2.8.0</a></a></h2>
 
-<h2 id="label-New+Features">New Features<span><a href="#label-New+Features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-New+Features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New Features</a></h2>
 <ul><li>
-<p>The <code>rack_response</code> plugin now supports <a target="_top" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests">range requests</a> via the <code>:range</code>  parameter.</p>
+<p>The <a href="../../lib/shrine/plugins/rack_response_rb.html">rack_response</a> plugin now supports <a target="_top" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests">range requests</a> via the <code>:range</code> parameter.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_rack_response</span>(<span class="ruby-value">range:</span> <span class="ruby-string">&quot;bytes=100-200&quot;</span>)
@@ -52,24 +51,26 @@ Last Update:
 <span class="ruby-identifier">body</span>                      <span class="ruby-comment"># partial content</span>
 </pre>
 <ul><li>
-<p>The <code>Shrine::Storage::S3.clear!</code> method now accepts a block for filtering  which objects to delete.</p>
+<p>The <a href="../../../classes/Shrine/Storage/S3.html#method-i-clear-21"><code>Shrine::Storage::S3.clear!</code></a> method now accepts a block for filtering which objects to delete.</p>
 </li></ul>
 
-<pre>s3 = Shrine::Storage::S3.new(...)
-# deletes all objects that were uploaded more than 7 days ago
-s3.clear! { |object| object.last_modified &lt; Time.now - 7*24*60*60 }</pre>
+<pre class="ruby"><span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">...</span>)
+<span class="ruby-comment"># deletes all objects that were uploaded more than 7 days ago</span>
+<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">clear!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">last_modified</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span> }
+</pre>
 
-<h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
 <ul><li>
-<p>The <code>download_endpoint</code> plugin now automatically handles <a target="_top" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests">range requests</a>.  This allows browsers/tools to automatically resume interrupted downloads when  requesting the file from <code>download_endpoint</code>.</p>
+<p>The <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> plugin now automatically handles <a target="_top" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests">range requests</a>. This allows browsers/tools to automatically resume interrupted downloads when requesting the file from <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a>.</p>
 </li><li>
-<p><code>Shrine::UploadedFile#open</code> and <code>Shrine::UploadedFile#download</code> now accept  additional arguments and forwards them to <code>#open</code> and <code>#download</code> methods on  the storage. This allows storage objects to accept additional options on  those methods and customize their functionality.</p>
+<p><a href="../../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-open"><code>Shrine::UploadedFile#open</code></a> and <a href="../../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-download"><code>Shrine::UploadedFile#download</code></a> now accept additional arguments and forwards them to open and download methods on the storage. This allows storage objects to accept additional options on those methods and customize their functionality.</p>
 </li><li>
-<p><code>Shrine::Storage::S3#open</code> and <code>Shrine::Storage::S3#download</code> now accept  additional options which are forwarded to <code>Aws::S3::Client#get_object</code>.</p>
+<p><a href="../../../classes/Shrine/Storage/S3.html#method-i-open"><code>Shrine::Storage::S3#open</code></a> and <code>Shrine::Storage::S3#download</code> now accept additional options which are forwarded to <code>Aws::S3::Client#get_object</code>.</p>
 </li><li>
 <p>The <code>direct_upload</code> plugin now works with Roda 3.</p>
 </li><li>
-<p>The <code>metadata_attributes</code> plugin now supports specifying full column names  by using strings instead of symbols.</p>
+<p>The <a href="../../lib/shrine/plugins/metadata_attributes_rb.html">metadata_attributes</a> plugin now supports specifying full column names by using strings instead of symbols.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>, <span class="ruby-value">filename:</span> <span class="ruby-value">:original_filename</span>  <span class="ruby-comment"># uses the &quot;&lt;attachment&gt;_original_filename&quot; column</span>
@@ -77,7 +78,7 @@ s3.clear! { |object| object.last_modified &lt; Time.now - 7*24*60*60 }</pre>
 <span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>, <span class="ruby-value">filename:</span> <span class="ruby-string">&quot;original_filename&quot;</span> <span class="ruby-comment"># uses the &quot;original_filename&quot; column</span>
 </pre>
 <ul><li>
-<p>You can now specify metadata mappings on <code>metadata_attributes</code> plugin  initialization.</p>
+<p>You can now specify metadata mappings on <a href="../../lib/shrine/plugins/metadata_attributes_rb.html">metadata_attributes</a> plugin initialization.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
@@ -90,24 +91,25 @@ s3.clear! { |object| object.last_modified &lt; Time.now - 7*24*60*60 }</pre>
 <span class="ruby-keyword">end</span>
 </pre>
 <ul><li>
-<p>The generated upload location will now always have the file extension in  lowercase format, even if the original file extension was uppercased.</p>
+<p>The generated upload location will now always have the file extension in lowercase format, even if the original file extension was uppercased.</p>
 </li><li>
-<p><code>Shrine::UploadedFile#extension</code> will now always return the extension in  lowercase format, even if the uploaded file ID or original filename have the  extension uppercased.</p>
+<p><a href="../../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-extension"><code>Shrine::UploadedFile#extension</code></a> will now always return the extension in lowercase format, even if the uploaded file ID or original filename have the extension uppercased.</p>
 </li><li>
-<p>Added support for file types which might have magic bytes farther than in the  first 256 KB when using <code>:file</code> analyzer in <code>determine_mime_type</code> plugin.</p>
+<p>Added support for file types which might have magic bytes farther than in the first 256 KB when using <code>:file</code> analyzer in <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin.</p>
 </li><li>
-<p>The <code>:filemagic</code> analyzer in <code>determine_mime_type</code> plugin now closes the  FileMagic descriptor even in case of exceptions.</p>
+<p>The <code>:filemagic</code> analyzer in <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin now closes the FileMagic descriptor even in case of exceptions.</p>
 </li><li>
-<p>Fixed <code>logging</code> plugin not working with <code>:json</code> format when ActiveSupport is  loaded.</p>
+<p>Fixed <code>logging</code> plugin not working with <code>:json</code> format when ActiveSupport is loaded.</p>
 </li><li>
-<p><code>Shrine::Storage::FileSystem</code> now expands relative directory paths on  initialization, which means that <code>Shrine::Storage::FileSystem#directory</code> and  <code>Shrine::Storage::FileSystem#path</code> will now always return absolute paths.  This fixes <a href="../../../classes/Shrine.html"><code>Shrine</code></a> not working with Rails applications running in detached  mode when <code>Shrine::Storage::FileSytem</code> was initialized with a relative  directory path.</p>
+<p><a href="../../../classes/Shrine/Storage/FileSystem.html"><code>Shrine::Storage::FileSystem</code></a> now expands relative directory paths on initialization, which means that <a href="../../../classes/Shrine/Storage/FileSystem.html#attribute-i-directory"><code>Shrine::Storage::FileSystem#directory</code></a> and <a href="../../../classes/Shrine/Storage/FileSystem.html#method-i-path"><code>Shrine::Storage::FileSystem#path</code></a> will now always return absolute paths. This fixes <a href="../../../classes/Shrine.html"><code>Shrine</code></a> not working with Rails applications running in detached mode when <code>Shrine::Storage::FileSytem</code> was initialized with a relative directory path.</p>
 </li></ul>
 
-<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
 <ul><li>
-<p><code>aws-sdk</code> 2.x has been deprecated in favour of the new <code>aws-sdk-s3</code> gem.  Starting with <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3 only <code>aws-sdk-s3</code> will be supported.</p>
+<p><code>aws-sdk</code> 2.x has been deprecated in favour of the new <code>aws-sdk-s3</code> gem. Starting with <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3 only <code>aws-sdk-s3</code> will be supported.</p>
 </li><li>
-<p>The file extension has been normalized to lowercase format, both when  generating the upload location and in <code>Shrine::UploadedFile#extension</code>. If  you were relying on the previous behaviour of keeping the original casing of  the file extension you will need to update your code.</p>
+<p>The file extension has been normalized to lowercase format, both when generating the upload location and in <a href="../../../classes/Shrine/UploadedFile/InstanceMethods.html#method-i-extension"><code>Shrine::UploadedFile#extension</code></a>. If you were relying on the previous behaviour of keeping the original casing of the file extension you will need to update your code.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -119,7 +121,7 @@ s3.clear! { |object| object.last_modified &lt; Time.now - 7*24*60*60 }</pre>
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::DerivationEndpoint::ClassMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -115,7 +116,7 @@ Shrine::Plugins::DerivationEndpoint::ClassMethods
 <div class='method public-instance' id='method-method-i-derivation_response'>
 <a name='method-i-derivation_response'></a>
 <div class='synopsis'>
-<span class='name'>derivation_response</span><span class='arguments'>(env, **options)</span>
+<span class='name'>derivation_response</span><span class='arguments'>(env, **)</span>
 
 </div>
 <div class='description'>
@@ -130,7 +131,7 @@ Shrine::Plugins::DerivationEndpoint::ClassMethods
 [show source]
 </a>
 <pre id='method-i-derivation_response-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
-<span class="line-num">51</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation_response</span>(<span class="ruby-identifier">env</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">51</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation_response</span>(<span class="ruby-identifier">env</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">52</span>   <span class="ruby-identifier">script_name</span> = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>]
 <span class="line-num">53</span>   <span class="ruby-identifier">path_info</span>   = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]
 <span class="line-num">54</span> 
@@ -143,7 +144,7 @@ Shrine::Plugins::DerivationEndpoint::ClassMethods
 <span class="line-num">61</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] <span class="ruby-operator">+=</span> <span class="ruby-identifier">match</span>.<span class="ruby-identifier">to_s</span>
 <span class="line-num">62</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]    = <span class="ruby-identifier">match</span>.<span class="ruby-identifier">post_match</span>
 <span class="line-num">63</span> 
-<span class="line-num">64</span>     <span class="ruby-identifier">derivation_endpoint</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)
+<span class="line-num">64</span>     <span class="ruby-identifier">derivation_endpoint</span>(<span class="ruby-operator">**</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)
 <span class="line-num">65</span>   <span class="ruby-keyword">ensure</span>
 <span class="line-num">66</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] = <span class="ruby-identifier">script_name</span>
 <span class="line-num">67</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]   = <span class="ruby-identifier">path_info</span>
@@ -179,7 +180,7 @@ Shrine::Plugins::DerivationEndpoint::ClassMethods
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

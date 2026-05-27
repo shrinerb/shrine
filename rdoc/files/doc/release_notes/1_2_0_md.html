@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>1.2.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,21 +29,19 @@
 <div class='paths'>
 doc/release_notes/1.2.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+1.2.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_2_0_md.html">1.2.0</a><span><a href="#label-title-3A+Shrine+1.2.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+1.2.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-120"><a href="#title-shrine-120">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="1_2_0_md.html">1.2.0</a></a></h2>
 
-<h1 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-New+features" class="legacy-anchor"></span>
+<h1 id="new-features"><a href="#new-features">New features</a></h1>
 <ul><li>
-<p><code>Shrine::Attacher.promote</code> and <code>Shrine::Attacher.delete</code> from the  backgrounding plugin now return the record (unless the record wasn’t found or  the action aborted).</p>
+<p><code>Shrine::Attacher.promote</code> and <code>Shrine::Attacher.delete</code> from the backgrounding plugin now return the record (unless the record wasn’t found or the action aborted).</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">PromoteJob</span>
@@ -55,15 +54,16 @@ Last Update:
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h1 id="other-improvements"><a href="#other-improvements">Other improvements</a></h1>
 <ul><li>
-<p>Custom metadata (which can be set by overriding <code>Shrine#extract_metadata</code>) is  now properly inherited from cached files, and <code>Shrine#extact_metadata</code> is now  only called once.</p>
+<p>Custom metadata (which can be set by overriding <a href="../../../classes/Shrine/InstanceMethods.html#method-i-extract_metadata"><code>Shrine#extract_metadata</code></a>) is now properly inherited from cached files, and <code>Shrine#extact_metadata</code> is now only called once.</p>
 </li><li>
-<p>If the record was deleted before the background job for promoting started,  instead of erroring, the job now ignores that error and immediately finishes.</p>
+<p>If the record was deleted before the background job for promoting started, instead of erroring, the job now ignores that error and immediately finishes.</p>
 </li><li>
-<p>Fixed a very unlikely scenario where a background job could replaced an  updated attachment on subsequent attachment updates, by wrapping the check if  the attachment changed and updating the attachment in a database transaction.</p>
+<p>Fixed a very unlikely scenario where a background job could replaced an updated attachment on subsequent attachment updates, by wrapping the check if the attachment changed and updating the attachment in a database transaction.</p>
 </li><li>
-<p>Prevented starting the background job if the attachment has already changed,  which fixes a relatively harmless attack where the end user could create a  lot of retrying jobs by updating the attachment with a corrupted file.</p>
+<p>Prevented starting the background job if the attachment has already changed, which fixes a relatively harmless attack where the end user could create a lot of retrying jobs by updating the attachment with a corrupted file.</p>
 </li><li>
 <p>All IOs are now closed even if their upload errors.</p>
 </li></ul>
@@ -77,7 +77,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

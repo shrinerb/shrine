@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>Shrine::Plugins::Derivatives::AttacherMethods</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -194,6 +195,10 @@ Shrine::Plugins::Derivatives::AttacherMethods
 <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</span>
 <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)
 <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; {}</span>
+
+<span class="ruby-comment"># With keep_derivatives: true</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</span>
 </pre>
 
 </div>
@@ -202,11 +207,11 @@ Shrine::Plugins::Derivatives::AttacherMethods
 [show source]
 </a>
 <pre id='method-i-change-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
-<span class="line-num">462</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-operator">*</span>)
-<span class="line-num">463</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>
-<span class="line-num">464</span>   <span class="ruby-identifier">set_derivatives</span>({})
-<span class="line-num">465</span>   <span class="ruby-identifier">result</span>
-<span class="line-num">466</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">466</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">467</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>
+<span class="line-num">468</span>   <span class="ruby-identifier">set_derivatives</span>({}) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">derivatives_options</span>[<span class="ruby-value">:keep_derivatives</span>]
+<span class="line-num">469</span>   <span class="ruby-identifier">result</span>
+<span class="line-num">470</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-create_derivatives'>
@@ -330,13 +335,13 @@ attacher.derivatives #=&gt; { thumb: #&lt;Shrine::UploadedFile ...&gt; }</pre>
 [show source]
 </a>
 <pre id='method-i-derivatives-3D-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
-<span class="line-num">472</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivatives=</span>(<span class="ruby-identifier">derivatives</span>)
-<span class="line-num">473</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">derivatives</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
-<span class="line-num">474</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;expected derivatives to be a Hash, got #{derivatives.inspect}&quot;</span>
-<span class="line-num">475</span>   <span class="ruby-keyword">end</span>
-<span class="line-num">476</span> 
-<span class="line-num">477</span>   <span class="ruby-ivar">@derivatives</span> = <span class="ruby-identifier">derivatives</span>
-<span class="line-num">478</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">476</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivatives=</span>(<span class="ruby-identifier">derivatives</span>)
+<span class="line-num">477</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">derivatives</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
+<span class="line-num">478</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;expected derivatives to be a Hash, got #{derivatives.inspect}&quot;</span>
+<span class="line-num">479</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">480</span> 
+<span class="line-num">481</span>   <span class="ruby-ivar">@derivatives</span> = <span class="ruby-identifier">derivatives</span>
+<span class="line-num">482</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-destroy'>
@@ -487,9 +492,9 @@ attacher.derivatives #=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</pre>
 [show source]
 </a>
 <pre id='method-i-map_derivative-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
-<span class="line-num">483</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">map_derivative</span>(<span class="ruby-identifier">derivatives</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-<span class="line-num">484</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">derivatives</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-<span class="line-num">485</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">487</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">map_derivative</span>(<span class="ruby-identifier">derivatives</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">488</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">derivatives</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">489</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-merge_derivatives'>
@@ -863,7 +868,7 @@ attacher.derivatives #=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</pre>
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>

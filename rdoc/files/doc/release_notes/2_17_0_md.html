@@ -2,6 +2,7 @@
 <html lang='en'>
 <head>
 <title>2.17.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -28,96 +29,96 @@
 <div class='paths'>
 doc/release_notes/2.17.0.md
 </div>
-<div class='last-update'>
-Last Update:
-<span class='datetime'>2023-07-30 18:26:06 +0200</span>
-</div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+2.17.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_17_0_md.html">2.17.0</a><span><a href="#label-title-3A+Shrine+2.17.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-title-3A+Shrine+2.17.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-2170"><a href="#title-shrine-2170">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_17_0_md.html">2.17.0</a></a></h2>
 
-<h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
 <ul><li>
-<p>The <code>download_endpoint</code> plugin now accepts ad-hoc options when creating the  endpoint instance, which override any plugin options.</p>
+<p>The <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> plugin now accepts ad-hoc options when creating the endpoint instance, which override any plugin options.</p>
 </li></ul>
 
-<p><code>rb   Shrine.download_endpoint(disposition: &quot;attachment&quot;) </code></p>
+<p><code>rb  Shrine.download_endpoint(disposition: &quot;attachment&quot;)  </code></p>
 <ul><li>
-<p>The <code>Shrine::Attacher#assign_remote_url</code> method in the <code>remote_url</code> plugin  now accepts additional options forwarded to <code>Shrine#upload</code>.</p>
+<p>The <code>Shrine::Attacher#assign_remote_url</code> method in the <a href="../../lib/shrine/plugins/remote_url_rb.html">remote_url</a> plugin now accepts additional options forwarded to <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a>.</p>
 </li></ul>
 
-<p><code>rb   attacher.assign_remote_url(url, metadata: { &quot;mime_type&quot; =&gt; &quot;text/plain&quot; }) </code></p>
+<p><code>rb  attacher.assign_remote_url(url, metadata: { &quot;mime_type&quot; =&gt; &quot;text/plain&quot; })  </code></p>
 <ul><li>
-<p>The <code>Shrine::Attacher#assign_data_uri</code> method has been added to the  <code>data_uri</code> plugin, which accepts additional <code>Shrine#upload</code> options.</p>
+<p>The <code>Shrine::Attacher#assign_data_uri</code> method has been added to the <a href="../../lib/shrine/plugins/data_uri_rb.html">data_uri</a> plugin, which accepts additional <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a> options.</p>
 </li></ul>
 
-<p><code>rb   attacher.assign_data_uri(uri, metadata: { &quot;filename&quot; =&gt; &quot;custom.txt&quot; }) </code></p>
+<p><code>rb  attacher.assign_data_uri(uri, metadata: { &quot;filename&quot; =&gt; &quot;custom.txt&quot; })  </code></p>
 <ul><li>
-<p>The <code>default_url</code> plugin now accepts a <code>:host</code> option for specifying the URL  host.</p>
+<p>The <a href="../../lib/shrine/plugins/default_url_rb.html">default_url</a> plugin now accepts a <code>:host</code> option for specifying the URL host.</p>
 </li></ul>
 
-<p>“‘rb  plugin :default_url, host: “<a target="_top" href="https://example.com">example.com</a>”</p>
+<p>“‘rb plugin :default_url, host: “<a target="_top" href="https://example.com">example.com</a>”</p>
 
-<p>Attacher.default_url { “/#{name}/missing.png” }  <code> </code>rb  user.avatar_url #=&gt; “<img src="https://example.com/avatar/missing.png" />”  “‘</p>
+<p>Attacher.default_url { “/#{name}/missing.png” } <code>  </code>rb user.avatar_url #=&gt; “<img src="https://example.com/avatar/missing.png" />” “‘</p>
 
-<h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
 <ul><li>
-<p>The <code>derivation_endpoint</code> plugin now works correctly when <code>moving</code> plugin  is loaded and <code>upload: true</code> is set.</p>
+<p>The <a href="../../lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a> plugin now works correctly when <code>moving</code> plugin is loaded and <code>upload: true</code> is set.</p>
 </li><li>
-<p>The <code>Shrine.download_endpoint</code> object is now compatible with the Rails router  again (this was broken in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_15_0_md.html">2.15.0</a>).</p>
+<p>The <code>Shrine.download_endpoint</code> object is now compatible with the Rails router again (this was broken in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="2_15_0_md.html">2.15.0</a>).</p>
 </li><li>
-<p>The <code>rack_response</code> plugin was in certain cases producing <code>nil</code>-chunks for  the response body, which caused exceptions with some web servers. This has  now been fixed.</p>
+<p>The <a href="../../lib/shrine/plugins/rack_response_rb.html">rack_response</a> plugin was in certain cases producing <code>nil</code>-chunks for the response body, which caused exceptions with some web servers. This has now been fixed.</p>
 </li><li>
-<p>The <code>rack_response</code> plugin now stops retrieving file content that goes past  the range specified in the <code>Range</code> header. This improves performance for  storage classes that internally use <code>Down::ChunkedIO</code>.</p>
+<p>The <a href="../../lib/shrine/plugins/rack_response_rb.html">rack_response</a> plugin now stops retrieving file content that goes past the range specified in the <code>Range</code> header. This improves performance for storage classes that internally use <code>Down::ChunkedIO</code>.</p>
 </li><li>
-<p>The <code>derivation_endpoint</code>, <code>rack_response</code>, and <code>download_endpoint</code> plugins  now include <code>ETag</code> in the headers of responses, preventing the <code>Rack::ETag</code>  middleware from buffering the response body.</p>
+<p>The <a href="../../lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a>, <a href="../../lib/shrine/plugins/rack_response_rb.html">rack_response</a>, and <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> plugins now include <code>ETag</code> in the headers of responses, preventing the <code>Rack::ETag</code> middleware from buffering the response body.</p>
 </li><li>
-<p>Fixed inheritance of <code>process</code> blocks in the <code>processing</code> plugin. Now adding  <code>process</code> blocks in the <code>Shrine</code> subclass won't affect the superclass.</p>
+<p>Fixed inheritance of <code>process</code> blocks in the <code>processing</code> plugin. Now adding <code>process</code> blocks in the <a href="../../../classes/Shrine.html"><code>Shrine</code></a> subclass won’t affect the superclass.</p>
 </li><li>
-<p>Improved performance of <code>Shrine::Storage::FileSystem#delete</code> by switching  from <code>Dir.foreach</code> to <code>Dir.empty?</code>.</p>
+<p>Improved performance of <a href="../../../classes/Shrine/Storage/FileSystem.html#method-i-delete"><code>Shrine::Storage::FileSystem#delete</code></a> by switching from <code>Dir.foreach</code> to <code>Dir.empty?</code>.</p>
 </li><li>
 <p>The <code>parsed_json</code> plugin now accepts hashes with symbol keys.</p>
 </li><li>
-<p>The <code>versions</code> plugin now accepts string version names in  <code>Shrine::Attacher#url</code>.</p>
+<p>The <code>versions</code> plugin now accepts string version names in <code>Shrine::Attacher#url</code>.</p>
 </li><li>
-<p>The <code>versions</code> plugin now supports returning a hash of versions with string  names inside the <code>process</code> block.</p>
+<p>The <code>versions</code> plugin now supports returning a hash of versions with string names inside the <code>process</code> block.</p>
 </li><li>
-<p>The <code>download_endpoint</code> plugin has been rewritten to use plain Rack, so Roda  isn’t a dependency anymore.</p>
+<p>The <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> plugin has been rewritten to use plain Rack, so Roda isn’t a dependency anymore.</p>
 </li><li>
-<p>The endpoint’s <code>#inspect</code> and <code>#to_s</code> outputs in <code>upload_endpoint</code>,  <code>presign_endpoint</code>, <code>download_endpoint</code>, and <code>derivation_endpoint</code> plugins  have been simplified. Now the <code>rake routes</code> command output in Rails apps  should be much more compact.</p>
+<p>The endpoint’s inspect and to_s outputs in <a href="../../lib/shrine/plugins/upload_endpoint_rb.html">upload_endpoint</a>, <a href="../../lib/shrine/plugins/presign_endpoint_rb.html">presign_endpoint</a>, <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a>, and <a href="../../lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a> plugins have been simplified. Now the <code>rake routes</code> command output in Rails apps should be much more compact.</p>
 </li></ul>
 
-<p>“‘rb  # BEFORE:  ImageUploader.upload_endpoint(:cache) #=&gt; <Shrine::Plugins::UploadEndpoint::App:0x00007f91bec17dc8 @max_size=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache, @upload=nil, @upload_context=nil&gt;  ImageUploader.presign_endpoint(:cache) #=&gt; <Shrine::Plugins::PresignEndpoint::App:0x00007f91beca4ea8 @presign=nil, @presign_location=nil, @presign_options=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache&gt;  ImageUploader.download_endpoint #=&gt; <Class:0x00007f91bed1fa90&gt;  ImageUploader.derivation_endpoint #=&gt; <Shrine::DerivationEndpoint:0x00007f91bed4c900 @options={}, @shrine_class=ImageUploader&gt;</p>
+<p>“‘rb # BEFORE: ImageUploader.upload_endpoint(:cache) #=&gt; <Shrine::Plugins::UploadEndpoint::App:0x00007f91bec17dc8 @max_size=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache, @upload=nil, @upload_context=nil&gt; ImageUploader.presign_endpoint(:cache) #=&gt; <Shrine::Plugins::PresignEndpoint::App:0x00007f91beca4ea8 @presign=nil, @presign_location=nil, @presign_options=nil, @rack_response=nil, @shrine_class=ImageUploader, @storage_key=:cache&gt; ImageUploader.download_endpoint #=&gt; <Class:0x00007f91bed1fa90&gt; ImageUploader.derivation_endpoint #=&gt; <Shrine::DerivationEndpoint:0x00007f91bed4c900 @options={}, @shrine_class=ImageUploader&gt;</p>
 
-<p># AFTER:  ImageUploader.upload_endpoint(:cache) #=&gt; <ImageUploader::UploadEndpoint(:cache)&gt;  ImageUploader.presign_endpoint(:cache) #=&gt; <ImageUploader::PresignEndpoint(:cache)&gt;  ImageUploader.download_endpoint #=&gt; <ImageUploader::DownloadEndpoint&gt;  ImageUploader.derivation_endpoint #=&gt; <ImageUploader::DerivationEndpoint&gt;  “‘</p>
+<p># AFTER: ImageUploader.upload_endpoint(:cache) #=&gt; <ImageUploader::UploadEndpoint(:cache)&gt; ImageUploader.presign_endpoint(:cache) #=&gt; <ImageUploader::PresignEndpoint(:cache)&gt; ImageUploader.download_endpoint #=&gt; <ImageUploader::DownloadEndpoint&gt; ImageUploader.derivation_endpoint #=&gt; <ImageUploader::DerivationEndpoint&gt; “‘</p>
 <ul><li>
-<p>The <code>derivation_endpoint</code> plugin is now compatible with Rack 1.6.</p>
+<p>The <a href="../../lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a> plugin is now compatible with Rack 1.6.</p>
 </li><li>
-<p>The <code>metadata_attributes</code> plugin now preserves <code>Attacher#assign</code> method  signature, by retaining the second <code>options</code> argument.</p>
+<p>The <a href="../../lib/shrine/plugins/metadata_attributes_rb.html">metadata_attributes</a> plugin now preserves <code>Attacher#assign</code> method signature, by retaining the second <code>options</code> argument.</p>
 </li></ul>
 
-<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
 <ul><li>
 <p>The support for MRI 2.3 has been dropped.</p>
 </li><li>
-<p>The automatic filename fallback was removed from the <code>:marcel</code> analyzer in  <code>determine_mime_type</code> plugin, as in some cases it caused MIME type to be  incorrectly determined and could cause potential security issues. You can  still opt in for it:</p>
+<p>The automatic filename fallback was removed from the <code>:marcel</code> analyzer in <a href="../../lib/shrine/plugins/determine_mime_type_rb.html">determine_mime_type</a> plugin, as in some cases it caused MIME type to be incorrectly determined and could cause potential security issues. You can still opt in for it:</p>
 </li></ul>
 
-<p><code>rb   plugin :determine_mime_type, analyzer: :marcel, analyzer_options: { filename_fallback: true } </code></p>
+<p><code>rb  plugin :determine_mime_type, analyzer: :marcel, analyzer_options: { filename_fallback: true }  </code></p>
 <ul><li>
-<p>The <code>Shrine::Plugins::UploadEndpoint::App</code> class from the <code>upload_endpoint</code>  plugin has been renamed to <code>Shrine::UploadEndpoint</code>. The old constant will be  removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
+<p>The <code>Shrine::Plugins::UploadEndpoint::App</code> class from the <a href="../../lib/shrine/plugins/upload_endpoint_rb.html">upload_endpoint</a> plugin has been renamed to <a href="../../../classes/Shrine/UploadEndpoint.html"><code>Shrine::UploadEndpoint</code></a>. The old constant will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li><li>
-<p>The <code>Shrine::Plugins::PresignEndpoint::App</code> class from the <code>presign_endpoint</code>  plugin has been renamed to <code>Shrine::PresignEndpoint</code>. The old constant will  be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
+<p>The <code>Shrine::Plugins::PresignEndpoint::App</code> class from the <a href="../../lib/shrine/plugins/presign_endpoint_rb.html">presign_endpoint</a> plugin has been renamed to <a href="../../../classes/Shrine/PresignEndpoint.html"><code>Shrine::PresignEndpoint</code></a>. The old constant will be removed in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.</p>
 </li><li>
-<p>The <code>Shrine::Plugins::DownloadEndpoint::App</code> class is not a <code>Roda</code> subclass  anymore, it’s now a PORO whose instance responds to <code>#call</code>. This shouldn’t  affect your code unless you were calling Roda methods on that class.</p>
+<p>The <code>Shrine::Plugins::DownloadEndpoint::App</code> class is not a <code>Roda</code> subclass anymore, it’s now a PORO whose instance responds to call. This shouldn’t affect your code unless you were calling Roda methods on that class.</p>
 </li><li>
-<p>The plugin options of <code>upload_endpoint</code>, <code>presign_endpoint</code>, and  <code>download_endpoint</code> are now internally stored in a different place in  <code>Shrine.opts</code>. This shouldn’t affect your code unless you were accessing  these options directly.</p>
+<p>The plugin options of <a href="../../lib/shrine/plugins/upload_endpoint_rb.html">upload_endpoint</a>, <a href="../../lib/shrine/plugins/presign_endpoint_rb.html">presign_endpoint</a>, and <a href="../../lib/shrine/plugins/download_endpoint_rb.html">download_endpoint</a> are now internally stored in a different place in <a href="../../../classes/Shrine/InstanceMethods.html#method-i-opts"><code>Shrine.opts</code></a>. This shouldn’t affect your code unless you were accessing these options directly.</p>
 </li><li>
-<p>The <code>Shrine::UrlSigner</code> internal class in <code>derivation_endpoint</code> plugin has  been updated. This shouldn’t affect your code unless you were  using/overriding that class.</p>
+<p>The <a href="../../../classes/Shrine/UrlSigner.html"><code>Shrine::UrlSigner</code></a> internal class in <a href="../../lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a> plugin has been updated. This shouldn’t affect your code unless you were using/overriding that class.</p>
 </li></ul>
 </div>
 <div id='context'>
@@ -129,7 +130,7 @@ Last Update:
 <div id='footer-push'></div>
 </div>
 <div id='footer'>
-<a href="https://github.com/jeremyevans/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
 </div>
 </body>
 </html>
