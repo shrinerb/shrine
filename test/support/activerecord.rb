@@ -1,7 +1,7 @@
 require "active_record"
 
 ActiveRecord::Base.establish_connection(
-  adapter:  "sqlite3",
+  adapter:  RUBY_ENGINE == "jruby" ? "jdbcsqlite3" : "sqlite3",
   database: ":memory:",
 )
 
