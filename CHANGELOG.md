@@ -1,5 +1,7 @@
 ## 3.7.0 (2026-05-27)
 
+* `rack_response` - Add `:etag` option for setting a custom `ETag` header (@janko)
+
 * `download_endpoint` - Add support for expiring URLs (@davidwessman)
 
 * `s3` - Use `TransferManager` where available instead of deprecated `upload_steam` (@danieldevlewis)

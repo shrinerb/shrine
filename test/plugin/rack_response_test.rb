@@ -234,7 +234,7 @@ describe Shrine::Plugins::RackResponse do
 
   it "allows custom ETAG value" do
     uploaded_file = @uploader.upload(fakeio)
-    response = uploaded_file.to_rack_response(custom_etag: "VeryCustomETAG")
+    response = uploaded_file.to_rack_response(etag: "VeryCustomETAG")
     assert_instance_of String,    response[1]["ETag"]
     assert_match "VeryCustomETAG", response[1]["ETag"]
   end

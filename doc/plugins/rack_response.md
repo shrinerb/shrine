@@ -95,6 +95,15 @@ headers["Content-Range"]  #=> "bytes 100-200/1000"
 body                      # partial content
 ```
 
+## ETag
+
+A custom ETag value can be provided via the `:etag` option:
+
+```rb
+response = uploaded_file.to_rack_response(etag: "my-custom-etag")
+response[1]["ETag"] #=> "my-custom-etag"
+```
+
 ## Download options
 
 The `#to_rack_response` method will automatically open the `UploadedFile` if it
