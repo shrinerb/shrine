@@ -161,7 +161,7 @@ class Shrine
         #     attacher.stored?(attacher.derivatives[:thumb]) #=> true
         def promote(**options)
           super
-          promote_derivatives
+          promote_derivatives(**options)
           create_derivatives if create_derivatives_on_promote?
         end
 
