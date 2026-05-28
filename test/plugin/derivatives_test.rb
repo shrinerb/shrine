@@ -327,6 +327,17 @@ describe Shrine::Plugins::Derivatives do
         assert_equal "foo", @attacher.file.id
       end
 
+      it "forwards promote options to derivatives" do
+        @shrine.plugin :upload_options, store: -> (_io, options) { { foo: options[:foo] } }
+
+        @attacher.attach_cached(fakeio)
+        @attacher.add_derivative(:one, fakeio, storage: :cache)
+
+        @shrine.storages[:store].expects(:upload).twice.with { |*, options| options[:foo] == "bar" }
+
+        @attacher.promote(foo: "bar")
+      end
+
       it "works with backgrounding plugin" do
         @attacher = attacher do
           plugin :backgrounding
