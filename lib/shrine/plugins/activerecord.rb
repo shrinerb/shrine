@@ -108,12 +108,12 @@ class Shrine
           record.transaction { yield record.clone.reload(lock: true) }
         end
 
-        # Returns true if the data attribute represents a JSON or JSONB column.
+        # Returns true if the data attribute type is JSON or JSONB.
         # Used by the _persistence plugin to determine whether serialization
         # should be skipped.
         def activerecord_hash_attribute?
-          column = record.class.columns_hash[attribute.to_s]
-          column && [:json, :jsonb].include?(column.type)
+          attribute_type = record.class.type_for_attribute(attribute.to_s)
+          attribute_type && [:json, :jsonb].include?(attribute_type.type)
         end
 
         # Returns whether the record is an ActiveRecord model. Used by the
