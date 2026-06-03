@@ -55,7 +55,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-call'>
 <a name='method-i-call'></a>
 <div class='synopsis'>
-<span class='name'>call</span><span class='arguments'>(host: nil, prefix: nil, metadata: [], **)</span>
+<span class='name'>call</span><span class='arguments'>(host: nil, prefix: nil, metadata: [], format: nil, **)</span>
 
 </div>
 <div class='description'>
@@ -66,9 +66,9 @@ Superclass:
 [show source]
 </a>
 <pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
-<span class="line-num">306</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-value">host:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">prefix:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">metadata:</span> [], <span class="ruby-operator">**</span>)
+<span class="line-num">306</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-value">host:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">prefix:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">metadata:</span> [], <span class="ruby-value">format:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)
 <span class="line-num">307</span>   <span class="ruby-identifier">base_url</span> = [<span class="ruby-identifier">host</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">prefix</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)
-<span class="line-num">308</span>   <span class="ruby-identifier">path</span> = <span class="ruby-identifier">path_identifier</span>(<span class="ruby-value">metadata:</span>)
+<span class="line-num">308</span>   <span class="ruby-identifier">path</span> = <span class="ruby-identifier">path_identifier</span>(<span class="ruby-value">metadata:</span>, <span class="ruby-value">format:</span>)
 <span class="line-num">309</span> 
 <span class="line-num">310</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">signer</span>
 <span class="line-num">311</span>     <span class="ruby-identifier">url</span> = [<span class="ruby-identifier">base_url</span>, <span class="ruby-identifier">path</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)

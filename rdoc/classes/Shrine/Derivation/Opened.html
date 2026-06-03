@@ -68,12 +68,12 @@ Superclass:
 [show source]
 </a>
 <pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>
-<span class="line-num">684</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>
-<span class="line-num">685</span>   <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">upload_storage</span>, <span class="ruby-value">id:</span> <span class="ruby-identifier">upload_location</span>)
-<span class="line-num">686</span>   <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">upload_open_options</span>)
-<span class="line-num">687</span>   <span class="ruby-identifier">uploaded_file</span>
-<span class="line-num">688</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">FileNotFound</span>
-<span class="line-num">689</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">686</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>
+<span class="line-num">687</span>   <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-value">storage:</span> <span class="ruby-identifier">upload_storage</span>, <span class="ruby-value">id:</span> <span class="ruby-identifier">upload_location</span>)
+<span class="line-num">688</span>   <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">upload_open_options</span>)
+<span class="line-num">689</span>   <span class="ruby-identifier">uploaded_file</span>
+<span class="line-num">690</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">FileNotFound</span>
+<span class="line-num">691</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

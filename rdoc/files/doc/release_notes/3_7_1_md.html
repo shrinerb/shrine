@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>3.7.1.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>3.7.1.md
+</h1>
+<div class='paths'>
+doc/release_notes/3.7.1.md
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>—</p>
+
+<span id="label-title-3A+Shrine+3.7.1" class="legacy-anchor"></span>
+<h2 id="title-shrine-371"><a href="#title-shrine-371">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_7_1_md.html">3.7.1</a></a></h2>
+
+<span id="label-Bug+fixes" class="legacy-anchor"></span>
+<h2 id="bug-fixes"><a href="#bug-fixes">Bug fixes</a></h2>
+<ul><li>
+<p>When initializing <a href="../../../classes/Shrine.html"><code>Shrine</code></a> with the <code>activerecord</code> plugin, under Bootsnap 1.24.5 and Ruby 3.4.5 this would raise an error:</p>
+</li></ul>
+
+<p><code>  ArgumentError: wrong number of arguments (given 2, expected 1; required keyword: plugin)  </code></p>
+
+<p>The seems to be triggered by a special combination of method signatures, where keyword arguments get converted into positional arguments under Bootsnap. To work around this issue, method signatures of some plugin methods have been updated.</p>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
+</div>
+</body>
+</html>
