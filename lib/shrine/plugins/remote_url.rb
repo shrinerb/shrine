@@ -18,7 +18,7 @@ class Shrine
 
       DOWNLOADER = -> (url, **options) { Down.download(url, **options) }
 
-      def self.load_dependencies(uploader, *)
+      def self.load_dependencies(uploader, **)
         uploader.plugin :validation
       end
 

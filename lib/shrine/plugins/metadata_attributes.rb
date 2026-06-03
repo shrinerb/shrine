@@ -4,7 +4,7 @@ class Shrine
   module Plugins
     # Documentation can be found on https://shrinerb.com/docs/plugins/metadata_attributes
     module MetadataAttributes
-      def self.load_dependencies(uploader, *)
+      def self.load_dependencies(uploader, **)
         uploader.plugin :entity
       end
 

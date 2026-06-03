@@ -32,7 +32,7 @@ class Shrine
         "%.1f %s" % [bytes.to_f / 1024 ** exp, FILESIZE_UNITS[exp]]
       end
 
-      def self.load_dependencies(uploader, *)
+      def self.load_dependencies(uploader, **)
         uploader.plugin :validation
       end
 

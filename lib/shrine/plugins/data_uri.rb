@@ -24,7 +24,7 @@ class Shrine
         }.inspect}"
       end
 
-      def self.load_dependencies(uploader, *)
+      def self.load_dependencies(uploader, **)
         uploader.plugin :validation
       end
 

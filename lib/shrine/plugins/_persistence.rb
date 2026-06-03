@@ -7,7 +7,7 @@ class Shrine
     #
     #     plugin :_persistence, plugin: MyPlugin
     module Persistence
-      def self.load_dependencies(uploader, *)
+      def self.load_dependencies(uploader, **)
         uploader.plugin :atomic_helpers
         uploader.plugin :entity
       end
