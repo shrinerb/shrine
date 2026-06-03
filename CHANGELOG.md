@@ -1,3 +1,7 @@
+## 3.7.1 (2026-06-03)
+
+* Update method signatures of some plugins to work around a Bootsnap bug causing a `wrong number of arguments` error.
+
 ## 3.7.0 (2026-05-27)
 
 * `rack_response` - Add `:etag` option for setting a custom `ETag` header (@janko)
