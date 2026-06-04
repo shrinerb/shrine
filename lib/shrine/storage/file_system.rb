@@ -113,9 +113,18 @@ class Shrine
         end
       end
 
-      # Returns the full path to the file.
+      # Returns the full path to the file. Raises Shrine::Error if the id would
+      # resolve to a location outside of the storage #directory (e.g. an id
+      # containing `../` path traversal sequences in attacker-controlled data).
       def path(id)
-        directory.join(id.gsub("/", File::SEPARATOR))
+        path = directory.join(id.gsub("/", File::SEPARATOR))
+        expanded = path.expand_path
+
+        unless expanded == directory || expanded.to_s.start_with?("#{directory}#{File::SEPARATOR}")
+          raise Shrine::Error, "path #{id.inspect} resolves outside of the storage directory"
+        end
+
+        path
       end
 
       protected

@@ -351,7 +351,21 @@ describe Shrine::Storage::FileSystem do
   end
 
   it "forbids traversal" do
-    # assertions
+    @storage.upload(fakeio, "foo.jpg")
+
+    # absolute escape and relative `../` escape both rejected
+    ["../../../../tmp/test.txt", "/etc/passwd", "foo/../../../etc/passwd"].each do |id|
+      assert_raises(Shrine::Error) { @storage.path(id) }
+      assert_raises(Shrine::Error) { @storage.open(id) }
+      assert_raises(Shrine::Error) { @storage.exists?(id) }
+      assert_raises(Shrine::Error) { @storage.delete(id) }
+      assert_raises(Shrine::Error) { @storage.upload(fakeio, id) }
+    end
+
+    # legitimate ids (including ones with harmless `..` segments) still work
+    assert_equal "#{root}/foo.jpg",       @storage.path("foo.jpg").to_s
+    assert_equal "#{root}/a/b/c.jpg",     @storage.path("a/b/c.jpg").to_s
+    assert_equal "#{root}/a/b/../c.jpg",  @storage.path("a/b/../c.jpg").to_s # stays within root
   end
 
   def assert_permissions(expected, path)
