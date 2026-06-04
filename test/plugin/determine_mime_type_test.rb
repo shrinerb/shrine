@@ -65,7 +65,7 @@ describe Shrine::Plugins::DetermineMimeType do
       Open3.stubs(:popen3).yields(stderr_result)
       assert_output(nil, "stderr\n") { @shrine.determine_mime_type(image) }
     end
-  end
+  end unless RUBY_ENGINE == "jruby"
 
   describe ":fastimage analyzer" do
     before do
