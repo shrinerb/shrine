@@ -21,7 +21,7 @@ describe Shrine::Plugins::DetermineMimeType do
 
     it "returns text/plain for unidentified MIME types" do
       assert_includes ["text/plain", "application/octet-stream"], @shrine.determine_mime_type(fakeio("a" * 5*1024*1024))
-    end
+    end unless RUBY_ENGINE == "jruby"
 
     it "is able to determine MIME type for non-files" do
       assert_equal "image/jpeg", @shrine.determine_mime_type(fakeio(image.read))
@@ -65,7 +65,7 @@ describe Shrine::Plugins::DetermineMimeType do
       Open3.stubs(:popen3).yields(stderr_result)
       assert_output(nil, "stderr\n") { @shrine.determine_mime_type(image) }
     end
-  end unless RUBY_ENGINE == "jruby"
+  end
 
   describe ":fastimage analyzer" do
     before do
