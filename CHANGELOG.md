@@ -1,6 +1,18 @@
+## 3.8.0 (2026-06-24)
+
+* `s3` – Use single-request uploads for smaller files again instead of always using multipart uploads (@janko)
+
+* `derivatives` – Forward `Attacher#promote` options to `Attacher#upload_derivatives` (@milkcocoa)
+
+* `file_system` – Prevent path traversal outside of the storage directory (@janko)
+
 ## 3.7.1 (2026-06-03)
 
-* Update method signatures of some plugins to work around a Bootsnap bug causing a `wrong number of arguments` error.
+* Update method signatures of some plugins to work around a Bootsnap bug causing a `wrong number of arguments` error (@janko)
+
+* `derivation_endpoint` – Add `:format` argument to `UploadedFile#derivation_url` for path extension (@janko)
+
+* `rack_response` – Add `:etag` argument for setting a custom `ETag` (@camilohollanda)
 
 ## 3.7.0 (2026-05-27)
 
