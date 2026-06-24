@@ -279,7 +279,7 @@ Superclass:
 </div>
 <div class='description'>
 
-<p>Returns the full path to the file.</p>
+<p>Returns the full path to the file. Raises <a href="../Error.html"><code>Shrine::Error</code></a> if the id would resolve to a location outside of the storage <a href="FileSystem.html#attribute-i-directory"><code>directory</code></a> (e.g. an id containing <code>../</code> path traversal sequences in attacker-controlled data).</p>
 
 </div>
 <div class='source'>
@@ -287,9 +287,16 @@ Superclass:
 [show source]
 </a>
 <pre id='method-i-path-source'>    <span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>
-<span class="line-num">117</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">path</span>(<span class="ruby-identifier">id</span>)
-<span class="line-num">118</span>   <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">id</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-string">&quot;/&quot;</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">SEPARATOR</span>))
-<span class="line-num">119</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">119</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">path</span>(<span class="ruby-identifier">id</span>)
+<span class="line-num">120</span>   <span class="ruby-identifier">path</span> = <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">id</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-string">&quot;/&quot;</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">SEPARATOR</span>))
+<span class="line-num">121</span>   <span class="ruby-identifier">expanded</span> = <span class="ruby-identifier">path</span>.<span class="ruby-identifier">expand_path</span>
+<span class="line-num">122</span> 
+<span class="line-num">123</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">expanded</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">directory</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">expanded</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-node">&quot;#{directory}#{File::SEPARATOR}&quot;</span>)
+<span class="line-num">124</span>     <span class="ruby-identifier">raise</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;path #{id.inspect} resolves outside of the storage directory&quot;</span>
+<span class="line-num">125</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">126</span> 
+<span class="line-num">127</span>   <span class="ruby-identifier">path</span>
+<span class="line-num">128</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-upload'>

@@ -33,10 +33,24 @@ CHANGELOG.md
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<span id="label-3.8.0+-282026-06-24-29" class="legacy-anchor"></span>
+<h2 id="380-2026-06-24"><a href="#380-2026-06-24"><a href="doc/release_notes/3_8_0_md.html">3.8.0</a> (2026-06-24)</a></h2>
+<ul><li>
+<p><code>s3</code> – Use single-request uploads for smaller files again instead of always using multipart uploads (@janko)</p>
+</li><li>
+<p><code>derivatives</code> – Forward <code>Attacher#promote</code> options to <code>Attacher#upload_derivatives</code> (@milkcocoa)</p>
+</li><li>
+<p><a href="lib/shrine/storage/file_system_rb.html">file_system</a> – Prevent path traversal outside of the storage directory (@janko)</p>
+</li></ul>
+
 <span id="label-3.7.1+-282026-06-03-29" class="legacy-anchor"></span>
 <h2 id="371-2026-06-03"><a href="#371-2026-06-03"><a href="doc/release_notes/3_7_1_md.html">3.7.1</a> (2026-06-03)</a></h2>
 <ul><li>
-<p>Update method signatures of some plugins to work around a Bootsnap bug causing a <code>wrong number of arguments</code> error.</p>
+<p>Update method signatures of some plugins to work around a Bootsnap bug causing a <code>wrong number of arguments</code> error (@janko)</p>
+</li><li>
+<p><a href="lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a> – Add <code>:format</code> argument to <code>UploadedFile#derivation_url</code> for path extension (@janko)</p>
+</li><li>
+<p><a href="lib/shrine/plugins/rack_response_rb.html">rack_response</a> – Add <code>:etag</code> argument for setting a custom <code>ETag</code> (@camilohollanda)</p>
 </li></ul>
 
 <span id="label-3.7.0+-282026-05-27-29" class="legacy-anchor"></span>

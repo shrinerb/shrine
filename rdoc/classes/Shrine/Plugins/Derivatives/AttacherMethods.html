@@ -601,7 +601,7 @@ attacher.derivatives #=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</pre>
 <pre id='method-i-promote-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
 <span class="line-num">162</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
 <span class="line-num">163</span>   <span class="ruby-keyword">super</span>
-<span class="line-num">164</span>   <span class="ruby-identifier">promote_derivatives</span>
+<span class="line-num">164</span>   <span class="ruby-identifier">promote_derivatives</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
 <span class="line-num">165</span>   <span class="ruby-identifier">create_derivatives</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">create_derivatives_on_promote?</span>
 <span class="line-num">166</span> <span class="ruby-keyword">end</span></pre>
 </div>

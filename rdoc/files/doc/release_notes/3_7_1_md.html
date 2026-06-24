@@ -38,6 +38,21 @@ doc/release_notes/3.7.1.md
 <span id="label-title-3A+Shrine+3.7.1" class="legacy-anchor"></span>
 <h2 id="title-shrine-371"><a href="#title-shrine-371">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_7_1_md.html">3.7.1</a></a></h2>
 
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
+<ul><li>
+<p>The <a href="../../lib/shrine/plugins/derivation_endpoint_rb.html">derivation_endpoint</a> plugin now supports adding a file extension to the derivation URL path via the <code>:format</code> option on <code>UploadedFile#derivation_url</code>. Some HTTP clients and CDNs use the URL path extension to determine the content type of the response.</p>
+</li></ul>
+
+<p><code>rb  uploaded_file.derivation_url(:thumbnail, format: &quot;jpg&quot;)  #=&gt; &quot;.../thumbnail/eyJpZCI6ImZvbyIsInN.jpg?signature=...&quot;  </code></p>
+
+<p>The extension is included in the URL signature, so it cannot be tampered with.</p>
+<ul><li>
+<p>The <a href="../../lib/shrine/plugins/rack_response_rb.html">rack_response</a> plugin now accepts an <code>:etag</code> option for setting a custom <code>ETag</code> header, overriding the default one <a href="../../../classes/Shrine.html"><code>Shrine</code></a> generates.</p>
+</li></ul>
+
+<p><code>rb  response = uploaded_file.to_rack_response(etag: &quot;my-custom-etag&quot;)  response[1][&quot;ETag&quot;] #=&gt; &quot;my-custom-etag&quot;  </code></p>
+
 <span id="label-Bug+fixes" class="legacy-anchor"></span>
 <h2 id="bug-fixes"><a href="#bug-fixes">Bug fixes</a></h2>
 <ul><li>

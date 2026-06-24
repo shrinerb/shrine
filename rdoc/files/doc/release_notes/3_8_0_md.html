@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>3.8.0.md</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>3.8.0.md
+</h1>
+<div class='paths'>
+doc/release_notes/3.8.0.md
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>—</p>
+
+<span id="label-title-3A+Shrine+3.8.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-380"><a href="#title-shrine-380">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_8_0_md.html">3.8.0</a></a></h2>
+
+<span id="label-Security" class="legacy-anchor"></span>
+<h2 id="security"><a href="#security">Security</a></h2>
+<ul><li>
+<p>The <a href="../../lib/shrine/storage/file_system_rb.html">file_system</a> storage now prevents path traversal outside of the storage directory. Previously, an id containing <code>../</code> sequences (e.g. coming from attacker-controlled data) could resolve to a location outside of the configured storage directory. Now <a href="../../../classes/Shrine/Error.html"><code>Shrine::Error</code></a> is raised whenever an id would resolve outside of the storage directory:</p>
+</li></ul>
+
+<p><code>rb  storage = Shrine::Storage::FileSystem.new(&quot;uploads&quot;)  storage.open(&quot;../../etc/passwd&quot;) #~&gt; Shrine::Error  </code></p>
+
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
+<ul><li>
+<p>The <code>derivatives</code> plugin now forwards options passed to <code>Attacher#promote</code> into <code>Attacher#upload_derivatives</code>. This means options such as upload options reach the derivatives upload as well, not just the main file.</p>
+</li></ul>
+
+<p><code>rb  attacher.promote(upload_options: { acl: &quot;public-read&quot; })  # the same options are now forwarded when uploading derivatives  </code></p>
+
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
+<ul><li>
+<p>The <code>s3</code> storage again uses single-request uploads for smaller files, instead of always using multipart uploads. In <a href="../../../classes/Shrine.html"><code>Shrine</code></a> <a href="3_7_0_md.html">3.7.0</a>, when a <code>TransferManager</code> was available, it was used for uploads of any size, but <code>TransferManager</code> uploads via multipart unconditionally, which is inefficient for smaller files. Now files at or below the multipart threshold (<code>:upload</code>, 15MB by default) are uploaded in a single request, and only larger files use multipart upload via the <code>TransferManager</code> (falling back to the older API when it’s not available).</p>
+</li></ul>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/jeremyevans/hanna"><strong>Hanna</strong> RDoc template</a>
+</div>
+</body>
+</html>
