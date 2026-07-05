@@ -36,7 +36,7 @@ direct uploads for fully asynchronous user experience.
   gem.add_dependency "down", "~> 5.1"
   gem.add_dependency "content_disposition", "~> 1.0"
 
-  gem.add_development_dependency "rdoc", "~> 8.0"
+  gem.add_development_dependency "rdoc", "~> 8.0" unless RUBY_ENGINE == "jruby"
 
   # general testing helpers
   gem.add_development_dependency "rake", ">= 11.1"
