@@ -177,6 +177,39 @@ model errors, you can set `:validations` to `false`:
 plugin :activerecord, validations: false
 ```
 
+### JSON columns
+
+When the data attribute is backed by a `json` or `jsonb` database column,
+Active Record already serializes hashes into JSON, so Shrine skips its own
+serialization to avoid double encoding.
+
+```rb
+class Photo < ActiveRecord::Base # `image_data` is a jsonb column
+  include ImageUploader::Attachment(:image)
+end
+```
+```rb
+photo.image = file
+photo.image_data #=> { "id" => "bc2e13.jpg", "storage" => "cache", "metadata" => { ... } }
+```
+
+By default this detection only looks at real database columns. If you declare
+the data attribute type via the [Attributes API] (e.g. on top of a `text`
+column), enable the `:attribute_types` option so it's recognized as well:
+
+```rb
+plugin :activerecord, attribute_types: true
+```
+```rb
+class Photo < ActiveRecord::Base # `image_data` is a text column
+  include ImageUploader::Attachment(:image)
+
+  attribute :image_data, :json
+end
+```
+
+This option defaults to `false` for backwards compatibility.
+
 ## Attacher
 
 You can also use `Shrine::Attacher` directly (with or without the
@@ -217,6 +250,7 @@ See [persistence] docs for more details.
 
 [activerecord]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/activerecord.rb
 [Active Record]: https://guides.rubyonrails.org/active_record_basics.html
+[Attributes API]: https://api.rubyonrails.org/classes/ActiveRecord/Attributes/ClassMethods.html#method-i-attribute
 [model]: https://shrinerb.com/docs/plugins/model
 [callbacks]: https://guides.rubyonrails.org/active_record_callbacks.html
 [bug with transaction callbacks]: https://github.com/rails/rails/issues/14493

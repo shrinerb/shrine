@@ -12,7 +12,7 @@ class Shrine
       end
 
       def self.configure(uploader, **opts)
-        uploader.opts[:activerecord] ||= { callbacks: true, validations: true }
+        uploader.opts[:activerecord] ||= { callbacks: true, validations: true, attribute_types: false }
         uploader.opts[:activerecord].merge!(opts)
       end
 
@@ -108,12 +108,22 @@ class Shrine
           record.transaction { yield record.clone.reload(lock: true) }
         end
 
-        # Returns true if the data attribute type is JSON or JSONB.
+        # Returns true if the data attribute represents a JSON or JSONB type.
         # Used by the _persistence plugin to determine whether serialization
         # should be skipped.
+        #
+        # By default only real database columns are checked. When the
+        # `:attribute_types` plugin option is enabled, the check uses
+        # `type_for_attribute`, so attributes declared via the Attributes API
+        # are recognized as well.
         def activerecord_hash_attribute?
-          attribute_type = record.class.type_for_attribute(attribute.to_s)
-          attribute_type && [:json, :jsonb].include?(attribute_type.type)
+          if shrine_class.opts[:activerecord][:attribute_types]
+            attribute_type = record.class.type_for_attribute(attribute.to_s)
+            attribute_type && [:json, :jsonb].include?(attribute_type.type)
+          else
+            column = record.class.columns_hash[attribute.to_s]
+            column && [:json, :jsonb].include?(column.type)
+          end
         end
 
         # Returns whether the record is an ActiveRecord model. Used by the

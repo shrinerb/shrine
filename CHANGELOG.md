@@ -1,3 +1,7 @@
+## Unreleased
+
+* `activerecord` – Add `:attribute_types` option for skipping serialization of JSON/JSONB attributes declared via the Attributes API, not just database columns (@vojtad, @janko)
+
 ## 3.8.0 (2026-06-24)
 
 * `s3` – Use single-request uploads for smaller files again instead of always using multipart uploads (@janko)

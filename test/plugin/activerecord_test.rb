@@ -273,20 +273,58 @@ describe Shrine::Plugins::Activerecord do
   describe "Attacher" do
     describe "JSON columns" do
       [:json, :jsonb].each do |type|
-        it "handles #{type} type" do
-          # redefine attribute type to make :jsonb test
-          @user.class.type_for_attribute("json_avatar_data").class.send(:define_method, :type) { type }
+        it "skips serialization for #{type} database columns" do
+          # work around Active Record casting assigned values into a string
+          @user.class.send(:attr_accessor, :avatar_data)
 
-          assert_equal @user.class.type_for_attribute("json_avatar_data").type, type
+          columns_hash = @user.class.columns_hash.dup # unfreeze
+          columns_hash["avatar_data"] = columns_hash["avatar_data"].dup # unfreeze
+          columns_hash["avatar_data"].singleton_class.send(:define_method, :type) { type }
+          @user.class.instance_variable_set(:@columns_hash, columns_hash)
 
-          @json_attacher.load_model(@user, :json_avatar)
-          @json_attacher.attach(fakeio)
+          @attacher.load_model(@user, :avatar)
 
-          assert_equal @json_attacher.file.data, @user.json_avatar_data
+          assert_nil @attacher.column_serializer
 
-          @json_attacher.reload
+          @attacher.attach(fakeio)
 
-          assert_equal @json_attacher.file.data, @user.json_avatar_data
+          assert_equal @attacher.file.data, @user.avatar_data
+
+          @attacher.reload
+
+          assert_equal @attacher.file.data, @user.avatar_data
+        end
+      end
+
+      it "serializes Attributes API types by default" do
+        @json_attacher.load_model(@user, :json_avatar)
+
+        refute_nil @json_attacher.column_serializer
+      end
+
+      describe "with :attribute_types enabled" do
+        before do
+          @shrine        = shrine { plugin :activerecord, attribute_types: true }
+          @json_attacher = @shrine::Attacher.from_model(@user, :json_avatar)
+        end
+
+        [:json, :jsonb].each do |type|
+          it "skips serialization for #{type} attribute types" do
+            # redefine attribute type to test the :jsonb case as well
+            @user.class.type_for_attribute("json_avatar_data").class.send(:define_method, :type) { type }
+
+            @json_attacher.load_model(@user, :json_avatar)
+
+            assert_nil @json_attacher.column_serializer
+
+            @json_attacher.attach(fakeio)
+
+            assert_equal @json_attacher.file.data, @user.json_avatar_data
+
+            @json_attacher.reload
+
+            assert_equal @json_attacher.file.data, @user.json_avatar_data
+          end
         end
       end
     end
