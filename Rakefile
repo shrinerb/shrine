@@ -1,6 +1,5 @@
 require "bundler/gem_tasks"
 require "rake/testtask"
-require "rdoc/task"
 
 Rake::TestTask.new do |t|
   t.libs << "test"
@@ -10,22 +9,26 @@ end
 
 task default: :test
 
-RDoc::Task.new do |t|
-  t.rdoc_dir = "website/build/rdoc"
-  t.options += [
-    "--line-numbers",
-    "--title", "Shrine: Toolkit for file uploads",
-    "--markup", "markdown",
-    "--main", "README.md",
-    "--visibility", "public",
-  ]
-  t.rdoc_files.add Dir[
-    "README.md",
-    "CHANGELOG.md",
-    "lib/**/*.rb",
-    "doc/*.md",
-    "doc/release_notes/*.md",
-  ]
+unless RUBY_ENGINE == "jruby"
+  require "rdoc/task"
+
+  RDoc::Task.new do |t|
+    t.rdoc_dir = "website/build/rdoc"
+    t.options += [
+      "--line-numbers",
+      "--title", "Shrine: Toolkit for file uploads",
+      "--markup", "markdown",
+      "--main", "README.md",
+      "--visibility", "public",
+    ]
+    t.rdoc_files.add Dir[
+      "README.md",
+      "CHANGELOG.md",
+      "lib/**/*.rb",
+      "doc/*.md",
+      "doc/release_notes/*.md",
+    ]
+  end
 end
 
 namespace :website do
