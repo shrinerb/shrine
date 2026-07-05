@@ -47,7 +47,7 @@ class Shrine
         #     attacher.promote_block do |attacher|
         #       Attachment::PromoteJob.perform_async(
         #         attacher.record,
-        #         attacher.name
+        #         attacher.name,
         #         attacher.file_data,
         #       )
         #     end

@@ -54,7 +54,7 @@ class Shrine
         # Converts the column data hash into a string (generates JSON by
         # default).
         #
-        #     Attacher.serialize_column({ "id" => "...", "storage" => "...", "metadata" => { ... } })
+        #     Attacher.serialize_column({ "id" => "...", "storage" => "...", "metadata" => {} })
         #     #=> '{"id":"...","storage":"...","metadata":{...}}'
         #
         #     Attacher.serialize_column(nil)

@@ -431,12 +431,12 @@ class Shrine
         #     attacher.load_data({
         #       "id" => "...",
         #       "storage" => "store",
-        #       "metadata" => { ... },
+        #       "metadata" => {},
         #       "derivatives" => {
         #         "thumb" => {
         #           "id" => "...",
         #           "storage" => "store",
-        #           "metadata" => { ... },
+        #           "metadata" => {},
         #         }
         #       }
         #     })
@@ -471,7 +471,7 @@ class Shrine
 
         # Sets a hash of derivatives.
         #
-        #     attacher.derivatives = { thumb: Shrine.uploaded_file(...) }
+        #     attacher.derivatives = { thumb: Shrine.uploaded_file(data) }
         #     attacher.derivatives #=> { thumb: #<Shrine::UploadedFile ...> }
         def derivatives=(derivatives)
           unless derivatives.is_a?(Hash)
@@ -483,7 +483,9 @@ class Shrine
 
         # Iterates through nested derivatives and maps results.
         #
-        #     attacher.map_derivative(derivatives) { |path, file| ... }
+        #     attacher.map_derivative(derivatives) do |path, file|
+        #       # ...
+        #     end
         def map_derivative(derivatives, **options, &block)
           shrine_class.map_derivative(derivatives, **options, &block)
         end

@@ -16,7 +16,6 @@ RDoc::Task.new do |t|
     "--line-numbers",
     "--title", "Shrine: Toolkit for file uploads",
     "--markup", "markdown",
-    "--format", "hanna",
     "--main", "README.md",
     "--visibility", "public",
   ]
