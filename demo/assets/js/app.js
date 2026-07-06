@@ -1,25 +1,31 @@
+import { Uppy, Dashboard, StatusBar, ThumbnailGenerator, AwsS3, XHRUpload } from "uppy"
+
 const singleFileUpload = (fileInput) => {
   const imagePreview = document.getElementById(fileInput.dataset.previewElement)
-  const formGroup    = fileInput.parentNode
-
-  formGroup.removeChild(fileInput)
 
   const uppy = fileUpload(fileInput)
 
   uppy
-    .use(Uppy.FileInput, {
-      target: formGroup,
-      locale: { strings: { chooseFiles: 'Choose file' } },
-    })
-    .use(Uppy.Informer, {
-      target: formGroup,
-    })
-    .use(Uppy.ProgressBar, {
+    .use(StatusBar, {
       target: imagePreview.parentNode,
+      hideUploadButton: true,
     })
-    .use(Uppy.ThumbnailGenerator, {
+    .use(ThumbnailGenerator, {
       thumbnailWidth: 600,
     })
+
+  // Uppy 5 removed the FileInput plugin, so we keep the native file input and
+  // hand its selected files to Uppy ourselves (`autoProceed` uploads them right away).
+  fileInput.addEventListener('change', (event) => {
+    Array.from(event.target.files).forEach((file) => {
+      try {
+        uppy.addFile(file)
+      } catch (error) {
+        if (!error.isRestriction) throw error // ignore `allowedFileTypes` rejections
+      }
+    })
+    event.target.value = null // allow selecting the same file again
+  })
 
   uppy.on('upload-success', (file, response) => {
     // set hidden field value to the uploaded file data so that it's submitted with the form as the attachment
@@ -38,7 +44,7 @@ const multipleFileUpload = (fileInput) => {
   var uppy = fileUpload(fileInput)
 
   uppy
-    .use(Uppy.Dashboard, {
+    .use(Dashboard, {
       target: formGroup,
       inline: true,
       height: 300,
@@ -57,7 +63,7 @@ const multipleFileUpload = (fileInput) => {
 }
 
 const fileUpload = (fileInput) => {
-  const uppy = new Uppy.Core({
+  const uppy = new Uppy({
     id: fileInput.id,
     autoProceed: true,
     restrictions: {
@@ -66,11 +72,13 @@ const fileUpload = (fileInput) => {
   })
 
   if (fileInput.dataset.uploadServer == 's3') {
-    uppy.use(Uppy.AwsS3, {
-      companionUrl: '/', // will call Shrine's presign endpoint mounted on `/s3/params`
+    uppy.use(AwsS3, {
+      // will call Shrine's presign endpoint mounted on `/s3/params`
+      endpoint: '/',
+      shouldUseMultipart: false,
     })
   } else {
-    uppy.use(Uppy.XHRUpload, {
+    uppy.use(XHRUpload, {
       endpoint: '/upload', // Shrine's upload endpoint
       headers: { 'X-CSRF-Token': fileInput.dataset.uploadCsrfToken }
     })
@@ -83,7 +91,8 @@ const uploadedFileData = (file, response, fileInput) => {
   if (fileInput.dataset.uploadServer == 's3') {
     // construct uploaded file data in the format that Shrine expects
     return JSON.stringify({
-      id: file.meta['key'].match(/^cache\/(.+)/)[1], // object key without prefix
+      // Uppy stores the presigned S3 object key on `file.s3Multipart.key`
+      id: file.s3Multipart.key.match(/^cache\/(.+)/)[1], // object key without prefix
       storage: 'cache',
       metadata: {
         size:      file.size,

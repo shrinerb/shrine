@@ -33,9 +33,9 @@ On the client side [Uppy] is used for handling file uploads. In production
 environment files are uploaded directly to S3 (using the `AwsS3` Uppy plugin),
 while in development and test environment they are uploaded to the app (using
 the `XHRUpload` Uppy plugin) and stored on disk. The demo features both single
-uploads (using the `FileInput` Uppy plugin) and multiple uploads (using the
-`Dashboard` Uppy plugin). The complete JavaScript implementation for the demo
-can be found in [assets/js/app.js].
+uploads (using the `DragDrop` and `StatusBar` Uppy plugins) and multiple uploads
+(using the `Dashboard` Uppy plugin). The complete JavaScript implementation for
+the demo can be found in [assets/js/app.js].
 
 Files of interest:
 

@@ -6,11 +6,12 @@
   </div>
 
   <div class="mb-3">
-    <!-- will be replaced by Uppy -->
+    <!-- native file input, enhanced by Uppy -->
     <%= f.input :cover_photo,
       type: :file,
       attr: {
-        accept: ImageUploader::ALLOWED_TYPES.join(",")
+        accept: ImageUploader::ALLOWED_TYPES.join(","),
+        class: "form-control"
       },
       label_attr: {
         class: "form-label"
