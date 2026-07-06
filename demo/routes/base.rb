@@ -1,4 +1,5 @@
 require "roda"
+require "rack/method_override"
 
 # Base Roda route configuration
 module Routes

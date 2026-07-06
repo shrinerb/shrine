@@ -1,4 +1,5 @@
 require "roda"
+require "rack/session"
 
 require "./routes/albums"
 require "./routes/direct_upload"
@@ -9,7 +10,7 @@ class ShrineDemo < Roda
   plugin :assets, css: "app.css", js: "app.js"
   plugin :run_handler
 
-  use Rack::Session::Cookie, secret: "secret"
+  use Rack::Session::Cookie, secret: "a" * 64
   plugin :route_csrf, check_header: true
 
   route do |r|
