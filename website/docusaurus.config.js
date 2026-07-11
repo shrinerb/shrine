@@ -7,16 +7,12 @@ module.exports = {
   projectName: "shrine",
   trailingSlash: false,
   favicon: "img/favicon.ico",
-  customFields: {
-    projectVersion: "3.4.0",
-    githubUrl: "https://github.com/shrinerb/shrine",
-    blogUrl: "https://janko.io",
-    discourseUrl: "https://discourse.shrinerb.com",
-    githubDiscussionsUrl: "https://github.com/shrinerb/shrine/discussions",
-    stackOverflowUrl: "https://stackoverflow.com/questions/tagged/shrine"
-  },
   onBrokenLinks: "log",
-  onBrokenMarkdownLinks: "log",
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: "log"
+    }
+  },
   presets: [
     [
       "@docusaurus/preset-classic",
@@ -30,12 +26,12 @@ module.exports = {
           sidebarCollapsed: false,
           breadcrumbs: false,
           rehypePlugins: [
-            [require("rehype-pretty-code"), { theme: "dracula-soft" }]
+            [require("rehype-pretty-code").default, { theme: "dracula-soft" }]
           ]
         },
         pages: {
           rehypePlugins: [
-            [require("rehype-pretty-code"), { theme: "dracula-soft" }]
+            [require("rehype-pretty-code").default, { theme: "dracula-soft" }]
           ]
         },
         theme: {
@@ -93,9 +89,6 @@ module.exports = {
           position: "right"
         }
       ]
-    },
-    colorMode: {
-      disableSwitch: true,
     },
     image: "img/logo.png",
     footer: {

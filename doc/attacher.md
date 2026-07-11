@@ -189,7 +189,7 @@ attacher.upload(file, location: "path/to/file")           # setting upload locat
 
 ### Changes
 
-When a new file is attached, calling [`Attacher#finalize`](#finalization) will
+When a new file is attached, calling [`Attacher#finalize`](#finalizing) will
 perform additional actions such as promotion and deleting any previous file.
 It will also trigger [validation].
 

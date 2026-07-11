@@ -10,6 +10,10 @@
   --ifm-color-danger: var(--ifm-color-primary);
 }
 
+figure[data-rehype-pretty-code-figure] {
+  margin: 0;
+}
+
 pre {
   background: #282A36 !important;
   color: #f6f6f4 !important;
