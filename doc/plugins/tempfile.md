@@ -9,14 +9,22 @@ uploaded file on disk.
 Shrine.plugin :tempfile
 ```
 
-The plugin provides the `UploadedFile#tempfile` method, which when called on an
-open uploaded file will return a copy of its content on disk. The first time
-the method is called the file content will cached into a temporary file and
-returned. On any subsequent method calls the cached temporary file will be
-returned directly. The temporary file is deleted when the uploaded file is
-closed.
+The plugin provides the `UploadedFile#tempfile` method, which returns a copy
+of the uploaded file's content on disk. The first time the method is called
+the file content will be downloaded into a temporary file and returned. On
+any subsequent method calls the cached temporary file will be returned
+directly. If the uploaded file is currently open, its tempfile is deleted
+when the uploaded file is closed; otherwise it's deleted whenever it becomes
+unreachable and is garbage collected (so it's still recommended to close the
+uploaded file when you're done with it, to have the tempfile cleaned up
+deterministically).
 
 ```rb
+uploaded_file.tempfile #=> #<Tempfile:...> (file is downloaded and cached)
+uploaded_file.tempfile #=> #<Tempfile:...> (cache is returned)
+
+# OR
+
 uploaded_file.open do
   # ...
   uploaded_file.tempfile #=> #<Tempfile:...> (file is cached)

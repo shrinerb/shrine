@@ -19,8 +19,6 @@ class Shrine
 
       module FileMethods
         def tempfile
-          raise Error, "uploaded file must be opened" unless @io
-
           @tempfile ||= download
           @tempfile.rewind
           @tempfile

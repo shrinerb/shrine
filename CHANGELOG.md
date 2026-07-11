@@ -1,5 +1,7 @@
 ## Unreleased
 
+* `tempfile` – Allow `UploadedFile#tempfile` to be called without opening the uploaded file first (@janko)
+
 * `activerecord` – Add `:attribute_types` option for skipping serialization of JSON/JSONB attributes declared via the Attributes API, not just database columns (@vojtad, @janko)
 
 ## 3.8.0 (2026-06-24)

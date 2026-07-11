@@ -39,6 +39,14 @@ describe Shrine::Plugins::Tempfile do
     assert_nil tempfile.path
   end
 
+  it "deletes the tempfile downloaded while not open when uploaded file is closed" do
+    uploaded_file = @uploader.upload(fakeio("content"))
+    tempfile = uploaded_file.tempfile
+    uploaded_file.close
+    assert tempfile.closed?
+    assert_nil tempfile.path
+  end
+
   it "rewinds the tempfile" do
     uploaded_file = @uploader.upload(fakeio("content"))
     uploaded_file.open do
@@ -47,9 +55,16 @@ describe Shrine::Plugins::Tempfile do
     end
   end
 
-  it "raises an error when uploaded file is not open" do
+  it "downloads the content even when uploaded file is not open" do
     uploaded_file = @uploader.upload(fakeio("content"))
-    assert_raises(Shrine::Error) { uploaded_file.tempfile }
+    tempfile = uploaded_file.tempfile
+    assert_instance_of Tempfile, tempfile
+    assert_equal "content", tempfile.read
+  end
+
+  it "returns the same tempfile on subsequent calls when not open" do
+    uploaded_file = @uploader.upload(fakeio("content"))
+    assert_equal uploaded_file.tempfile, uploaded_file.tempfile
   end
 
   it "allows caching the tempfile again" do
