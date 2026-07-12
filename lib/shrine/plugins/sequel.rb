@@ -87,8 +87,11 @@ class Shrine
           end
         end
 
-        # Calls Attacher#save. Called before model save.
+        # Calls Attacher#save. Called before model save. Remembers whether
+        # the record is new, since by the time `#sequel_after_save` runs,
+        # Sequel has already flipped `#new?` to false.
         def sequel_before_save
+          @previously_new_record = record.new?
           save
         end
 
@@ -131,6 +134,17 @@ class Shrine
         # _persistence plugin.
         def sequel?
           record.is_a?(::Sequel::Model)
+        end
+
+        # Prevents the previous file from being destroyed when this save
+        # created the record (as opposed to updating an existing one), since
+        # a record being created can't yet have its own confirmed attachment
+        # to safely replace (e.g. when it was duplicated from another,
+        # still-persisted record).
+        def destroy_previous?
+          return super unless sequel?
+
+          super && !@previously_new_record
         end
       end
     end

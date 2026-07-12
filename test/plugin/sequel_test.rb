@@ -66,11 +66,29 @@ describe Shrine::Plugins::Sequel do
     end
 
     describe "after_save" do
-      it "finalizes attacher when attachment changes" do
+      it "promotes attachment on create but doesn't destroy the previous file" do
         @user.class.include @shrine::Attachment.new(:avatar)
 
         previous_file = @attacher.upload(fakeio)
         @user.avatar_data = previous_file.to_json
+
+        @user.avatar = fakeio
+        @user.save
+
+        assert_equal :store, @user.avatar.storage_key
+        # a record being created can't yet have a confirmed attachment of its
+        # own to safely replace (e.g. it might have been duplicated from
+        # another, still-persisted record), so the previous file is left
+        # alone
+        assert previous_file.exists?
+      end
+
+      it "finalizes attacher when attachment changes on update" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        previous_file = @attacher.upload(fakeio)
+        @user.avatar_attacher.set(previous_file)
+        @user.save
 
         @user.avatar = fakeio
         @user.save

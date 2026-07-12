@@ -189,7 +189,7 @@ class Shrine
       #     attacher.destroy_previous
       #     previous_file.exists? #=> false
       def destroy_previous
-        @previous.destroy_attached if changed?
+        @previous.destroy_attached if changed? && destroy_previous?
       end
 
       # Destroys the attached file if it exists and is uploaded to permanent
@@ -378,6 +378,11 @@ class Shrine
       # Whether attached file should be deleted.
       def destroy?
         attached? && !cached?
+      end
+
+      # Whether the previous attached file should be deleted.
+      def destroy_previous?
+        true
       end
 
       # Whether assigning the given file is considered a change.

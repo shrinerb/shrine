@@ -131,6 +131,17 @@ class Shrine
         def activerecord?
           record.is_a?(::ActiveRecord::Base)
         end
+
+        # Prevents the previous file from being destroyed when this save
+        # created the record (as opposed to updating an existing one), since
+        # a record being created can't yet have its own confirmed attachment
+        # to safely replace (e.g. when it was duplicated via `#dup` from
+        # another, still-persisted record).
+        def destroy_previous?
+          return super unless activerecord?
+
+          super && !record.previously_new_record?
+        end
       end
     end
 

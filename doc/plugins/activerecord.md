@@ -80,6 +80,62 @@ Active Record currently has a [bug with transaction callbacks], so if you have
 any "after commit" callbacks, make sure to include Shrine's attachment module
 *after* they have all been defined.
 
+#### Duplicating records
+
+Since a record being created can't yet have a confirmed attachment of its own
+to safely replace, Shrine never deletes the previous file when the attachment
+changes as part of *creating* a record, only when *updating* one. This
+matters most when duplicating a record: `#dup` performs a shallow copy, so a
+duplicated record initially points to the *same* underlying file as the
+original (they'll have the same attached file data), and replacing the
+attachment on the duplicate before it's ever saved won't affect the original:
+
+```rb
+photo  = Photo.create(image: file)
+photo2 = photo.dup
+
+photo2.update!(image: new_file) # replaces the attachment on `photo2`
+photo.image.exists? #=> true (not affected)
+```
+
+Once `photo2` has been saved, replacing its attachment again behaves
+normally (the previously attached file is deleted):
+
+```rb
+previous_image = photo2.image
+photo2.update!(image: another_file)
+previous_image.exists? #=> false
+```
+
+Keep in mind this only protects against *replacing* the attachment on create.
+As long as `photo` and `photo2` continue to reference the same underlying
+file (i.e. `photo2` is saved without ever changing its attachment), destroying
+either record will still delete the file the other one references, since
+Shrine has no way of knowing the file is shared:
+
+```rb
+photo2.save! # still references the same file as `photo`
+
+photo2.destroy
+photo.image.exists? #=> false
+```
+
+If you want the duplicated record to have its own independent copy of the
+file from the start, so that destroying either record is also safe, upload a
+new copy explicitly after duplicating:
+
+```rb
+photo  = Photo.create(image: file)
+photo2 = photo.dup
+
+photo2.image_attacher.set(nil)
+photo2.image_attacher.attach(photo.image, storage: photo.image.storage_key)
+photo2.save!
+
+photo2.destroy # no longer affects `photo`
+photo.image.exists? #=> true
+```
+
 #### Overriding callbacks
 
 You can override any of the following attacher methods to modify callback
@@ -256,3 +312,4 @@ See [persistence] docs for more details.
 [bug with transaction callbacks]: https://github.com/rails/rails/issues/14493
 [validation]: https://shrinerb.com/docs/plugins/validation
 [persistence]: https://shrinerb.com/docs/plugins/persistence
+[Replacing]: https://shrinerb.com/docs/attacher#replacing

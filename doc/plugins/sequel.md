@@ -100,6 +100,63 @@ set `:hooks` to `false`:
 plugin :sequel, hooks: false
 ```
 
+#### Duplicating records
+
+Since a record being created can't yet have a confirmed attachment of its own
+to safely replace, Shrine never deletes the previous file when the attachment
+changes as part of *creating* a record, only when *updating* one.
+
+Note that Sequel's `#dup`/`#clone`, unlike Active Record's, don't reset the
+primary key or persistence state — a duplicated record still refers to the
+*same* row, so saving it just updates that row rather than inserting a new
+one. There's only ever one row here, so there's nothing to protect:
+
+```rb
+photo  = Photo.create(image: file)
+photo2 = photo.dup # `photo2` refers to the same row as `photo`
+
+photo2.update(image: new_file)
+photo.image.exists? #=> false (the row now has `new_file`, so this is expected)
+```
+
+The common way to duplicate a record in Sequel is instead to construct a new
+one from the original's values, which *does* produce a genuinely new,
+unpersisted row, and so *is* protected:
+
+```rb
+photo2 = Photo.new(photo.values.except(:id))
+
+photo2.update(image: new_file)
+photo.image.exists? #=> true (not affected)
+```
+
+Keep in mind this only protects against *replacing* the attachment on create.
+As long as `photo` and `photo2` continue to reference the same underlying
+file (i.e. `photo2` is saved without ever changing its attachment),
+destroying either record will still delete the file the other one
+references, since Shrine has no way of knowing the file is shared:
+
+```rb
+photo2.save # still references the same file as `photo`
+
+photo2.destroy
+photo.image.exists? #=> false
+```
+
+If you want `photo2` to have its own independent copy of the file from the
+start, so that destroying either record is also safe, upload a new copy
+explicitly:
+
+```rb
+photo2 = Photo.new(photo.values.reject { |k, _| k == :id })
+photo2.image_attacher.set(nil)
+photo2.image_attacher.attach(photo.image, storage: photo.image.storage_key)
+photo2.save
+
+photo2.destroy # no longer affects `photo`
+photo.image.exists? #=> true
+```
+
 ### Validations
 
 If you're using the [`validation`][validation] plugin, the attachment module
