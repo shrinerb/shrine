@@ -29,4 +29,16 @@ the uploader.
 uploader.upload(file, upload_options: { acl: "public-read" })
 ```
 
+If storage keys are generated dynamically (e.g. via the
+[`dynamic_storage`][dynamic_storage] plugin), it's not possible to list every
+storage key upfront. In that case you can use a `Regexp` instead, which will
+be matched against the storage key:
+
+```rb
+plugin :upload_options, /_store\z/ => { acl: "private" }
+```
+
+An exact storage key match always takes precedence over a `Regexp` match.
+
 [upload_options]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/upload_options.rb
+[dynamic_storage]: https://shrinerb.com/docs/plugins/dynamic_storage

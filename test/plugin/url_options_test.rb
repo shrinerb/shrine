@@ -71,6 +71,39 @@ describe Shrine::Plugins::UrlOptions do
         file.storage.expects(:url).with(file.id, { foo: "foo bar" })
         file.url(foo: "foo")
       end
+
+      it "matches storage keys generated dynamically against a regex" do
+        @shrine.storages[:tenant_store] = Shrine::Storage::Memory.new
+        @shrine.plugin :url_options, /_store\z/ => { foo: "foo" }
+
+        file = @shrine.new(:tenant_store).upload(fakeio)
+        file.storage.expects(:url).with(file.id, { foo: "foo" })
+        file.url
+      end
+
+      it "calls a regex-matched block with the file" do
+        minitest = self
+        @shrine.storages[:tenant_store] = Shrine::Storage::Memory.new
+
+        @shrine.plugin :url_options, /_store\z/ => -> (io, options) do
+          minitest.assert_kind_of Shrine::UploadedFile, io
+          minitest.assert_equal :tenant_store, io.storage_key
+
+          { foo: "foo" }
+        end
+
+        file = @shrine.new(:tenant_store).upload(fakeio)
+        file.storage.expects(:url).with(file.id, { foo: "foo" })
+        file.url
+      end
+
+      it "prefers an exact match over a regex match" do
+        @shrine.plugin :url_options, store: { foo: "exact" }, /_store\z/ => { foo: "regex" }
+
+        file = @uploader.upload(fakeio)
+        file.storage.expects(:url).with(file.id, { foo: "exact" })
+        file.url
+      end
     end
   end
 end

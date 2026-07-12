@@ -1,5 +1,9 @@
 ## Unreleased
 
+* `url_options` – Allow regular expression storage keys for compatibility with `dynamic_storage` plugin (@janko)
+
+* `upload_options` – Allow regular expression storage keys for compatibility with `dynamic_storage` plugin (@janko)
+
 * `remove_invalid` – Fix model attribute not being cleared/reverted after deassigning invalid file (@janko)
 
 * `tempfile` – Allow `UploadedFile#tempfile` to be called without opening the uploaded file first (@janko)

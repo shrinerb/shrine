@@ -36,4 +36,19 @@ describe Shrine::Plugins::UploadOptions do
     @shrine.plugin :upload_options, store: { bar: "bar" }
     assert_equal Hash[cache: { foo: "foo" }, store: { bar: "bar" }], @shrine.opts[:upload_options]
   end
+
+  it "matches storage keys generated dynamically against a regex" do
+    @shrine.storages[:tenant_store] = Shrine::Storage::Memory.new
+    @shrine.plugin :upload_options, /_store\z/ => { foo: "foo" }
+
+    uploader = @shrine.new(:tenant_store)
+    uploader.storage.expects(:upload).with { |*, o| o[:foo] == "foo" }
+    uploader.upload(fakeio)
+  end
+
+  it "prefers an exact match over a regex match" do
+    @shrine.plugin :upload_options, store: { foo: "exact" }, /_store\z/ => { foo: "regex" }
+    @uploader.storage.expects(:upload).with { |*, o| o[:foo] == "exact" }
+    @uploader.upload(fakeio)
+  end
 end
