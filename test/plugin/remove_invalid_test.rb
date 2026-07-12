@@ -114,6 +114,34 @@ describe Shrine::Plugins::RemoveInvalid do
           refute files[:thumb].exists?
         end
       end
+
+      describe "with model plugin" do
+        before do
+          @shrine.plugin :model
+          @model_class = model_class(:file_data)
+          @model_class.include @shrine::Attachment.new(:file)
+        end
+
+        it "clears the model attribute when the file is invalid" do
+          @shrine::Attacher.validate { errors << "error" }
+          model      = @model_class.new
+          model.file = fakeio
+
+          assert_nil model.file
+          assert_nil model.file_data
+        end
+
+        it "restores previous data into the model attribute when dirty" do
+          model      = @model_class.new
+          model.file = fakeio
+          previous_data = model.file_data
+
+          @shrine::Attacher.validate { errors << "error" }
+          model.file = fakeio
+
+          assert_equal previous_data, model.file_data
+        end
+      end
     end
   end
 end

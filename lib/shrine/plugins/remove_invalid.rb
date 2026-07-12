@@ -26,6 +26,10 @@ class Shrine
           else
             load_data nil
           end
+on
+          # `load_data` bypasses `Attacher#set`, so when the model plugin is
+          # loaded the record attribute needs to be synced manually.
+          write if respond_to?(:write)
         end
       end
     end

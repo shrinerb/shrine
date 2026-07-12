@@ -1,5 +1,7 @@
 ## Unreleased
 
+* `remove_invalid` – Fix model attribute not being cleared/reverted after deassigning invalid file (@janko)
+
 * `tempfile` – Allow `UploadedFile#tempfile` to be called without opening the uploaded file first (@janko)
 
 * `activerecord` – Add `:attribute_types` option for skipping serialization of JSON/JSONB attributes declared via the Attributes API, not just database columns (@vojtad, @janko)
