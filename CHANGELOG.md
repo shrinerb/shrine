@@ -1,5 +1,7 @@
 ## Unreleased
 
+* `Shrine.find_storage` now raises `Shrine::MissingStorage` (subclass of `Shrine::Error`) when the storage isn't registered, so it can be rescued separately (@janko)
+
 * `url_options` – Allow regular expression storage keys for compatibility with `dynamic_storage` plugin (@janko)
 
 * `upload_options` – Allow regular expression storage keys for compatibility with `dynamic_storage` plugin (@janko)

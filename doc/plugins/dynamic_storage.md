@@ -22,4 +22,19 @@ the bucket "foo". The block is yielded an instance of `MatchData`.
 
 This can be useful in combination with the `default_storage` plugin.
 
+If the resolver block returns `nil` (e.g. it looks up a record that no longer
+exists), `Shrine.find_storage` raises `Shrine::MissingStorage`, which can be
+rescued separately from other `Shrine::Error` subclasses:
+
+```rb
+storage /store_(\w+)/ do |match|
+  Library.find_by(id: match[1])&.storage
+end
+```
+
+```rb
+attacher.file.storage
+# => raises Shrine::MissingStorage if the Library record was deleted
+```
+
 [dynamic_storage]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/dynamic_storage.rb

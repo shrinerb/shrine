@@ -28,6 +28,10 @@ class Shrine
   class FileNotFound < Error
   end
 
+  # Raised by Shrine.find_storage when the storage isn't registered.
+  class MissingStorage < Error
+  end
+
   @opts = {}
   @storages = {}
   @logger = Logger.new(STDOUT)
@@ -86,7 +90,7 @@ class Shrine
     # Retrieves the storage under the given identifier (can be a Symbol or
     # a String), raising Shrine::Error if the storage is missing.
     def find_storage(name)
-      storages[name.to_sym] || storages[name.to_s] or fail Error, "storage #{name.inspect} isn't registered on #{self}"
+      storages[name.to_sym] || storages[name.to_s] or fail MissingStorage, "storage #{name.inspect} isn't registered on #{self}"
     end
 
     # Generates an instance of Shrine::Attachment to be included in the

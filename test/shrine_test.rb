@@ -141,7 +141,7 @@ describe Shrine do
     end
 
     it "raises an error if storage wasn't found" do
-      assert_raises(Shrine::Error) { @shrine.find_storage(:foo) }
+      assert_raises(Shrine::MissingStorage) { @shrine.find_storage(:foo) }
     end
   end
 
