@@ -1,4 +1,4 @@
-## Unreleased
+## 3.9.0 (2026-07-13)
 
 * `Shrine.find_storage` now raises `Shrine::MissingStorage` (subclass of `Shrine::Error`) when the storage isn't registered, so it can be rescued separately (@janko)
 
@@ -7,6 +7,8 @@
 * `upload_options` – Allow regular expression storage keys for compatibility with `dynamic_storage` plugin (@janko)
 
 * `remove_invalid` – Fix model attribute not being cleared/reverted after deassigning invalid file (@janko)
+
+* `activerecord`/`sequel` – Skip deleting the previous attachment when the record being saved was just created, to avoid deleting the original attachment of a duplicated record (@janko)
 
 * `tempfile` – Allow `UploadedFile#tempfile` to be called without opening the uploaded file first (@janko)
 
