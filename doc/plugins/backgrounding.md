@@ -203,6 +203,32 @@ class MyUploader < Shrine
 end
 ```
 
+## Testing
+
+Since promotion happens in a background job, it won't have run yet
+immediately after you save the record, so asserting on the promoted file's
+data or location will fail unless the job has actually been executed. For
+example, with Active Job you'll need to run enqueued jobs inline:
+
+```rb
+require "active_job/test_helper"
+
+include ActiveJob::TestHelper
+
+perform_enqueued_jobs do
+  photo = Photo.create(image: file) # spawns promote job
+end
+
+photo.reload # fetch attachment data updated by the background job
+photo.image.storage_key #=> :store
+```
+
+Keep in mind that while the file is cached (i.e. before the promote job has
+run), the record may not have an `id` yet, so plugins like [`pretty_location`]
+that build the storage location from the record's identifier won't be able
+to include it until promotion happens.
+
 [backgrounding]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/backgrounding.rb
+[`pretty_location`]: https://shrinerb.com/docs/plugins/pretty_location
 [derivatives]: https://shrinerb.com/docs/plugins/derivatives
 [atomic_helpers]: https://shrinerb.com/docs/plugins/atomic_helpers
