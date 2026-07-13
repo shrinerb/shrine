@@ -1,0 +1,2554 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>module Shrine::Plugins::Derivatives::AttacherMethods - Shrine: Toolkit for file uploads</title>
+
+
+  <meta
+    name="keywords"
+    content="ruby,module,Shrine::Plugins::Derivatives::AttacherMethods"
+  >
+
+    <meta
+      name="description"
+      content="Documentation for the Shrine::Plugins::Derivatives::AttacherMethods module"
+    >
+
+
+
+
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="module Shrine::Plugins::Derivatives::AttacherMethods - Shrine: Toolkit for file uploads">
+
+
+
+    <meta
+      property="og:description"
+      content="Documentation for Shrine::Plugins::Derivatives::AttacherMethods module - API reference and code examples"
+    >
+
+
+
+
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="module Shrine::Plugins::Derivatives::AttacherMethods - Shrine: Toolkit for file uploads">
+
+
+
+    <meta
+      name="twitter:description"
+      content="Documentation for Shrine::Plugins::Derivatives::AttacherMethods module - API reference and code examples"
+    >
+
+
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../../";
+  var index_rel_prefix = "../../../";
+</script>
+
+<script
+  src="../../../js/theme-toggle.js?v=8.0.0"
+></script>
+
+<script
+  src="../../../js/search_navigation.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../../js/search_data.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../../js/search_ranker.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../../js/search_controller.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../../js/c_highlighter.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../../js/bash_highlighter.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../../js/aliki.js?v=8.0.0"
+  defer
+></script>
+
+<link
+  href="../../../css/rdoc.css?v=8.0.0"
+  rel="stylesheet"
+>
+
+
+
+
+<body role="document" class="module has-toc">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <!-- Chevron (right arrow) - used for expand/collapse -->
+  <symbol
+    id="icon-chevron"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </symbol>
+
+  <!-- File/Document - Pages section -->
+  <symbol
+    id="icon-file"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+    ></path>
+
+    <polyline points="14 2 14 8 20 8"></polyline>
+  </symbol>
+
+  <!-- Layers/Stack - Classes and Modules section -->
+  <symbol
+    id="icon-layers"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+    <polyline points="2 17 12 22 22 17"></polyline>
+    <polyline points="2 12 12 17 22 12"></polyline>
+  </symbol>
+
+  <!-- Curly braces with C - Class Methods section -->
+  <symbol
+    id="icon-class-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      C
+    </text>
+  </symbol>
+
+  <!-- Curly braces with I - Instance Methods section -->
+  <symbol
+    id="icon-instance-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      I
+    </text>
+  </symbol>
+
+  <!-- Double chevrons up - Ancestors section -->
+  <symbol
+    id="icon-ancestors"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="17 11 12 6 7 11"></polyline>
+    <polyline points="17 18 12 13 7 18"></polyline>
+  </symbol>
+
+  <!-- User with plus - Included Modules section -->
+  <symbol
+    id="icon-includes"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+
+    <line
+      x1="20"
+      y1="8"
+      x2="20"
+      y2="14"
+    ></line>
+
+    <line
+      x1="23"
+      y1="11"
+      x2="17"
+      y2="11"
+    ></line>
+  </symbol>
+
+  <!-- User with check - Extended Modules section -->
+  <symbol
+    id="icon-extends"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+    <polyline points="17 11 19 13 23 9"></polyline>
+  </symbol>
+
+  <!-- List - Sections section -->
+  <symbol
+    id="icon-list"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line
+      x1="8"
+      y1="6"
+      x2="21"
+      y2="6"
+    ></line>
+
+    <line
+      x1="8"
+      y1="12"
+      x2="21"
+      y2="12"
+    ></line>
+
+    <line
+      x1="8"
+      y1="18"
+      x2="21"
+      y2="18"
+    ></line>
+
+    <line
+      x1="3"
+      y1="6"
+      x2="3.01"
+      y2="6"
+    ></line>
+
+    <line
+      x1="3"
+      y1="12"
+      x2="3.01"
+      y2="12"
+    ></line>
+
+    <line
+      x1="3"
+      y1="18"
+      x2="3.01"
+      y2="18"
+    ></line>
+  </symbol>
+</svg>
+
+<header class="top-navbar">
+  <a href="../../../index.html" class="navbar-brand">
+    Shrine: Toolkit for file uploads
+  </a>
+
+  <!-- Desktop search bar -->
+  <div class="navbar-search navbar-search-desktop" role="search">
+    <form action="#" method="get" accept-charset="utf-8">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results-desktop"
+             type="text" name="search" placeholder="Search (/) for a class, method..."
+             spellcheck="false" autocomplete="off"
+             title="Type to search, Up and Down to navigate, Enter to load">
+      <ul id="search-results-desktop" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="initially-hidden search-results"></ul>
+    </form>
+  </div>
+
+  <!-- Mobile search icon button -->
+  <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search" type="button">
+    <span aria-hidden="true">🔍</span>
+  </button>
+
+  <!-- Theme toggle button -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button">
+    <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+  </button>
+</header>
+
+<!-- Search Modal (Mobile) -->
+<div id="search-modal" class="search-modal" hidden aria-modal="true" role="dialog" aria-label="Search">
+  <div class="search-modal-backdrop"></div>
+  <div class="search-modal-content">
+    <div class="search-modal-header">
+      <form class="search-modal-form" action="#" method="get" accept-charset="utf-8">
+        <span class="search-modal-icon" aria-hidden="true">🔍</span>
+        <input id="search-field-mobile" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results-mobile"
+               type="text" name="search" placeholder="Search documentation"
+               spellcheck="false" autocomplete="off">
+        <button type="button" class="search-modal-close" aria-label="Close search" id="search-modal-close">
+          <span aria-hidden="true">esc</span>
+        </button>
+      </form>
+    </div>
+    <div class="search-modal-body">
+      <ul id="search-results-mobile" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="search-results search-modal-results initially-hidden"></ul>
+      <div class="search-modal-empty">
+        <p>No recent searches</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sidebar-navigation-toggle" role="button" tabindex="0" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar-navigation">
+  <span aria-hidden="true">&#9776;</span>
+</div>
+
+
+<nav id="sidebar-navigation" role="navigation" hidden>
+  
+
+
+
+
+  <div id="fileindex-section" class="nav-section">
+    <details class="nav-section-collapsible" >
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg>
+            <use href="#icon-file"></use>
+          </svg>
+        </span>
+
+        <span class="nav-section-title">Pages</span>
+
+        <span class="nav-section-chevron">
+          <svg>
+            <use href="#icon-chevron"></use>
+          </svg>
+        </span>
+      </summary>
+
+      <ul class="nav-list">
+
+
+
+
+
+
+            <li>
+              <a href="../../../CHANGELOG_md.html">
+                CHANGELOG
+              </a>
+            </li>
+
+
+
+
+
+          <li>
+            <details >
+              <summary>
+                
+                  doc
+                  
+                
+              </summary>
+
+              <ul class="link-list">
+
+                  <li>
+                    <a href="../../../doc/advantages_md.html">
+                      advantages
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/attacher_md.html">
+                      attacher
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/carrierwave_md.html">
+                      carrierwave
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/changing_derivatives_md.html">
+                      changing_derivatives
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/changing_location_md.html">
+                      changing_location
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/changing_storage_md.html">
+                      changing_storage
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/creating_persistence_plugins_md.html">
+                      creating_persistence_plugins
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/creating_plugins_md.html">
+                      creating_plugins
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/creating_storages_md.html">
+                      creating_storages
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/design_md.html">
+                      design
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/direct_s3_md.html">
+                      direct_s3
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/getting_started_md.html">
+                      getting_started
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/metadata_md.html">
+                      metadata
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/multiple_files_md.html">
+                      multiple_files
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/paperclip_md.html">
+                      paperclip
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/processing_md.html">
+                      processing
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/refile_md.html">
+                      refile
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/1_0_0_md.html">
+                      1.0.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/1_1_0_md.html">
+                      1.1.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/1_2_0_md.html">
+                      1.2.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/1_3_0_md.html">
+                      1.3.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/1_4_0_md.html">
+                      1.4.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/1_4_1_md.html">
+                      1.4.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/1_4_2_md.html">
+                      1.4.2
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_0_0_md.html">
+                      2.0.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_0_1_md.html">
+                      2.0.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_1_0_md.html">
+                      2.1.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_1_1_md.html">
+                      2.1.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_10_0_md.html">
+                      2.10.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_10_1_md.html">
+                      2.10.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_11_0_md.html">
+                      2.11.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_12_0_md.html">
+                      2.12.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_13_0_md.html">
+                      2.13.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_14_0_md.html">
+                      2.14.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_15_0_md.html">
+                      2.15.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_16_0_md.html">
+                      2.16.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_17_0_md.html">
+                      2.17.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_18_0_md.html">
+                      2.18.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_19_0_md.html">
+                      2.19.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_2_0_md.html">
+                      2.2.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_3_0_md.html">
+                      2.3.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_3_1_md.html">
+                      2.3.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_4_0_md.html">
+                      2.4.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_4_1_md.html">
+                      2.4.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_5_0_md.html">
+                      2.5.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_6_0_md.html">
+                      2.6.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_6_1_md.html">
+                      2.6.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_7_0_md.html">
+                      2.7.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_8_0_md.html">
+                      2.8.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/2_9_0_md.html">
+                      2.9.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_0_0_md.html">
+                      3.0.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_0_1_md.html">
+                      3.0.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_1_0_md.html">
+                      3.1.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_2_0_md.html">
+                      3.2.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_2_1_md.html">
+                      3.2.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_2_2_md.html">
+                      3.2.2
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_3_0_md.html">
+                      3.3.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_4_0_md.html">
+                      3.4.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_5_0_md.html">
+                      3.5.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_6_0_md.html">
+                      3.6.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_7_0_md.html">
+                      3.7.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_7_1_md.html">
+                      3.7.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_8_0_md.html">
+                      3.8.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/release_notes/3_9_0_md.html">
+                      3.9.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/retrieving_uploads_md.html">
+                      retrieving_uploads
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/securing_uploads_md.html">
+                      securing_uploads
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/testing_md.html">
+                      testing
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/upgrading_to_3_md.html">
+                      upgrading_to_3
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../../doc/validation_md.html">
+                      validation
+                    </a>
+                  </li>
+
+              </ul>
+            </details>
+          </li>
+
+      </ul>
+    </details>
+  </div>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  <div class="nav-section">
+    <details class="nav-section-collapsible" open>
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg><use href="#icon-class-methods"></use></svg>
+        </span>
+        <span class="nav-section-title">Class Methods</span>
+        <span class="nav-section-chevron">
+          <svg><use href="#icon-chevron"></use></svg>
+        </span>
+      </summary>
+      <ul class="nav-list" role="directory">
+
+        <li class="calls-super" ><a href="#method-c-new">new</a></li>
+
+      </ul>
+    </details>
+  </div>
+
+
+
+  <div class="nav-section">
+    <details class="nav-section-collapsible" open>
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg><use href="#icon-instance-methods"></use></svg>
+        </span>
+        <span class="nav-section-title">Instance Methods</span>
+        <span class="nav-section-chevron">
+          <svg><use href="#icon-chevron"></use></svg>
+        </span>
+      </summary>
+      <ul class="nav-list" role="directory">
+
+        <li ><a href="#method-i-add_derivative">add_derivative</a></li>
+
+        <li ><a href="#method-i-add_derivatives">add_derivatives</a></li>
+
+        <li class="calls-super" ><a href="#method-i-change">change</a></li>
+
+        <li ><a href="#method-i-create_derivatives">create_derivatives</a></li>
+
+        <li class="calls-super" ><a href="#method-i-data">data</a></li>
+
+        <li ><a href="#method-i-delete_derivatives">delete_derivatives</a></li>
+
+        <li ><a href="#method-i-derivatives-3D">derivatives=</a></li>
+
+        <li class="calls-super" ><a href="#method-i-destroy">destroy</a></li>
+
+        <li class="calls-super" ><a href="#method-i-get">get</a></li>
+
+        <li ><a href="#method-i-get_derivatives">get_derivatives</a></li>
+
+        <li class="calls-super" ><a href="#method-i-load_data">load_data</a></li>
+
+        <li ><a href="#method-i-map_derivative">map_derivative</a></li>
+
+        <li ><a href="#method-i-merge_derivatives">merge_derivatives</a></li>
+
+        <li ><a href="#method-i-process_derivatives">process_derivatives</a></li>
+
+        <li class="calls-super" ><a href="#method-i-promote">promote</a></li>
+
+        <li ><a href="#method-i-promote_derivatives">promote_derivatives</a></li>
+
+        <li ><a href="#method-i-remove_derivative">remove_derivative</a></li>
+
+        <li ><a href="#method-i-remove_derivatives">remove_derivatives</a></li>
+
+        <li ><a href="#method-i-set_derivatives">set_derivatives</a></li>
+
+        <li ><a href="#method-i-upload_derivative">upload_derivative</a></li>
+
+        <li ><a href="#method-i-upload_derivatives">upload_derivatives</a></li>
+
+        <li class="calls-super" ><a href="#method-i-url">url</a></li>
+
+      </ul>
+    </details>
+  </div>
+
+
+  <div id="classindex-section" class="nav-section">
+  <details class="nav-section-collapsible" open>
+    <summary class="nav-section-header">
+      <span class="nav-section-icon">
+        <svg><use href="#icon-layers"></use></svg>
+      </span>
+      <span class="nav-section-title">Classes and Modules</span>
+      <span class="nav-section-chevron">
+        <svg><use href="#icon-chevron"></use></svg>
+      </span>
+    </summary>
+
+    <ul class="link-list nav-list"><li><details open><summary><code><a href="../../../Shrine.html">Shrine</a></code></summary><ul class="link-list nav-list"><li><details><summary><code><a href="../../../Shrine/Attacher.html">Attacher</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Attacher/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Attacher/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Attachment.html">Attachment</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Attachment/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Attachment/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><code><a href="../../../Shrine/AttachmentChanged.html">AttachmentChanged</a></code></li><li><code><a href="../../../Shrine/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/DataFile.html">DataFile</a></code></li><li><details><summary><code><a href="../../../Shrine/Derivation.html">Derivation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Derivation/Command.html">Command</a></code></li><li><code><a href="../../../Shrine/Derivation/Delete.html">Delete</a></code></li><li><code><a href="../../../Shrine/Derivation/Generate.html">Generate</a></code></li><li><code><a href="../../../Shrine/Derivation/NotFound.html">NotFound</a></code></li><li><code><a href="../../../Shrine/Derivation/Opened.html">Opened</a></code></li><li><code><a href="../../../Shrine/Derivation/Processed.html">Processed</a></code></li><li><code><a href="../../../Shrine/Derivation/Response.html">Response</a></code></li><li><code><a href="../../../Shrine/Derivation/Retrieve.html">Retrieve</a></code></li><li><code><a href="../../../Shrine/Derivation/SourceNotFound.html">SourceNotFound</a></code></li><li><code><a href="../../../Shrine/Derivation/Upload.html">Upload</a></code></li><li><code><a href="../../../Shrine/Derivation/Url.html">Url</a></code></li></ul></details></li><li><code><a href="../../../Shrine/DerivationEndpoint.html">DerivationEndpoint</a></code></li><li><code><a href="../../../Shrine/DownloadEndpoint.html">DownloadEndpoint</a></code></li><li><code><a href="../../../Shrine/Error.html">Error</a></code></li><li><code><a href="../../../Shrine/FileNotFound.html">FileNotFound</a></code></li><li><code><a href="../../../Shrine/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../../../Shrine/InvalidFile.html">InvalidFile</a></code></li><li><code><a href="../../../Shrine/LintError.html">LintError</a></code></li><li><code><a href="../../../Shrine/MissingStorage.html">MissingStorage</a></code></li><li><details><summary><code><a href="../../../Shrine/Plugins.html">Plugins</a></code></summary><ul class="link-list nav-list"><li><details><summary><code><a href="../../../Shrine/Plugins/Activerecord.html">Activerecord</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Activerecord/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Activerecord/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/AddMetadata.html">AddMetadata</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/AddMetadata/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/AddMetadata/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/AddMetadata/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/AddMetadata/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/AtomicHelpers.html">AtomicHelpers</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/AtomicHelpers/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/AtomicHelpers/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Backgrounding.html">Backgrounding</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Backgrounding/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Backgrounding/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/CachedAttachmentData.html">CachedAttachmentData</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/CachedAttachmentData/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/CachedAttachmentData/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Column.html">Column</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Column/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Column/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Column/JsonSerializer.html">JsonSerializer</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/DataUri.html">DataUri</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/DataUri/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DataUri/AttachmentMethods.html">AttachmentMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DataUri/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DataUri/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DataUri/ParseError.html">ParseError</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/DefaultStorage.html">DefaultStorage</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/DefaultStorage/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DefaultStorage/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/DefaultUrl.html">DefaultUrl</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/DefaultUrl/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DefaultUrl/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/DeleteRaw.html">DeleteRaw</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/DeleteRaw/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/DerivationEndpoint.html">DerivationEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/DerivationEndpoint/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DerivationEndpoint/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Derivatives.html">Derivatives</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Derivatives/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Derivatives/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Derivatives/AttachmentMethods.html">AttachmentMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Derivatives/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Derivatives/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Derivatives/VersionsCompatibility.html">VersionsCompatibility</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/DetermineMimeType.html">DetermineMimeType</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/DetermineMimeType/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DetermineMimeType/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DetermineMimeType/MimeTypeAnalyzer.html">MimeTypeAnalyzer</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/DownloadEndpoint.html">DownloadEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/DownloadEndpoint/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DownloadEndpoint/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/DownloadEndpoint/FileUrl.html">FileUrl</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/DynamicStorage.html">DynamicStorage</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/DynamicStorage/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Entity.html">Entity</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Entity/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Entity/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Entity/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/FormAssign.html">FormAssign</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/FormAssign/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Included.html">Included</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Included/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/InferExtension.html">InferExtension</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/InferExtension/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/InferExtension/ExtensionInferrer.html">ExtensionInferrer</a></code></li><li><code><a href="../../../Shrine/Plugins/InferExtension/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Instrumentation.html">Instrumentation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Instrumentation/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Instrumentation/Event.html">Event</a></code></li><li><code><a href="../../../Shrine/Plugins/Instrumentation/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Instrumentation/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Instrumentation/LogSubscriber.html">LogSubscriber</a></code></li><li><code><a href="../../../Shrine/Plugins/Instrumentation/Notifications.html">Notifications</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/KeepFiles.html">KeepFiles</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/KeepFiles/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/MetadataAttributes.html">MetadataAttributes</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/MetadataAttributes/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/MetadataAttributes/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Mirroring.html">Mirroring</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Mirroring/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Mirroring/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Mirroring/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Model.html">Model</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Model/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Model/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Model/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/ModuleInclude.html">ModuleInclude</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/ModuleInclude/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/MultiCache.html">MultiCache</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/MultiCache/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Persistence.html">Persistence</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Persistence/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/PresignEndpoint.html">PresignEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/PresignEndpoint/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/PrettyLocation.html">PrettyLocation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/PrettyLocation/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Processing.html">Processing</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Processing/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Processing/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/RackFile.html">RackFile</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/RackFile/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/RackFile/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/RackResponse.html">RackResponse</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/RackResponse/FileBody.html">FileBody</a></code></li><li><code><a href="../../../Shrine/Plugins/RackResponse/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/RackResponse/FileResponse.html">FileResponse</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Recache.html">Recache</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Recache/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/RefreshMetadata.html">RefreshMetadata</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/RefreshMetadata/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/RefreshMetadata/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/RemoteUrl.html">RemoteUrl</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/RemoteUrl/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/RemoteUrl/AttachmentMethods.html">AttachmentMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/RemoteUrl/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/RemoteUrl/DownloadError.html">DownloadError</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/RemoveAttachment.html">RemoveAttachment</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/RemoveAttachment/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/RemoveAttachment/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/RemoveInvalid.html">RemoveInvalid</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/RemoveInvalid/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/RestoreCachedData.html">RestoreCachedData</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/RestoreCachedData/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Sequel.html">Sequel</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Sequel/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Sequel/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Signature.html">Signature</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Signature/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Signature/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Signature/SignatureCalculator.html">SignatureCalculator</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/StoreDimensions.html">StoreDimensions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/StoreDimensions/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/StoreDimensions/DimensionsAnalyzer.html">DimensionsAnalyzer</a></code></li><li><code><a href="../../../Shrine/Plugins/StoreDimensions/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/StoreDimensions/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Tempfile.html">Tempfile</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Tempfile/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Tempfile/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/TypePredicates.html">TypePredicates</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/TypePredicates/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/TypePredicates/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/TypePredicates/MimeDatabase.html">MimeDatabase</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/UploadEndpoint.html">UploadEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/UploadEndpoint/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/UploadOptions.html">UploadOptions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/UploadOptions/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/UrlOptions.html">UrlOptions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/UrlOptions/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/UrlsafeSerialization.html">UrlsafeSerialization</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/UrlsafeSerialization/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/UrlsafeSerialization/FileClassMethods.html">FileClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/UrlsafeSerialization/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/UrlsafeSerialization/Serializer.html">Serializer</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Validation.html">Validation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Validation/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Validation/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/ValidationHelpers.html">ValidationHelpers</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/ValidationHelpers/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/ValidationHelpers/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/Plugins/Versions.html">Versions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Plugins/Versions/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Versions/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Versions/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../../../Shrine/Plugins/Versions/Utils.html">Utils</a></code></li></ul></details></li></ul></details></li><li><code><a href="../../../Shrine/PresignEndpoint.html">PresignEndpoint</a></code></li><li><code><a href="../../../Shrine/RackFile.html">RackFile</a></code></li><li><details><summary><code><a href="../../../Shrine/Storage.html">Storage</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Storage/FileSystem.html">FileSystem</a></code></li><li><details><summary><code><a href="../../../Shrine/Storage/Linter.html">Linter</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Storage/Linter/FakeIO.html">FakeIO</a></code></li></ul></details></li><li><code><a href="../../../Shrine/Storage/Memory.html">Memory</a></code></li><li><details><summary><code><a href="../../../Shrine/Storage/S3.html">S3</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/Storage/S3/ClientSideEncryption.html">ClientSideEncryption</a></code></li></ul></details></li></ul></details></li><li><code><a href="../../../Shrine/UploadEndpoint.html">UploadEndpoint</a></code></li><li><details><summary><code><a href="../../../Shrine/UploadedFile.html">UploadedFile</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/UploadedFile/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../../Shrine/UploadedFile/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../../Shrine/UrlSigner.html">UrlSigner</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../../Shrine/UrlSigner/InvalidSignature.html">InvalidSignature</a></code></li></ul></details></li><li><code><a href="../../../Shrine/VERSION.html">VERSION</a></code></li></ul></details></li></ul>
+  </details>
+</div>
+
+</nav>
+
+<main role="main" aria-labelledby="module-shrine-plugins-derivatives-attachermethods">
+  
+  
+    <ol role="navigation" aria-label="Breadcrumb navigation" class="breadcrumb">
+      
+      <li>
+        
+        <a href="../../../Shrine.html">Shrine</a><span class="separator">::</span>
+        
+      </li>
+      
+      <li>
+        
+        <a href="../../../Shrine/Plugins.html">Plugins</a><span class="separator">::</span>
+        
+      </li>
+      
+      <li>
+        
+        <a href="../../../Shrine/Plugins/Derivatives.html">Derivatives</a><span class="separator">::</span>
+        
+      </li>
+      
+      <li>
+        
+        <span>AttacherMethods</span>
+        
+      </li>
+      
+    </ol>
+  
+
+  <span id="module-Shrine::Plugins::Derivatives::AttacherMethods" class="legacy-anchor"></span>
+  <h1 id="module-shrine-plugins-derivatives-attachermethods" class="anchor-link module page-title">
+    <span class="page-title-kind">module</span>
+    <span class="page-title-name">Shrine::Plugins::Derivatives::AttacherMethods</span>
+  </h1>
+
+  <section class="description">
+    
+  </section>
+
+
+  <span id="5Buntitled-5D" class="legacy-anchor"></span>
+  <section class="documentation-section anchor-link">
+
+
+
+
+
+
+
+    <section class="attribute-method-details method-section">
+      <header>
+        <h3 id="untitled-attributes"><a href="#untitled-attributes">Attributes</a></h3>
+      </header>
+
+
+      <div id="attribute-i-derivatives" class="method-detail anchor-link">
+        <div class="method-heading attribute-method-heading">
+          <a href="#attribute-i-derivatives" title="Link to this attribute">
+            <span class="method-name">derivatives</span>
+            <span class="attribute-access-type">[R]</span>
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+
+        
+
+        </div>
+      </div>
+
+    </section>
+
+
+
+
+
+
+     <section id="public-class-untitled-method-details" class="method-section anchor-link">
+       <header>
+         <h3 id="public-class-untitled-methods"><a href="#public-class-untitled-methods">Public Class Methods</a></h3>
+       </header>
+
+
+      <div id="method-c-new" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-c-new" title="Link to this method">
+                  <span class="method-name">new</span>
+                  <span class="method-args">(derivatives: {}, **options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="new-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">108</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-value">derivatives:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">109</span>   <span class="ruby-keyword">super</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">110</span> 
+<span class="line-num">111</span>   <span class="ruby-ivar">@derivatives</span>       = <span class="ruby-identifier">derivatives</span>
+<span class="line-num">112</span>   <span class="ruby-ivar">@derivatives_mutex</span> = <span class="ruby-constant">Mutex</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">derivatives_options</span>[<span class="ruby-value">:</span><span class="ruby-value">mutex</span>]
+<span class="line-num">113</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Adds the ability to accept derivatives.</p>
+
+
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+    </section>
+
+
+
+
+
+
+
+     <section id="public-instance-untitled-method-details" class="method-section anchor-link">
+       <header>
+         <h3 id="public-instance-untitled-methods"><a href="#public-instance-untitled-methods">Public Instance Methods</a></h3>
+       </header>
+
+
+      <div id="method-i-add_derivative" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-add_derivative" title="Link to this method">
+                  <span class="method-name">add_derivative</span>
+                  <span class="method-args">(name, file, **options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="add_derivative-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">235</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">add_derivative</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">236</span>   <span class="ruby-identifier">add_derivatives</span>({ <span class="ruby-identifier">name</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">file</span> }, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">237</span>   <span class="ruby-identifier">derivatives</span>[<span class="ruby-identifier">name</span>]
+<span class="line-num">238</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Uploads a given file and adds it to the derivatives hash.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt;</span>
+<span class="ruby-comment"># {</span>
+<span class="ruby-comment">#   thumb: #&lt;Shrine::UploadedFile&gt;,</span>
+<span class="ruby-comment"># }</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivative</span>(<span class="ruby-value">:</span><span class="ruby-value">cropped</span>, <span class="ruby-identifier">cropped</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt;</span>
+<span class="ruby-comment"># {</span>
+<span class="ruby-comment">#   thumb: #&lt;Shrine::UploadedFile&gt;,</span>
+<span class="ruby-comment">#   cropped: #&lt;Shrine::UploadedFile&gt;,</span>
+<span class="ruby-comment"># }</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-add_derivatives" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-add_derivatives" title="Link to this method">
+                  <span class="method-name">add_derivatives</span>
+                  <span class="method-args">(files, **options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="add_derivatives-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">217</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">add_derivatives</span>(<span class="ruby-identifier">files</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">218</span>   <span class="ruby-identifier">new_derivatives</span> = <span class="ruby-identifier">upload_derivatives</span>(<span class="ruby-identifier">files</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">219</span>   <span class="ruby-identifier">merge_derivatives</span>(<span class="ruby-identifier">new_derivatives</span>)
+<span class="line-num">220</span>   <span class="ruby-identifier">new_derivatives</span>
+<span class="line-num">221</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Uploads given hash of files and adds uploaded files to the derivatives hash.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt;</span>
+<span class="ruby-comment"># {</span>
+<span class="ruby-comment">#   thumb: #&lt;Shrine::UploadedFile&gt;,</span>
+<span class="ruby-comment"># }</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>({ <span class="ruby-value">cropped</span><span class="ruby-value">:</span> <span class="ruby-identifier">cropped</span> })
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt;</span>
+<span class="ruby-comment"># {</span>
+<span class="ruby-comment">#   thumb: #&lt;Shrine::UploadedFile&gt;,</span>
+<span class="ruby-comment">#   cropped: #&lt;Shrine::UploadedFile&gt;,</span>
+<span class="ruby-comment"># }</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-change" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-change" title="Link to this method">
+                  <span class="method-name">change</span>
+                  <span class="method-args">(*)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="change-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">466</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">change</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">467</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>
+<span class="line-num">468</span>   <span class="ruby-identifier">set_derivatives</span>({}) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">derivatives_options</span>[<span class="ruby-value">:</span><span class="ruby-value">keep_derivatives</span>]
+<span class="line-num">469</span>   <span class="ruby-identifier">result</span>
+<span class="line-num">470</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Clears derivatives when attachment changes.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; {}</span>
+
+<span class="ruby-comment"># With keep_derivatives: true</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">change</span>(<span class="ruby-identifier">file</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</span>
+</pre>
+
+
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-create_derivatives" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-create_derivatives" title="Link to this method">
+                  <span class="method-name">create_derivatives</span>
+                  <span class="method-args">(*args, storage: nil, **options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="create_derivatives-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">199</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">create_derivatives</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-value">storage:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">200</span>   <span class="ruby-identifier">files</span> = <span class="ruby-identifier">process_derivatives</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">201</span>   <span class="ruby-identifier">add_derivatives</span>(<span class="ruby-identifier">files</span>, <span class="ruby-value">storage</span><span class="ruby-value">:</span> <span class="ruby-identifier">storage</span>)
+<span class="line-num">202</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Calls processor and adds returned derivatives.</p>
+
+<pre class="ruby"><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-value">:</span><span class="ruby-value">my_processor</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>
+  <span class="ruby-comment"># ...</span>
+<span class="ruby-keyword">end</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">create_derivatives</span>(<span class="ruby-value">:</span><span class="ruby-value">my_processor</span>)
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-data" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-data" title="Link to this method">
+                  <span class="method-name">data</span>
+                  <span class="method-args">()</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="data-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">416</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">data</span>
+<span class="line-num">417</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>
+<span class="line-num">418</span> 
+<span class="line-num">419</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">derivatives</span>.<span class="ruby-identifier">any?</span>
+<span class="line-num">420</span>     <span class="ruby-identifier">result</span> ||= {}
+<span class="line-num">421</span>     <span class="ruby-identifier">result</span>[<span class="ruby-string">&quot;</span><span class="ruby-string">derivatives</span><span class="ruby-string">&quot;</span>] = <span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">derivatives</span>, <span class="ruby-value">transform_keys</span><span class="ruby-value">:</span> <span class="ruby-value">:</span><span class="ruby-value">to_s</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">_</span>, <span class="ruby-identifier">derivative</span><span class="ruby-operator">|</span>
+<span class="line-num">422</span>       <span class="ruby-identifier">derivative</span>.<span class="ruby-identifier">data</span>
+<span class="line-num">423</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">424</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">425</span> 
+<span class="line-num">426</span>   <span class="ruby-identifier">result</span>
+<span class="line-num">427</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Adds derivative data into the hash.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span>(<span class="ruby-identifier">io</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>({ <span class="ruby-value">thumb</span><span class="ruby-value">:</span> <span class="ruby-identifier">thumb</span> })
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">data</span>
+<span class="ruby-comment">#=&gt;</span>
+<span class="ruby-comment"># {</span>
+<span class="ruby-comment">#   &quot;id&quot; =&gt; &quot;...&quot;,</span>
+<span class="ruby-comment">#   &quot;storage&quot; =&gt; &quot;store&quot;,</span>
+<span class="ruby-comment">#   &quot;metadata&quot; =&gt; { ... },</span>
+<span class="ruby-comment">#   &quot;derivatives&quot; =&gt; {</span>
+<span class="ruby-comment">#     &quot;thumb&quot; =&gt; {</span>
+<span class="ruby-comment">#       &quot;id&quot; =&gt; &quot;...&quot;,</span>
+<span class="ruby-comment">#       &quot;storage&quot; =&gt; &quot;store&quot;,</span>
+<span class="ruby-comment">#       &quot;metadata&quot; =&gt; { ... },</span>
+<span class="ruby-comment">#     }</span>
+<span class="ruby-comment">#   }</span>
+<span class="ruby-comment"># }</span>
+</pre>
+
+
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-delete_derivatives" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-delete_derivatives" title="Link to this method">
+                  <span class="method-name">delete_derivatives</span>
+                  <span class="method-args">(derivatives = self.derivatives)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="delete_derivatives-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">384</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">delete_derivatives</span>(<span class="ruby-identifier">derivatives</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">derivatives</span>)
+<span class="line-num">385</span>   <span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">derivatives</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">_</span>, <span class="ruby-identifier">derivative</span><span class="ruby-operator">|</span> <span class="ruby-identifier">derivative</span>.<span class="ruby-identifier">delete</span> }
+<span class="line-num">386</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Deletes given hash of uploaded files.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">delete_derivatives</span>({ <span class="ruby-value">thumb</span><span class="ruby-value">:</span> <span class="ruby-identifier">uploaded_file</span> })
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-derivatives-3D" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-derivatives-3D" title="Link to this method">
+                  <span class="method-name">derivatives=</span>
+                  <span class="method-args">(derivatives)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="derivatives-3D-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">476</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">derivatives=</span>(<span class="ruby-identifier">derivatives</span>)
+<span class="line-num">477</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">derivatives</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
+<span class="line-num">478</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">expected derivatives to be a Hash, got </span><span class="ruby-string">#{</span><span class="ruby-identifier">derivatives</span>.<span class="ruby-identifier">inspect</span><span class="ruby-string">}</span><span class="ruby-string">&quot;</span>
+<span class="line-num">479</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">480</span> 
+<span class="line-num">481</span>   <span class="ruby-ivar">@derivatives</span> = <span class="ruby-identifier">derivatives</span>
+<span class="line-num">482</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Sets a hash of derivatives.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> = { <span class="ruby-value">thumb</span><span class="ruby-value">:</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>) }
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile ...&gt; }</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-destroy" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-destroy" title="Link to this method">
+                  <span class="method-name">destroy</span>
+                  <span class="method-args">()</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="destroy-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">187</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span>
+<span class="line-num">188</span>   <span class="ruby-keyword">super</span>
+<span class="line-num">189</span>   <span class="ruby-identifier">delete_derivatives</span>
+<span class="line-num">190</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>In addition to deleting the main file it also deletes any derivatives.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>({ <span class="ruby-value">thumb</span><span class="ruby-value">:</span> <span class="ruby-identifier">thumb</span> })
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:</span><span class="ruby-value">thumb</span>].<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:</span><span class="ruby-value">thumb</span>].<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
+
+
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-get" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-get" title="Link to this method">
+                  <span class="method-name">get</span>
+                  <span class="method-args">(*path)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="get-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">120</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">get</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>)
+<span class="line-num">121</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">path</span>.<span class="ruby-identifier">empty?</span>
+<span class="line-num">122</span> 
+<span class="line-num">123</span>   <span class="ruby-identifier">get_derivatives</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>)
+<span class="line-num">124</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Convenience method for accessing derivatives.</p>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives</span>[<span class="ruby-value">:</span><span class="ruby-value">thumb</span>] <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="ruby-comment"># can be shortened to</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:</span><span class="ruby-value">thumb</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</pre>
+
+
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-get_derivatives" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-get_derivatives" title="Link to this method">
+                  <span class="method-name">get_derivatives</span>
+                  <span class="method-args">(*path)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="get_derivatives-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">131</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">get_derivatives</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>)
+<span class="line-num">132</span>   <span class="ruby-keyword">return</span> <span class="ruby-identifier">derivatives</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">path</span>.<span class="ruby-identifier">empty?</span>
+<span class="line-num">133</span> 
+<span class="line-num">134</span>   <span class="ruby-identifier">path</span> = <span class="ruby-identifier">derivative_path</span>(<span class="ruby-identifier">path</span>)
+<span class="line-num">135</span> 
+<span class="line-num">136</span>   <span class="ruby-identifier">derivatives</span>.<span class="ruby-identifier">dig</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>)
+<span class="line-num">137</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Convenience method for accessing derivatives.</p>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives</span>.<span class="ruby-identifier">dig</span>(<span class="ruby-value">:</span><span class="ruby-value">thumbnails</span>, <span class="ruby-value">:</span><span class="ruby-value">large</span>)
+<span class="ruby-comment"># can be shortened to</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives</span>(<span class="ruby-value">:</span><span class="ruby-value">thumbnails</span>, <span class="ruby-value">:</span><span class="ruby-value">large</span>)
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-load_data" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-load_data" title="Link to this method">
+                  <span class="method-name">load_data</span>
+                  <span class="method-args">(data)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="load_data-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">445</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">load_data</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">446</span>   <span class="ruby-identifier">data</span> ||= {}
+<span class="line-num">447</span>   <span class="ruby-identifier">data</span>   = <span class="ruby-identifier">data</span>.<span class="ruby-identifier">dup</span>
+<span class="line-num">448</span> 
+<span class="line-num">449</span>   <span class="ruby-identifier">derivatives_data</span> = <span class="ruby-identifier">data</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">derivatives</span><span class="ruby-string">&quot;</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">data</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:</span><span class="ruby-value">derivatives</span>) <span class="ruby-operator">||</span> {}
+<span class="line-num">450</span>   <span class="ruby-ivar">@derivatives</span>     = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">derivatives</span>(<span class="ruby-identifier">derivatives_data</span>)
+<span class="line-num">451</span> 
+<span class="line-num">452</span>   <span class="ruby-identifier">data</span> = <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">data</span>.<span class="ruby-identifier">empty?</span>
+<span class="line-num">453</span> 
+<span class="line-num">454</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">data</span>)
+<span class="line-num">455</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Loads derivatives from data generated by <a href="../../Attacher/InstanceMethods.html#method-i-data"><code>Attacher#data</code></a>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">load_data</span>({
+  <span class="ruby-string">&quot;</span><span class="ruby-string">id</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;</span><span class="ruby-string">...</span><span class="ruby-string">&quot;</span>,
+  <span class="ruby-string">&quot;</span><span class="ruby-string">storage</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;</span><span class="ruby-string">store</span><span class="ruby-string">&quot;</span>,
+  <span class="ruby-string">&quot;</span><span class="ruby-string">metadata</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">=&gt;</span> {},
+  <span class="ruby-string">&quot;</span><span class="ruby-string">derivatives</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">=&gt;</span> {
+    <span class="ruby-string">&quot;</span><span class="ruby-string">thumb</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">=&gt;</span> {
+      <span class="ruby-string">&quot;</span><span class="ruby-string">id</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;</span><span class="ruby-string">...</span><span class="ruby-string">&quot;</span>,
+      <span class="ruby-string">&quot;</span><span class="ruby-string">storage</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;</span><span class="ruby-string">store</span><span class="ruby-string">&quot;</span>,
+      <span class="ruby-string">&quot;</span><span class="ruby-string">metadata</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">=&gt;</span> {},
+    }
+  }
+})
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>        <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</span>
+</pre>
+
+
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-map_derivative" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-map_derivative" title="Link to this method">
+                  <span class="method-name">map_derivative</span>
+                  <span class="method-args">(derivatives, **options, &amp;block)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="map_derivative-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">489</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">derivatives</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">490</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">derivatives</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">491</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Iterates through nested derivatives and maps results.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">derivatives</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+  <span class="ruby-comment"># ...</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-merge_derivatives" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-merge_derivatives" title="Link to this method">
+                  <span class="method-name">merge_derivatives</span>
+                  <span class="method-args">(new_derivatives)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="merge_derivatives-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">303</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">merge_derivatives</span>(<span class="ruby-identifier">new_derivatives</span>)
+<span class="line-num">304</span>   <span class="ruby-identifier">derivatives_synchronize</span> <span class="ruby-keyword">do</span>
+<span class="line-num">305</span>     <span class="ruby-identifier">merged_derivatives</span> = <span class="ruby-identifier">deep_merge_derivatives</span>(<span class="ruby-identifier">derivatives</span>, <span class="ruby-identifier">new_derivatives</span>)
+<span class="line-num">306</span>     <span class="ruby-identifier">set_derivatives</span>(<span class="ruby-identifier">merged_derivatives</span>)
+<span class="line-num">307</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">308</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Deep merges given uploaded derivatives with current derivatives.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt; }</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">merge_derivatives</span>({ <span class="ruby-value">two</span><span class="ruby-value">:</span> <span class="ruby-identifier">uploaded_file</span> })
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt;, two: #&lt;Shrine::UploadedFile&gt; }</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-process_derivatives" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-process_derivatives" title="Link to this method">
+                  <span class="method-name">process_derivatives</span>
+                  <span class="method-args">(processor_name = :default, source = nil, **options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="process_derivatives-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">278</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">process_derivatives</span>(<span class="ruby-identifier">processor_name</span> = <span class="ruby-value">:</span><span class="ruby-value">default</span>, <span class="ruby-identifier">source</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">279</span>   <span class="ruby-comment"># handle receiving only source file without a processor</span>
+<span class="line-num">280</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">processor_name</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:</span><span class="ruby-value">to_sym</span>)
+<span class="line-num">281</span>     <span class="ruby-identifier">source</span>         = <span class="ruby-identifier">processor_name</span>
+<span class="line-num">282</span>     <span class="ruby-identifier">processor_name</span> = <span class="ruby-value">:</span><span class="ruby-value">default</span>
+<span class="line-num">283</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">284</span> 
+<span class="line-num">285</span>   <span class="ruby-identifier">source</span> ||= <span class="ruby-identifier">file!</span>
+<span class="line-num">286</span> 
+<span class="line-num">287</span>   <span class="ruby-identifier">processor_settings</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">derivatives_processor_settings</span>(<span class="ruby-identifier">processor_name</span>) <span class="ruby-operator">||</span> {}
+<span class="line-num">288</span> 
+<span class="line-num">289</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">processor_settings</span>[<span class="ruby-value">:</span><span class="ruby-value">download</span>]
+<span class="line-num">290</span>     <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">with_file</span>(<span class="ruby-identifier">source</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+<span class="line-num">291</span>       <span class="ruby-identifier">_process_derivatives</span>(<span class="ruby-identifier">processor_name</span>, <span class="ruby-identifier">file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">292</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">293</span>   <span class="ruby-keyword">else</span>
+<span class="line-num">294</span>     <span class="ruby-identifier">_process_derivatives</span>(<span class="ruby-identifier">processor_name</span>, <span class="ruby-identifier">source</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">295</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">296</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Downloads the attached file and calls the specified processor.</p>
+
+<pre class="ruby"><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-value">:</span><span class="ruby-value">thumbnails</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">processor</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)
+
+  {
+    <span class="ruby-value">small</span><span class="ruby-value">:</span>  <span class="ruby-identifier">processor</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>),
+    <span class="ruby-value">medium</span><span class="ruby-value">:</span> <span class="ruby-identifier">processor</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>),
+    <span class="ruby-value">large</span><span class="ruby-value">:</span>  <span class="ruby-identifier">processor</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>),
+  }
+<span class="ruby-keyword">end</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">process_derivatives</span>(<span class="ruby-value">:</span><span class="ruby-value">thumbnails</span>)
+<span class="ruby-comment">#=&gt; { small: #&lt;File:...&gt;, medium: #&lt;File:...&gt;, large: #&lt;File:...&gt; }</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-promote" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-promote" title="Link to this method">
+                  <span class="method-name">promote</span>
+                  <span class="method-args">(**options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="promote-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">162</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">163</span>   <span class="ruby-keyword">super</span>
+<span class="line-num">164</span>   <span class="ruby-identifier">promote_derivatives</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">165</span>   <span class="ruby-identifier">create_derivatives</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">create_derivatives_on_promote?</span>
+<span class="line-num">166</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>In addition to promoting the main file, also promotes any cached derivatives. This is useful when these derivatives are being created as part of a direct upload.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivative</span>(<span class="ruby-value">:</span><span class="ruby-value">thumb</span>, <span class="ruby-identifier">file</span>, <span class="ruby-value">storage</span><span class="ruby-value">:</span> <span class="ruby-value">:</span><span class="ruby-value">cache</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>(<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>[<span class="ruby-value">:</span><span class="ruby-value">thumb</span>]) <span class="ruby-comment">#=&gt; true</span>
+</pre>
+
+
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-promote_derivatives" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-promote_derivatives" title="Link to this method">
+                  <span class="method-name">promote_derivatives</span>
+                  <span class="method-args">(**options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="promote_derivatives-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">169</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">promote_derivatives</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">170</span>   <span class="ruby-identifier">stored_derivatives</span> = <span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">derivatives</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">derivative</span><span class="ruby-operator">|</span>
+<span class="line-num">171</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached?</span>(<span class="ruby-identifier">derivative</span>)
+<span class="line-num">172</span>       <span class="ruby-identifier">upload_derivative</span>(<span class="ruby-identifier">path</span>, <span class="ruby-identifier">derivative</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">173</span>     <span class="ruby-keyword">else</span>
+<span class="line-num">174</span>       <span class="ruby-identifier">derivative</span>
+<span class="line-num">175</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">176</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">177</span> 
+<span class="line-num">178</span>   <span class="ruby-identifier">set_derivatives</span>(<span class="ruby-identifier">stored_derivatives</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">derivatives</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">stored_derivatives</span>
+<span class="line-num">179</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Uploads any cached derivatives to permanent storage.</p>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-remove_derivative" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-remove_derivative" title="Link to this method">
+                  <span class="method-name">remove_derivative</span>
+                  <span class="method-args">(path, **options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="remove_derivative-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">376</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">remove_derivative</span>(<span class="ruby-identifier">path</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">377</span>   <span class="ruby-identifier">remove_derivatives</span>(<span class="ruby-identifier">path</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>).<span class="ruby-identifier">first</span>
+<span class="line-num">378</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Removes derivative with specified name from the derivatives hash.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt;, two: #&lt;Shrine::UploadedFile&gt; }</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">remove_derivative</span>(<span class="ruby-value">:</span><span class="ruby-value">one</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt; (removed derivative)</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { two: #&lt;Shrine::UploadedFile&gt; }</span>
+</pre>
+
+<p>Nested derivatives are also supported:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { nested: { one: #&lt;Shrine::UploadedFile&gt;, two: #&lt;Shrine::UploadedFile&gt; } }</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">remove_derivative</span>([<span class="ruby-value">:</span><span class="ruby-value">nested</span>, <span class="ruby-value">:</span><span class="ruby-value">one</span>]) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt; (removed derivative)</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { nested: { one: #&lt;Shrine::UploadedFile&gt; } }</span>
+</pre>
+
+<p>The :delete option can be passed for deleting removed derivative:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt;, two: #&lt;Shrine::UploadedFile&gt; }</span>
+<span class="ruby-identifier">derivative</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">remove_derivatives</span>(<span class="ruby-value">:</span><span class="ruby-value">two</span>, <span class="ruby-value">delete</span><span class="ruby-value">:</span> <span class="ruby-keyword">true</span>)
+<span class="ruby-identifier">derivative</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-remove_derivatives" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-remove_derivatives" title="Link to this method">
+                  <span class="method-name">remove_derivatives</span>
+                  <span class="method-args">(*paths, delete: false)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="remove_derivatives-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">341</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">remove_derivatives</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">paths</span>, <span class="ruby-value">delete:</span> <span class="ruby-keyword">false</span>)
+<span class="line-num">342</span>   <span class="ruby-identifier">removed_derivatives</span> = <span class="ruby-identifier">paths</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span>
+<span class="line-num">343</span>     <span class="ruby-identifier">path</span> = <span class="ruby-constant">Array</span>(<span class="ruby-identifier">path</span>)
+<span class="line-num">344</span> 
+<span class="line-num">345</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">path</span>.<span class="ruby-identifier">one?</span>
+<span class="line-num">346</span>       <span class="ruby-identifier">derivatives</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">path</span>.<span class="ruby-identifier">first</span>)
+<span class="line-num">347</span>     <span class="ruby-keyword">else</span>
+<span class="line-num">348</span>       <span class="ruby-identifier">derivatives</span>.<span class="ruby-identifier">dig</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>[<span class="ruby-value">0</span>..-<span class="ruby-value">2</span>]).<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">path</span>[-<span class="ruby-value">1</span>])
+<span class="line-num">349</span>     <span class="ruby-keyword">end</span>
+<span class="line-num">350</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">351</span> 
+<span class="line-num">352</span>   <span class="ruby-identifier">set_derivatives</span> <span class="ruby-identifier">derivatives</span>
+<span class="line-num">353</span> 
+<span class="line-num">354</span>   <span class="ruby-identifier">delete_derivatives</span>(<span class="ruby-identifier">removed_derivatives</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">delete</span>
+<span class="line-num">355</span> 
+<span class="line-num">356</span>   <span class="ruby-identifier">removed_derivatives</span>
+<span class="line-num">357</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Removes derivatives with specified name from the derivatives hash.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>
+<span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt;, two: #&lt;Shrine::UploadedFile&gt;, three: #&lt;Shrine::UploadedFile&gt; }</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">remove_derivatives</span>(<span class="ruby-value">:</span><span class="ruby-value">two</span>, <span class="ruby-value">:</span><span class="ruby-value">three</span>)
+<span class="ruby-comment">#=&gt; [#&lt;Shrine::UploadedFile&gt;, #&lt;Shrine::UploadedFile&gt;] (removed derivatives)</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>
+<span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt; }</span>
+</pre>
+
+<p>Nested derivatives are also supported:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>
+<span class="ruby-comment">#=&gt; { nested: { one: #&lt;Shrine::UploadedFile&gt;, two: #&lt;Shrine::UploadedFile&gt;, three: #&lt;Shrine::UploadedFile&gt; } }</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">remove_derivatives</span>([<span class="ruby-value">:</span><span class="ruby-value">nested</span>, <span class="ruby-value">:</span><span class="ruby-value">two</span>], [<span class="ruby-value">:</span><span class="ruby-value">nested</span>, <span class="ruby-value">:</span><span class="ruby-value">three</span>])
+<span class="ruby-comment">#=&gt; [#&lt;Shrine::UploadedFile&gt;, #&lt;Shrine::UploadedFile&gt;] (removed derivatives)</span>
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>
+<span class="ruby-comment">#=&gt; { nested: { one: #&lt;Shrine::UploadedFile&gt; } }</span>
+</pre>
+
+<p>The :delete option can be passed for deleting removed derivatives:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span>
+<span class="ruby-comment">#=&gt; { one: #&lt;Shrine::UploadedFile&gt;, two: #&lt;Shrine::UploadedFile&gt;, three: #&lt;Shrine::UploadedFile&gt; }</span>
+
+<span class="ruby-identifier">two</span>, <span class="ruby-identifier">three</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">remove_derivatives</span>(<span class="ruby-value">:</span><span class="ruby-value">two</span>, <span class="ruby-value">:</span><span class="ruby-value">three</span>, <span class="ruby-value">delete</span><span class="ruby-value">:</span> <span class="ruby-keyword">true</span>)
+
+<span class="ruby-identifier">two</span>.<span class="ruby-identifier">exists?</span>   <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-identifier">three</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-set_derivatives" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-set_derivatives" title="Link to this method">
+                  <span class="method-name">set_derivatives</span>
+                  <span class="method-args">(derivatives)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="set_derivatives-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">392</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">set_derivatives</span>(<span class="ruby-identifier">derivatives</span>)
+<span class="line-num">393</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">derivatives</span> = <span class="ruby-identifier">derivatives</span>
+<span class="line-num">394</span>   <span class="ruby-identifier">set</span> <span class="ruby-identifier">file</span> <span class="ruby-comment"># trigger model write</span>
+<span class="line-num">395</span>   <span class="ruby-identifier">derivatives</span>
+<span class="line-num">396</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Sets the given hash of uploaded files as derivatives.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set_derivatives</span>({ <span class="ruby-value">thumb</span><span class="ruby-value">:</span> <span class="ruby-identifier">uploaded_file</span> })
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile&gt; }</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-upload_derivative" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-upload_derivative" title="Link to this method">
+                  <span class="method-name">upload_derivative</span>
+                  <span class="method-args">(path, file, storage: nil, **options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="upload_derivative-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">254</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">upload_derivative</span>(<span class="ruby-identifier">path</span>, <span class="ruby-identifier">file</span>, <span class="ruby-value">storage:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">255</span>   <span class="ruby-identifier">path</span>      = <span class="ruby-identifier">derivative_path</span>(<span class="ruby-identifier">path</span>)
+<span class="line-num">256</span>   <span class="ruby-identifier">storage</span> ||= <span class="ruby-identifier">derivative_storage</span>(<span class="ruby-identifier">path</span>)
+<span class="line-num">257</span> 
+<span class="line-num">258</span>   <span class="ruby-identifier">file</span>.<span class="ruby-identifier">open</span>    <span class="ruby-keyword">if</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Tempfile</span>)       <span class="ruby-comment"># refresh file descriptor</span>
+<span class="line-num">259</span>   <span class="ruby-identifier">file</span>.<span class="ruby-identifier">binmode</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:</span><span class="ruby-value">binmode</span>) <span class="ruby-comment"># ensure binary mode</span>
+<span class="line-num">260</span> 
+<span class="line-num">261</span>   <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">storage</span>, <span class="ruby-value">derivative</span><span class="ruby-value">:</span> <span class="ruby-identifier">path</span>, <span class="ruby-value">delete</span><span class="ruby-value">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-value">action</span><span class="ruby-value">:</span> <span class="ruby-value">:</span><span class="ruby-value">derivatives</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">262</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Uploads the given file and deletes it afterwards.</p>
+
+<pre class="ruby"><span class="ruby-identifier">hash</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload_derivative</span>(<span class="ruby-value">:</span><span class="ruby-value">thumb</span>, <span class="ruby-identifier">thumb</span>)
+<span class="ruby-identifier">hash</span>[<span class="ruby-value">:</span><span class="ruby-value">thumb</span>] <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-upload_derivatives" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-upload_derivatives" title="Link to this method">
+                  <span class="method-name">upload_derivatives</span>
+                  <span class="method-args">(files, **options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="upload_derivatives-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">244</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">upload_derivatives</span>(<span class="ruby-identifier">files</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">245</span>   <span class="ruby-identifier">map_derivative</span>(<span class="ruby-identifier">files</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+<span class="line-num">246</span>     <span class="ruby-identifier">upload_derivative</span>(<span class="ruby-identifier">path</span>, <span class="ruby-identifier">file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">247</span>   <span class="ruby-keyword">end</span>
+<span class="line-num">248</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Uploads given hash of files.</p>
+
+<pre class="ruby"><span class="ruby-identifier">hash</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload_derivatives</span>({ <span class="ruby-value">thumb</span><span class="ruby-value">:</span> <span class="ruby-identifier">thumb</span> })
+<span class="ruby-identifier">hash</span>[<span class="ruby-value">:</span><span class="ruby-value">thumb</span>] <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</pre>
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <div id="method-i-url" class="method-detail anchor-link ">
+        <div class="method-header">
+          <div class="method-heading-group">
+
+              <div class="method-heading">
+                <a href="#method-i-url" title="Link to this method">
+                  <span class="method-name">url</span>
+                  <span class="method-args">(*path, **options)</span>
+                </a>
+              </div>
+
+
+
+          </div>
+
+
+            <div class="method-controls">
+              <details class="method-source-toggle">
+                <summary><span class="method-source-icon" aria-hidden="true">{}</span> Source</summary>
+              </details>
+            </div>
+
+        </div>
+
+
+          <div class="method-source-code" id="url-source">
+            <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>
+<span class="line-num">144</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">145</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">path</span>.<span class="ruby-identifier">empty?</span>
+<span class="line-num">146</span> 
+<span class="line-num">147</span>   <span class="ruby-identifier">path</span> = <span class="ruby-identifier">derivative_path</span>(<span class="ruby-identifier">path</span>)
+<span class="line-num">148</span> 
+<span class="line-num">149</span>   <span class="ruby-identifier">url</span>   = <span class="ruby-identifier">derivatives</span>.<span class="ruby-identifier">dig</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>)&amp;.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">150</span>   <span class="ruby-identifier">url</span> ||= <span class="ruby-identifier">default_url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-value">derivative</span><span class="ruby-value">:</span> <span class="ruby-identifier">path</span>)
+<span class="line-num">151</span>   <span class="ruby-identifier">url</span>
+<span class="line-num">152</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+
+
+
+        <div class="method-description">
+
+
+          <p>Allows generating a URL to the derivative by passing the derivative name.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span>({ <span class="ruby-value">thumb</span><span class="ruby-value">:</span> <span class="ruby-identifier">thumb</span> })
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span>(<span class="ruby-value">:</span><span class="ruby-value">thumb</span>) <span class="ruby-comment">#=&gt; &quot;https://example.org/thumb.jpg&quot;</span>
+</pre>
+
+
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+
+        </div>
+
+
+
+
+
+      </div>
+
+
+    </section>
+
+
+
+
+  </section>
+
+</main>
+
+<aside id="table-of-contents" class="table-of-contents" role="complementary" aria-label="Table of Contents">
+  <div class="toc-sticky">
+    <h3 class="toc-heading">On This Page</h3>
+    <nav class="toc-nav" id="toc-nav" aria-label="Page sections">
+      <!-- Generated by JavaScript based on page headings -->
+    </nav>
+  </div>
+</aside>
+
+
+<footer class="site-footer">
+  
+
+  <div class="footer-bottom">
+    <p>
+      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 8.0.0</a>
+      using the Aliki theme by <a href="http://st0012.dev">Stan Lo</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+

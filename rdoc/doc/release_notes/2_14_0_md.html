@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>2.14.0 - Shrine: Toolkit for file uploads</title>
+
+
+  <meta name="keywords" content="ruby,documentation,2.14.0">
+  <meta
+    name="description"
+    content="2.14.0: Shrine 2. client` option for specifying an AWS SDK client object."
+  >
+
+
+
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="2.14.0 - Shrine: Toolkit for file uploads">
+
+
+
+    <meta property="og:description" content="Shrine 2. client` option for specifying an AWS SDK client object.">
+
+
+
+
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2.14.0 - Shrine: Toolkit for file uploads">
+
+
+
+    <meta name="twitter:description" content="Shrine 2. client` option for specifying an AWS SDK client object.">
+
+
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../";
+  var index_rel_prefix = "../../";
+</script>
+
+<script
+  src="../../js/theme-toggle.js?v=8.0.0"
+></script>
+
+<script
+  src="../../js/search_navigation.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../js/search_data.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../js/search_ranker.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../js/search_controller.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../js/c_highlighter.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../js/bash_highlighter.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../../js/aliki.js?v=8.0.0"
+  defer
+></script>
+
+<link
+  href="../../css/rdoc.css?v=8.0.0"
+  rel="stylesheet"
+>
+
+
+
+
+<body role="document" class="file has-toc">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <!-- Chevron (right arrow) - used for expand/collapse -->
+  <symbol
+    id="icon-chevron"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </symbol>
+
+  <!-- File/Document - Pages section -->
+  <symbol
+    id="icon-file"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+    ></path>
+
+    <polyline points="14 2 14 8 20 8"></polyline>
+  </symbol>
+
+  <!-- Layers/Stack - Classes and Modules section -->
+  <symbol
+    id="icon-layers"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+    <polyline points="2 17 12 22 22 17"></polyline>
+    <polyline points="2 12 12 17 22 12"></polyline>
+  </symbol>
+
+  <!-- Curly braces with C - Class Methods section -->
+  <symbol
+    id="icon-class-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      C
+    </text>
+  </symbol>
+
+  <!-- Curly braces with I - Instance Methods section -->
+  <symbol
+    id="icon-instance-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      I
+    </text>
+  </symbol>
+
+  <!-- Double chevrons up - Ancestors section -->
+  <symbol
+    id="icon-ancestors"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="17 11 12 6 7 11"></polyline>
+    <polyline points="17 18 12 13 7 18"></polyline>
+  </symbol>
+
+  <!-- User with plus - Included Modules section -->
+  <symbol
+    id="icon-includes"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+
+    <line
+      x1="20"
+      y1="8"
+      x2="20"
+      y2="14"
+    ></line>
+
+    <line
+      x1="23"
+      y1="11"
+      x2="17"
+      y2="11"
+    ></line>
+  </symbol>
+
+  <!-- User with check - Extended Modules section -->
+  <symbol
+    id="icon-extends"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+    <polyline points="17 11 19 13 23 9"></polyline>
+  </symbol>
+
+  <!-- List - Sections section -->
+  <symbol
+    id="icon-list"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line
+      x1="8"
+      y1="6"
+      x2="21"
+      y2="6"
+    ></line>
+
+    <line
+      x1="8"
+      y1="12"
+      x2="21"
+      y2="12"
+    ></line>
+
+    <line
+      x1="8"
+      y1="18"
+      x2="21"
+      y2="18"
+    ></line>
+
+    <line
+      x1="3"
+      y1="6"
+      x2="3.01"
+      y2="6"
+    ></line>
+
+    <line
+      x1="3"
+      y1="12"
+      x2="3.01"
+      y2="12"
+    ></line>
+
+    <line
+      x1="3"
+      y1="18"
+      x2="3.01"
+      y2="18"
+    ></line>
+  </symbol>
+</svg>
+
+<header class="top-navbar">
+  <a href="../../index.html" class="navbar-brand">
+    Shrine: Toolkit for file uploads
+  </a>
+
+  <!-- Desktop search bar -->
+  <div class="navbar-search navbar-search-desktop" role="search">
+    <form action="#" method="get" accept-charset="utf-8">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results-desktop"
+             type="text" name="search" placeholder="Search (/) for a class, method..."
+             spellcheck="false" autocomplete="off"
+             title="Type to search, Up and Down to navigate, Enter to load">
+      <ul id="search-results-desktop" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="initially-hidden search-results"></ul>
+    </form>
+  </div>
+
+  <!-- Mobile search icon button -->
+  <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search" type="button">
+    <span aria-hidden="true">🔍</span>
+  </button>
+
+  <!-- Theme toggle button -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button">
+    <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+  </button>
+</header>
+
+<!-- Search Modal (Mobile) -->
+<div id="search-modal" class="search-modal" hidden aria-modal="true" role="dialog" aria-label="Search">
+  <div class="search-modal-backdrop"></div>
+  <div class="search-modal-content">
+    <div class="search-modal-header">
+      <form class="search-modal-form" action="#" method="get" accept-charset="utf-8">
+        <span class="search-modal-icon" aria-hidden="true">🔍</span>
+        <input id="search-field-mobile" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results-mobile"
+               type="text" name="search" placeholder="Search documentation"
+               spellcheck="false" autocomplete="off">
+        <button type="button" class="search-modal-close" aria-label="Close search" id="search-modal-close">
+          <span aria-hidden="true">esc</span>
+        </button>
+      </form>
+    </div>
+    <div class="search-modal-body">
+      <ul id="search-results-mobile" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="search-results search-modal-results initially-hidden"></ul>
+      <div class="search-modal-empty">
+        <p>No recent searches</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sidebar-navigation-toggle" role="button" tabindex="0" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar-navigation">
+  <span aria-hidden="true">&#9776;</span>
+</div>
+
+
+<nav id="sidebar-navigation" role="navigation" hidden>
+  
+
+
+
+
+
+
+  <div id="fileindex-section" class="nav-section">
+    <details class="nav-section-collapsible" open>
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg>
+            <use href="#icon-file"></use>
+          </svg>
+        </span>
+
+        <span class="nav-section-title">Pages</span>
+
+        <span class="nav-section-chevron">
+          <svg>
+            <use href="#icon-chevron"></use>
+          </svg>
+        </span>
+      </summary>
+
+      <ul class="nav-list">
+
+
+
+
+
+
+            <li>
+              <a href="../../CHANGELOG_md.html">
+                CHANGELOG
+              </a>
+            </li>
+
+
+
+
+
+          <li>
+            <details  open>
+              <summary>
+                
+                  doc
+                  
+                
+              </summary>
+
+              <ul class="link-list">
+
+                  <li>
+                    <a href="../../doc/advantages_md.html">
+                      advantages
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/attacher_md.html">
+                      attacher
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/carrierwave_md.html">
+                      carrierwave
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/changing_derivatives_md.html">
+                      changing_derivatives
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/changing_location_md.html">
+                      changing_location
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/changing_storage_md.html">
+                      changing_storage
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/creating_persistence_plugins_md.html">
+                      creating_persistence_plugins
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/creating_plugins_md.html">
+                      creating_plugins
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/creating_storages_md.html">
+                      creating_storages
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/design_md.html">
+                      design
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/direct_s3_md.html">
+                      direct_s3
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/getting_started_md.html">
+                      getting_started
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/metadata_md.html">
+                      metadata
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/multiple_files_md.html">
+                      multiple_files
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/paperclip_md.html">
+                      paperclip
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/processing_md.html">
+                      processing
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/refile_md.html">
+                      refile
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/1_0_0_md.html">
+                      1.0.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/1_1_0_md.html">
+                      1.1.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/1_2_0_md.html">
+                      1.2.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/1_3_0_md.html">
+                      1.3.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/1_4_0_md.html">
+                      1.4.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/1_4_1_md.html">
+                      1.4.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/1_4_2_md.html">
+                      1.4.2
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_0_0_md.html">
+                      2.0.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_0_1_md.html">
+                      2.0.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_1_0_md.html">
+                      2.1.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_1_1_md.html">
+                      2.1.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_10_0_md.html">
+                      2.10.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_10_1_md.html">
+                      2.10.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_11_0_md.html">
+                      2.11.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_12_0_md.html">
+                      2.12.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_13_0_md.html">
+                      2.13.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_14_0_md.html">
+                      2.14.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_15_0_md.html">
+                      2.15.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_16_0_md.html">
+                      2.16.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_17_0_md.html">
+                      2.17.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_18_0_md.html">
+                      2.18.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_19_0_md.html">
+                      2.19.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_2_0_md.html">
+                      2.2.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_3_0_md.html">
+                      2.3.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_3_1_md.html">
+                      2.3.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_4_0_md.html">
+                      2.4.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_4_1_md.html">
+                      2.4.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_5_0_md.html">
+                      2.5.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_6_0_md.html">
+                      2.6.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_6_1_md.html">
+                      2.6.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_7_0_md.html">
+                      2.7.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_8_0_md.html">
+                      2.8.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/2_9_0_md.html">
+                      2.9.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_0_0_md.html">
+                      3.0.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_0_1_md.html">
+                      3.0.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_1_0_md.html">
+                      3.1.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_2_0_md.html">
+                      3.2.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_2_1_md.html">
+                      3.2.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_2_2_md.html">
+                      3.2.2
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_3_0_md.html">
+                      3.3.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_4_0_md.html">
+                      3.4.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_5_0_md.html">
+                      3.5.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_6_0_md.html">
+                      3.6.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_7_0_md.html">
+                      3.7.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_7_1_md.html">
+                      3.7.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_8_0_md.html">
+                      3.8.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/release_notes/3_9_0_md.html">
+                      3.9.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/retrieving_uploads_md.html">
+                      retrieving_uploads
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/securing_uploads_md.html">
+                      securing_uploads
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/testing_md.html">
+                      testing
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/upgrading_to_3_md.html">
+                      upgrading_to_3
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../../doc/validation_md.html">
+                      validation
+                    </a>
+                  </li>
+
+              </ul>
+            </details>
+          </li>
+
+      </ul>
+    </details>
+  </div>
+
+
+  <div id="classindex-section" class="nav-section">
+  <details class="nav-section-collapsible" open>
+    <summary class="nav-section-header">
+      <span class="nav-section-icon">
+        <svg><use href="#icon-layers"></use></svg>
+      </span>
+      <span class="nav-section-title">Classes and Modules</span>
+      <span class="nav-section-chevron">
+        <svg><use href="#icon-chevron"></use></svg>
+      </span>
+    </summary>
+
+    <ul class="link-list nav-list"><li><details open><summary><code><a href="../../Shrine.html">Shrine</a></code></summary><ul class="link-list nav-list"><li><details><summary><code><a href="../../Shrine/Attacher.html">Attacher</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Attacher/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Attacher/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Attachment.html">Attachment</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Attachment/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Attachment/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><code><a href="../../Shrine/AttachmentChanged.html">AttachmentChanged</a></code></li><li><code><a href="../../Shrine/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/DataFile.html">DataFile</a></code></li><li><details><summary><code><a href="../../Shrine/Derivation.html">Derivation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Derivation/Command.html">Command</a></code></li><li><code><a href="../../Shrine/Derivation/Delete.html">Delete</a></code></li><li><code><a href="../../Shrine/Derivation/Generate.html">Generate</a></code></li><li><code><a href="../../Shrine/Derivation/NotFound.html">NotFound</a></code></li><li><code><a href="../../Shrine/Derivation/Opened.html">Opened</a></code></li><li><code><a href="../../Shrine/Derivation/Processed.html">Processed</a></code></li><li><code><a href="../../Shrine/Derivation/Response.html">Response</a></code></li><li><code><a href="../../Shrine/Derivation/Retrieve.html">Retrieve</a></code></li><li><code><a href="../../Shrine/Derivation/SourceNotFound.html">SourceNotFound</a></code></li><li><code><a href="../../Shrine/Derivation/Upload.html">Upload</a></code></li><li><code><a href="../../Shrine/Derivation/Url.html">Url</a></code></li></ul></details></li><li><code><a href="../../Shrine/DerivationEndpoint.html">DerivationEndpoint</a></code></li><li><code><a href="../../Shrine/DownloadEndpoint.html">DownloadEndpoint</a></code></li><li><code><a href="../../Shrine/Error.html">Error</a></code></li><li><code><a href="../../Shrine/FileNotFound.html">FileNotFound</a></code></li><li><code><a href="../../Shrine/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../../Shrine/InvalidFile.html">InvalidFile</a></code></li><li><code><a href="../../Shrine/LintError.html">LintError</a></code></li><li><code><a href="../../Shrine/MissingStorage.html">MissingStorage</a></code></li><li><details><summary><code><a href="../../Shrine/Plugins.html">Plugins</a></code></summary><ul class="link-list nav-list"><li><details><summary><code><a href="../../Shrine/Plugins/Activerecord.html">Activerecord</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Activerecord/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Activerecord/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/AddMetadata.html">AddMetadata</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/AddMetadata/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/AddMetadata/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/AddMetadata/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../Shrine/Plugins/AddMetadata/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/AtomicHelpers.html">AtomicHelpers</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/AtomicHelpers/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/AtomicHelpers/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Backgrounding.html">Backgrounding</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Backgrounding/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Backgrounding/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/CachedAttachmentData.html">CachedAttachmentData</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/CachedAttachmentData/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/CachedAttachmentData/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Column.html">Column</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Column/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Column/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Column/JsonSerializer.html">JsonSerializer</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/DataUri.html">DataUri</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/DataUri/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DataUri/AttachmentMethods.html">AttachmentMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DataUri/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DataUri/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DataUri/ParseError.html">ParseError</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/DefaultStorage.html">DefaultStorage</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/DefaultStorage/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DefaultStorage/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/DefaultUrl.html">DefaultUrl</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/DefaultUrl/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DefaultUrl/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/DeleteRaw.html">DeleteRaw</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/DeleteRaw/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/DerivationEndpoint.html">DerivationEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/DerivationEndpoint/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DerivationEndpoint/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Derivatives.html">Derivatives</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Derivatives/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Derivatives/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Derivatives/AttachmentMethods.html">AttachmentMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Derivatives/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Derivatives/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Derivatives/VersionsCompatibility.html">VersionsCompatibility</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/DetermineMimeType.html">DetermineMimeType</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/DetermineMimeType/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DetermineMimeType/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DetermineMimeType/MimeTypeAnalyzer.html">MimeTypeAnalyzer</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/DownloadEndpoint.html">DownloadEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/DownloadEndpoint/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DownloadEndpoint/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../Shrine/Plugins/DownloadEndpoint/FileUrl.html">FileUrl</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/DynamicStorage.html">DynamicStorage</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/DynamicStorage/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Entity.html">Entity</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Entity/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Entity/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Entity/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/FormAssign.html">FormAssign</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/FormAssign/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Included.html">Included</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Included/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/InferExtension.html">InferExtension</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/InferExtension/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/InferExtension/ExtensionInferrer.html">ExtensionInferrer</a></code></li><li><code><a href="../../Shrine/Plugins/InferExtension/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Instrumentation.html">Instrumentation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Instrumentation/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Instrumentation/Event.html">Event</a></code></li><li><code><a href="../../Shrine/Plugins/Instrumentation/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Instrumentation/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Instrumentation/LogSubscriber.html">LogSubscriber</a></code></li><li><code><a href="../../Shrine/Plugins/Instrumentation/Notifications.html">Notifications</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/KeepFiles.html">KeepFiles</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/KeepFiles/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/MetadataAttributes.html">MetadataAttributes</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/MetadataAttributes/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/MetadataAttributes/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Mirroring.html">Mirroring</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Mirroring/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Mirroring/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Mirroring/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Model.html">Model</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Model/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Model/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Model/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/ModuleInclude.html">ModuleInclude</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/ModuleInclude/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/MultiCache.html">MultiCache</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/MultiCache/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Persistence.html">Persistence</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Persistence/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/PresignEndpoint.html">PresignEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/PresignEndpoint/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/PrettyLocation.html">PrettyLocation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/PrettyLocation/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Processing.html">Processing</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Processing/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Processing/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/RackFile.html">RackFile</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/RackFile/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/RackFile/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/RackResponse.html">RackResponse</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/RackResponse/FileBody.html">FileBody</a></code></li><li><code><a href="../../Shrine/Plugins/RackResponse/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../Shrine/Plugins/RackResponse/FileResponse.html">FileResponse</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Recache.html">Recache</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Recache/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/RefreshMetadata.html">RefreshMetadata</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/RefreshMetadata/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/RefreshMetadata/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/RemoteUrl.html">RemoteUrl</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/RemoteUrl/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/RemoteUrl/AttachmentMethods.html">AttachmentMethods</a></code></li><li><code><a href="../../Shrine/Plugins/RemoteUrl/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/RemoteUrl/DownloadError.html">DownloadError</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/RemoveAttachment.html">RemoveAttachment</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/RemoveAttachment/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/RemoveAttachment/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/RemoveInvalid.html">RemoveInvalid</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/RemoveInvalid/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/RestoreCachedData.html">RestoreCachedData</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/RestoreCachedData/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Sequel.html">Sequel</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Sequel/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Sequel/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Signature.html">Signature</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Signature/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Signature/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Signature/SignatureCalculator.html">SignatureCalculator</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/StoreDimensions.html">StoreDimensions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/StoreDimensions/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/StoreDimensions/DimensionsAnalyzer.html">DimensionsAnalyzer</a></code></li><li><code><a href="../../Shrine/Plugins/StoreDimensions/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../Shrine/Plugins/StoreDimensions/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Tempfile.html">Tempfile</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Tempfile/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Tempfile/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/TypePredicates.html">TypePredicates</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/TypePredicates/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/TypePredicates/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../Shrine/Plugins/TypePredicates/MimeDatabase.html">MimeDatabase</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/UploadEndpoint.html">UploadEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/UploadEndpoint/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/UploadOptions.html">UploadOptions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/UploadOptions/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/UrlOptions.html">UrlOptions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/UrlOptions/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/UrlsafeSerialization.html">UrlsafeSerialization</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/UrlsafeSerialization/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/UrlsafeSerialization/FileClassMethods.html">FileClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/UrlsafeSerialization/FileMethods.html">FileMethods</a></code></li><li><code><a href="../../Shrine/Plugins/UrlsafeSerialization/Serializer.html">Serializer</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Validation.html">Validation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Validation/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Validation/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/ValidationHelpers.html">ValidationHelpers</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/ValidationHelpers/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/ValidationHelpers/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/Plugins/Versions.html">Versions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Plugins/Versions/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Versions/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Versions/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../../Shrine/Plugins/Versions/Utils.html">Utils</a></code></li></ul></details></li></ul></details></li><li><code><a href="../../Shrine/PresignEndpoint.html">PresignEndpoint</a></code></li><li><code><a href="../../Shrine/RackFile.html">RackFile</a></code></li><li><details><summary><code><a href="../../Shrine/Storage.html">Storage</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Storage/FileSystem.html">FileSystem</a></code></li><li><details><summary><code><a href="../../Shrine/Storage/Linter.html">Linter</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Storage/Linter/FakeIO.html">FakeIO</a></code></li></ul></details></li><li><code><a href="../../Shrine/Storage/Memory.html">Memory</a></code></li><li><details><summary><code><a href="../../Shrine/Storage/S3.html">S3</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/Storage/S3/ClientSideEncryption.html">ClientSideEncryption</a></code></li></ul></details></li></ul></details></li><li><code><a href="../../Shrine/UploadEndpoint.html">UploadEndpoint</a></code></li><li><details><summary><code><a href="../../Shrine/UploadedFile.html">UploadedFile</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/UploadedFile/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../../Shrine/UploadedFile/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../../Shrine/UrlSigner.html">UrlSigner</a></code></summary><ul class="link-list nav-list"><li><code><a href="../../Shrine/UrlSigner/InvalidSignature.html">InvalidSignature</a></code></li></ul></details></li><li><code><a href="../../Shrine/VERSION.html">VERSION</a></code></li></ul></details></li></ul>
+  </details>
+</div>
+
+</nav>
+
+<main role="main" aria-label="Page doc/release_notes/2.14.0.md">
+
+<p>—</p>
+
+<span id="label-title-3A+Shrine+2.14.0" class="legacy-anchor"></span>
+<h2 id="title-shrine-2140"><a href="#title-shrine-2140">title: <a href="../../Shrine.html"><code>Shrine</code></a> <a href="2_14_0_md.html">2.14.0</a></a></h2>
+
+<span id="label-New+features" class="legacy-anchor"></span>
+<h2 id="new-features"><a href="#new-features">New features</a></h2>
+<ul><li>
+<p><a href="../../Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> now accepts a <code>:client</code> option for specifying an AWS SDK client object. This allows the user to configure client-side encryption by passing a <code>Aws::S3::Encryption::Client</code> object:</p>
+</li></ul>
+
+<p>“‘rb client = Aws::S3::Encryption::Client.new( kms_key_id: “alias/my-key”, **options )</p>
+
+<p><a href="../../Shrine/Storage/S3.html#method-c-new"><code>Shrine::Storage::S3.new</code></a>(client: client, bucket: “my-bucket”) “‘</p>
+<ul><li>
+<p>The metadata blocks in the <code>add_metadata</code> plugin now have previous metadata available to them in <code>context[:metadata]</code> (thanks to @jrochkind).</p>
+</li></ul>
+
+<p>“‘rb add_metadata :foo do |io, context| <a href=":metadata">context</a> #=&gt; # { # “filename” =&gt; “nature.jpg”, # “size” =&gt; 123, # “mime_type” =&gt; “image/jpeg” # }</p>
+
+<pre class="ruby"><span class="ruby-string">&quot;</span><span class="ruby-string">foo</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<p>end</p>
+
+<p>add_metadata :bar do |io, context| <a href=":metadata">context</a> #=&gt; # { # “filename” =&gt; “nature.jpg”, # “size” =&gt; 123, # “mime_type” =&gt; “image/jpeg”, # “foo” =&gt; “foo” # }</p>
+
+<pre class="ruby"><span class="ruby-string">&quot;</span><span class="ruby-string">bar</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<p>end “‘</p>
+<ul><li>
+<p><code>UploadedFile#to_rack_response</code> from <code>rack_response</code> plugin now accepts <code>:type</code> and <code>:filename</code> options for overriding the values in metadata that would otherwise be used for the <code>Content-Type</code> and <code>Content-Disposition</code> response headers.</p>
+</li></ul>
+
+<p>“‘rb status, headers, body = uploaded_file.to_rack_response( type: “text/csv; charset=utf-8”, filename: “export.csv”, )</p>
+
+<p><a href="&quot;Content-Type&quot;">headers</a> #=&gt; “text/csv; charset=utf-8” <a href="&quot;Content-Disposition&quot;">headers</a> #=&gt; “inline; filename=\”export.csv\“” “‘</p>
+<ul><li>
+<p><code>Shrine.data_uri</code> from <code>data_uri</code> plugin now accepts a <code>:filename</code> string, which will be returned in <code>Shrine::Plugins::DataUri::DataFile#original_filename</code>.</p>
+</li></ul>
+
+<p><code>rb  io = Shrine.data_uri(&quot;data:,content&quot;, filename: &quot;foo.txt&quot;)  io.original_filename #=&gt; &quot;foo.txt&quot;  </code></p>
+<ul><li>
+<p><code>UploadedFile#download_url</code> from <code>download_endpoint</code> plugin now accepts a <code>:host</code> option. Previously it was only possible to configure the URL host on the plugin level.</p>
+</li></ul>
+
+<p><code>rb  uploaded_file.download_url(host: &quot;https://example.com&quot;)  </code></p>
+<ul><li>
+<p><code>Attacher#cached?</code> and <code>Attacher#stored?</code> now accept an optional uploaded file parameter, and return whether the given uploaded file is uploaded to the temporary or permanent storage of the attacher (thanks to @jrochkind).</p>
+</li></ul>
+
+<span id="label-Performance+improvements" class="legacy-anchor"></span>
+<h2 id="performance-improvements"><a href="#performance-improvements">Performance improvements</a></h2>
+<ul><li>
+<p><code>UploadedFile#download</code> doesn’t call <code>Storage#download</code> anymore (only <code>Storage#open</code>). This improves performance when the uploaded file is already opened, e.g. when using <code>refresh_metadata</code> plugin and <code>Shrine.with_file</code> during metadata extraction. Instead of performing a new download request, <code>UploadedFile#download</code> will in this case reuse the already opened IO object.</p>
+</li><li>
+<p>Added <code>tempfile</code> plugin that makes it easier to avoid copying the <code>UploadedFile</code> to disk multiple times during promotion. For example, in the following code the uploaded file will be downloaded to disk only once instead of three times.</p>
+</li></ul>
+
+<p><code>rb  Shrine.plugin :tempfile  </code> “‘rb class MyUploader &lt; <a href="../../Shrine.html"><code>Shrine</code></a> plugin :processing plugin :add_metadata plugin :refresh_metadata</p>
+
+<pre class="ruby"><span class="ruby-identifier">process</span>(<span class="ruby-value">:</span><span class="ruby-value">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">refresh_metadata!</span>
+
+    <span class="ruby-identifier">processor</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">Vips</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">tempfile</span>)
+    <span class="ruby-comment"># ... processing ...</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+
+<span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:</span><span class="ruby-value">foo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>
+  <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">with_file</span>(<span class="ruby-identifier">io</span>) { <span class="ruby-string">&quot;</span><span class="ruby-string">...</span><span class="ruby-string">&quot;</span> } <span class="ruby-keyword">unless</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:</span><span class="ruby-value">action</span>] <span class="ruby-operator">==</span> <span class="ruby-value">:</span><span class="ruby-value">store</span>
+<span class="ruby-keyword">end</span>
+
+<span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:</span><span class="ruby-value">bar</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>
+  <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">with_file</span>(<span class="ruby-identifier">io</span>) { <span class="ruby-string">&quot;</span><span class="ruby-string">...</span><span class="ruby-string">&quot;</span> } <span class="ruby-keyword">unless</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:</span><span class="ruby-value">action</span>] <span class="ruby-operator">==</span> <span class="ruby-value">:</span><span class="ruby-value">store</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>end “‘</p>
+<ul><li>
+<p><code>UploadedFile#refresh_metadata!</code> from <code>refresh_metadata</code> plugin now detects when the uploaded file is already opened and in that case doesn’t re-open the file. This makes code like this faster:</p>
+</li></ul>
+
+<p><code>rb  uploaded_file.open do    uploaded_file.refresh_metadata! # doesn&#39;t re-open the file anymore  end  </code></p>
+<ul><li>
+<p>The <code>rack_response</code> plugin now integrates with <code>Rack::Sendfile</code> middleware when <a href="../../Shrine/Storage/FileSystem.html"><code>Shrine::Storage::FileSystem</code></a> is used. It does so by making the response body respond to <code>#to_path</code>.</p>
+</li><li>
+<p><code>#&lt;name&gt;_attacher</code> doesn’t look up the attachment class every time it’s called with a new model instance anymore, making it slightly faster (thanks to @printercu).</p>
+</li></ul>
+
+<span id="label-Other+improvements" class="legacy-anchor"></span>
+<h2 id="other-improvements"><a href="#other-improvements">Other improvements</a></h2>
+<ul><li>
+<p>The <code>lib/shrine.rb</code> file has been split into <code>lib/shrine.rb</code>, <code>lib/shrine/uploaded_file.rb</code>, <code>lib/shrine/attacher.rb</code>, <code>lib/shrine/attachment.rb</code>, and <code>lib/shrine/plugins.rb</code> (thanks to @printercu).</p>
+</li><li>
+<p><a href="../../Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> and <code>rack_response</code> plugin now use the <a href="https://github.com/shrinerb/content_disposition">content_disposition</a> gem for generating correctly formatted <code>Content-Disposition</code> header values.</p>
+</li><li>
+<p>The <code>S3#download</code> and <code>S3#open</code> methods now work correctly with server-side encryption (as long as the necessary <code>:sse_*</code> parameters are passed in).</p>
+</li><li>
+<p>Fixed <code>FileSystem#clear!</code> not working with symlinks (at least on MRI).</p>
+</li><li>
+<p>Fixed <code>add_metadata</code> plugin overriding previously defined metadata blocks when loaded again.</p>
+</li><li>
+<p>Fixed <code>processing</code> plugin overriding previously defined processing blocks when loaded again.</p>
+</li><li>
+<p>Fixed <code>backgrounding</code> plugin erroring when temorary/permanent storage is declared in <a href="../../Shrine/Attachment/InstanceMethods.html#method-c-new"><code>Shrine::Attachment.new</code></a> and there are no <code>:cache</code> or <code>:store</code> storages defined.</p>
+</li><li>
+<p>Fixed <code>UploadedFile#extension</code> (and thus the tempfile in <code>UploadedFile#download</code>) including URL query parameters in the file extension when <code>Shrine::Storage::Url</code> is used (<code>shrine-url</code> gem) with URLs that have query parameters (thanks to @jrochkind).</p>
+</li><li>
+<p>Fixed <code>backgrounding</code> plugin aborting promotion when cached file metadata was refreshed in the processing block and Active Record JSON column was used.</p>
+<ul><li>
+<p><code>refresh_metadata</code> plugin now avoids mutating the uploaded file data hash</p>
+</li><li>
+<p><code>backgrounding</code> plugin now continues promotion if cached file metadata has changed</p>
+</li></ul>
+</li><li>
+<p>The <code>Shrine.data_uri</code> method from the <code>data_uri</code> plugin now picks up media type parameters from the data URI and includes them in <code>Shrine::Plugins::DataUri::DataFile#content_type</code>.</p>
+</li></ul>
+
+<p><code>rb  io = Shrine.data_uri(&quot;data:text/plain;charset=utf-8,content&quot;)  io.content_type #=&gt;  # BEFORE: &quot;text/plain&quot;  # AFTER:  &quot;text/plain;charset=utf-8&quot;  </code></p>
+<ul><li>
+<p>When fetching <code>mime_type</code> metadata value from <code>io.content_type</code>, any media type parameters are now stripped. This means that if the user uploads a text file with a <code>Content-Type</code> of <code>text/plain; charset=utf-8</code>, the <code>mime_type</code> will now correctly be stored as <code>text/plain</code>. This fixes any MIME type validations that might not have been passing due to additional media type parameters.</p>
+</li><li>
+<p>When <code>determine_mime_type</code> plugin is loaded with the <code>:default</code> analyzer, a warning is not printed anymore.</p>
+</li><li>
+<p>When <a href="../../Shrine/Storage/S3.html"><code>Shrine::Storage::S3</code></a> is initialized with <code>bucket: nil</code>, an appropriate error message is now raised.</p>
+</li><li>
+<p>The <code>:content_type</code> MIME type analyzer has been added to the <code>Shrine.mime_type_analyzers</code> hash in <code>determine_mime_type</code> plugin (previously known as <code>:default</code>).</p>
+</li></ul>
+
+<span id="label-Documentation" class="legacy-anchor"></span>
+<h2 id="documentation"><a href="#documentation">Documentation</a></h2>
+<ul><li>
+<p>The <a href="https://shrinerb.com/docs/retrieving-uploads">Retrieving Uploads</a> guide has been added.</p>
+</li></ul>
+
+<span id="label-Backwards+compatibility" class="legacy-anchor"></span>
+<h2 id="backwards-compatibility"><a href="#backwards-compatibility">Backwards compatibility</a></h2>
+<ul><li>
+<p>Support for MRI 2.1 and MRI 2.2 has been dropped.</p>
+</li><li>
+<p><code>Shrine::Plugins::Base</code> module has been removed and contained modules have been moved to <code>InstanceMethods</code> and <code>ClassMethods</code> modules inside the corresponding core classes. This should not break anything unless you were referencing those modules directly.</p>
+</li></ul>
+
+<p><code>rb  Shrine::Plugins::Base::InstanceMethods        =&gt; Shrine::InstanceMethods  Shrine::Plugins::Base::ClassMethods           =&gt; Shrine::ClassMethods  Shrine::Plugins::Base::FileMethods            =&gt; Shrine::UploadedFile::InstanceMethods  Shrine::Plugins::Base::FileClassMethods       =&gt; Shrine::UploadedFile::ClassMethods  Shrine::Plugins::Base::AttacherMethods        =&gt; Shrine::Attacher::InstanceMethods  Shrine::Plugins::Base::AttacherClassMethods   =&gt; Shrine::Attacher::ClassMethods  Shrine::Plugins::Base::AttachmentMethods      =&gt; Shrine::Attachment::InstanceMethods  Shrine::Plugins::Base::AttachmentClassMethods =&gt; Shrine::Attachment::ClassMethods  </code></p>
+<ul><li>
+<p><code>UploadedFile#download</code> doesn’t call <code>Storage#download</code> anymore, it now always calls <code>Storage#open</code>. Since <code>Storage#download</code> is not used anywhere else in <a href="../../Shrine.html"><code>Shrine</code></a>, storages can remove the <code>#download</code> method.</p>
+</li><li>
+<p><code>Shrine::Storage::S3#download</code> has been deprecated and will be removed in <a href="../../Shrine.html"><code>Shrine</code></a> 3.</p>
+</li><li>
+<p>In <a href="../../Shrine/Storage/S3.html#method-i-upload"><code>Shrine::Storage::S3#upload</code></a>, <code>#open</code>, and <code>#presign</code> it's now deprecated to pass the <code>Content-Disposition</code> header value with non-ASCII characters. Starting with <a href="../../Shrine.html"><code>Shrine</code></a> 3 these characters won't be escaped anymore. You should now use the <a href="https://github.com/shrinerb/content_disposition">content_disposition</a> gem to properly format the <code>Content-Disposition</code> header value.</p>
+</li></ul>
+
+<p>“‘rb # BAD: plugin :default_url_options, store: -&gt; (io, **options) do { response_content_disposition: “attachment; filename=\”#{io.original_filename}\“” } end</p>
+
+<p># GOOD: plugin :default_url_options, store: -&gt; (io, **options) do { response_content_disposition: ContentDisposition.attachment(io.original_filename) } end “‘</p>
+<ul><li>
+<p>The <code>mime_type</code> metadata value will now strip any additional media type parameters such as <code>charset</code> from <code>io.content_type</code>. If you were relying on this behaviour, you will need to update your code.</p>
+</li><li>
+<p>In <code>determine_mime_type</code> plugin, the <code>:default</code> MIME type analyzer has been renamed to <code>:content_type</code>. The <code>:default</code> alias will stop being supported in <a href="../../Shrine.html"><code>Shrine</code></a> 3.</p>
+</li></ul>
+
+<p><code>rb  plugin :determine_mime_type, analyzer: :default  # should be changed to  plugin :determine_mime_type, analyzer: :content_type  </code></p>
+<ul><li>
+<p>The <code>UploadedFile</code> private methods that were added by the <code>rack_response</code> plugin have now been moved to an internal class (leaving only <code>#to_rack_response</code>). If you've are currently overriding any of these private methods, you'll need to update your code.</p>
+</li><li>
+<p>The <code>UploadedFile</code> private methods that were added by the <code>download_endpoint</code> plugin have now been moved to an internal class (leaving only <code>#download_url</code>). If you've are currently overriding any of these private methods, you'll need to update your code.</p>
+</li></ul>
+
+</main>
+
+<aside id="table-of-contents" class="table-of-contents" role="complementary" aria-label="Table of Contents">
+  <div class="toc-sticky">
+    <h3 class="toc-heading">On This Page</h3>
+    <nav class="toc-nav" id="toc-nav" aria-label="Page sections">
+      <!-- Generated by JavaScript based on page headings -->
+    </nav>
+  </div>
+</aside>
+
+
+<footer class="site-footer">
+  
+
+  <div class="footer-bottom">
+    <p>
+      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 8.0.0</a>
+      using the Aliki theme by <a href="http://st0012.dev">Stan Lo</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+

@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>getting_started - Shrine: Toolkit for file uploads</title>
+
+
+  <meta name="keywords" content="ruby,documentation,getting_started">
+  <meta
+    name="description"
+    content="getting_started: rb # Gemfile gem &quot;shrine&quot;, &quot;~&gt; 3. file_system&quot; Shrine."
+  >
+
+
+
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="getting_started - Shrine: Toolkit for file uploads">
+
+
+
+    <meta property="og:description" content="rb # Gemfile gem &quot;shrine&quot;, &quot;~&gt; 3. file_system&quot; Shrine.">
+
+
+
+
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="getting_started - Shrine: Toolkit for file uploads">
+
+
+
+    <meta name="twitter:description" content="rb # Gemfile gem &quot;shrine&quot;, &quot;~&gt; 3. file_system&quot; Shrine.">
+
+
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+  var index_rel_prefix = "../";
+</script>
+
+<script
+  src="../js/theme-toggle.js?v=8.0.0"
+></script>
+
+<script
+  src="../js/search_navigation.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../js/search_data.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../js/search_ranker.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../js/search_controller.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../js/c_highlighter.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../js/bash_highlighter.js?v=8.0.0"
+  defer
+></script>
+
+<script
+  src="../js/aliki.js?v=8.0.0"
+  defer
+></script>
+
+<link
+  href="../css/rdoc.css?v=8.0.0"
+  rel="stylesheet"
+>
+
+
+
+
+<body role="document" class="file has-toc">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <!-- Chevron (right arrow) - used for expand/collapse -->
+  <symbol
+    id="icon-chevron"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </symbol>
+
+  <!-- File/Document - Pages section -->
+  <symbol
+    id="icon-file"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+    ></path>
+
+    <polyline points="14 2 14 8 20 8"></polyline>
+  </symbol>
+
+  <!-- Layers/Stack - Classes and Modules section -->
+  <symbol
+    id="icon-layers"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+    <polyline points="2 17 12 22 22 17"></polyline>
+    <polyline points="2 12 12 17 22 12"></polyline>
+  </symbol>
+
+  <!-- Curly braces with C - Class Methods section -->
+  <symbol
+    id="icon-class-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      C
+    </text>
+  </symbol>
+
+  <!-- Curly braces with I - Instance Methods section -->
+  <symbol
+    id="icon-instance-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      I
+    </text>
+  </symbol>
+
+  <!-- Double chevrons up - Ancestors section -->
+  <symbol
+    id="icon-ancestors"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="17 11 12 6 7 11"></polyline>
+    <polyline points="17 18 12 13 7 18"></polyline>
+  </symbol>
+
+  <!-- User with plus - Included Modules section -->
+  <symbol
+    id="icon-includes"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+
+    <line
+      x1="20"
+      y1="8"
+      x2="20"
+      y2="14"
+    ></line>
+
+    <line
+      x1="23"
+      y1="11"
+      x2="17"
+      y2="11"
+    ></line>
+  </symbol>
+
+  <!-- User with check - Extended Modules section -->
+  <symbol
+    id="icon-extends"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+    <polyline points="17 11 19 13 23 9"></polyline>
+  </symbol>
+
+  <!-- List - Sections section -->
+  <symbol
+    id="icon-list"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line
+      x1="8"
+      y1="6"
+      x2="21"
+      y2="6"
+    ></line>
+
+    <line
+      x1="8"
+      y1="12"
+      x2="21"
+      y2="12"
+    ></line>
+
+    <line
+      x1="8"
+      y1="18"
+      x2="21"
+      y2="18"
+    ></line>
+
+    <line
+      x1="3"
+      y1="6"
+      x2="3.01"
+      y2="6"
+    ></line>
+
+    <line
+      x1="3"
+      y1="12"
+      x2="3.01"
+      y2="12"
+    ></line>
+
+    <line
+      x1="3"
+      y1="18"
+      x2="3.01"
+      y2="18"
+    ></line>
+  </symbol>
+</svg>
+
+<header class="top-navbar">
+  <a href="../index.html" class="navbar-brand">
+    Shrine: Toolkit for file uploads
+  </a>
+
+  <!-- Desktop search bar -->
+  <div class="navbar-search navbar-search-desktop" role="search">
+    <form action="#" method="get" accept-charset="utf-8">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results-desktop"
+             type="text" name="search" placeholder="Search (/) for a class, method..."
+             spellcheck="false" autocomplete="off"
+             title="Type to search, Up and Down to navigate, Enter to load">
+      <ul id="search-results-desktop" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="initially-hidden search-results"></ul>
+    </form>
+  </div>
+
+  <!-- Mobile search icon button -->
+  <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search" type="button">
+    <span aria-hidden="true">🔍</span>
+  </button>
+
+  <!-- Theme toggle button -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button">
+    <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+  </button>
+</header>
+
+<!-- Search Modal (Mobile) -->
+<div id="search-modal" class="search-modal" hidden aria-modal="true" role="dialog" aria-label="Search">
+  <div class="search-modal-backdrop"></div>
+  <div class="search-modal-content">
+    <div class="search-modal-header">
+      <form class="search-modal-form" action="#" method="get" accept-charset="utf-8">
+        <span class="search-modal-icon" aria-hidden="true">🔍</span>
+        <input id="search-field-mobile" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results-mobile"
+               type="text" name="search" placeholder="Search documentation"
+               spellcheck="false" autocomplete="off">
+        <button type="button" class="search-modal-close" aria-label="Close search" id="search-modal-close">
+          <span aria-hidden="true">esc</span>
+        </button>
+      </form>
+    </div>
+    <div class="search-modal-body">
+      <ul id="search-results-mobile" aria-label="Search Results"
+          aria-busy="false" aria-expanded="false"
+          aria-atomic="false" class="search-results search-modal-results initially-hidden"></ul>
+      <div class="search-modal-empty">
+        <p>No recent searches</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sidebar-navigation-toggle" role="button" tabindex="0" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar-navigation">
+  <span aria-hidden="true">&#9776;</span>
+</div>
+
+
+<nav id="sidebar-navigation" role="navigation" hidden>
+  
+
+
+
+
+
+
+  <div id="fileindex-section" class="nav-section">
+    <details class="nav-section-collapsible" open>
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg>
+            <use href="#icon-file"></use>
+          </svg>
+        </span>
+
+        <span class="nav-section-title">Pages</span>
+
+        <span class="nav-section-chevron">
+          <svg>
+            <use href="#icon-chevron"></use>
+          </svg>
+        </span>
+      </summary>
+
+      <ul class="nav-list">
+
+
+
+
+
+
+            <li>
+              <a href="../CHANGELOG_md.html">
+                CHANGELOG
+              </a>
+            </li>
+
+
+
+
+
+          <li>
+            <details  open>
+              <summary>
+                
+                  doc
+                  
+                
+              </summary>
+
+              <ul class="link-list">
+
+                  <li>
+                    <a href="../doc/advantages_md.html">
+                      advantages
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/attacher_md.html">
+                      attacher
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/carrierwave_md.html">
+                      carrierwave
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/changing_derivatives_md.html">
+                      changing_derivatives
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/changing_location_md.html">
+                      changing_location
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/changing_storage_md.html">
+                      changing_storage
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/creating_persistence_plugins_md.html">
+                      creating_persistence_plugins
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/creating_plugins_md.html">
+                      creating_plugins
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/creating_storages_md.html">
+                      creating_storages
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/design_md.html">
+                      design
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/direct_s3_md.html">
+                      direct_s3
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/getting_started_md.html">
+                      getting_started
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/metadata_md.html">
+                      metadata
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/multiple_files_md.html">
+                      multiple_files
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/paperclip_md.html">
+                      paperclip
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/processing_md.html">
+                      processing
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/refile_md.html">
+                      refile
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/1_0_0_md.html">
+                      1.0.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/1_1_0_md.html">
+                      1.1.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/1_2_0_md.html">
+                      1.2.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/1_3_0_md.html">
+                      1.3.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/1_4_0_md.html">
+                      1.4.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/1_4_1_md.html">
+                      1.4.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/1_4_2_md.html">
+                      1.4.2
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_0_0_md.html">
+                      2.0.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_0_1_md.html">
+                      2.0.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_1_0_md.html">
+                      2.1.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_1_1_md.html">
+                      2.1.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_10_0_md.html">
+                      2.10.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_10_1_md.html">
+                      2.10.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_11_0_md.html">
+                      2.11.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_12_0_md.html">
+                      2.12.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_13_0_md.html">
+                      2.13.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_14_0_md.html">
+                      2.14.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_15_0_md.html">
+                      2.15.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_16_0_md.html">
+                      2.16.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_17_0_md.html">
+                      2.17.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_18_0_md.html">
+                      2.18.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_19_0_md.html">
+                      2.19.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_2_0_md.html">
+                      2.2.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_3_0_md.html">
+                      2.3.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_3_1_md.html">
+                      2.3.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_4_0_md.html">
+                      2.4.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_4_1_md.html">
+                      2.4.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_5_0_md.html">
+                      2.5.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_6_0_md.html">
+                      2.6.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_6_1_md.html">
+                      2.6.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_7_0_md.html">
+                      2.7.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_8_0_md.html">
+                      2.8.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/2_9_0_md.html">
+                      2.9.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_0_0_md.html">
+                      3.0.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_0_1_md.html">
+                      3.0.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_1_0_md.html">
+                      3.1.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_2_0_md.html">
+                      3.2.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_2_1_md.html">
+                      3.2.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_2_2_md.html">
+                      3.2.2
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_3_0_md.html">
+                      3.3.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_4_0_md.html">
+                      3.4.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_5_0_md.html">
+                      3.5.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_6_0_md.html">
+                      3.6.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_7_0_md.html">
+                      3.7.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_7_1_md.html">
+                      3.7.1
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_8_0_md.html">
+                      3.8.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_9_0_md.html">
+                      3.9.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/retrieving_uploads_md.html">
+                      retrieving_uploads
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/securing_uploads_md.html">
+                      securing_uploads
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/testing_md.html">
+                      testing
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/upgrading_to_3_md.html">
+                      upgrading_to_3
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/validation_md.html">
+                      validation
+                    </a>
+                  </li>
+
+              </ul>
+            </details>
+          </li>
+
+      </ul>
+    </details>
+  </div>
+
+
+  <div id="classindex-section" class="nav-section">
+  <details class="nav-section-collapsible" open>
+    <summary class="nav-section-header">
+      <span class="nav-section-icon">
+        <svg><use href="#icon-layers"></use></svg>
+      </span>
+      <span class="nav-section-title">Classes and Modules</span>
+      <span class="nav-section-chevron">
+        <svg><use href="#icon-chevron"></use></svg>
+      </span>
+    </summary>
+
+    <ul class="link-list nav-list"><li><details open><summary><code><a href="../Shrine.html">Shrine</a></code></summary><ul class="link-list nav-list"><li><details><summary><code><a href="../Shrine/Attacher.html">Attacher</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Attacher/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Attacher/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Attachment.html">Attachment</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Attachment/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Attachment/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><code><a href="../Shrine/AttachmentChanged.html">AttachmentChanged</a></code></li><li><code><a href="../Shrine/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/DataFile.html">DataFile</a></code></li><li><details><summary><code><a href="../Shrine/Derivation.html">Derivation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Derivation/Command.html">Command</a></code></li><li><code><a href="../Shrine/Derivation/Delete.html">Delete</a></code></li><li><code><a href="../Shrine/Derivation/Generate.html">Generate</a></code></li><li><code><a href="../Shrine/Derivation/NotFound.html">NotFound</a></code></li><li><code><a href="../Shrine/Derivation/Opened.html">Opened</a></code></li><li><code><a href="../Shrine/Derivation/Processed.html">Processed</a></code></li><li><code><a href="../Shrine/Derivation/Response.html">Response</a></code></li><li><code><a href="../Shrine/Derivation/Retrieve.html">Retrieve</a></code></li><li><code><a href="../Shrine/Derivation/SourceNotFound.html">SourceNotFound</a></code></li><li><code><a href="../Shrine/Derivation/Upload.html">Upload</a></code></li><li><code><a href="../Shrine/Derivation/Url.html">Url</a></code></li></ul></details></li><li><code><a href="../Shrine/DerivationEndpoint.html">DerivationEndpoint</a></code></li><li><code><a href="../Shrine/DownloadEndpoint.html">DownloadEndpoint</a></code></li><li><code><a href="../Shrine/Error.html">Error</a></code></li><li><code><a href="../Shrine/FileNotFound.html">FileNotFound</a></code></li><li><code><a href="../Shrine/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../Shrine/InvalidFile.html">InvalidFile</a></code></li><li><code><a href="../Shrine/LintError.html">LintError</a></code></li><li><code><a href="../Shrine/MissingStorage.html">MissingStorage</a></code></li><li><details><summary><code><a href="../Shrine/Plugins.html">Plugins</a></code></summary><ul class="link-list nav-list"><li><details><summary><code><a href="../Shrine/Plugins/Activerecord.html">Activerecord</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Activerecord/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/Activerecord/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/AddMetadata.html">AddMetadata</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/AddMetadata/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/AddMetadata/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/AddMetadata/FileMethods.html">FileMethods</a></code></li><li><code><a href="../Shrine/Plugins/AddMetadata/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/AtomicHelpers.html">AtomicHelpers</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/AtomicHelpers/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/AtomicHelpers/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Backgrounding.html">Backgrounding</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Backgrounding/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Backgrounding/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/CachedAttachmentData.html">CachedAttachmentData</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/CachedAttachmentData/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/CachedAttachmentData/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Column.html">Column</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Column/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Column/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/Column/JsonSerializer.html">JsonSerializer</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/DataUri.html">DataUri</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/DataUri/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/DataUri/AttachmentMethods.html">AttachmentMethods</a></code></li><li><code><a href="../Shrine/Plugins/DataUri/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/DataUri/FileMethods.html">FileMethods</a></code></li><li><code><a href="../Shrine/Plugins/DataUri/ParseError.html">ParseError</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/DefaultStorage.html">DefaultStorage</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/DefaultStorage/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/DefaultStorage/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/DefaultUrl.html">DefaultUrl</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/DefaultUrl/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/DefaultUrl/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/DeleteRaw.html">DeleteRaw</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/DeleteRaw/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/DerivationEndpoint.html">DerivationEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/DerivationEndpoint/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/DerivationEndpoint/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Derivatives.html">Derivatives</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Derivatives/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Derivatives/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/Derivatives/AttachmentMethods.html">AttachmentMethods</a></code></li><li><code><a href="../Shrine/Plugins/Derivatives/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Derivatives/FileMethods.html">FileMethods</a></code></li><li><code><a href="../Shrine/Plugins/Derivatives/VersionsCompatibility.html">VersionsCompatibility</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/DetermineMimeType.html">DetermineMimeType</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/DetermineMimeType/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/DetermineMimeType/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../Shrine/Plugins/DetermineMimeType/MimeTypeAnalyzer.html">MimeTypeAnalyzer</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/DownloadEndpoint.html">DownloadEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/DownloadEndpoint/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/DownloadEndpoint/FileMethods.html">FileMethods</a></code></li><li><code><a href="../Shrine/Plugins/DownloadEndpoint/FileUrl.html">FileUrl</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/DynamicStorage.html">DynamicStorage</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/DynamicStorage/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Entity.html">Entity</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Entity/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Entity/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/Entity/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/FormAssign.html">FormAssign</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/FormAssign/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Included.html">Included</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Included/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/InferExtension.html">InferExtension</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/InferExtension/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/InferExtension/ExtensionInferrer.html">ExtensionInferrer</a></code></li><li><code><a href="../Shrine/Plugins/InferExtension/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Instrumentation.html">Instrumentation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Instrumentation/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Instrumentation/Event.html">Event</a></code></li><li><code><a href="../Shrine/Plugins/Instrumentation/FileMethods.html">FileMethods</a></code></li><li><code><a href="../Shrine/Plugins/Instrumentation/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../Shrine/Plugins/Instrumentation/LogSubscriber.html">LogSubscriber</a></code></li><li><code><a href="../Shrine/Plugins/Instrumentation/Notifications.html">Notifications</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/KeepFiles.html">KeepFiles</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/KeepFiles/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/MetadataAttributes.html">MetadataAttributes</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/MetadataAttributes/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/MetadataAttributes/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Mirroring.html">Mirroring</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Mirroring/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Mirroring/FileMethods.html">FileMethods</a></code></li><li><code><a href="../Shrine/Plugins/Mirroring/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Model.html">Model</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Model/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Model/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/Model/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/ModuleInclude.html">ModuleInclude</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/ModuleInclude/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/MultiCache.html">MultiCache</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/MultiCache/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Persistence.html">Persistence</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Persistence/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/PresignEndpoint.html">PresignEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/PresignEndpoint/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/PrettyLocation.html">PrettyLocation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/PrettyLocation/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Processing.html">Processing</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Processing/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Processing/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/RackFile.html">RackFile</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/RackFile/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/RackFile/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/RackResponse.html">RackResponse</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/RackResponse/FileBody.html">FileBody</a></code></li><li><code><a href="../Shrine/Plugins/RackResponse/FileMethods.html">FileMethods</a></code></li><li><code><a href="../Shrine/Plugins/RackResponse/FileResponse.html">FileResponse</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Recache.html">Recache</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Recache/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/RefreshMetadata.html">RefreshMetadata</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/RefreshMetadata/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/RefreshMetadata/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/RemoteUrl.html">RemoteUrl</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/RemoteUrl/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/RemoteUrl/AttachmentMethods.html">AttachmentMethods</a></code></li><li><code><a href="../Shrine/Plugins/RemoteUrl/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/RemoteUrl/DownloadError.html">DownloadError</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/RemoveAttachment.html">RemoveAttachment</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/RemoveAttachment/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/RemoveAttachment/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/RemoveInvalid.html">RemoveInvalid</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/RemoveInvalid/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/RestoreCachedData.html">RestoreCachedData</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/RestoreCachedData/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Sequel.html">Sequel</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Sequel/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/Sequel/AttachmentMethods.html">AttachmentMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Signature.html">Signature</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Signature/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Signature/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../Shrine/Plugins/Signature/SignatureCalculator.html">SignatureCalculator</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/StoreDimensions.html">StoreDimensions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/StoreDimensions/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/StoreDimensions/DimensionsAnalyzer.html">DimensionsAnalyzer</a></code></li><li><code><a href="../Shrine/Plugins/StoreDimensions/FileMethods.html">FileMethods</a></code></li><li><code><a href="../Shrine/Plugins/StoreDimensions/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Tempfile.html">Tempfile</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Tempfile/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Tempfile/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/TypePredicates.html">TypePredicates</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/TypePredicates/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/TypePredicates/FileMethods.html">FileMethods</a></code></li><li><code><a href="../Shrine/Plugins/TypePredicates/MimeDatabase.html">MimeDatabase</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/UploadEndpoint.html">UploadEndpoint</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/UploadEndpoint/ClassMethods.html">ClassMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/UploadOptions.html">UploadOptions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/UploadOptions/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/UrlOptions.html">UrlOptions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/UrlOptions/FileMethods.html">FileMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/UrlsafeSerialization.html">UrlsafeSerialization</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/UrlsafeSerialization/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/UrlsafeSerialization/FileClassMethods.html">FileClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/UrlsafeSerialization/FileMethods.html">FileMethods</a></code></li><li><code><a href="../Shrine/Plugins/UrlsafeSerialization/Serializer.html">Serializer</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Validation.html">Validation</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Validation/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Validation/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/ValidationHelpers.html">ValidationHelpers</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/ValidationHelpers/AttacherClassMethods.html">AttacherClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/ValidationHelpers/AttacherMethods.html">AttacherMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/Plugins/Versions.html">Versions</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Plugins/Versions/AttacherMethods.html">AttacherMethods</a></code></li><li><code><a href="../Shrine/Plugins/Versions/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/Plugins/Versions/InstanceMethods.html">InstanceMethods</a></code></li><li><code><a href="../Shrine/Plugins/Versions/Utils.html">Utils</a></code></li></ul></details></li></ul></details></li><li><code><a href="../Shrine/PresignEndpoint.html">PresignEndpoint</a></code></li><li><code><a href="../Shrine/RackFile.html">RackFile</a></code></li><li><details><summary><code><a href="../Shrine/Storage.html">Storage</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Storage/FileSystem.html">FileSystem</a></code></li><li><details><summary><code><a href="../Shrine/Storage/Linter.html">Linter</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Storage/Linter/FakeIO.html">FakeIO</a></code></li></ul></details></li><li><code><a href="../Shrine/Storage/Memory.html">Memory</a></code></li><li><details><summary><code><a href="../Shrine/Storage/S3.html">S3</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/Storage/S3/ClientSideEncryption.html">ClientSideEncryption</a></code></li></ul></details></li></ul></details></li><li><code><a href="../Shrine/UploadEndpoint.html">UploadEndpoint</a></code></li><li><details><summary><code><a href="../Shrine/UploadedFile.html">UploadedFile</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/UploadedFile/ClassMethods.html">ClassMethods</a></code></li><li><code><a href="../Shrine/UploadedFile/InstanceMethods.html">InstanceMethods</a></code></li></ul></details></li><li><details><summary><code><a href="../Shrine/UrlSigner.html">UrlSigner</a></code></summary><ul class="link-list nav-list"><li><code><a href="../Shrine/UrlSigner/InvalidSignature.html">InvalidSignature</a></code></li></ul></details></li><li><code><a href="../Shrine/VERSION.html">VERSION</a></code></li></ul></details></li></ul>
+  </details>
+</div>
+
+</nav>
+
+<main role="main" aria-label="Page doc/getting_started.md">
+
+<p>— id: getting-started</p>
+
+<span id="label-title-3A+Getting+Started" class="legacy-anchor"></span>
+<h2 id="title-getting-started"><a href="#title-getting-started">title: Getting Started</a></h2>
+
+<p>import Tabs from ‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;</p>
+
+<span id="label-Quick+start" class="legacy-anchor"></span>
+<h2 id="quick-start"><a href="#quick-start">Quick start</a></h2>
+
+<p>Add <a href="../Shrine.html"><code>Shrine</code></a> to the Gemfile and write an initializer which sets up the storage and loads integration for your persistence library:</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">shrine</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">~&gt; 3.0</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;</span><span class="ruby-string">shrine</span><span class="ruby-string">&quot;</span>
+<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;</span><span class="ruby-string">shrine/storage/file_system</span><span class="ruby-string">&quot;</span>
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {
+  <span class="ruby-value">cache</span><span class="ruby-value">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">public</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">prefix</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">uploads/cache</span><span class="ruby-string">&quot;</span>), <span class="ruby-comment"># temporary</span>
+  <span class="ruby-value">store</span><span class="ruby-value">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">public</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">prefix</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">uploads</span><span class="ruby-string">&quot;</span>),       <span class="ruby-comment"># permanent</span>
+}
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">sequel</span> <span class="ruby-comment"># or :activerecord</span>
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">cached_attachment_data</span> <span class="ruby-comment"># for retaining the cached file across form redisplays</span>
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">restore_cached_data</span> <span class="ruby-comment"># re-extract metadata when attaching a cached file</span>
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">rack_file</span> <span class="ruby-comment"># for non-Rails apps</span>
+</pre>
+
+<p>Next decide how you will name the attachment attribute on your model, and run a migration that adds an <code>&lt;attachment&gt;_data</code> text or JSON column, which <a href="../Shrine.html"><code>Shrine</code></a> will use to store all information about the attachment:</p>
+
+<p>&lt;Tabs&gt; &lt;TabItem value=“sequel” label=“Sequel”&gt;</p>
+
+<pre class="ruby"><span class="ruby-constant">Sequel</span>.<span class="ruby-identifier">migration</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-identifier">change</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">add_column</span> <span class="ruby-value">:</span><span class="ruby-value">photos</span>, <span class="ruby-value">:</span><span class="ruby-value">image_data</span>, <span class="ruby-value">:</span><span class="ruby-value">text</span> <span class="ruby-comment"># or :jsonb</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“activerecord” label=“Active Record”&gt;</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">AddImageDataToPhotos</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Migration</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier">change</span>
+    <span class="ruby-identifier">add_column</span> <span class="ruby-value">:</span><span class="ruby-value">photos</span>, <span class="ruby-value">:</span><span class="ruby-value">image_data</span>, <span class="ruby-value">:</span><span class="ruby-value">text</span> <span class="ruby-comment"># or :jsonb</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“rails” label=“Rails”&gt;</p>
+
+<pre class="ruby"><span class="ruby-identifier">$</span> <span class="ruby-identifier">rails</span> <span class="ruby-identifier">generate</span> <span class="ruby-identifier">migration</span> <span class="ruby-identifier">add_image_data_to_photos</span> <span class="ruby-identifier">image_data</span><span class="ruby-operator">:</span><span class="ruby-identifier">text</span> <span class="ruby-comment"># or image_data:jsonb</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;/Tabs&gt;</p>
+
+<p>If using <code>jsonb</code> consider adding a <a href="https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING">gin index</a> for fast key-value pair searchability within <code>image_data</code>.</p>
+
+<p>Now you can create an uploader class for the type of files you want to upload, and add a virtual attribute for handling attachments using this uploader to your model. If you do not care about adding plugins or additional processing, you can use <a href="../Shrine/Attachment.html"><code>Shrine::Attachment</code></a>.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-comment"># plugins and uploading logic</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;Tabs&gt; &lt;TabItem value=“sequel” label=“Sequel”&gt;</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:</span><span class="ruby-value">image</span>) <span class="ruby-comment"># adds an `image` virtual attribute</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“activerecord” label=“Active Record”&gt;</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:</span><span class="ruby-value">image</span>) <span class="ruby-comment"># adds an `image` virtual attribute</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;/Tabs&gt;</p>
+
+<p>Let’s now add the form fields which will use this virtual attribute (NOT the <code>&lt;attachment&gt;_data</code> column attribute). We need (1) a file field for choosing files, and (2) a hidden field for retaining the uploaded file in case of validation errors and for potential <a href="#direct-uploads">direct uploads</a>.</p>
+
+<p>&lt;Tabs&gt; &lt;TabItem value=“rails” label=“Rails form builder”&gt;</p>
+
+<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@photo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:</span><span class="ruby-value">image</span>, <span class="ruby-value">value</span><span class="ruby-value">:</span> <span class="ruby-ivar">@photo</span>.<span class="ruby-identifier">cached_image_data</span>, <span class="ruby-value">id</span><span class="ruby-value">:</span> <span class="ruby-keyword">nil</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">file_field</span> <span class="ruby-value">:</span><span class="ruby-value">image</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">submit</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“simple_form” label=“Simple Form”&gt;</p>
+
+<pre class="ruby"><span class="ruby-identifier">simple_form_for</span> <span class="ruby-ivar">@photo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:</span><span class="ruby-value">image</span>, <span class="ruby-value">as</span><span class="ruby-value">:</span> <span class="ruby-value">:</span><span class="ruby-value">hidden</span>, <span class="ruby-value">input_html</span><span class="ruby-value">:</span> { <span class="ruby-value">value</span><span class="ruby-value">:</span> <span class="ruby-ivar">@photo</span>.<span class="ruby-identifier">cached_image_data</span> }
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:</span><span class="ruby-value">image</span>, <span class="ruby-value">as</span><span class="ruby-value">:</span> <span class="ruby-value">:</span><span class="ruby-value">file</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">button</span> <span class="ruby-value">:</span><span class="ruby-value">submit</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“form” label=“Forme”&gt;</p>
+
+<pre class="ruby"><span class="ruby-identifier">form</span> <span class="ruby-ivar">@photo</span>, <span class="ruby-value">action</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">/photos</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">enctype</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">multipart/form-data</span><span class="ruby-string">&quot;</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:</span><span class="ruby-value">image</span>, <span class="ruby-value">type</span><span class="ruby-value">:</span> <span class="ruby-value">:</span><span class="ruby-value">hidden</span>, <span class="ruby-value">value</span><span class="ruby-value">:</span> <span class="ruby-ivar">@photo</span>.<span class="ruby-identifier">cached_image_data</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:</span><span class="ruby-value">image</span>, <span class="ruby-value">type</span><span class="ruby-value">:</span> <span class="ruby-value">:</span><span class="ruby-value">file</span>
+  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">button</span> <span class="ruby-string">&quot;</span><span class="ruby-string">Create</span><span class="ruby-string">&quot;</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“html” label=“HTML”&gt;</p>
+
+<pre class="erb">&lt;form action=&quot;/photos&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+  &lt;input name=&quot;photo[image]&quot; type=&quot;hidden&quot; value=&quot;&lt;%= @photo.cached_image_data %&gt;&quot; /&gt;
+  &lt;input name=&quot;photo[image] &quot;type=&quot;file&quot; /&gt;
+  &lt;input type=&quot;submit&quot; value=&quot;Create&quot; /&gt;
+&lt;/form&gt;</pre>
+
+<p>&lt;/TabItem&gt; &lt;/Tabs&gt;</p>
+
+<p>Note that the file field needs to go <em>after</em> the hidden field, so that selecting a new file can always override the cached file in the hidden field. Also notice the <code>enctype=&quot;multipart/form-data&quot;</code> HTML attribute, which is required for submitting files through the form (the Rails form builder will automatically generate this for you).</p>
+
+<p>When the form is submitted, in your router/controller you can assign the file from request params to the attachment attribute on the model.</p>
+
+<p>&lt;Tabs&gt; &lt;TabItem value=“rails” label=“Rails”&gt;</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">PhotosController</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ApplicationController</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier">create</span>
+    <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">photo_params</span>)
+    <span class="ruby-comment"># ...</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">private</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier">photo_params</span>
+    <span class="ruby-identifier">params</span>.<span class="ruby-identifier">require</span>(<span class="ruby-value">:</span><span class="ruby-value">photo</span>).<span class="ruby-identifier">permit</span>(<span class="ruby-value">:</span><span class="ruby-value">image</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“sinatra” label=“Sinatra”&gt;</p>
+
+<pre class="ruby"><span class="ruby-identifier">post</span> <span class="ruby-string">&quot;</span><span class="ruby-string">/photos</span><span class="ruby-string">&quot;</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:</span><span class="ruby-value">photo</span>])
+  <span class="ruby-comment"># ...</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>&lt;/TabItem&gt; &lt;/Tabs&gt;</p>
+
+<p>Once a file is uploaded and attached to the record, you can retrieve a URL to the uploaded file with <code>#&lt;attachment&gt;_url</code> and display it on the page:</p>
+
+<p>&lt;Tabs&gt; &lt;TabItem value=“rails” label=“Rails”&gt;</p>
+
+<pre class="erb">&lt;%= image_tag @photo.image_url %&gt;</pre>
+
+<p>&lt;/TabItem&gt; &lt;TabItem value=“html” label=“HTML”&gt;</p>
+
+<pre class="erb">&lt;img src=&quot;&lt;%= @photo.image_url %&gt;&quot; /&gt;</pre>
+
+<p>&lt;/TabItem&gt; &lt;/Tabs&gt;</p>
+
+<span id="label-Storage" class="legacy-anchor"></span>
+<h2 id="storage"><a href="#storage">Storage</a></h2>
+
+<p>A “storage” in <a href="../Shrine.html"><code>Shrine</code></a> is an object that encapsulates communication with a specific storage service, by implementing a common public interface. Storage instances are registered under an identifier in <code>Shrine.storages</code>, so that they can later be used by <a href="#uploader">uploaders</a>.</p>
+
+<p><a href="../Shrine.html"><code>Shrine</code></a> ships with the following storages:</p>
+<ul><li>
+<p><a href="https://shrinerb.com/docs/storage/file-system"><code>Shrine::Storage::FileSystem</code></a> – stores files on disk</p>
+</li><li>
+<p><a href="https://shrinerb.com/docs/storage/s3"><code>Shrine::Storage::S3</code></a> – stores files on <a href="https://aws.amazon.com/s3/">AWS S3</a> (or <a href="https://www.digitalocean.com/products/spaces/">DigitalOcean Spaces</a>, <a href="https://min.io/">MinIO</a>, …)</p>
+</li><li>
+<p><a href="https://shrinerb.com/docs/storage/memory"><code>Shrine::Storage::Memory</code></a> – stores file in memory (convenient for <a href="https://shrinerb.com/docs/testing">testing</a>)</p>
+</li></ul>
+
+<p>Here is how we might configure <a href="../Shrine.html"><code>Shrine</code></a> with S3 storage:</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">aws-sdk-s3</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">~&gt; 1.14</span><span class="ruby-string">&quot;</span> <span class="ruby-comment"># for AWS S3 storage</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;</span><span class="ruby-string">shrine/storage/s3</span><span class="ruby-string">&quot;</span>
+
+<span class="ruby-identifier">s3_options</span> = {
+  <span class="ruby-value">bucket</span><span class="ruby-value">:</span>            <span class="ruby-string">&quot;</span><span class="ruby-string">&lt;YOUR BUCKET&gt;</span><span class="ruby-string">&quot;</span>, <span class="ruby-comment"># required</span>
+  <span class="ruby-value">region</span><span class="ruby-value">:</span>            <span class="ruby-string">&quot;</span><span class="ruby-string">&lt;YOUR REGION&gt;</span><span class="ruby-string">&quot;</span>, <span class="ruby-comment"># required</span>
+  <span class="ruby-value">access_key_id</span><span class="ruby-value">:</span>     <span class="ruby-string">&quot;</span><span class="ruby-string">&lt;YOUR ACCESS KEY ID&gt;</span><span class="ruby-string">&quot;</span>,
+  <span class="ruby-value">secret_access_key</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">&lt;YOUR SECRET ACCESS KEY&gt;</span><span class="ruby-string">&quot;</span>,
+}
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {
+  <span class="ruby-value">cache</span><span class="ruby-value">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">prefix</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">cache</span><span class="ruby-string">&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>), <span class="ruby-comment"># temporary</span>
+  <span class="ruby-value">store</span><span class="ruby-value">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),                  <span class="ruby-comment"># permanent</span>
+}
+</pre>
+
+<p>The above example sets up S3 for both temporary and permanent storage, which is suitable for <a href="#presigned-direct-upload">direct uploads</a>. The <code>:cache</code> and <code>:store</code> names are special only in terms that the <a href="#attacher">attacher</a> will automatically pick them up, you can also register more storage objects under different names.</p>
+
+<p>See the <a href="https://shrinerb.com/docs/storage/file-system">FileSystem</a>/<a href="https://shrinerb.com/docs/storage/s3">S3</a>/<a href="https://shrinerb.com/docs/storage/memory">Memory</a> storage docs for more details. There are <a href="https://shrinerb.com/docs/external/extensions#storages">many more Shrine storages</a> provided by external gems, and you can also <a href="https://shrinerb.com/docs/creating-storages">create your own storage</a>.</p>
+
+<span id="label-Uploader" class="legacy-anchor"></span>
+<h2 id="uploader"><a href="#uploader">Uploader</a></h2>
+
+<p>Uploaders are subclasses of <a href="../Shrine.html"><code>Shrine</code></a>, and they wrap the actual upload to the storage. They perform common tasks around upload that aren’t related to a particular storage.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-comment"># image attachment logic</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>It’s common to create an uploader for each type of file that you want to handle (<code>ImageUploader</code>, <code>VideoUploader</code>, <code>AudioUploader</code> etc), but really you can organize them in any way you like.</p>
+
+<span id="label-Uploading" class="legacy-anchor"></span>
+<h3 id="uploading"><a href="#uploading">Uploading</a></h3>
+
+<p>The main method of the uploader is <a href="../Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>, which takes an <a href="#io-abstraction">IO-like object</a> and a storage identifier on the input, and returns a representation of the <a href="#uploaded-file">uploaded file</a> on the output.</p>
+
+<pre class="ruby"><span class="ruby-constant">MyUploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:</span><span class="ruby-value">store</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</pre>
+
+<p>Internally this instantiates the uploader with the storage and calls <a href="../Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploader</span> = <span class="ruby-constant">MyUploader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:</span><span class="ruby-value">store</span>)
+<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</pre>
+
+<p>Some of the tasks performed by <code>#upload</code> include:</p>
+<ul><li>
+<p>extracting <a href="#metadata">metadata</a></p>
+</li><li>
+<p>generating <a href="#location">location</a></p>
+</li><li>
+<p>uploading (this is where the <a href="#storage">storage</a> is called)</p>
+</li><li>
+<p>closing the uploaded file</p>
+</li></ul>
+
+<p>The second argument is a “context” hash which is forwarded to places like metadata extraction and location generation, but it has a few special options:</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">metadata</span><span class="ruby-value">:</span> { <span class="ruby-string">&quot;</span><span class="ruby-string">foo</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;</span><span class="ruby-string">bar</span><span class="ruby-string">&quot;</span> })           <span class="ruby-comment"># add metadata</span>
+<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">location</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">path/to/file</span><span class="ruby-string">&quot;</span>)               <span class="ruby-comment"># specify custom location</span>
+<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">upload_options</span><span class="ruby-value">:</span> { <span class="ruby-value">acl</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">public-read</span><span class="ruby-string">&quot;</span> }) <span class="ruby-comment"># add options to Storage#upload</span>
+</pre>
+
+<span id="label-IO+abstraction" class="legacy-anchor"></span>
+<h3 id="io-abstraction"><a href="#io-abstraction">IO abstraction</a></h3>
+
+<p><a href="../Shrine.html"><code>Shrine</code></a> is able to upload any IO-like object that implement methods <a href="https://ruby-doc.org/core/IO.html#method-i-read"><code>#read</code></a>, <a href="https://ruby-doc.org/core/IO.html#method-i-rewind"><code>#rewind</code></a>, <a href="https://ruby-doc.org/core/IO.html#method-i-eof"><code>#eof?</code></a> and <a href="https://ruby-doc.org/core/IO.html#method-i-close"><code>#close</code></a> whose behaviour matches the <a href="https://ruby-doc.org/core/IO.html"><code>IO</code></a> class. This includes but is not limited to the following objects:</p>
+<ul><li>
+<p><a href="https://ruby-doc.org/core/File.html"><code>File</code></a></p>
+</li><li>
+<p><a href="https://ruby-doc.org/stdlib/libdoc/tempfile/rdoc/Tempfile.html"><code>Tempfile</code></a></p>
+</li><li>
+<p><a href="https://ruby-doc.org/stdlib/libdoc/stringio/rdoc/StringIO.html"><code>StringIO</code></a></p>
+</li><li>
+<p><a href="https://api.rubyonrails.org/classes/ActionDispatch/Http/UploadedFile.html"><code>ActionDispatch::Http::UploadedFile</code></a></p>
+</li><li>
+<p><a href="https://shrinerb.com/docs/plugins/rack_file"><code>Shrine::RackFile</code></a></p>
+</li><li>
+<p><a href="https://shrinerb.com/docs/plugins/data_uri"><code>Shrine::DataFile</code></a></p>
+</li><li>
+<p><a href="#uploaded-file"><code>Shrine::UploadedFile</code></a></p>
+</li><li>
+<p><a href="https://github.com/janko/down#streaming"><code>Down::ChunkedIO</code></a></p>
+</li><li>
+<p>…</p>
+</li></ul>
+
+<pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">/path/to/file</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">binmode</span><span class="ruby-value">:</span> <span class="ruby-keyword">true</span>)   <span class="ruby-comment"># upload from disk</span>
+<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">file content</span><span class="ruby-string">&quot;</span>)                <span class="ruby-comment"># upload from memory</span>
+<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">ActionDispatch</span><span class="ruby-operator">::</span><span class="ruby-constant">Http</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(...) <span class="ruby-comment"># upload from Rails controller</span>
+<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">rack_file</span>({ <span class="ruby-value">tempfile</span><span class="ruby-value">:</span> <span class="ruby-identifier">tempfile</span> })    <span class="ruby-comment"># upload from Rack controller</span>
+<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Test</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(...)           <span class="ruby-comment"># upload from rack-test</span>
+<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">Down</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">https://example.org/file</span><span class="ruby-string">&quot;</span>)       <span class="ruby-comment"># upload from internet</span>
+<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(...)               <span class="ruby-comment"># upload from Shrine storage</span>
+</pre>
+
+<span id="label-Uploaded+file" class="legacy-anchor"></span>
+<h2 id="uploaded-file"><a href="#uploaded-file">Uploaded file</a></h2>
+
+<p>The <a href="../Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a> object represents the file that was uploaded to a storage, and it’s what’s returned from <a href="../Shrine/InstanceMethods.html#method-i-upload"><code>Shrine#upload</code></a> or when retrieving a record <a href="#attaching">attachment</a>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;  (uploader)</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>           <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;  (attachment)</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>         <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;  (attacher)</span>
+</pre>
+
+<p>An uploaded file object contains the following data:</p>
+
+<table role="table">
+<thead>
+<tr>
+<th align="left">Key</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>id</code></td>
+<td align="left">location of the file on the storage</td>
+</tr>
+<tr>
+<td align="left"><code>storage</code></td>
+<td align="left">identifier of the storage the file was uploaded to</td>
+</tr>
+<tr>
+<td align="left"><code>metadata</code></td>
+<td align="left">file [metadata] that was extracted before upload</td>
+</tr>
+</tbody>
+</table>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile id=&quot;949sdjg834.jpg&quot; storage=:store metadata={...}&gt;</span>
+
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">id</span>          <span class="ruby-comment">#=&gt; &quot;949sdjg834.jpg&quot;</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :store</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">storage</span>     <span class="ruby-comment">#=&gt; #&lt;Shrine::Storage::S3&gt;</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>    <span class="ruby-comment">#=&gt; {...}</span>
+</pre>
+
+<p>It comes with many convenient methods that delegate to the storage:</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>                     <span class="ruby-comment">#=&gt; &quot;https://my-bucket.s3.amazonaws.com/949sdjg834.jpg&quot;</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> ... }       <span class="ruby-comment"># opens the uploaded file stream</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span> ... } <span class="ruby-comment"># downloads the uploaded file to disk</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">stream</span>(<span class="ruby-identifier">destination</span>)     <span class="ruby-comment"># streams uploaded content into a writable destination</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span>                 <span class="ruby-comment">#=&gt; true</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">delete</span>                  <span class="ruby-comment"># deletes the uploaded file from the storage</span>
+</pre>
+
+<p>It also implements the IO-like interface that conforms to Shrine’s <a href="#io-abstraction">IO abstraction</a>, which allows it to be uploaded again to other storages.</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>   <span class="ruby-comment"># returns content of the uploaded file</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">eof?</span>   <span class="ruby-comment"># returns true if the whole IO was read</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">rewind</span> <span class="ruby-comment"># rewinds the IO</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">close</span>  <span class="ruby-comment"># closes the IO</span>
+</pre>
+
+<p>For more details, see the <a href="https://shrinerb.com/docs/retrieving-uploads">Retrieving Uploads</a> guide and <a href="https://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html"><code>Shrine::UploadedFile</code></a> API docs.</p>
+
+<span id="label-Attaching" class="legacy-anchor"></span>
+<h2 id="attaching"><a href="#attaching">Attaching</a></h2>
+
+<p>To attach uploaded files to database records, <a href="../Shrine.html"><code>Shrine</code></a> offers an attachment interface built on top of uploaders and uploaded files. There are integrations for various persistence libraries (<a href="https://shrinerb.com/docs/plugins/activerecord">ActiveRecord</a>, <a href="https://shrinerb.com/docs/plugins/sequel">Sequel</a>, <a href="https://github.com/shrinerb/shrine-rom">ROM</a>, <a href="https://github.com/katafrakt/hanami-shrine">Hanami</a>, <a href="https://github.com/shrinerb/shrine-mongoid">Mongoid</a>), but you can also attach files to plain structs (<a href="https://shrinerb.com/docs/plugins/model">mutable</a> or <a href="https://shrinerb.com/docs/plugins/entity">immutable</a>).</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">sequel</span> <span class="ruby-comment"># :activerecord</span>
+</pre>
+
+<span id="label-Attachment+module" class="legacy-anchor"></span>
+<h3 id="attachment-module"><a href="#attachment-module">Attachment module</a></h3>
+
+<p>The easiest way to attach files is with the <a href="../Shrine/Attachment.html"><code>Shrine::Attachment</code></a> module:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span> <span class="ruby-comment"># ActiveRecord::Base</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:</span><span class="ruby-value">image</span>) <span class="ruby-comment">#</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>[<span class="ruby-value">:</span><span class="ruby-value">image</span>]     <span class="ruby-comment"># use your preferred syntax</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:</span><span class="ruby-value">image</span>)     <span class="ruby-comment">#</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>The included module will add attachment methods for the specified attribute:</p>
+
+<table role="table">
+<thead>
+<tr>
+<th align="left">Method</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>#image=</code></td>
+<td align="left">uploads the file to temporary storage and serializes the result into <code>image_data</code></td>
+</tr>
+<tr>
+<td align="left"><code>#image</code></td>
+<td align="left">returns [<a href="../Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a>][uploaded file] instantiated from <code>image_data</code></td>
+</tr>
+<tr>
+<td align="left"><code>#image_url</code></td>
+<td align="left">calls <code>url</code> on the attachment if it’s present, otherwise returns nil</td>
+</tr>
+<tr>
+<td align="left"><code>#image_attacher</code></td>
+<td align="left">returns instance of [<a href="../Shrine/Attacher.html"><code>Shrine::Attacher</code></a>][attacher] which handles the attaching</td>
+</tr>
+</tbody>
+</table>
+
+<p>The persistence plugin we loaded will add callbacks that ensure cached files are automatically promoted to permanent storage on when record is saved, and that attachments are deleted when the record is destroyed.</p>
+
+<pre class="ruby"><span class="ruby-comment"># no file is attached</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-comment">#=&gt; nil</span>
+
+<span class="ruby-comment"># the assigned file is cached to temporary storage and written to `image_data` column</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">waterfall.jpg</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">rb</span><span class="ruby-string">&quot;</span>)
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>      <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>  <span class="ruby-comment">#=&gt; &quot;/uploads/cache/0sdfllasfi842.jpg&quot;</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt; &#39;{&quot;id&quot;:&quot;0sdfllasfi842.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;</span>
+
+<span class="ruby-comment"># the cached file is promoted to permanent storage and saved to `image_data` column</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>      <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>  <span class="ruby-comment">#=&gt; &quot;/uploads/store/l02kladf8jlda.jpg&quot;</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt; &#39;{&quot;id&quot;:&quot;l02kladf8jlda.jpg&quot;,&quot;storage&quot;:&quot;store&quot;,&quot;metadata&quot;:{...}}&#39;</span>
+
+<span class="ruby-comment"># the attached file is deleted with the record</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">destroy</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span>
+</pre>
+
+<p>If there is already a file attached and a new file is attached, the previous attachment will get deleted when the record gets saved.</p>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">update</span>(<span class="ruby-value">image</span><span class="ruby-value">:</span> <span class="ruby-identifier">new_file</span>) <span class="ruby-comment"># changes the attachment and deletes previous</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">update</span>(<span class="ruby-value">image</span><span class="ruby-value">:</span> <span class="ruby-keyword">nil</span>)      <span class="ruby-comment"># removes the attachment and deletes previous</span>
+</pre>
+
+<span id="label-Attacher" class="legacy-anchor"></span>
+<h3 id="attacher"><a href="#attacher">Attacher</a></h3>
+
+<p>The methods and callbacks added by the <a href="../Shrine/Attachment.html"><code>Shrine::Attachment</code></a> module just delegate the behaviour to an underlying <a href="../Shrine/Attacher.html"><code>Shrine::Attacher</code></a> object.</p>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>
+</pre>
+
+<p>The <a href="../Shrine/Attacher.html"><code>Shrine::Attacher</code></a> object can be instantiated and used directly:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_model</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:</span><span class="ruby-value">image</span>)
+
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment"># equivalent to `photo.image = file`</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>         <span class="ruby-comment"># equivalent to `photo.image`</span>
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span>          <span class="ruby-comment"># equivalent to `photo.image_url`</span>
+</pre>
+
+<p>The attacher is what drives attaching files to model instances; you can use it as a more explicit alternative to models’ attachment interface, or when you need something that’s not available through the attachment methods.</p>
+
+<p>See <a href="https://shrinerb.com/docs/attacher">Using Attacher</a> guide for more details.</p>
+
+<span id="label-Temporary+storage" class="legacy-anchor"></span>
+<h3 id="temporary-storage"><a href="#temporary-storage">Temporary storage</a></h3>
+
+<p><a href="../Shrine.html"><code>Shrine</code></a> uses temporary storage to support <a href="#validation">file validation</a> and <a href="#direct-uploads">direct uploads</a>. If you don’t need these features, you can tell <a href="../Shrine.html"><code>Shrine</code></a> to upload files directly to permanent storage:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">model</span>, <span class="ruby-value">cache</span><span class="ruby-value">:</span> <span class="ruby-keyword">false</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">waterfall.jpg</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">rb</span><span class="ruby-string">&quot;</span>)
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :store</span>
+</pre>
+
+<p>If you’re using the attacher directly, you can just use <code>Attacher#attach</code> instead of <code>Attacher#assign</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">waterfall.jpg</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">rb</span><span class="ruby-string">&quot;</span>)
+<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :store</span>
+</pre>
+
+<span id="label-Plugin+system" class="legacy-anchor"></span>
+<h2 id="plugin-system"><a href="#plugin-system">Plugin system</a></h2>
+
+<p>By default, <a href="../Shrine.html"><code>Shrine</code></a> comes with a small core which provides only the essential functionality. All additional features are available via <a href="https://shrinerb.com/plugins">plugins</a>, which also ship with <a href="../Shrine.html"><code>Shrine</code></a>. This way you can choose exactly what and how much <a href="../Shrine.html"><code>Shrine</code></a> does for you, and you load the code only for features that you use.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">instrumentation</span> <span class="ruby-comment"># adds instrumentation</span>
+</pre>
+
+<p>Plugins add behaviour by extending <a href="../Shrine.html"><code>Shrine</code></a> core classes via module inclusion, and many of them also accept configuration options. The plugin system respects inheritance, so you can choose to load a plugin globally or per uploader.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">store_dimensions</span> <span class="ruby-comment"># extract image dimensions only for this uploader and its descendants</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>If you want to extend <a href="../Shrine.html"><code>Shrine</code></a> functionality with custom behaviour, you can also <a href="https://shrinerb.com/docs/creating-plugins">create your own plugin</a>. There are also additional <a href="https://shrinerb.com/docs/external/extensions#plugins">external plugins</a> created by others.</p>
+
+<blockquote>
+<p>NOTE: An uploader class will inherit a copy of current superclass’ plugin options at the time of subclassing. This means you should <em>not</em> load additional plugins on a superclass after the subclass has already been created, because new options will not get applied to the subclass, which can result in errors.</p>
+</blockquote>
+
+<span id="label-Metadata" class="legacy-anchor"></span>
+<h2 id="metadata"><a href="#metadata">Metadata</a></h2>
+
+<p><a href="../Shrine.html"><code>Shrine</code></a> automatically extracts some basic file metadata and saves them to the <a href="../Shrine/UploadedFile.html"><code>Shrine::UploadedFile</code></a>. You can access them through the <code>#metadata</code> hash or via metadata methods:</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt;</span>
+<span class="ruby-comment"># {</span>
+<span class="ruby-comment">#   &quot;filename&quot; =&gt; &quot;matrix.mp4&quot;,</span>
+<span class="ruby-comment">#   &quot;mime_type&quot; =&gt; &quot;video/mp4&quot;,</span>
+<span class="ruby-comment">#   &quot;size&quot; =&gt; 345993,</span>
+<span class="ruby-comment"># }</span>
+
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;matrix.mp4&quot;</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">extension</span>         <span class="ruby-comment">#=&gt; &quot;mp4&quot;</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;video/mp4&quot;</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 345993</span>
+</pre>
+
+<span id="label-MIME+type" class="legacy-anchor"></span>
+<h3 id="mime-type"><a href="#mime-type">MIME type</a></h3>
+
+<p>By default, <code>mime_type</code> metadata will be set from the <code>#content_type</code> attribute of the uploaded file (if it exists), which is generally not secure and will trigger a warning. You can load the <a href="https://shrinerb.com/docs/plugins/determine_mime_type"><code>determine_mime_type</code></a> plugin to have MIME type extracted from file <em>content</em> instead.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">marcel</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">~&gt; 0.3</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">determine_mime_type</span>, <span class="ruby-value">analyzer</span><span class="ruby-value">:</span> <span class="ruby-value">:</span><span class="ruby-value">marcel</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">image</span><span class="ruby-value">:</span> <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">&lt;?php ... ?&gt;</span><span class="ruby-string">&quot;</span>))
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">mime_type</span> <span class="ruby-comment">#=&gt; &quot;application/x-php&quot;</span>
+</pre>
+
+<span id="label-Other+metadata" class="legacy-anchor"></span>
+<h3 id="other-metadata"><a href="#other-metadata">Other metadata</a></h3>
+
+<p>In addition to basic metadata, you can also extract <a href="https://shrinerb.com/docs/plugins/store_dimensions">image dimensions</a>, calculate <a href="https://shrinerb.com/docs/plugins/signature">signatures</a>, and in general extract any <a href="https://shrinerb.com/docs/plugins/add_metadata">custom metadata</a>. Check out the <a href="https://shrinerb.com/docs/metadata">Extracting Metadata</a> guide for more details.</p>
+
+<span id="label-Processing" class="legacy-anchor"></span>
+<h2 id="processing"><a href="#processing">Processing</a></h2>
+
+<p><a href="../Shrine.html"><code>Shrine</code></a> allows you to process attached files both “eagerly” and “on-the-fly”. For example, if your app is accepting image uploads, you can generate a predefined set of thumbnails when the image is attached to a record, or you can have thumbnails generated dynamically as they’re needed.</p>
+
+<p>For image processing, it’s recommended to use the <strong><a href="https://github.com/janko/image_processing">ImageProcessing</a></strong> gem, which is a high-level wrapper for processing with <a href="https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme">MiniMagick</a> and <a href="https://github.com/janko/image_processing/blob/master/doc/vips.md#readme">libvips</a>.</p>
+
+<pre>$ brew install imagemagick vips</pre>
+
+<span id="label-Eager+processing" class="legacy-anchor"></span>
+<h3 id="eager-processing"><a href="#eager-processing">Eager processing</a></h3>
+
+<p>We can use the <a href="https://shrinerb.com/docs/plugins/derivatives"><code>derivatives</code></a> plugin to generate a pre-defined set of processed files (e.g. image thumbnails). We do this by registering a derivatives processor block and then explicitly triggering creation:</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">image_processing</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">~&gt; 2.0</span><span class="ruby-string">&quot;</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">mini_magick</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">~&gt; 5.0</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">derivatives</span>, <span class="ruby-value">create_on_promote</span><span class="ruby-value">:</span> <span class="ruby-keyword">true</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;</span><span class="ruby-string">image_processing/mini_magick</span><span class="ruby-string">&quot;</span>
+
+<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)
+
+    {
+      <span class="ruby-value">large</span><span class="ruby-value">:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>),
+      <span class="ruby-value">medium</span><span class="ruby-value">:</span> <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>),
+      <span class="ruby-value">small</span><span class="ruby-value">:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>),
+    }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">image</span><span class="ruby-value">:</span> <span class="ruby-identifier">file</span>)
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span> <span class="ruby-comment"># automatically creates derivatives on promotion</span>
+</pre>
+
+<p>You can then retrieve the URL of a processed derivative:</p>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>(<span class="ruby-value">:</span><span class="ruby-value">large</span>) <span class="ruby-comment">#=&gt; &quot;https://s3.amazonaws.com/path/to/large.jpg&quot;</span>
+</pre>
+
+<p>The derivatives data is stored in the <code>&lt;attachment&gt;_data</code> column, and you can retrieve them as <a href="#uploaded-file"><code>Shrine::UploadedFile</code></a> objects:</p>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:</span><span class="ruby-value">large</span>)           <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile id=&quot;path/to/large.jpg&quot; storage=:store metadata={...}&gt;</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:</span><span class="ruby-value">large</span>).<span class="ruby-identifier">url</span>       <span class="ruby-comment">#=&gt; &quot;https://s3.amazonaws.com/path/to/large.jpg&quot;</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:</span><span class="ruby-value">large</span>).<span class="ruby-identifier">size</span>      <span class="ruby-comment">#=&gt; 5825949</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:</span><span class="ruby-value">large</span>).<span class="ruby-identifier">mime_type</span> <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>
+</pre>
+
+<p>For more details, see the <a href="https://shrinerb.com/docs/processing">File Processing</a> guide and the <a href="https://shrinerb.com/docs/plugins/derivatives"><code>derivatives</code></a> plugin documentation.</p>
+
+<span id="label-On-the-fly+processing" class="legacy-anchor"></span>
+<h3 id="on-the-fly-processing"><a href="#on-the-fly-processing">On-the-fly processing</a></h3>
+
+<p>On-the-fly processing is provided by the <a href="https://shrinerb.com/docs/plugins/derivation_endpoint"><code>derivation_endpoint</code></a> plugin. To set it up, we configure the plugin with a secret key and a path prefix, <a href="https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints">mount</a> its Rack app in our routes on the configured path prefix, and define processing we want to perform:</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">image_processing</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">~&gt; 2.0</span><span class="ruby-string">&quot;</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">mini_magick</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">~&gt; 5.0</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-comment"># config/initializers/rails.rb (Rails)</span>
+<span class="ruby-comment"># ...</span>
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">derivation_endpoint</span>, <span class="ruby-value">secret_key</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">&lt;YOUR_SECRET_KEY&gt;</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;</span><span class="ruby-string">image_processing/mini_magick</span><span class="ruby-string">&quot;</span>
+
+<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">derivation_endpoint</span>, <span class="ruby-value">prefix</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">derivations/image</span><span class="ruby-string">&quot;</span> <span class="ruby-comment"># matches mount point</span>
+
+  <span class="ruby-identifier">derivation</span> <span class="ruby-value">:</span><span class="ruby-value">thumbnail</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span>, <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span><span class="ruby-operator">|</span>
+    <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>
+      .<span class="ruby-identifier">source</span>(<span class="ruby-identifier">file</span>)
+      .<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-identifier">width</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">height</span>.<span class="ruby-identifier">to_i</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>
+<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-comment"># ...</span>
+  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">derivation_endpoint</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;</span><span class="ruby-string">/derivations/image</span><span class="ruby-string">&quot;</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>Now we can generate URLs from attached files that will perform the desired processing:</p>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">derivation_url</span>(<span class="ruby-value">:</span><span class="ruby-value">thumbnail</span>, <span class="ruby-value">600</span>, <span class="ruby-value">400</span>)
+<span class="ruby-comment">#=&gt; &quot;/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=...&quot;</span>
+</pre>
+
+<p>The on-the-fly processing feature is highly customizable, see the <a href="https://shrinerb.com/docs/plugins/derivation_endpoint"><code>derivation_endpoint</code></a> plugin documentation for more details.</p>
+
+<span id="label-Validation" class="legacy-anchor"></span>
+<h2 id="validation"><a href="#validation">Validation</a></h2>
+
+<p>The <a href="https://shrinerb.com/docs/plugins/validation"><code>validation</code></a> plugin allows performing validation for attached files. For common validations, the <a href="https://shrinerb.com/docs/plugins/validation_helpers"><code>validation_helpers</code></a> plugin provides useful validators for built in metadata:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">validation_helpers</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">DocumentUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>, <span class="ruby-value">message</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">is too large (max is 5 MB)</span><span class="ruby-string">&quot;</span>
+    <span class="ruby-identifier">validate_mime_type</span> <span class="ruby-string">%w[</span><span class="ruby-string">application/pdf</span><span class="ruby-string">]</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">cv</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">cv.pdf</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">rb</span><span class="ruby-string">&quot;</span>)
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">valid?</span> <span class="ruby-comment">#=&gt; false</span>
+<span class="ruby-identifier">user</span>.<span class="ruby-identifier">errors</span>.<span class="ruby-identifier">to_hash</span> <span class="ruby-comment">#=&gt; {:cv=&gt;[&quot;is too large (max is 5 MB)&quot;]}</span>
+</pre>
+
+<p>For more details, see the <a href="https://shrinerb.com/docs/validation">File Validation</a> guide and <a href="https://shrinerb.com/docs/plugins/validation_helpers"><code>validation_helpers</code></a> plugin docs.</p>
+
+<span id="label-Location" class="legacy-anchor"></span>
+<h2 id="location"><a href="#location">Location</a></h2>
+
+<p><a href="../Shrine.html"><code>Shrine</code></a> automatically generates random locations before uploading files. By default, the hierarchy is flat, meaning all files are stored in the root directory of the storage.</p>
+
+<pre>024d9fe83bf4fafb.jpg
+768a336bf54de219.jpg
+adfaa363629f7fc5.png
+...</pre>
+
+<p>The <a href="https://shrinerb.com/docs/plugins/pretty_location"><code>pretty_location</code></a> plugin provides a good default hierarchy:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">pretty_location</span>
+</pre>
+
+<pre>user/
+  564/
+    avatar/
+      aa3e0cd715.jpg
+      thumb-493g82jf23.jpg
+photo/
+  123/
+    image/
+      13f8a7bc18.png
+      thumb-9be62da67e.png
+...</pre>
+
+<p>But you can also override <a href="../Shrine/InstanceMethods.html#method-i-generate_location"><code>Shrine#generate_location</code></a> with a custom implementation, for example:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">record:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">derivative:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)
+    <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">record</span>
+
+    <span class="ruby-identifier">table</span>  = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">table_name</span>
+    <span class="ruby-identifier">id</span>     = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>
+    <span class="ruby-identifier">prefix</span> = <span class="ruby-identifier">derivative</span> <span class="ruby-operator">||</span> <span class="ruby-string">&quot;</span><span class="ruby-string">original</span><span class="ruby-string">&quot;</span>
+
+    <span class="ruby-string">&quot;</span><span class="ruby-string">uploads/</span><span class="ruby-string">#{</span><span class="ruby-identifier">table</span><span class="ruby-string">}</span><span class="ruby-string">/</span><span class="ruby-string">#{</span><span class="ruby-identifier">id</span><span class="ruby-string">}</span><span class="ruby-string">/</span><span class="ruby-string">#{</span><span class="ruby-identifier">prefix</span><span class="ruby-string">}</span><span class="ruby-string">-</span><span class="ruby-string">#{</span><span class="ruby-keyword">super</span><span class="ruby-string">}</span><span class="ruby-string">&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre>uploads/
+  photos/
+    123/
+      original-afe929b8b4.jpg
+      small-ad61f25883.jpg
+      medium-41b75c42bb.jpg
+      large-73e67abe50.jpg
+...</pre>
+
+<blockquote>
+<p>There should always be a random component in the location, so that the ORM dirty tracking is detected properly.</p>
+</blockquote>
+
+<p>The <a href="../Shrine/InstanceMethods.html#method-i-generate_location"><code>Shrine#generate_location</code></a> method contains a lot of useful context for the upcoming upload:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">record:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">name:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">derivative:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">metadata:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+    <span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :cache, :store, ...</span>
+    <span class="ruby-identifier">io</span>          <span class="ruby-comment">#=&gt; #&lt;File&gt;, #&lt;Shrine::UploadedFile&gt;, ...</span>
+    <span class="ruby-identifier">record</span>      <span class="ruby-comment">#=&gt; #&lt;Photo&gt;, #&lt;User&gt;, ...</span>
+    <span class="ruby-identifier">name</span>        <span class="ruby-comment">#=&gt; :image, :avatar, ...</span>
+    <span class="ruby-identifier">derivative</span>  <span class="ruby-comment">#=&gt; :small, :medium, :large, ... (derivatives plugin)</span>
+    <span class="ruby-identifier">metadata</span>    <span class="ruby-comment">#=&gt; { &quot;filename&quot; =&gt; &quot;nature.jpg&quot;, &quot;mime_type&quot; =&gt; &quot;image/jpeg&quot;, &quot;size&quot; =&gt; 18573, ... }</span>
+    <span class="ruby-identifier">options</span>     <span class="ruby-comment">#=&gt; { ... other uploader options ... }</span>
+
+    <span class="ruby-comment"># ...</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<span id="label-Direct+uploads" class="legacy-anchor"></span>
+<h2 id="direct-uploads"><a href="#direct-uploads">Direct uploads</a></h2>
+
+<p>To improve the user experience, it’s recommended to upload files asynchronously as soon as the user selects them. The direct uploads would go to temporary storage, just like in the synchronous flow. Then, instead of attaching a raw file to your model, you assign the cached file JSON data.</p>
+
+<pre class="ruby"><span class="ruby-comment"># in the regular synchronous flow</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">file</span>
+
+<span class="ruby-comment"># in the direct upload flow</span>
+<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-string">&#39;</span><span class="ruby-string">{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}</span><span class="ruby-string">&#39;</span>
+</pre>
+
+<p>On the client side it’s highly recommended to use <strong><a href="https://uppy.io">Uppy</a></strong>, a very flexible modern JavaScript file upload library that happens to integrate nicely with <a href="../Shrine.html"><code>Shrine</code></a>.</p>
+
+<span id="label-Simple+direct+upload" class="legacy-anchor"></span>
+<h3 id="simple-direct-upload"><a href="#simple-direct-upload">Simple direct upload</a></h3>
+
+<p>The simplest approach is to upload directly to an endpoint in your app, which forwards uploads to the specified storage. The <a href="https://shrinerb.com/docs/plugins/upload_endpoint"><code>upload_endpoint</code></a> <a href="../Shrine.html"><code>Shrine</code></a> plugin provides a <a href="https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints">mountable</a> Rack app that implements this endpoint:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">upload_endpoint</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>
+<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-comment"># ...</span>
+  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload_endpoint</span>(<span class="ruby-value">:</span><span class="ruby-value">cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;</span><span class="ruby-string">/upload</span><span class="ruby-string">&quot;</span> <span class="ruby-comment"># POST /upload</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>Then you can configure Uppy’s <a href="https://uppy.io/docs/xhr-upload/">XHR Upload</a> plugin to upload to this endpoint. See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads">this walkthrough</a> for adding simple direct uploads from scratch, it includes a complete JavaScript example (there is also the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> demo app).</p>
+
+<span id="label-Presigned+direct+upload" class="legacy-anchor"></span>
+<h3 id="presigned-direct-upload"><a href="#presigned-direct-upload">Presigned direct upload</a></h3>
+
+<p>For better performance, you can also upload files directly to your cloud storage service (AWS S3, Google Cloud Storage etc). For this, your temporary storage needs to be your cloud service:</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;</span><span class="ruby-string">shrine/storage/s3</span><span class="ruby-string">&quot;</span>
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {
+  <span class="ruby-value">cache</span><span class="ruby-value">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">prefix</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">cache</span><span class="ruby-string">&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),
+  <span class="ruby-value">store</span><span class="ruby-value">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)
+}
+</pre>
+
+<p>In this flow, the client needs to first fetch upload parameters from the server, and then use these parameters for the upload to the cloud service. The <a href="https://shrinerb.com/docs/plugins/presign_endpoint"><code>presign_endpoint</code></a> <a href="../Shrine.html"><code>Shrine</code></a> plugin provides a <a href="https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints">mountable</a> Rack app that generates upload parameters:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">presign_endpoint</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>
+<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-comment"># ...</span>
+  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:</span><span class="ruby-value">cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;</span><span class="ruby-string">/s3/params</span><span class="ruby-string">&quot;</span> <span class="ruby-comment"># GET /s3/params</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>Then you can configure Uppy’s <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> plugin to fetch params from your endpoint before uploading to S3. See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads">this walkthrough</a> for adding direct uploads to S3 from scratch, it includes a complete JavaScript example (there is also the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> demo). See also the <a href="https://shrinerb.com/docs/direct-s3">Direct Uploads to S3</a> guide for more details.</p>
+
+<span id="label-Resumable+direct+upload" class="legacy-anchor"></span>
+<h3 id="resumable-direct-upload"><a href="#resumable-direct-upload">Resumable direct upload</a></h3>
+
+<p>If your app is accepting large uploads, you can improve resilience by making the uploads <strong>resumable</strong>. This can significantly improve experience for users on slow and flaky internet connections.</p>
+
+<span id="label-Uppy+S3+Multipart" class="legacy-anchor"></span>
+<h4 id="uppy-s3-multipart"><a href="#uppy-s3-multipart">Uppy S3 Multipart</a></h4>
+
+<p>You can achieve resumable uploads directly to S3 with the <a href="https://uppy.io/docs/aws-s3-multipart/">AWS S3 Multipart</a> Uppy plugin, accompanied with <code>uppy_s3_multipart</code> <a href="../Shrine.html"><code>Shrine</code></a> plugin provided by the <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> gem.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">uppy-s3_multipart</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">~&gt; 0.3</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">uppy_s3_multipart</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>
+<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-comment"># ...</span>
+  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">uppy_s3_multipart</span>(<span class="ruby-value">:</span><span class="ruby-value">cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;</span><span class="ruby-string">/s3/multipart</span><span class="ruby-string">&quot;</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>See the <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> docs for more details.</p>
+
+<span id="label-Tus+protocol" class="legacy-anchor"></span>
+<h4 id="tus-protocol"><a href="#tus-protocol">Tus protocol</a></h4>
+
+<p>If you want a more generic approach, you can build your resumable uploads on <strong><a href="https://tus.io">tus</a></strong> – an open resumable upload protocol. On the server side you can use the <a href="https://github.com/janko/tus-ruby-server">tus-ruby-server</a> gem, on the client side Uppy’s <a href="https://uppy.io/docs/tus/">Tus</a> plugin, and the <a href="https://github.com/shrinerb/shrine-tus">shrine-tus</a> gem for the glue.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">tus-server</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">~&gt; 2.0</span><span class="ruby-string">&quot;</span>
+<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">shrine-tus</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">~&gt; 2.1</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;</span><span class="ruby-string">shrine/storage/tus</span><span class="ruby-string">&quot;</span>
+
+<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {
+  <span class="ruby-value">cache</span><span class="ruby-value">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Tus</span>.<span class="ruby-identifier">new</span>, <span class="ruby-comment"># tus server acts as temporary storage</span>
+  <span class="ruby-value">store</span><span class="ruby-value">:</span> ...,                      <span class="ruby-comment"># your permanent storage</span>
+}
+</pre>
+
+<pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>
+<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-comment"># ...</span>
+  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Tus</span><span class="ruby-operator">::</span><span class="ruby-constant">Server</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;</span><span class="ruby-string">/files</span><span class="ruby-string">&quot;</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads">this walkthrough</a> for adding tus-powered resumable uploads from scratch, it includes a complete JavaScript example (there is also a <a href="https://github.com/shrinerb/shrine-tus-demo">demo app</a>). See also <a href="https://github.com/shrinerb/shrine-tus">shrine-tus</a> and <a href="https://github.com/janko/tus-ruby-server">tus-ruby-server</a> docs for more details.</p>
+
+<span id="label-Backgrounding" class="legacy-anchor"></span>
+<h2 id="backgrounding"><a href="#backgrounding">Backgrounding</a></h2>
+
+<p>The <a href="https://shrinerb.com/docs/plugins/backgrounding"><code>backgrounding</code></a> plugin allows you to move file promotion and deletion into a background job, using the backgrounding library <a href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">of your choice</a>:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">backgrounding</span>
+<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote_block</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)
+<span class="ruby-keyword">end</span>
+<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">destroy_block</span> <span class="ruby-keyword">do</span>
+  <span class="ruby-constant">DestroyJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">data</span>)
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">PromoteJob</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">attacher_class</span>, <span class="ruby-identifier">record_class</span>, <span class="ruby-identifier">record_id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)
+    <span class="ruby-identifier">attacher_class</span> = <span class="ruby-constant">Object</span>.<span class="ruby-identifier">const_get</span>(<span class="ruby-identifier">attacher_class</span>)
+    <span class="ruby-identifier">record</span>         = <span class="ruby-constant">Object</span>.<span class="ruby-identifier">const_get</span>(<span class="ruby-identifier">record_class</span>).<span class="ruby-identifier">find</span>(<span class="ruby-identifier">record_id</span>) <span class="ruby-comment"># if using Active Record</span>
+
+    <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">attacher_class</span>.<span class="ruby-identifier">retrieve</span>(<span class="ruby-value">model</span><span class="ruby-value">:</span> <span class="ruby-identifier">record</span>, <span class="ruby-value">name</span><span class="ruby-value">:</span> <span class="ruby-identifier">name</span>, <span class="ruby-value">file</span><span class="ruby-value">:</span> <span class="ruby-identifier">file_data</span>)
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">atomic_promote</span>
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>, <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">RecordNotFound</span>
+    <span class="ruby-comment"># attachment has changed or the record has been deleted, nothing to do</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">DestroyJob</span>
+  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>
+
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">attacher_class</span>, <span class="ruby-identifier">data</span>)
+    <span class="ruby-identifier">attacher_class</span> = <span class="ruby-constant">Object</span>.<span class="ruby-identifier">const_get</span>(<span class="ruby-identifier">attacher_class</span>)
+
+    <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">attacher_class</span>.<span class="ruby-identifier">from_data</span>(<span class="ruby-identifier">data</span>)
+    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<span id="label-Clearing+cache" class="legacy-anchor"></span>
+<h2 id="clearing-cache"><a href="#clearing-cache">Clearing cache</a></h2>
+
+<p><a href="../Shrine.html"><code>Shrine</code></a> doesn’t automatically delete files uploaded to temporary storage, instead you should set up a separate recurring task that will automatically delete old cached files.</p>
+
+<p>Most <a href="../Shrine.html"><code>Shrine</code></a> storage classes come with a <code>#clear!</code> method, which you can call in a recurring script. For FileSystem and S3 storage it would look like this:</p>
+
+<pre class="ruby"><span class="ruby-comment"># FileSystem storage</span>
+<span class="ruby-identifier">file_system</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:</span><span class="ruby-value">cache</span>]
+<span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span> <span class="ruby-identifier">path</span>.<span class="ruby-identifier">mtime</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span> } <span class="ruby-comment"># delete files older than 1 week</span>
+</pre>
+
+<pre class="ruby"><span class="ruby-comment"># S3 storage</span>
+<span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:</span><span class="ruby-value">cache</span>]
+<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">clear!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">last_modified</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span> } <span class="ruby-comment"># delete files older than 1 week</span>
+</pre>
+
+<p>For S3, it may be easier and cheaper to use <a href="http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html">S3 bucket lifecycle expiration rules</a> instead.</p>
+
+<span id="label-Logging" class="legacy-anchor"></span>
+<h2 id="logging"><a href="#logging">Logging</a></h2>
+
+<p>The <a href="https://shrinerb.com/docs/plugins/instrumentation"><code>instrumentation</code></a> plugin sends and logs events for important operations:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">instrumentation</span>, <span class="ruby-value">notifications</span><span class="ruby-value">:</span> <span class="ruby-constant">ActiveSupport</span><span class="ruby-operator">::</span><span class="ruby-constant">Notifications</span>
+
+<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:</span><span class="ruby-value">store</span>)
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span>
+<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">delete</span>
+</pre>
+
+<pre>Metadata (32ms) – {:storage=&gt;:store, :io=&gt;StringIO, :uploader=&gt;Shrine}
+Upload (1523ms) – {:storage=&gt;:store, :location=&gt;&quot;ed0e30ddec8b97813f2c1f4cfd1700b4&quot;, :io=&gt;StringIO, :upload_options=&gt;{}, :uploader=&gt;Shrine}
+Exists (755ms) – {:storage=&gt;:store, :location=&gt;&quot;ed0e30ddec8b97813f2c1f4cfd1700b4&quot;, :uploader=&gt;Shrine}
+Download (1002ms) – {:storage=&gt;:store, :location=&gt;&quot;ed0e30ddec8b97813f2c1f4cfd1700b4&quot;, :download_options=&gt;{}, :uploader=&gt;Shrine}
+Delete (700ms) – {:storage=&gt;:store, :location=&gt;&quot;ed0e30ddec8b97813f2c1f4cfd1700b4&quot;, :uploader=&gt;Shrine}</pre>
+
+<p>Some plugins add their own instrumentation as well when they detect that the <code>instrumentation</code> plugin has been loaded. For that to work, the <code>instrumentation</code> plugin needs to be loaded <em>before</em> any of these plugins.</p>
+
+<table role="table">
+<thead>
+<tr>
+<th align="left">Plugin</th>
+<th align="left">Instrumentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>derivation_endpoint</code></td>
+<td align="left">instruments file processing</td>
+</tr>
+<tr>
+<td align="left"><code>derivatives</code></td>
+<td align="left">instruments file processing</td>
+</tr>
+<tr>
+<td align="left"><code>determine_mime_type</code></td>
+<td align="left">instruments analyzing MIME type</td>
+</tr>
+<tr>
+<td align="left"><code>store_dimensions</code></td>
+<td align="left">instruments extracting image dimensions</td>
+</tr>
+<tr>
+<td align="left"><code>signature</code></td>
+<td align="left">instruments calculating signature</td>
+</tr>
+<tr>
+<td align="left"><code>infer_extension</code></td>
+<td align="left">instruments inferring extension</td>
+</tr>
+<tr>
+<td align="left"><code>remote_url</code></td>
+<td align="left">instruments remote URL downloading</td>
+</tr>
+<tr>
+<td align="left"><code>data_uri</code></td>
+<td align="left">instruments data URI parsing</td>
+</tr>
+</tbody>
+</table>
+
+<p>For instrumentation, warnings, and other logging, <a href="../Shrine.html"><code>Shrine</code></a> uses its internal logger. You can tell <a href="../Shrine.html"><code>Shrine</code></a> to use a different logger. For example, if you’re using Rails, you might want to tell it to use the Rails logger:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">logger</span> = <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">logger</span>
+</pre>
+
+<p>In tests you might want to tell <a href="../Shrine.html"><code>Shrine</code></a> to log only warnings:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">level</span> = <span class="ruby-constant">Logger</span><span class="ruby-operator">::</span><span class="ruby-constant">WARN</span>
+</pre>
+
+</main>
+
+<aside id="table-of-contents" class="table-of-contents" role="complementary" aria-label="Table of Contents">
+  <div class="toc-sticky">
+    <h3 class="toc-heading">On This Page</h3>
+    <nav class="toc-nav" id="toc-nav" aria-label="Page sections">
+      <!-- Generated by JavaScript based on page headings -->
+    </nav>
+  </div>
+</aside>
+
+
+<footer class="site-footer">
+  
+
+  <div class="footer-bottom">
+    <p>
+      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 8.0.0</a>
+      using the Aliki theme by <a href="http://st0012.dev">Stan Lo</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+
