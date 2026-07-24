@@ -39,6 +39,17 @@ plugin :data_uri, error_message: "data URI was invalid"
 plugin :data_uri, error_message: ->(uri) { I18n.t("errors.data_uri_invalid") }
 ```
 
+## Maximum size
+
+The `:max_size` option sets the maximum allowed size of the decoded content.
+The size is determined from the encoded payload, so oversized content is
+rejected before it gets decoded into memory. Parsing fails the same way as
+for a malformed URI:
+
+```rb
+plugin :data_uri, max_size: 10*1024*1024 # 10 MB
+```
+
 ## Uploader options
 
 Any options passed to `Attacher#assign_data_uri` will be forwarded to

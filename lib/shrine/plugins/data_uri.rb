@@ -61,6 +61,7 @@ class Shrine
         def data_uri(uri, filename: nil)
           instrument_data_uri(uri) do
             info = parse_data_uri(uri)
+            verify_data_size!(info)
             create_data_file(info, filename: filename)
           end
         end
@@ -76,6 +77,27 @@ class Shrine
           info[:data].clear
 
           data_file
+        end
+
+        # Fails if the decoded content would exceed the configured :max_size.
+        # The size is determined from the encoded payload, so oversized
+        # content is rejected before it gets decoded into memory.
+        def verify_data_size!(info)
+          max_size = opts[:data_uri][:max_size]
+          return unless max_size
+
+          raise ParseError, "data URI is too large" if data_size(info) > max_size
+        end
+
+        # Byte size of the payload after decoding, calculated without
+        # decoding it. Counting base64 alphabet characters keeps the result
+        # exact for line-wrapped (MIME-style) payloads as well.
+        def data_size(info)
+          if info[:base64]
+            info[:data].count("A-Za-z0-9+/") * 3 / 4
+          else
+            info[:data].bytesize - info[:data].count("%") * 2
+          end
         end
 
         # Parses the data URI string and returns parts.
