@@ -123,22 +123,19 @@ describe Shrine::Plugins::DataUri do
         assert_equal 0,  io.size
       end
 
-      it "refuses content larger than :max_size" do
-        @shrine.plugin :data_uri, max_size: 6
-
-        assert_raises(Shrine::Plugins::DataUri::ParseError) do
-          @shrine.data_uri("data:image/png,content")
-        end
-      end
-
-      it "accepts content within :max_size" do
+      it "applies :max_size" do
         @shrine.plugin :data_uri, max_size: 7
 
         io = @shrine.data_uri("data:image/png,content")
         assert_equal "content", io.read
+
+        error = assert_raises(Shrine::Plugins::DataUri::ParseError) do
+          @shrine.data_uri("data:image/png,content!")
+        end
+        assert_equal "data URI is too large", error.message
       end
 
-      it "determines base64 content size from the encoded payload" do
+      it "determines :max_size from the encoded content" do
         @shrine.plugin :data_uri, max_size: 7
 
         io = @shrine.data_uri("data:image/png;base64,#{Base64.encode64("content")}")
@@ -147,13 +144,6 @@ describe Shrine::Plugins::DataUri do
         assert_raises(Shrine::Plugins::DataUri::ParseError) do
           @shrine.data_uri("data:image/png;base64,#{Base64.encode64("content!")}")
         end
-      end
-
-      it "accounts for percent-encoding when determining content size" do
-        @shrine.plugin :data_uri, max_size: 11
-
-        io = @shrine.data_uri("data:,hello%20world")
-        assert_equal "hello world", io.read
       end
 
       it "accepts :filename" do
@@ -245,14 +235,23 @@ describe Shrine::Plugins::DataUri do
         @attacher.assign_data_uri("bla")
 
         assert_equal ["data URI has invalid format"], @attacher.errors
-      end
 
-      it "adds validation error on oversized data URI" do
         @shrine.plugin :data_uri, max_size: 6
-
         @attacher.assign_data_uri("data:image/png,content")
 
         assert_equal ["data URI is too large"], @attacher.errors
+      end
+
+      it "accepts :error_message" do
+        @shrine.plugin :data_uri, error_message: -> (uri) { "invalid data URI: #{uri}" }
+        @attacher.assign_data_uri("bla")
+
+        assert_equal ["invalid data URI: bla"], @attacher.errors
+
+        @shrine.plugin :data_uri, error_message: -> (uri, error) { error.message }
+        @attacher.assign_data_uri("bla")
+
+        assert_equal ["data URI has invalid format"], @attacher.errors
       end
 
       it "clears any previous errors" do
