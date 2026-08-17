@@ -17,6 +17,7 @@ class Shrine
       BASE64_REGEXP        = /;base64/
       CONTENT_SEPARATOR    = /,/
       DEFAULT_CONTENT_TYPE = "text/plain"
+      BASE64_ALPHABET      = "A-Za-z0-9+/"
 
       LOG_SUBSCRIBER = -> (event) do
         Shrine.logger.info "Data URI (#{event.duration}ms) – #{{
@@ -78,13 +79,37 @@ class Shrine
           data_file
         end
 
-        # Parses the data URI string and returns parts.
+        # Raises `ParseError` if the content exceeds the `:max_size` option.
+        def verify_data_size!(uri, offset, base64)
+          max_size = opts[:data_uri][:max_size]
+          return unless max_size
+
+          size = data_size(uri, offset, base64)
+
+          raise ParseError, "data URI is too large" if size > max_size
+        end
+
+        # Returns the size the content will have once decoded. It's exact for
+        # base64 and an upper bound for percent-encoded content.
+        def data_size(uri, offset, base64)
+          return uri.bytesize - offset unless base64
+
+          header_characters  = uri.byteslice(0, offset).count(BASE64_ALPHABET)
+          content_characters = uri.count(BASE64_ALPHABET) - header_characters
+
+          content_characters * 3 / 4 # 4 characters decode into 3 bytes
+        end
+
+        # Parses the data URI string, verifies content size, and returns parts.
         def parse_data_uri(uri)
           scanner = StringScanner.new(uri)
           scanner.scan(DATA_REGEXP) or raise ParseError, "data URI has invalid format"
           media_type = scanner.scan(MEDIA_TYPE_REGEXP)
           base64 = scanner.scan(BASE64_REGEXP)
           scanner.scan(CONTENT_SEPARATOR) or raise ParseError, "data URI has invalid format"
+
+          verify_data_size!(scanner.string, scanner.pos, base64)
+
           content = scanner.post_match
 
           { content_type: media_type, base64: !!base64, data: content }
@@ -129,7 +154,7 @@ class Shrine
         # Generates an error message for failed data URI parse.
         def data_uri_error_messsage(uri, error)
           message = shrine_class.opts[:data_uri][:error_message]
-          message = message.call(uri) if message.respond_to?(:call)
+          message = message.call(*[uri, error].take(message.arity.abs)) if message.respond_to?(:call)
           message || error.message
         end
       end

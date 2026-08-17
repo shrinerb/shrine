@@ -37,7 +37,22 @@ attachment column. You can change the default error message:
 ```rb
 plugin :data_uri, error_message: "data URI was invalid"
 plugin :data_uri, error_message: ->(uri) { I18n.t("errors.data_uri_invalid") }
+plugin :data_uri, error_message: ->(uri, error) { I18n.t("errors.data_uri.#{error.message}") }
 ```
+
+## Maximum size
+
+It's a good practice to limit the maximum size of the data URI content:
+
+```rb
+plugin :data_uri, max_size: 10*1024*1024 # 10 MB
+```
+
+Now if content bigger than 10MB is assigned, parsing will fail the same way as
+for an invalid data URI. The size is calculated from the data URI before the
+content is decoded, so oversized content never gets loaded into memory. It's
+exact for base64 content, while for percent-encoded content the encoded length
+is used, which can overestimate.
 
 ## Uploader options
 
