@@ -412,7 +412,7 @@ on top of Rack, so that they can be used with any Ruby web framework.
 [Sequel]: http://sequel.jeremyevans.net
 [ROM]: http://rom-rb.org
 [Hanami::Model]: https://github.com/hanami/model
-[plugin system]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
+[plugin system]: https://janko.io/the-plugin-system-of-sequel-and-roda/
 [Down]: https://github.com/janko/down
 [ContentDisposition]: https://github.com/shrinerb/content_disposition
 [`file`]: http://linux.die.net/man/1/file
