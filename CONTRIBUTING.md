@@ -67,6 +67,6 @@ rooms, and mailing lists is expected to follow the [Shrine code of conduct].
 [SQLite]: https://www.sqlite.org
 [Design of Shrine]: /doc/design.md#readme
 [Creating a New Plugin]: /doc/creating_plugins.md#readme
-[Plugin system of Sequel and Roda]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
+[Plugin system of Sequel and Roda]: https://janko.io/the-plugin-system-of-sequel-and-roda/
 [Notes on study of shrine implementation]: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/
 [self-contained example]: https://github.com/shrinerb/shrine/blob/master/SELF_CONTAINED_EXAMPLE.md

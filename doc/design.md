@@ -264,7 +264,7 @@ When a persistence plugin is loaded ([`activerecord`][activerecord],
 [Using Attacher]: https://shrinerb.com/docs/attacher
 [Notes on study of shrine implementation]: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/
 [Creating a New Plugin]: https://shrinerb.com/docs/creating-plugins
-[Plugin system of Sequel and Roda]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
+[Plugin system of Sequel and Roda]: https://janko.io/the-plugin-system-of-sequel-and-roda/
 [entity]: https://shrinerb.com/docs/plugins/entity
 [model]: https://shrinerb.com/docs/plugins/model
 [activerecord]: https://shrinerb.com/docs/plugins/activerecord

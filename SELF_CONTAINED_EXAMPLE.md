@@ -156,5 +156,5 @@ If you would like to debug or step through Shrine's code using the above templat
 [SQLite]: https://www.sqlite.org
 [Design of Shrine]: /doc/design.md#readme
 [Creating a New Plugin]: /doc/creating_plugins.md#readme
-[Plugin system of Sequel and Roda]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
+[Plugin system of Sequel and Roda]: https://janko.io/the-plugin-system-of-sequel-and-roda/
 [Notes on study of shrine implementation]: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/
