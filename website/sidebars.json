@@ -103,6 +103,7 @@
       "plugins/atomic_helpers",
       "plugins/included",
       "plugins/instrumentation",
+      "plugins/fallback_storage",
       "plugins/keep_files",
       "plugins/mirroring"
     ]
