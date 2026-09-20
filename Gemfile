@@ -4,6 +4,9 @@ gemspec
 
 gem "stringio"
 
+# ActiveSupport calls JSON.parse with two positional arguments, which json 3.0 rejects
+gem "json", "< 3"
+
 gem "simplecov"
 
 gem "activerecord-jdbcsqlite3-adapter", "~> 80.0.pre1", platform: :jruby if RUBY_ENGINE == "jruby"
