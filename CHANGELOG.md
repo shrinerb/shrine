@@ -1,3 +1,11 @@
+## 3.10.0 (2026-09-20)
+
+* Add `fallback_storage` plugin for reading files from a secondary storage when they're missing in the primary storage (@yegorov, @janko)
+
+* `data_uri` – Add `:max_size` option for limiting the size of the data URI content, checked before the content is decoded (@jalrax, @janko)
+
+* `data_uri` – Pass the error to the `:error_message` proc as an optional second argument (@jalrax, @janko)
+
 ## 3.9.0 (2026-07-13)
 
 * `Shrine.find_storage` now raises `Shrine::MissingStorage` (subclass of `Shrine::Error`) when the storage isn't registered, so it can be rescued separately (@janko)
