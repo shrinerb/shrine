@@ -306,6 +306,21 @@ describe Shrine::Plugins::Model do
 
         assert_equal @attacher.file.to_json, model.file_data
       end
+
+      it "doesn't write when attacher is entity" do
+        model = @model_class.new
+
+        @attacher.load_entity(model, :file)
+        @attacher.file = @attacher.upload(fakeio)
+        @attacher.write
+
+        assert_nil model.file_data
+      end
+
+      it "doesn't write when attacher has no record" do
+        @attacher.file = @attacher.upload(fakeio)
+        @attacher.write
+      end
     end
   end
 end

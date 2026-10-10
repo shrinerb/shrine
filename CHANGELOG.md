@@ -1,3 +1,7 @@
+## HEAD
+
+* `model` – Make `Attacher#write` a no-op when the attacher isn't backed by a model, fixing `remove_invalid` raising `NoMethodError` on attachers without a record (@janko)
+
 ## 3.10.0 (2026-09-20)
 
 * Add `fallback_storage` plugin for reading files from a secondary storage when they're missing in the primary storage (@yegorov, @janko)

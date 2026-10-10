@@ -141,6 +141,15 @@ describe Shrine::Plugins::RemoveInvalid do
 
           assert_equal previous_data, model.file_data
         end
+
+        it "works when attacher has no record" do
+          @shrine::Attacher.validate { errors << "error" }
+          attacher = @shrine::Attacher.new
+          attacher.assign(fakeio)
+
+          assert_nil attacher.file
+          assert_equal ["error"], attacher.errors
+        end
       end
     end
   end

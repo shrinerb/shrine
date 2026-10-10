@@ -122,12 +122,15 @@ class Shrine
         # Writes uploaded file data into the model.
         def set(*)
           result = super
-          write if model?
+          write
           result
         end
 
-        # Writes the attachment data into the model attribute.
+        # Writes the attachment data into the model attribute. Does nothing
+        # when the attacher isn't backed by a model instance.
         def write
+          return unless model?
+
           column_values.each do |name, value|
             write_attribute(name, value)
           end
