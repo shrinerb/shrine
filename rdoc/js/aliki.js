@@ -47,6 +47,8 @@ function createSearchInstance(input, result) {
       html += `<span class="search-type search-type-${this.escapeHTML(typeClass)}">${typeLabel}</span>`;
     }
 
+    html += '</p>';
+
     if (result.snippet)
       html += `<div class="search-snippet">${result.snippet}</div>`;
 
@@ -75,9 +77,14 @@ function createSearchInstance(input, result) {
 
 function hookSearch() {
   const input  = document.querySelector('#search-field');
-  const result = document.querySelector('#search-results-desktop');
+  const result = document.querySelector('#search-results');
 
   if (!input || !result) return; // Exit if search elements not found
+
+  const container = input.closest('[data-search-container]');
+  const searchToggle = document.querySelector('#search-toggle');
+  const searchEmpty = container && container.querySelector('.search-empty');
+  let focusBeforeOpen = null;
 
   const search_section = document.querySelector('#search-section');
   if (search_section) {
@@ -87,23 +94,65 @@ function hookSearch() {
   const search = createSearchInstance(input, result);
   if (!search) return;
 
+  if (searchEmpty) {
+    const originalRenderItem = search.renderItem;
+    search.renderItem = function(result) {
+      searchEmpty.style.display = 'none';
+      return originalRenderItem.call(this, result);
+    };
+  }
+
+  const showSearchSurface = () => {
+    if (container) container.classList.add('is-open');
+    if (searchToggle) searchToggle.setAttribute('aria-expanded', 'true');
+  };
+
+  const openSearch = () => {
+    focusBeforeOpen = document.activeElement;
+    showSearchSurface();
+    input.focus({ preventScroll: true });
+  };
+
+  const closeSearch = (restoreFocus = true) => {
+    if (container) container.classList.remove('is-open');
+    if (searchToggle) searchToggle.setAttribute('aria-expanded', 'false');
+    search.hide();
+    input.blur();
+
+    if (restoreFocus && focusBeforeOpen && typeof focusBeforeOpen.focus === 'function') {
+      focusBeforeOpen.focus({ preventScroll: true });
+    }
+    focusBeforeOpen = null;
+  };
+
+  if (searchToggle) searchToggle.addEventListener('click', openSearch);
+  if (container) {
+    container.querySelectorAll('[data-search-close]').forEach((control) => {
+      control.addEventListener('click', () => closeSearch());
+    });
+  }
+
+  hookFocus(openSearch);
+
   // Hide search results when clicking outside the search area
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.navbar-search-desktop')) {
-      search.hide();
-    }
+    if (container && container.contains(e.target)) return;
+
+    search.hide();
+    if (container && container.classList.contains('is-open')) closeSearch(false);
   });
 
-  // Hide search results on Escape key on desktop too
+  // Close the search surface on Escape
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && input.matches(":focus")) {
-      search.hide();
-      input.blur();
+    const isOpen = container && container.classList.contains('is-open');
+    if (e.key === 'Escape' && (isOpen || input.matches(":focus"))) {
+      closeSearch();
     }
   });
 
   // Show search results when focusing on input (if there's a query)
   input.addEventListener('focus', () => {
+    showSearchSurface();
     if (input.value.trim()) {
       search.show();
     }
@@ -114,6 +163,7 @@ function hookSearch() {
     const urlParams = new URLSearchParams(window.location.search);
     const queryParam = urlParams.get('q');
     if (queryParam) {
+      openSearch();
       input.value = queryParam;
       search.search(queryParam, false);
     }
@@ -122,14 +172,14 @@ function hookSearch() {
 
 /* ===== Keyboard Shortcuts ===== */
 
-function hookFocus() {
+function hookFocus(openSearch) {
   document.addEventListener("keydown", (event) => {
     if (document.activeElement.tagName === 'INPUT') {
       return;
     }
     if (event.key === "/") {
       event.preventDefault();
-      document.querySelector('#search-field').focus();
+      openSearch();
     }
   });
 }
@@ -328,78 +378,6 @@ function setHeadingSelfLinkScrollHandlers() {
   })
 }
 
-/* ===== Mobile Search Modal ===== */
-
-function hookSearchModal() {
-  const searchToggle = document.querySelector('#search-toggle');
-  const searchModal = document.querySelector('#search-modal');
-  const searchModalClose = document.querySelector('#search-modal-close');
-  const searchModalBackdrop = document.querySelector('.search-modal-backdrop');
-  const searchInput = document.querySelector('#search-field-mobile');
-  const searchResults = document.querySelector('#search-results-mobile');
-  const searchEmpty = document.querySelector('.search-modal-empty');
-
-  if (!searchToggle || !searchModal) return;
-
-  // Initialize search for mobile modal
-  const mobileSearch = createSearchInstance(searchInput, searchResults);
-  if (!mobileSearch) return;
-
-  // Hide empty state when there are results
-  const originalRenderItem = mobileSearch.renderItem;
-  mobileSearch.renderItem = function(result) {
-    if (searchEmpty) searchEmpty.style.display = 'none';
-    return originalRenderItem.call(this, result);
-  };
-
-  const openSearchModal = () => {
-    searchModal.hidden = false;
-    document.body.style.overflow = 'hidden';
-    // Focus input after animation
-    setTimeout(() => {
-      if (searchInput) searchInput.focus();
-    }, 100);
-  };
-
-  const closeSearchModal = () => {
-    searchModal.hidden = true;
-    document.body.style.overflow = '';
-  };
-
-  // Open on button click
-  searchToggle.addEventListener('click', openSearchModal);
-
-  // Close on close button click
-  if (searchModalClose) {
-    searchModalClose.addEventListener('click', closeSearchModal);
-  }
-
-  // Close on backdrop click
-  if (searchModalBackdrop) {
-    searchModalBackdrop.addEventListener('click', closeSearchModal);
-  }
-
-  // Close on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !searchModal.hidden) {
-      closeSearchModal();
-    }
-  });
-
-  // Check for ?q= URL parameter on mobile and open modal
-  if (typeof URLSearchParams !== 'undefined') {
-    const urlParams = new URLSearchParams(window.location.search);
-    const queryParam = urlParams.get('q');
-    const isSmallViewport = window.matchMedia("(max-width: 1023px)").matches;
-
-    if (queryParam && isSmallViewport) {
-      openSearchModal();
-      searchInput.value = queryParam;
-      mobileSearch.search(queryParam, false);
-    }
-  }
-}
-
 /* ===== Code Block Copy Functionality ===== */
 
 function createCopyButton() {
@@ -503,11 +481,9 @@ function showCopySuccess(button) {
 document.addEventListener('DOMContentLoaded', () => {
   hookSourceViews();
   hookSearch();
-  hookFocus();
   hookSidebar();
   generateToc();
   setHeadingSelfLinkScrollHandlers();
   hookTocActiveHighlighting();
-  hookSearchModal();
   wrapCodeBlocksWithCopyButton();
 });

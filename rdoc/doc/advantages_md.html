@@ -45,46 +45,46 @@
 </script>
 
 <script
-  src="../js/theme-toggle.js?v=8.0.0"
+  src="../js/theme-toggle.js?v=8.1.0"
 ></script>
 
 <script
-  src="../js/search_navigation.js?v=8.0.0"
+  src="../js/search_navigation.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/search_data.js?v=8.0.0"
+  src="../js/search_data.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/search_ranker.js?v=8.0.0"
+  src="../js/search_ranker.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/search_controller.js?v=8.0.0"
+  src="../js/search_controller.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/c_highlighter.js?v=8.0.0"
+  src="../js/c_highlighter.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/bash_highlighter.js?v=8.0.0"
+  src="../js/bash_highlighter.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/aliki.js?v=8.0.0"
+  src="../js/aliki.js?v=8.1.0"
   defer
 ></script>
 
 <link
-  href="../css/rdoc.css?v=8.0.0"
+  href="../css/rdoc.css?v=8.1.0"
   rel="stylesheet"
 >
 
@@ -306,57 +306,42 @@
     Shrine: Toolkit for file uploads
   </a>
 
-  <!-- Desktop search bar -->
-  <div class="navbar-search navbar-search-desktop" role="search">
-    <form action="#" method="get" accept-charset="utf-8">
-      <input id="search-field" role="combobox" aria-label="Search"
-             aria-autocomplete="list" aria-controls="search-results-desktop"
-             type="text" name="search" placeholder="Search (/) for a class, method..."
-             spellcheck="false" autocomplete="off"
-             title="Type to search, Up and Down to navigate, Enter to load">
-      <ul id="search-results-desktop" aria-label="Search Results"
-          aria-busy="false" aria-expanded="false"
-          aria-atomic="false" class="initially-hidden search-results"></ul>
-    </form>
-  </div>
+  <div class="navbar-search" data-search-container>
+    <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search"
+            aria-controls="search-surface" aria-expanded="false" type="button">
+      <span aria-hidden="true">🔍</span>
+    </button>
 
-  <!-- Mobile search icon button -->
-  <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search" type="button">
-    <span aria-hidden="true">🔍</span>
-  </button>
+    <div class="search-backdrop" data-search-close></div>
+    <div id="search-surface" class="search-surface">
+      <form class="search-form" role="search" action="#" method="get" accept-charset="utf-8">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input id="search-field" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results"
+               type="text" name="search" placeholder="Search (/) for a class, method..."
+               spellcheck="false" autocomplete="off"
+               title="Type to search, Up and Down to navigate, Enter to load">
+        <button type="button" class="search-close" aria-label="Close search" data-search-close>
+          <span aria-hidden="true">esc</span>
+        </button>
+      </form>
+
+      <div class="search-body">
+        <ul id="search-results" aria-label="Search Results"
+            aria-busy="false" aria-expanded="false"
+            aria-atomic="false" class="initially-hidden search-results"></ul>
+        <div class="search-empty">
+          <p>No recent searches</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Theme toggle button -->
   <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button">
     <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
   </button>
 </header>
-
-<!-- Search Modal (Mobile) -->
-<div id="search-modal" class="search-modal" hidden aria-modal="true" role="dialog" aria-label="Search">
-  <div class="search-modal-backdrop"></div>
-  <div class="search-modal-content">
-    <div class="search-modal-header">
-      <form class="search-modal-form" action="#" method="get" accept-charset="utf-8">
-        <span class="search-modal-icon" aria-hidden="true">🔍</span>
-        <input id="search-field-mobile" role="combobox" aria-label="Search"
-               aria-autocomplete="list" aria-controls="search-results-mobile"
-               type="text" name="search" placeholder="Search documentation"
-               spellcheck="false" autocomplete="off">
-        <button type="button" class="search-modal-close" aria-label="Close search" id="search-modal-close">
-          <span aria-hidden="true">esc</span>
-        </button>
-      </form>
-    </div>
-    <div class="search-modal-body">
-      <ul id="search-results-mobile" aria-label="Search Results"
-          aria-busy="false" aria-expanded="false"
-          aria-atomic="false" class="search-results search-modal-results initially-hidden"></ul>
-      <div class="search-modal-empty">
-        <p>No recent searches</p>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div id="sidebar-navigation-toggle" role="button" tabindex="0" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar-navigation">
   <span aria-hidden="true">&#9776;</span>
@@ -738,6 +723,12 @@
                   <li>
                     <a href="../doc/release_notes/3_10_0_md.html">
                       3.10.0
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="../doc/release_notes/3_10_1_md.html">
+                      3.10.1
                     </a>
                   </li>
 
@@ -1211,7 +1202,7 @@
 
 <p>For client side uploads, <a href="../Shrine.html"><code>Shrine</code></a> adopts <strong><a href="https://uppy.io">Uppy</a></strong>, a modern JavaScript file upload library. This gives the developer a lot more power in customizing the user experience compared to a custom JavaScript solution implemented by Refile and Active Storage.</p>
 
-<p>Uppy supports direct uploads to <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> or to a <a href="https://uppy.io/docs/xhr-upload/">custom endpoint</a>. It also supports <strong>resumable</strong> uploads, either <a href="https://uppy.io/docs/aws-s3-multipart/">directly to S3</a> or via the <a href="https://tus.io">tus protocol</a>. For the UI you can choose from various components, ranging from a simple <a href="https://uppy.io/examples/statusbar/">status bar</a> to a full-featured <a href="https://uppy.io/examples/dashboard/">dashboard</a>.</p>
+<p>Uppy supports direct uploads to <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> or to a <a href="https://uppy.io/docs/xhr-upload/">custom endpoint</a>. It also supports <strong>resumable</strong> uploads, either <a href="https://uppy.io/docs/aws-s3/#shouldusemultipartfile">directly to S3</a> or via the <a href="https://tus.io">tus protocol</a>. For the UI you can choose from various components, ranging from a simple <a href="https://uppy.io/docs/status-bar/">status bar</a> to a full-featured <a href="https://uppy.io/docs/dashboard/">dashboard</a>.</p>
 
 <p><a href="../Shrine.html"><code>Shrine</code></a> provides server side components for each type of upload. They are built on top of Rack, so that they can be used with any Ruby web framework.</p>
 
@@ -1232,7 +1223,7 @@
 <td align="left">[<code>presign_endpoint</code>][presign_endpoint]</td>
 </tr>
 <tr>
-<td align="left">[AwsS3Multipart][Uppy AwsS3Multipart]</td>
+<td align="left">[AwsS3 (multipart)][Uppy AwsS3 multipart]</td>
 <td align="left">[<code>uppy-s3_multipart</code>][uppy-s3_multipart]</td>
 </tr>
 <tr>
@@ -1259,7 +1250,7 @@
 
   <div class="footer-bottom">
     <p>
-      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 8.0.0</a>
+      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 8.1.0</a>
       using the Aliki theme by <a href="http://st0012.dev">Stan Lo</a>
     </p>
   </div>

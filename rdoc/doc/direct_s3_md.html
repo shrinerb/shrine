@@ -45,46 +45,46 @@
 </script>
 
 <script
-  src="../js/theme-toggle.js?v=8.0.0"
+  src="../js/theme-toggle.js?v=8.1.0"
 ></script>
 
 <script
-  src="../js/search_navigation.js?v=8.0.0"
+  src="../js/search_navigation.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/search_data.js?v=8.0.0"
+  src="../js/search_data.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/search_ranker.js?v=8.0.0"
+  src="../js/search_ranker.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/search_controller.js?v=8.0.0"
+  src="../js/search_controller.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/c_highlighter.js?v=8.0.0"
+  src="../js/c_highlighter.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/bash_highlighter.js?v=8.0.0"
+  src="../js/bash_highlighter.js?v=8.1.0"
   defer
 ></script>
 
 <script
-  src="../js/aliki.js?v=8.0.0"
+  src="../js/aliki.js?v=8.1.0"
   defer
 ></script>
 
 <link
-  href="../css/rdoc.css?v=8.0.0"
+  href="../css/rdoc.css?v=8.1.0"
   rel="stylesheet"
 >
 
@@ -306,57 +306,42 @@
     Shrine: Toolkit for file uploads
   </a>
 
-  <!-- Desktop search bar -->
-  <div class="navbar-search navbar-search-desktop" role="search">
-    <form action="#" method="get" accept-charset="utf-8">
-      <input id="search-field" role="combobox" aria-label="Search"
-             aria-autocomplete="list" aria-controls="search-results-desktop"
-             type="text" name="search" placeholder="Search (/) for a class, method..."
-             spellcheck="false" autocomplete="off"
-             title="Type to search, Up and Down to navigate, Enter to load">
-      <ul id="search-results-desktop" aria-label="Search Results"
-          aria-busy="false" aria-expanded="false"
-          aria-atomic="false" class="initially-hidden search-results"></ul>
-    </form>
-  </div>
+  <div class="navbar-search" data-search-container>
+    <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search"
+            aria-controls="search-surface" aria-expanded="false" type="button">
+      <span aria-hidden="true">🔍</span>
+    </button>
 
-  <!-- Mobile search icon button -->
-  <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search" type="button">
-    <span aria-hidden="true">🔍</span>
-  </button>
+    <div class="search-backdrop" data-search-close></div>
+    <div id="search-surface" class="search-surface">
+      <form class="search-form" role="search" action="#" method="get" accept-charset="utf-8">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input id="search-field" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results"
+               type="text" name="search" placeholder="Search (/) for a class, method..."
+               spellcheck="false" autocomplete="off"
+               title="Type to search, Up and Down to navigate, Enter to load">
+        <button type="button" class="search-close" aria-label="Close search" data-search-close>
+          <span aria-hidden="true">esc</span>
+        </button>
+      </form>
+
+      <div class="search-body">
+        <ul id="search-results" aria-label="Search Results"
+            aria-busy="false" aria-expanded="false"
+            aria-atomic="false" class="initially-hidden search-results"></ul>
+        <div class="search-empty">
+          <p>No recent searches</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Theme toggle button -->
   <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button">
     <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
   </button>
 </header>
-
-<!-- Search Modal (Mobile) -->
-<div id="search-modal" class="search-modal" hidden aria-modal="true" role="dialog" aria-label="Search">
-  <div class="search-modal-backdrop"></div>
-  <div class="search-modal-content">
-    <div class="search-modal-header">
-      <form class="search-modal-form" action="#" method="get" accept-charset="utf-8">
-        <span class="search-modal-icon" aria-hidden="true">🔍</span>
-        <input id="search-field-mobile" role="combobox" aria-label="Search"
-               aria-autocomplete="list" aria-controls="search-results-mobile"
-               type="text" name="search" placeholder="Search documentation"
-               spellcheck="false" autocomplete="off">
-        <button type="button" class="search-modal-close" aria-label="Close search" id="search-modal-close">
-          <span aria-hidden="true">esc</span>
-        </button>
-      </form>
-    </div>
-    <div class="search-modal-body">
-      <ul id="search-results-mobile" aria-label="Search Results"
-          aria-busy="false" aria-expanded="false"
-          aria-atomic="false" class="search-results search-modal-results initially-hidden"></ul>
-      <div class="search-modal-empty">
-        <p>No recent searches</p>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div id="sidebar-navigation-toggle" role="button" tabindex="0" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar-navigation">
   <span aria-hidden="true">&#9776;</span>
@@ -742,6 +727,12 @@
                   </li>
 
                   <li>
+                    <a href="../doc/release_notes/3_10_1_md.html">
+                      3.10.1
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="../doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -1014,7 +1005,14 @@
 }
 </pre>
 
-<p>Uppy’s <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> plugin would then make a request to this endpoint and use these parameters to upload the file directly to S3. Once the file has been uploaded, you can generate a JSON representation of the uploaded file on the client side, and write it to the hidden attachment field (or send it directly in an AJAX request).</p>
+<p>Uppy’s <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> plugin in Companion mode will then fetch these parameters from <code>&lt;companionEndpoint&gt;/s3/params</code> and use them to upload the file directly to S3:</p>
+
+<pre class="js">uppy.use(AwsS3, {
+  companionEndpoint: &#39;&#39;, // relative to the current host
+  shouldUseMultipart: false, // Shrine&#39;s presign endpoint only signs single-request uploads
+})</pre>
+
+<p>Once the file has been uploaded, you can generate a JSON representation of the uploaded file on the client side (the S3 object key is available as <code>response.body.key</code> in the <code>upload-success</code> event), and write it to the hidden attachment field (or send it directly in an AJAX request).</p>
 
 <pre class="ruby">{
   <span class="ruby-value">&quot;</span><span class="ruby-value">id</span><span class="ruby-value">&quot;:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">302858ldg9agjad7f3ls.jpg</span><span class="ruby-string">&quot;</span>,
@@ -1036,7 +1034,7 @@
 
 <p>Once the form is submitted, this JSON data will then be assigned to the attachment attribute instead of the raw file. See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads">this walkthrough</a> for adding dynamic direct S3 uploads from scratch, as well as the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> demo app for a complete example of multiple direct S3 uploads.</p>
 
-<p>Also, if you’re dealing with larger files, you may want to make the uploads resumable by using the <a href="https://uppy.io/docs/aws-s3/">AWS S3 Multipart</a> Uppy plugin instead, with the <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> gem on the backend. Your back-end implementation is similar, just using <code>Shrine.uppy_s3_multipart</code> in place of <code>Shrine.presign_endpoint</code>. Instructions can be found in the <a href="https://github.com/janko/uppy-s3_multipart#shrine">gem docs</a>.</p>
+<p>Also, if you’re dealing with larger files, you may want to make the uploads resumable by using Uppy’s <a href="https://uppy.io/docs/aws-s3/#shouldusemultipartfile">AWS S3</a> plugin in multipart mode instead, with the <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> gem on the backend. Your back-end implementation is similar, just using <code>Shrine.uppy_s3_multipart</code> in place of <code>Shrine.presign_endpoint</code>. Instructions can be found in the <a href="https://github.com/janko/uppy-s3_multipart#shrine">gem docs</a>.</p>
 
 <span id="label-Strategy+B+-28static-29" class="legacy-anchor"></span>
 <h2 id="strategy-b-static"><a href="#strategy-b-static">Strategy B (static)</a></h2>
@@ -1195,7 +1193,7 @@
 
   <div class="footer-bottom">
     <p>
-      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 8.0.0</a>
+      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 8.1.0</a>
       using the Aliki theme by <a href="http://st0012.dev">Stan Lo</a>
     </p>
   </div>
