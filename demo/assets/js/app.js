@@ -73,9 +73,11 @@ const fileUpload = (fileInput) => {
 
   if (fileInput.dataset.uploadServer == 's3') {
     uppy.use(AwsS3, {
-      // will call Shrine's presign endpoint mounted on `/s3/params`
-      endpoint: '/',
-      shouldUseMultipart: false,
+      // In Companion mode AwsS3 fetches the upload parameters from
+      // `<companionEndpoint>/s3/params`, which is where Shrine's presign endpoint
+      // is mounted. An empty string makes the requests relative to the current host.
+      companionEndpoint: '',
+      shouldUseMultipart: false, // Shrine's presign endpoint only signs single-request uploads
     })
   } else {
     uppy.use(XHRUpload, {
@@ -91,8 +93,8 @@ const uploadedFileData = (file, response, fileInput) => {
   if (fileInput.dataset.uploadServer == 's3') {
     // construct uploaded file data in the format that Shrine expects
     return JSON.stringify({
-      // Uppy stores the presigned S3 object key on `file.s3Multipart.key`
-      id: file.s3Multipart.key.match(/^cache\/(.+)/)[1], // object key without prefix
+      // the AwsS3 plugin returns the S3 object key in the response body
+      id: response.body.key.match(/^cache\/(.+)/)[1], // object key without prefix
       storage: 'cache',
       metadata: {
         size:      file.size,

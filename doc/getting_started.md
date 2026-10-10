@@ -896,13 +896,13 @@ on slow and flaky internet connections.
 
 #### Uppy S3 Multipart
 
-You can achieve resumable uploads directly to S3 with the [AWS S3
-Multipart][uppy aws-s3-multipart] Uppy plugin, accompanied with
+You can achieve resumable uploads directly to S3 with Uppy's [AWS S3][uppy
+aws-s3-multipart] plugin in multipart mode, accompanied with the
 `uppy_s3_multipart` Shrine plugin provided by the [uppy-s3_multipart] gem.
 
 ```rb
 # Gemfile
-gem "uppy-s3_multipart", "~> 0.3"
+gem "uppy-s3_multipart", "~> 1.3"
 ```
 ```rb
 Shrine.plugin :uppy_s3_multipart
@@ -1108,7 +1108,7 @@ Shrine.logger.level = Logger::WARN
 [Uppy]: https://uppy.io
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
 [tus]: https://tus.io
-[uppy aws-s3-multipart]: https://uppy.io/docs/aws-s3-multipart/
+[uppy aws-s3-multipart]: https://uppy.io/docs/aws-s3/#shouldusemultipartfile
 [uppy aws-s3]: https://uppy.io/docs/aws-s3/
 [uppy tus]: https://uppy.io/docs/tus/
 [uppy xhr-upload]: https://uppy.io/docs/xhr-upload/

@@ -389,19 +389,19 @@ and Active Storage.
 
 Uppy supports direct uploads to [AWS S3][Uppy AwsS3] or to a [custom
 endpoint][Uppy XHRUpload]. It also supports **resumable** uploads, either
-[directly to S3][Uppy AwsS3Multipart] or via the [tus protocol][tus]. For the
+[directly to S3][Uppy AwsS3 multipart] or via the [tus protocol][tus]. For the
 UI you can choose from various components, ranging from a simple [status
 bar][Uppy StatusBar] to a full-featured [dashboard][Uppy Dashboard].
 
 Shrine provides server side components for each type of upload. They are built
 on top of Rack, so that they can be used with any Ruby web framework.
 
-| Uppy                                  | Shrine                                   |
-| :---                                  | :-----                                   |
-| [XHRUpload][Uppy XHRUpload]           | [`upload_endpoint`][upload_endpoint]     |
-| [AwsS3][Uppy AwsS3]                   | [`presign_endpoint`][presign_endpoint]   |
-| [AwsS3Multipart][Uppy AwsS3Multipart] | [`uppy-s3_multipart`][uppy-s3_multipart] |
-| [Tus][Uppy Tus]                       | [`tus-ruby-server`][tus-ruby-server]     |
+| Uppy                                      | Shrine                                   |
+| :---                                      | :-----                                   |
+| [XHRUpload][Uppy XHRUpload]               | [`upload_endpoint`][upload_endpoint]     |
+| [AwsS3][Uppy AwsS3]                       | [`presign_endpoint`][presign_endpoint]   |
+| [AwsS3 (multipart)][Uppy AwsS3 multipart] | [`uppy-s3_multipart`][uppy-s3_multipart] |
+| [Tus][Uppy Tus]                           | [`tus-ruby-server`][tus-ruby-server]     |
 
 [Rack]: https://rack.github.io
 [Sinatra]: http://sinatrarb.com
@@ -440,10 +440,10 @@ on top of Rack, so that they can be used with any Ruby web framework.
 [Uppy XHRUpload]: https://uppy.io/docs/xhr-upload/
 [Uppy AwsS3]: https://uppy.io/docs/aws-s3/
 [Uppy Tus]: https://uppy.io/docs/tus/
-[Uppy AwsS3Multipart]: https://uppy.io/docs/aws-s3-multipart/
+[Uppy AwsS3 multipart]: https://uppy.io/docs/aws-s3/#shouldusemultipartfile
 [tus]: https://tus.io
-[Uppy StatusBar]: https://uppy.io/examples/statusbar/
-[Uppy Dashboard]: https://uppy.io/examples/dashboard/
+[Uppy StatusBar]: https://uppy.io/docs/status-bar/
+[Uppy Dashboard]: https://uppy.io/docs/dashboard/
 [tus-ruby-server]: https://github.com/janko/tus-ruby-server
 [uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [backgrounding]: https://shrinerb.com/docs/plugins/backgrounding

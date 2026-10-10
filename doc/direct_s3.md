@@ -174,11 +174,21 @@ and request headers.
 }
 ```
 
-Uppy's [AWS S3][uppy aws-s3] plugin would then make a request to this endpoint
-and use these parameters to upload the file directly to S3. Once the file has
-been uploaded, you can generate a JSON representation of the uploaded file on
-the client side, and write it to the hidden attachment field (or send it
-directly in an AJAX request).
+Uppy's [AWS S3][uppy aws-s3] plugin in Companion mode will then fetch these
+parameters from `<companionEndpoint>/s3/params` and use them to upload the file
+directly to S3:
+
+```js
+uppy.use(AwsS3, {
+  companionEndpoint: '', // relative to the current host
+  shouldUseMultipart: false, // Shrine's presign endpoint only signs single-request uploads
+})
+```
+
+Once the file has been uploaded, you can generate a JSON representation of the
+uploaded file on the client side (the S3 object key is available as
+`response.body.key` in the `upload-success` event), and write it to the hidden
+attachment field (or send it directly in an AJAX request).
 
 ```rb
 {
@@ -203,8 +213,8 @@ as the [Roda][roda demo] / [Rails][rails demo] demo app for a complete example
 of multiple direct S3 uploads.
 
 Also, if you're dealing with larger files, you may want to make the uploads
-resumable by using the [AWS S3 Multipart][uppy aws-s3-multipart] Uppy plugin
-instead, with the [uppy-s3_multipart] gem on the backend. Your back-end
+resumable by using Uppy's [AWS S3][uppy aws-s3-multipart] plugin in multipart
+mode instead, with the [uppy-s3_multipart] gem on the backend. Your back-end
 implementation is similar, just using `Shrine.uppy_s3_multipart` in place of
 `Shrine.presign_endpoint`. Instructions can be found in the [gem
 docs][uppy-s3_multipart shrine].
@@ -396,8 +406,8 @@ setup] guide.
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [Uppy]: https://uppy.io
 [uppy aws-s3]: https://uppy.io/docs/aws-s3/
-[uppy aws-s3 cors]: https://uppy.io/docs/aws-s3/#S3-Bucket-configuration
-[uppy aws-s3-multipart]: https://uppy.io/docs/aws-s3/
+[uppy aws-s3 cors]: https://uppy.io/docs/aws-s3/#bucket-and-cors-setup
+[uppy aws-s3-multipart]: https://uppy.io/docs/aws-s3/#shouldusemultipartfile
 [uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [uppy-s3_multipart shrine]: https://github.com/janko/uppy-s3_multipart#shrine
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
