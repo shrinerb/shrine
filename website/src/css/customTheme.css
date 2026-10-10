@@ -7,7 +7,27 @@
   --ifm-color-primary-darker: #8B070D;
   --ifm-color-primary-darkest: #73060A;
 
+  --ifm-color-danger-lightest: var(--ifm-color-primary-lightest);
+  --ifm-color-danger-lighter: var(--ifm-color-primary-lighter);
+  --ifm-color-danger-light: var(--ifm-color-primary-light);
   --ifm-color-danger: var(--ifm-color-primary);
+  --ifm-color-danger-dark: var(--ifm-color-primary-dark);
+  --ifm-color-danger-darker: var(--ifm-color-primary-darker);
+  --ifm-color-danger-darkest: var(--ifm-color-primary-darkest);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary-lightest: #F8C2BF;
+  --ifm-color-primary-lighter: #F49791;
+  --ifm-color-primary-light: #F28882;
+  --ifm-color-primary: #EF6B63;
+  --ifm-color-primary-dark: #E85C53;
+  --ifm-color-primary-darker: #E0544B;
+  --ifm-color-primary-darkest: #C0473F;
+}
+
+[data-theme='dark'] .navbar--primary {
+  --ifm-navbar-background-color: #7A2E2A;
 }
 
 figure[data-rehype-pretty-code-figure] {

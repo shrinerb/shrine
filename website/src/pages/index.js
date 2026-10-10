@@ -25,7 +25,7 @@ export default () => {
         </div>
       </div>
 
-      <div style={{ backgroundColor: "#f7f7f7", paddingTop: "2rem", paddingBottom: "2rem" }}>
+      <div style={{ backgroundColor: "var(--ifm-color-emphasis-100)", paddingTop: "2rem", paddingBottom: "2rem" }}>
         <div className="container" style={{ maxWidth: "900px", marginLeft: "auto", marginRight: "auto" }}>
           <Demo />
         </div>
