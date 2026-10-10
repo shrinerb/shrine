@@ -42,12 +42,12 @@ jobs:
 
       - name: Set up Minio
         run: |
-          # MinIO no longer publishes binaries at dl.min.io, so we pin an old image
+          # MinIO no longer publishes binaries or public images, so we use a community build
           mkdir -p "${GITHUB_WORKSPACE}"/minio/data/minio-bucket
           docker run -d --name minio -p 9000:9000 \
             -e MINIO_ROOT_USER -e MINIO_ROOT_PASSWORD \
             -v "${GITHUB_WORKSPACE}"/minio/data:/data \
-            quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z server /data --address :9000
+            pgsty/minio:RELEASE.2026-08-04T00-00-00Z server /data --address :9000
           timeout 60 bash -c 'until curl -sf http://localhost:9000/minio/health/ready; do sleep 1; done'
 
       - name: Run tests
