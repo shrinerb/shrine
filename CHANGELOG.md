@@ -1,4 +1,4 @@
-## HEAD
+## 3.10.2 (2026-10-11)
 
 * `derivation_endpoint` – Prevent bypassing CDN caching by modifying the encoding or structure of the signed URL query string (@Antsiscool, @janko)
 
