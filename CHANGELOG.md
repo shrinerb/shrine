@@ -1,3 +1,7 @@
+## HEAD
+
+* `derivation_endpoint` – Prevent bypassing CDN caching by modifying the encoding or structure of the signed URL query string (@Antsiscool, @janko)
+
 ## 3.10.1 (2026-10-10)
 
 * `model` – Make `Attacher#write` a no-op when the attacher isn't backed by a model, fixing `remove_invalid` raising `NoMethodError` on attachers without a record (@janko)

@@ -378,7 +378,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       refute response.headers.key?("Cache-Control")
     end
 
-    it "returns 403 when query parameters have been URL encoded" do
+    it "returns 403 when signature has been URL encoded" do
       derivation_url = @uploaded_file.derivation_url(:gray)
                                      .sub(/\w+$/) { |match| match.each_byte.map { |b| "%%%02X" % b }.join }
       @shrine.derivation(:gray) { fail "this should not be called" }
@@ -387,6 +387,40 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_match "signature does not match", response.body
       assert_equal response.body.length.to_s,  response.headers["Content-Length"]
       refute response.headers.key?("Cache-Control")
+    end
+
+    it "returns 403 when query parameter names have been URL encoded" do
+      derivation_url = @uploaded_file.derivation_url(:gray, type: "image/png").sub("type=", "%74ype=")
+      @shrine.derivation(:gray) { fail "this should not be called" }
+      response = app.get(derivation_url)
+      assert_equal 403,                        response.status
+      assert_match "signature does not match", response.body
+    end
+
+    it "returns 403 when query string contains additional question mark" do
+      derivation_url = @uploaded_file.derivation_url(:gray) + "?foo=bar"
+      @shrine.derivation(:gray) { fail "this should not be called" }
+      response = app.get(derivation_url)
+      assert_equal 403,                        response.status
+      assert_match "signature does not match", response.body
+    end
+
+    it "returns 403 when query string has trailing ampersands" do
+      derivation_url = @uploaded_file.derivation_url(:gray) + "&&"
+      @shrine.derivation(:gray) { fail "this should not be called" }
+      response = app.get(derivation_url)
+      assert_equal 403,                           response.status
+      assert_match "Missing \"signature\" param", response.body
+    end
+
+    it "returns 403 when signature is not the last query parameter" do
+      derivation_url = @uploaded_file.derivation_url(:gray, type: "image/png")
+      path, query    = derivation_url.split("?")
+      derivation_url = "#{path}?#{query.split("&").reverse.join("&")}"
+      @shrine.derivation(:gray) { fail "this should not be called" }
+      response = app.get(derivation_url)
+      assert_equal 403,                           response.status
+      assert_match "Missing \"signature\" param", response.body
     end
 
     it "returns 403 on missing signature" do
@@ -400,7 +434,7 @@ describe Shrine::Plugins::DerivationEndpoint do
     end
 
     it "includes request params when calculating signature" do
-      derivation_url = @uploaded_file.derivation_url(:gray) + "&foo=bar"
+      derivation_url = @uploaded_file.derivation_url(:gray).sub("signature=", "foo=bar&signature=")
       response = app.get(derivation_url)
       assert_equal 403,                              response.status
       assert_match "signature does not match",       response.body

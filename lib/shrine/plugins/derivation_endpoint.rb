@@ -717,26 +717,25 @@ class Shrine
 
     # Returns a URL with the `signature` query parameter
     def sign_url(url)
-      path, query = url.split("?")
+      path, query = url.split("?", 2)
 
-      params = Rack::Utils.parse_query(query.to_s)
-      params.merge!("signature" => generate_signature(url))
-
-      query = Rack::Utils.build_query(params)
+      signature = generate_signature("#{path}?#{query}")
+      query     = [query, "signature=#{signature}"].reject { |part| part.to_s.empty? }.join("&")
 
       "#{path}?#{query}"
     end
 
-    # Calculcates the signature from the URL and checks whether it matches the
-    # value in the `signature` query parameter. Raises `InvalidSignature` if
-    # the `signature` parameter is missing or its value doesn't match the
-    # calculated signature.
+    # Calculates the signature from the URL and checks whether it matches the
+    # value in the trailing `signature` query parameter. Raises
+    # `InvalidSignature` if the `signature` parameter is missing or its value
+    # doesn't match the calculated signature. The URL is verified as is,
+    # without any normalization, so that each signed URL has only one valid
+    # form (otherwise variants of it could be used to bypass CDN caching).
     def verify_url(url)
-      path, query = url.split("?")
+      path, query = url.split("?", 2)
 
-      params    = query.to_s.split("&")
-      index = params.index { |param| param.start_with?("signature=") }
-      signature = params.delete_at(index).delete_prefix("signature=") if index
+      params    = query.to_s.split("&", -1)
+      signature = params.pop.delete_prefix("signature=") if params.last&.start_with?("signature=")
 
       verify_signature("#{path}?#{params.join("&")}", signature)
     end
