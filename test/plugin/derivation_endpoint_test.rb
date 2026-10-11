@@ -368,6 +368,27 @@ describe Shrine::Plugins::DerivationEndpoint do
       refute response.headers.key?("Cache-Control")
     end
 
+    it "returns 403 with second signature" do
+      derivation_url = @uploaded_file.derivation_url(:gray).sub(/signature=\w+$/) { |match| [match, match].join('&') }
+      @shrine.derivation(:gray) { fail "this should not be called" }
+      response = app.get(derivation_url)
+      assert_equal 403,                        response.status
+      assert_match "signature does not match", response.body
+      assert_equal response.body.length.to_s,  response.headers["Content-Length"]
+      refute response.headers.key?("Cache-Control")
+    end
+
+    it "returns 403 when query parameters have been URL encoded" do
+      derivation_url = @uploaded_file.derivation_url(:gray)
+                                     .sub(/\w+$/) { |match| match.each_byte.map { |b| "%%%02X" % b }.join }
+      @shrine.derivation(:gray) { fail "this should not be called" }
+      response = app.get(derivation_url)
+      assert_equal 403,                        response.status
+      assert_match "signature does not match", response.body
+      assert_equal response.body.length.to_s,  response.headers["Content-Length"]
+      refute response.headers.key?("Cache-Control")
+    end
+
     it "returns 403 on missing signature" do
       derivation_url = @uploaded_file.derivation_url(:gray).sub(/signature=\w+$/, "")
       @shrine.derivation(:gray) { fail "this should not be called" }

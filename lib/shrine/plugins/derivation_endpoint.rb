@@ -734,12 +734,11 @@ class Shrine
     def verify_url(url)
       path, query = url.split("?")
 
-      params    = Rack::Utils.parse_query(query.to_s)
-      signature = params.delete("signature")
+      params    = query.to_s.split("&")
+      index = params.index { |param| param.start_with?("signature=") }
+      signature = params.delete_at(index).delete_prefix("signature=") if index
 
-      query = Rack::Utils.build_query(params)
-
-      verify_signature("#{path}?#{query}", signature)
+      verify_signature("#{path}?#{params.join("&")}", signature)
     end
 
     def verify_signature(string, signature)
