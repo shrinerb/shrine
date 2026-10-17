@@ -385,7 +385,7 @@ class Shrine
           # Encryption client v2 warns against streaming download, so we first
           # download all content into a file.
           tempfile = Tempfile.new("shrine-s3", binmode: true)
-          response = encryption_client.get_object(response_target: tempfile, bucket: bucket.name, key: object_key(id), **)
+          encryption_client.get_object(response_target: tempfile, bucket: bucket.name, key: object_key(id), **)
           tempfile.rewind
 
           chunks = Enumerator.new do |yielder|
