@@ -4,7 +4,7 @@ Gem::Specification.new do |gem|
   gem.name         = "shrine"
   gem.version      = Shrine.version
 
-  gem.required_ruby_version = ">= 3.2"
+  gem.required_ruby_version = ">= 3.3"
 
   gem.summary      = "Toolkit for file attachments in Ruby applications"
   gem.description  = <<-END
