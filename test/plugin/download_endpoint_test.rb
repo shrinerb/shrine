@@ -117,7 +117,7 @@ describe Shrine::Plugins::DownloadEndpoint do
   it "returns ETag" do
     response = app.get(@uploaded_file.download_url)
     assert_instance_of String,    response.headers["ETag"]
-    assert_match /^W\/"\w{32}"$/, response.headers["ETag"]
+    assert_match(/^W\/"\w{32}"$/, response.headers["ETag"])
   end
 
   it "returns 404 for nonexisting file" do
@@ -160,7 +160,7 @@ describe Shrine::Plugins::DownloadEndpoint do
   it "accepts ad-hoc options" do
     app = Rack::Test::Session.new(@shrine.download_endpoint(disposition: "attachment"))
     response = app.get(@uploaded_file.download_url)
-    assert_match /^attachment; /, response.headers["Content-Disposition"]
+    assert_match(/^attachment; /, response.headers["Content-Disposition"])
   end
 
   it "returns same URL regardless of metadata order" do
@@ -246,7 +246,7 @@ describe Shrine::Plugins::DownloadEndpoint do
         "rack.input"     => StringIO.new,
       }
 
-      status, headers, body = @shrine.download_response(env)
+      status, _headers, _body = @shrine.download_response(env)
 
       assert_equal 200,    status
       assert_equal "/foo", env["SCRIPT_NAME"]
@@ -265,10 +265,10 @@ describe Shrine::Plugins::DownloadEndpoint do
         "rack.input"     => StringIO.new,
       }
 
-      status, headers, body = @shrine.download_response(env, disposition: "attachment")
+      status, headers, _body = @shrine.download_response(env, disposition: "attachment")
 
       assert_equal 200,             status
-      assert_match /^attachment; /, headers["Content-Disposition"]
+      assert_match(/^attachment; /, headers["Content-Disposition"])
     end
 
     it "fails when request path doesn't start with prefix" do

@@ -375,12 +375,12 @@ describe Shrine::UploadedFile do
 
     it "applies extension from #id" do
       uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
-      assert_match /\.jpg$/, uploaded_file.download.path
+      assert_match(/\.jpg$/, uploaded_file.download.path)
     end
 
     it "applies extension from #original_filename" do
       uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), location: "foo")
-      assert_match /\.jpg$/, uploaded_file.download.path
+      assert_match(/\.jpg$/, uploaded_file.download.path)
     end
 
     it "forwards any options to Storage#open" do

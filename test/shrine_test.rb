@@ -454,49 +454,49 @@ describe Shrine do
     it "preserves the extension" do
       # Rails file
       file = @uploader.upload(fakeio(filename: "avatar.jpg"))
-      assert_match /\.jpg$/, file.id
+      assert_match(/\.jpg$/, file.id)
 
       # Uploaded file
       uploaded_file = @uploader.upload(fakeio, location: "avatar.jpg")
       file = @uploader.upload(uploaded_file)
-      assert_match /\.jpg$/, file.id
+      assert_match(/\.jpg$/, file.id)
 
       # File
       file = @uploader.upload(File.open(__FILE__))
-      assert_match /\.rb$/, file.id
+      assert_match(/\.rb$/, file.id)
     end
 
     it "uses filename metadata" do
       file = @uploader.upload(fakeio, metadata: { "filename" => "avatar.jpg" })
-      assert_match /\.jpg$/, file.id
+      assert_match(/\.jpg$/, file.id)
     end
 
     it "downcases the extension" do
       file = @uploader.upload(fakeio(filename: "avatar.JPG"))
-      assert_match /\.jpg$/, file.id
+      assert_match(/\.jpg$/, file.id)
     end
 
     it "handles no extension or no filename" do
       file = @uploader.upload(fakeio(filename: "avatar"))
-      assert_match /^[\w-]+$/, file.id
+      assert_match(/^[\w-]+$/, file.id)
 
       uploaded_file = @uploader.upload(fakeio, location: "avatar")
       file = @uploader.upload(uploaded_file)
-      assert_match /^[\w-]+$/, file.id
+      assert_match(/^[\w-]+$/, file.id)
 
       file = @uploader.upload(fakeio)
-      assert_match /^[\w-]+$/, file.id
+      assert_match(/^[\w-]+$/, file.id)
     end
 
     it "gets extension from shrine-url-style id with query params" do
       uploaded_file = @uploader.upload(fakeio, location: "http://example.com/path.html?key=value")
       file = @uploader.upload(uploaded_file)
-      assert_match /\.html$/, file.id
+      assert_match(/\.html$/, file.id)
 
       uploaded_file = @uploader.upload(fakeio, location: "http://example.com/path?key=value")
       file = @uploader.upload(uploaded_file)
-      refute_match /key=value/, file.id
-      assert_match /^[\w-]+$/, file.id
+      refute_match(/key=value/, file.id)
+      assert_match(/^[\w-]+$/, file.id)
     end
   end
 

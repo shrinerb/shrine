@@ -14,6 +14,7 @@ class Shrine
         #       end
         #     end
         def validate(&block)
+          remove_method(:validate_block) if private_method_defined?(:validate_block, false)
           private define_method(:validate_block, &block)
         end
       end

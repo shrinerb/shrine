@@ -128,7 +128,7 @@ describe Shrine::Plugins::RefreshMetadata do
 
         file = @uploader.upload(fakeio)
 
-        assert_logged /^Metadata/ do
+        assert_logged(/^Metadata/) do
           file.refresh_metadata!
         end
       end

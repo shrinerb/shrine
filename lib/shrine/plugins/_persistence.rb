@@ -22,6 +22,9 @@ class Shrine
         plugin_name = plugin.to_s.split("::").last.downcase
 
         plugin::AttacherMethods.module_eval do
+          # persistence methods are already defined if plugin was loaded before
+          next if method_defined?(:atomic_promote, false)
+
           define_method :atomic_promote do |**options, &block|
             return super(**options, &block) unless send(:"#{plugin_name}?")
 

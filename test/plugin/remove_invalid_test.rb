@@ -79,8 +79,8 @@ describe Shrine::Plugins::RemoveInvalid do
         end
 
         it "deassigns dirty" do
-          file        = @attacher.attach(fakeio)
-          derivatives = @attacher.add_derivatives({ one: fakeio })
+          @attacher.attach(fakeio)
+          @attacher.add_derivatives({ one: fakeio })
 
           @attacher.class.validate { errors << "error" }
           @attacher.validate
@@ -90,8 +90,8 @@ describe Shrine::Plugins::RemoveInvalid do
         end
 
         it "deassign clean" do
-          file        = @attacher.set(@attacher.upload(fakeio))
-          derivatives = @attacher.add_derivatives({ one: fakeio })
+          @attacher.set(@attacher.upload(fakeio))
+          @attacher.add_derivatives({ one: fakeio })
 
           @attacher.class.validate { errors << "error" }
           @attacher.validate

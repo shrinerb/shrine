@@ -65,22 +65,20 @@ describe Shrine::Plugins::Versions do
       end
 
       it "passes the version name to location generator" do
-        @uploader.instance_eval { def generate_location(io, version:, **); version.to_s; end }
+        @uploader.instance_eval { def generate_location(io, **options); options.fetch(:version, "none").to_s; end }
+
         versions = @uploader.upload({ thumb: fakeio })
         assert_equal "thumb", versions.fetch(:thumb).id
 
-        @uploader.instance_eval { def generate_location(io, version:, **); version.to_s; end }
         versions = @uploader.upload([fakeio])
         assert_equal "0", versions.fetch(0).id
 
-        @uploader.instance_eval { def generate_location(io, version:, **); version.to_s; end }
         versions = @uploader.upload({ thumb: [fakeio] })
         assert_equal "[:thumb, 0]", versions.fetch(:thumb).fetch(0).id
 
         # doesn't pass it in case of a single file
-        @uploader.instance_eval { def generate_location(io, options); options.key?(:version).to_s; end }
         file = @uploader.upload(fakeio)
-        assert_equal "false", file.id
+        assert_equal "none", file.id
       end
 
       it "coerces version names into symbols" do
@@ -97,7 +95,7 @@ describe Shrine::Plugins::Versions do
         versions = @uploader.upload(fakeio("file"))
         assert_equal "file", versions.fetch(:thumb).read
 
-        @uploader.instance_eval { def process(io, **); nil; end }
+        @uploader.stubs(:process).returns(nil)
         file = @uploader.upload(fakeio("file"))
         assert_equal "file", file.read
       end
@@ -107,7 +105,7 @@ describe Shrine::Plugins::Versions do
         error = assert_raises(Shrine::InvalidFile) do
           @uploader.upload(fakeio, action: :foo)
         end
-        assert_match /is not a valid IO object/, error.message
+        assert_match(/is not a valid IO object/, error.message)
       end
     end
 

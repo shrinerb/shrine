@@ -315,7 +315,7 @@ describe Shrine::Plugins::Activerecord do
         [:json, :jsonb].each do |type|
           it "skips serialization for #{type} attribute types" do
             # redefine attribute type to test the :jsonb case as well
-            @user.class.type_for_attribute("json_avatar_data").class.send(:define_method, :type) { type }
+            @user.class.type_for_attribute("json_avatar_data").stubs(:type).returns(type)
 
             @json_attacher.load_model(@user, :json_avatar)
 
@@ -444,7 +444,7 @@ describe Shrine::Plugins::Activerecord do
       end
 
       it "allows disabling reloading" do
-        cached_file = @attacher.attach_cached(fakeio)
+        @attacher.attach_cached(fakeio)
         @user.save
 
         @user.class.update_all(avatar_data: nil) # this change will not be detected

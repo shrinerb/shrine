@@ -827,7 +827,7 @@ describe Shrine::Plugins::Derivatives do
         file   = @attacher.upload(fakeio("file"))
         result = @attacher.process_derivatives(:path, file)
 
-        assert_match /^#{Dir.tmpdir}/, result[:path].read
+        assert_match(/^#{Dir.tmpdir}/, result[:path].read)
       end
 
       it "downloads source non-file IO" do
@@ -838,7 +838,7 @@ describe Shrine::Plugins::Derivatives do
         result = @attacher.process_derivatives(:path, StringIO.new("fake content"))
 
         assert result[:path]
-        assert_match /^#{Dir.tmpdir}/, result[:path].read
+        assert_match(/^#{Dir.tmpdir}/, result[:path].read)
       end
 
       it "does not download source UploadedFile with `download: false`" do
@@ -849,7 +849,7 @@ describe Shrine::Plugins::Derivatives do
         file   = @attacher.upload(fakeio("file"))
         result = @attacher.process_derivatives(:original_class, file)
 
-        assert_match /::UploadedFile\Z/, result[:original_class].read
+        assert_match(/::UploadedFile\Z/, result[:original_class].read)
       end
 
       it "does not download source StringIO with `download: false`" do
@@ -946,7 +946,7 @@ describe Shrine::Plugins::Derivatives do
         it "logs derivatives processing" do
           @shrine.plugin :derivatives
 
-          assert_logged /^Derivatives \(\d+ms\) – \{.+\}$/ do
+          assert_logged(/^Derivatives \(\d+ms\) – \{.+\}$/) do
             @attacher.process_derivatives(:reversed)
           end
         end
@@ -954,7 +954,7 @@ describe Shrine::Plugins::Derivatives do
         it "doesn't instrument default no-op processor" do
           @shrine.plugin :derivatives
 
-          refute_logged /^Derivatives \(\d+ms\) – \{.+\}$/ do
+          refute_logged(/^Derivatives \(\d+ms\) – \{.+\}$/) do
             @attacher.process_derivatives
           end
         end
@@ -978,7 +978,7 @@ describe Shrine::Plugins::Derivatives do
         it "allows swapping log subscriber" do
           @shrine.plugin :derivatives, log_subscriber: -> (event) { @event = event }
 
-          refute_logged /^Derivatives/ do
+          refute_logged(/^Derivatives/) do
             @attacher.process_derivatives(:reversed)
           end
 
@@ -988,7 +988,7 @@ describe Shrine::Plugins::Derivatives do
         it "allows disabling log subscriber" do
           @shrine.plugin :derivatives, log_subscriber: nil
 
-          refute_logged /^Derivatives/ do
+          refute_logged(/^Derivatives/) do
             @attacher.process_derivatives(:reversed)
           end
         end

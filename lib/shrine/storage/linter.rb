@@ -76,7 +76,7 @@ class Shrine
           storage.open(@nonexisting)
           error :open, "should raise an exception on nonexisting file"
         rescue Shrine::FileNotFound
-        rescue => exception
+        rescue
           error :open, "should raise Shrine::FileNotFound on nonexisting file"
         end
       end

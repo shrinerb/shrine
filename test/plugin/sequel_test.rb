@@ -393,7 +393,7 @@ describe Shrine::Plugins::Sequel do
       end
 
       it "allows disabling reloading" do
-        cached_file = @attacher.attach_cached(fakeio)
+        @attacher.attach_cached(fakeio)
         @user.save
 
         @user.this.update(avatar_data: nil) # this change will not be detected

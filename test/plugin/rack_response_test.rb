@@ -207,7 +207,7 @@ describe Shrine::Plugins::RackResponse do
     uploaded_file = @uploader.upload(fakeio)
     response = uploaded_file.to_rack_response
     assert_instance_of String,    response[1]["ETag"]
-    assert_match /^W\/"\w{32}"$/, response[1]["ETag"]
+    assert_match(/^W\/"\w{32}"$/, response[1]["ETag"])
   end
 
   it "makes ETag as unique as possible" do

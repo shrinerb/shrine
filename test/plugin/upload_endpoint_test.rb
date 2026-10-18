@@ -30,7 +30,7 @@ describe Shrine::Plugins::UploadEndpoint do
 
     result = JSON.parse(response.body)
 
-    assert_match /^\w+\.jpg$/, result["id"]
+    assert_match(/^\w+\.jpg$/, result["id"])
     assert_equal "cache",      result["storage"]
     assert_equal image.size,   result["metadata"]["size"]
     assert_equal "image.jpg",  result["metadata"]["filename"]

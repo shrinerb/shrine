@@ -38,7 +38,7 @@ describe Shrine::Plugins::PresignEndpoint do
 
   it "uses extension from given filename" do
     response = app.get "/?filename=nature.jpg"
-    assert_match /\.jpg$/, JSON.parse(response.body)["fields"]["key"]
+    assert_match(/\.jpg$/, JSON.parse(response.body)["fields"]["key"])
   end
 
   it "accepts presign location" do
@@ -144,7 +144,7 @@ describe Shrine::Plugins::PresignEndpoint do
 
       assert_equal 200, response[0]
       assert_equal "application/json; charset=utf-8", response[1]["Content-Type"]
-      assert_match /\.txt$/, JSON.parse(response[2].first)["fields"]["key"]
+      assert_match(/\.txt$/, JSON.parse(response[2].first)["fields"]["key"])
     end
 
     it "accepts additional presign endpoint options" do

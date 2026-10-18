@@ -78,7 +78,7 @@ describe Shrine::Plugins::Signature do
     it "logs signature calculation" do
       @shrine.plugin :signature
 
-      assert_logged /^Signature \(\d+ms\) – \{.+\}$/ do
+      assert_logged(/^Signature \(\d+ms\) – \{.+\}$/) do
         @shrine.calculate_signature(fakeio, :md5)
       end
     end
@@ -101,7 +101,7 @@ describe Shrine::Plugins::Signature do
     it "allows swapping log subscriber" do
       @shrine.plugin :signature, log_subscriber: -> (event) { @event = event }
 
-      refute_logged /^Signature/ do
+      refute_logged(/^Signature/) do
         @shrine.calculate_signature(fakeio, :md5)
       end
 
@@ -111,14 +111,14 @@ describe Shrine::Plugins::Signature do
     it "allows disabling log subscriber" do
       @shrine.plugin :signature, log_subscriber: nil
 
-      refute_logged /^Signature/ do
+      refute_logged(/^Signature/) do
         @shrine.calculate_signature(fakeio, :md5)
       end
     end
   end
 
   it "defaults hash format to hexadecimal" do
-    assert_match /^[[:xdigit:]]+$/, @uploader.calculate_signature(fakeio("content"), :md5)
+    assert_match(/^[[:xdigit:]]+$/, @uploader.calculate_signature(fakeio("content"), :md5))
   end
 
   it "accepts uppercase algorithm names" do

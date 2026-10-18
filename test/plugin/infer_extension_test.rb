@@ -52,7 +52,7 @@ describe Shrine::Plugins::InferExtension do
     it "logs inferring extension" do
       @shrine.plugin :infer_extension
 
-      assert_logged /^Extension \(\d+ms\) – \{.+\}$/ do
+      assert_logged(/^Extension \(\d+ms\) – \{.+\}$/) do
         @shrine.infer_extension("image/jpeg")
       end
     end
@@ -73,7 +73,7 @@ describe Shrine::Plugins::InferExtension do
     it "allows swapping log subscriber" do
       @shrine.plugin :infer_extension, log_subscriber: -> (event) { @event = event }
 
-      refute_logged /^Extension/ do
+      refute_logged(/^Extension/) do
         @shrine.infer_extension("image/jpeg")
       end
 
@@ -83,7 +83,7 @@ describe Shrine::Plugins::InferExtension do
     it "allows disabling log subscriber" do
       @shrine.plugin :infer_extension, log_subscriber: nil
 
-      refute_logged /^Extension/ do
+      refute_logged(/^Extension/) do
         @shrine.infer_extension("image/jpeg")
       end
     end

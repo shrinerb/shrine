@@ -43,13 +43,13 @@ class Shrine
         #
         # This more convenient to use with concrete persistence plugins, which
         # provide defaults for reloading and persistence.
-        def abstract_atomic_promote(reload:, persist:, **, &block)
+        def abstract_atomic_promote(reload:, persist:, **, &)
           original_file = file
 
           result = promote(**)
 
           begin
-            abstract_atomic_persist(original_file, reload:, persist:, &block)
+            abstract_atomic_persist(original_file, reload:, persist:, &)
             result
           rescue Shrine::AttachmentChanged
             destroy_attached

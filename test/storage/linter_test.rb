@@ -108,28 +108,28 @@ describe Shrine::Storage::Linter do
     end
 
     it "tests that result is a Hash" do
-      @storage.instance_eval { def presign(id, **options); Object.new; end }
+      @storage.stubs(:presign).returns(Object.new)
       assert_raises(Shrine::LintError) { @linter.call }
     end
 
     it "passes for result that responds to #to_h" do
-      @storage.instance_eval { def presign(id, **options); Struct.new(:method, :url).new("post", "foo"); end }
+      @storage.stubs(:presign).returns(Struct.new(:method, :url).new("post", "foo"))
       @linter.call
     end
 
     it "tests that Hash includes :url key" do
-      @storage.instance_eval { def presign(id, **options); { method: "post" }; end }
+      @storage.stubs(:presign).returns({ method: "post" })
       assert_raises(Shrine::LintError) { @linter.call }
 
-      @storage.instance_eval { def presign(id, **options); Struct.new(:method).new("post"); end }
+      @storage.stubs(:presign).returns(Struct.new(:method).new("post"))
       assert_raises(Shrine::LintError) { @linter.call }
     end
 
     it "tests that Hash includes :method key" do
-      @storage.instance_eval { def presign(id, **options); { url: "foo" }; end }
+      @storage.stubs(:presign).returns({ url: "foo" })
       assert_raises(Shrine::LintError) { @linter.call }
 
-      @storage.instance_eval { def presign(id, **options); Struct.new(:url).new("foo"); end }
+      @storage.stubs(:presign).returns(Struct.new(:url).new("foo"))
       assert_raises(Shrine::LintError) { @linter.call }
     end
   end

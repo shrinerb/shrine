@@ -158,8 +158,8 @@ describe Shrine::Plugins::DerivationEndpoint do
 
     it "escapes path and query params" do
       derivation_url = @uploaded_file.derivation_url(:gray, "foo bar", filename: "foo bar")
-      assert_match /gray\/foo%20bar/,   URI(derivation_url).path
-      assert_match /filename=foo\+bar/, URI(derivation_url).query
+      assert_match(/gray\/foo%20bar/,   URI(derivation_url).path)
+      assert_match(/filename=foo\+bar/, URI(derivation_url).query)
     end
 
     it "generates signature from derivation name, args, params, and secret key" do
@@ -509,7 +509,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         "rack.input"     => StringIO.new,
       }
 
-      status, headers, body = @shrine.derivation_response(env)
+      status, _headers, _body = @shrine.derivation_response(env)
 
       assert_equal 200,    status
       assert_equal "/foo", env["SCRIPT_NAME"]
@@ -528,7 +528,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         "rack.input"     => StringIO.new,
       }
 
-      status, headers, body = @shrine.derivation_response(env, type: "text/plain")
+      status, headers, _body = @shrine.derivation_response(env, type: "text/plain")
 
       assert_equal 200,          status
       assert_equal "text/plain", headers["Content-Type"]
@@ -759,7 +759,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         @uploaded_file.derivation_response(:gray, env: {})
         response = @uploaded_file.derivation_response(:gray, env: {})
         assert_instance_of String,    response[1]["ETag"]
-        assert_match /^W\/"\w{32}"$/, response[1]["ETag"]
+        assert_match(/^W\/"\w{32}"$/, response[1]["ETag"])
       end
 
       it "applies :upload_open_options" do
@@ -1001,7 +1001,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         it "logs derivation" do
           @shrine.plugin :derivation_endpoint
 
-          assert_logged /^Derivation \(\d+ms\) – \{.+\}$/ do
+          assert_logged(/^Derivation \(\d+ms\) – \{.+\}$/) do
             @uploaded_file.derivation(:gray).generate
           end
         end
@@ -1022,7 +1022,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         it "allows swapping log subscriber" do
           @shrine.plugin :derivation_endpoint, log_subscriber: -> (event) { @event = event }
 
-          refute_logged /^Derivation/ do
+          refute_logged(/^Derivation/) do
             @uploaded_file.derivation(:gray).generate
           end
 
@@ -1032,7 +1032,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         it "allows disabling log subscriber" do
           @shrine.plugin :derivation_endpoint, log_subscriber: nil
 
-          refute_logged /^Derivation/ do
+          refute_logged(/^Derivation/) do
             @uploaded_file.derivation(:gray).generate
           end
         end

@@ -2,6 +2,11 @@ Warning[:deprecated] = true
 
 require "bundler/setup"
 
+require "warning"
+# raise on warnings from the library and tests
+Warning.process(File.expand_path("../lib", __dir__)) { :raise }
+Warning.process(File.expand_path(__dir__)) { :raise }
+
 if ENV["COVERAGE"]
   require "simplecov"
   SimpleCov.start do

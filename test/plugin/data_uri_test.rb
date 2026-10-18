@@ -159,7 +159,7 @@ describe Shrine::Plugins::DataUri do
         it "logs data URI parsing" do
           @shrine.plugin :data_uri
 
-          assert_logged /^Data URI \(\d+ms\) – \{.+\}$/ do
+          assert_logged(/^Data URI \(\d+ms\) – \{.+\}$/) do
             @shrine.data_uri("data:image/png,content")
           end
         end
@@ -180,7 +180,7 @@ describe Shrine::Plugins::DataUri do
         it "allows swapping log subscriber" do
           @shrine.plugin :data_uri, log_subscriber: -> (event) { @event = event }
 
-          refute_logged /^Data URI/ do
+          refute_logged(/^Data URI/) do
             @shrine.data_uri("data:image/png,content")
           end
 
@@ -190,7 +190,7 @@ describe Shrine::Plugins::DataUri do
         it "allows disabling log subscriber" do
           @shrine.plugin :data_uri, log_subscriber: nil
 
-          refute_logged /^Data URI/ do
+          refute_logged(/^Data URI/) do
             @shrine.data_uri("data:image/png,content")
           end
         end

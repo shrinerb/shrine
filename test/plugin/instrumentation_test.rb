@@ -197,7 +197,7 @@ describe Shrine::Plugins::Instrumentation do
         @uploader = @shrine.new(:store)
 
         io            = fakeio
-        uploaded_file = assert_logged /^Upload \(\d+ms\) – \{.+\}$/ do
+        uploaded_file = assert_logged(/^Upload \(\d+ms\) – \{.+\}$/) do
           @shrine.upload(
             io,
             :store,
@@ -229,7 +229,7 @@ describe Shrine::Plugins::Instrumentation do
         @notifications.subscribe("metadata.shrine") { |event| @event = event }
 
         io = fakeio
-        assert_logged /^Metadata \(\d+ms\) – \{.+\}/ do
+        assert_logged(/^Metadata \(\d+ms\) – \{.+\}/) do
           @shrine.upload(
             io,
             :store,
@@ -251,18 +251,18 @@ describe Shrine::Plugins::Instrumentation do
       it "skips instrumenting if metadata extraction is skipped" do
         @notifications.subscribe("metadata.shrine") { |event| @event = event }
 
-        refute_logged /^Metadata \(\d+ms\) – \{.+\}/ do
+        refute_logged(/^Metadata \(\d+ms\) – \{.+\}/) do
           @shrine.upload(fakeio, :store, metadata: false)
         end
 
-        refute_logged /^Metadata \(\d+ms\) – \{.+\}/ do
+        refute_logged(/^Metadata \(\d+ms\) – \{.+\}/) do
           file = @shrine.upload(fakeio, :store, metadata: false)
           @shrine.upload(file, :store)
         end
 
         assert_nil @event
 
-        assert_logged /^Metadata \(\d+ms\) – \{.+\}/ do
+        assert_logged(/^Metadata \(\d+ms\) – \{.+\}/) do
           file = @shrine.upload(fakeio, :store, metadata: false)
           @shrine.upload(file, :store, metadata: true)
         end
@@ -281,7 +281,7 @@ describe Shrine::Plugins::Instrumentation do
 
         file = @shrine.upload(fakeio, :store)
 
-        assert_logged /^Download \(\d+ms\) – \{.+\}$/ do
+        assert_logged(/^Download \(\d+ms\) – \{.+\}$/) do
           file.download(foo: "bar")
         end
 
@@ -307,7 +307,7 @@ describe Shrine::Plugins::Instrumentation do
 
         uploaded_file = @shrine.upload(fakeio, :store)
 
-        assert_logged /^Download \(\d+ms\) – \{.+\}$/ do
+        assert_logged(/^Download \(\d+ms\) – \{.+\}$/) do
           uploaded_file.stream(File::NULL, foo: "bar")
         end
 
@@ -324,7 +324,7 @@ describe Shrine::Plugins::Instrumentation do
 
         uploaded_file = @shrine.upload(fakeio, :store)
 
-        refute_logged /^Open \(\d+ms\) – \{.+\}$/ do
+        refute_logged(/^Open \(\d+ms\) – \{.+\}$/) do
           uploaded_file.stream(File::NULL)
         end
 
@@ -337,7 +337,7 @@ describe Shrine::Plugins::Instrumentation do
         uploaded_file = @shrine.upload(fakeio, :store)
         uploaded_file.open
 
-        refute_logged /^Download \(\d+ms\) – \{.+\}$/ do
+        refute_logged(/^Download \(\d+ms\) – \{.+\}$/) do
           uploaded_file.stream(File::NULL)
         end
 
@@ -358,7 +358,7 @@ describe Shrine::Plugins::Instrumentation do
 
         uploaded_file = @shrine.upload(fakeio, :store)
 
-        assert_logged /^Open \(\d+ms\) – \{.+\}$/ do
+        assert_logged(/^Open \(\d+ms\) – \{.+\}$/) do
           uploaded_file.open(foo: "bar")
         end
 
@@ -375,7 +375,7 @@ describe Shrine::Plugins::Instrumentation do
 
         uploaded_file = @shrine.upload(fakeio, :store)
 
-        assert_logged /^Open \(\d+ms\) – \{.+\}$/ do
+        assert_logged(/^Open \(\d+ms\) – \{.+\}$/) do
           uploaded_file.open(foo: "bar") {}
         end
 
@@ -401,7 +401,7 @@ describe Shrine::Plugins::Instrumentation do
 
         uploaded_file = @shrine.upload(fakeio, :store)
 
-        assert_logged /^Exists \(\d+ms\) – \{.+\}$/ do
+        assert_logged(/^Exists \(\d+ms\) – \{.+\}$/) do
           uploaded_file.exists?
         end
 
@@ -419,7 +419,7 @@ describe Shrine::Plugins::Instrumentation do
 
         uploaded_file = @shrine.upload(fakeio, :store)
 
-        assert_logged /^Delete \(\d+ms\) – \{.+\}$/ do
+        assert_logged(/^Delete \(\d+ms\) – \{.+\}$/) do
           uploaded_file.delete
         end
 
@@ -435,7 +435,7 @@ describe Shrine::Plugins::Instrumentation do
   it "allows selecting events to log" do
     @shrine.plugin :instrumentation, log_events: [:upload]
 
-    refute_logged /^Metadata/ do
+    refute_logged(/^Metadata/) do
       @shrine.upload(fakeio, :store)
     end
   end
@@ -445,7 +445,7 @@ describe Shrine::Plugins::Instrumentation do
       log_events: [:upload],
       log_subscriber: -> (event) { @event = event }
 
-    refute_logged /^Upload/ do
+    refute_logged(/^Upload/) do
       @shrine.upload(fakeio, :store)
     end
 
@@ -458,7 +458,7 @@ describe Shrine::Plugins::Instrumentation do
       log_events: [:upload],
       log_subscriber: nil
 
-    refute_logged /^Upload/ do
+    refute_logged(/^Upload/) do
       @shrine.upload(fakeio, :store)
     end
   end

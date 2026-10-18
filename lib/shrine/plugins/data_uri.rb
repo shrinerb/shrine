@@ -2,7 +2,11 @@
 
 require "base64"
 require "strscan"
-require "cgi"
+if RUBY_VERSION >= "4.0"
+  require "cgi/escape" # CGI.unescape
+else
+  require "cgi/util" # cgi/escape on Ruby < 4.0 doesn't fully define CGI.unescape
+end
 require "stringio"
 require "forwardable"
 

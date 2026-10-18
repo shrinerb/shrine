@@ -308,7 +308,7 @@ describe Shrine::Storage::S3 do
 
     it "forwards additional options to #get_object" do
       @s3.client.stub_responses(:get_object, status_code: 200, headers: { "content-length" => "7" }, body: "content")
-      io = @s3.open("foo", range: "bytes=0-100", response_content_encoding: "gzip")
+      @s3.open("foo", range: "bytes=0-100", response_content_encoding: "gzip")
       assert_equal :get_object,   @s3.client.api_requests[0][:operation_name]
       assert_equal "bytes=0-100", @s3.client.api_requests[0][:params][:range]
       assert_equal "gzip",        @s3.client.api_requests[0][:params][:response_content_encoding]
@@ -459,7 +459,7 @@ describe Shrine::Storage::S3 do
     it "returns POST request data for the given id" do
       data = @s3.presign("foo")
       assert_equal :post, data[:method]
-      assert_match /^http/, data[:url]
+      assert_match(/^http/, data[:url])
       assert_equal "foo", data[:fields]["key"]
     end
 

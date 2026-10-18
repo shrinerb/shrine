@@ -252,7 +252,7 @@ describe Shrine::Plugins::DetermineMimeType do
     it "logs MIME type extraction" do
       @shrine.plugin :determine_mime_type
 
-      assert_logged /^MIME Type \(\d+ms\) – \{.+\}$/ do
+      assert_logged(/^MIME Type \(\d+ms\) – \{.+\}$/) do
         @shrine.determine_mime_type(image)
       end
     end
@@ -273,7 +273,7 @@ describe Shrine::Plugins::DetermineMimeType do
     it "allows swapping log subscriber" do
       @shrine.plugin :determine_mime_type, log_subscriber: -> (event) { @event = event }
 
-      refute_logged /^MIME Type/ do
+      refute_logged(/^MIME Type/) do
         @shrine.determine_mime_type(image)
       end
 
@@ -283,7 +283,7 @@ describe Shrine::Plugins::DetermineMimeType do
     it "allows disabling log subscriber" do
       @shrine.plugin :determine_mime_type, log_subscriber: nil
 
-      refute_logged /^MIME Type/ do
+      refute_logged(/^MIME Type/) do
         @shrine.determine_mime_type(image)
       end
     end

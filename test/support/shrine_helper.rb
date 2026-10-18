@@ -23,13 +23,13 @@ module ShrineHelper
 
   def model_class(*attributes)
     klass = entity_class(*attributes)
-    klass.attr_writer *attributes
+    klass.attr_writer(*attributes)
     klass
   end
 
   def entity_class(*attributes)
     klass = Class.new(Struct)
-    klass.attr_reader *attributes
+    klass.attr_reader(*attributes)
     klass
   end
 

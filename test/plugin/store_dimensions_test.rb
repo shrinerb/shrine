@@ -22,7 +22,7 @@ describe Shrine::Plugins::StoreDimensions do
     end
 
     it "returns nil for non-images" do
-      assert_logged /SHRINE WARNING: Error occurred/ do
+      assert_logged(/SHRINE WARNING: Error occurred/) do
         assert_nil @shrine.extract_dimensions(fakeio)
       end
     end
@@ -43,7 +43,7 @@ describe Shrine::Plugins::StoreDimensions do
     end
 
     it "returns nil for non-images" do
-      assert_logged /SHRINE WARNING: Error occurred/ do
+      assert_logged(/SHRINE WARNING: Error occurred/) do
         assert_nil @shrine.extract_dimensions(fakeio)
       end
     end
@@ -64,7 +64,7 @@ describe Shrine::Plugins::StoreDimensions do
     end
 
     it "returns nil for non-images" do
-      assert_logged /SHRINE WARNING: Error occurred/ do
+      assert_logged(/SHRINE WARNING: Error occurred/) do
         assert_nil @shrine.extract_dimensions(fakeio)
       end
     end
@@ -78,7 +78,7 @@ describe Shrine::Plugins::StoreDimensions do
     it "logs dimensions extraction" do
       @shrine.plugin :store_dimensions
 
-      assert_logged /^Image Dimensions \(\d+ms\) – \{.+\}$/ do
+      assert_logged(/^Image Dimensions \(\d+ms\) – \{.+\}$/) do
         @shrine.extract_dimensions(image)
       end
     end
@@ -99,7 +99,7 @@ describe Shrine::Plugins::StoreDimensions do
     it "allows swapping log subscriber" do
       @shrine.plugin :store_dimensions, log_subscriber: -> (event) { @event = event }
 
-      refute_logged /^Image Dimensions/ do
+      refute_logged(/^Image Dimensions/) do
         @shrine.extract_dimensions(image)
       end
 
@@ -109,20 +109,20 @@ describe Shrine::Plugins::StoreDimensions do
     it "allows disabling log subscriber" do
       @shrine.plugin :determine_mime_type, log_subscriber: nil
 
-      refute_logged /^Image Dimensions/ do
+      refute_logged(/^Image Dimensions/) do
         @shrine.extract_dimensions(image)
       end
     end
   end
 
   it "respects :on_error option" do
-    assert_logged /Error occurred when attempting to extract image dimensions/ do
+    assert_logged(/Error occurred when attempting to extract image dimensions/) do
       @shrine.extract_dimensions(fakeio)
     end
 
     @shrine.plugin :store_dimensions, on_error: :warn
 
-    assert_logged /Error occurred when attempting to extract image dimensions/ do
+    assert_logged(/Error occurred when attempting to extract image dimensions/) do
       @shrine.extract_dimensions(fakeio)
     end
 
@@ -134,7 +134,7 @@ describe Shrine::Plugins::StoreDimensions do
 
     @shrine.plugin :store_dimensions, on_error: :ignore
 
-    refute_logged /Error occurred when attempting to extract image dimensions/ do
+    refute_logged(/Error occurred when attempting to extract image dimensions/) do
       @shrine.extract_dimensions(fakeio)
     end
   end

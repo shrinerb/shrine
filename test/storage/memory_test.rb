@@ -30,12 +30,15 @@ describe Shrine::Storage::Memory do
     @memory.upload(fakeio("content".b), "key")
 
     begin
+      # silence "setting Encoding.default_internal" warning
+      original_verbose, $VERBOSE = $VERBOSE, nil
       original_internal = Encoding.default_internal
       Encoding.default_internal = Encoding::UTF_8
 
       assert_equal Encoding::BINARY, @memory.open("key").read.encoding
     ensure
       Encoding.default_internal = original_internal
+      $VERBOSE = original_verbose
     end
   end
 end

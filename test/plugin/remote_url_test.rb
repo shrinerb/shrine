@@ -127,7 +127,7 @@ describe Shrine::Plugins::RemoteUrl do
         it "logs remote URL download" do
           @shrine.plugin :remote_url
 
-          assert_logged /^Remote URL \(\d+ms\) – \{.+\}$/ do
+          assert_logged(/^Remote URL \(\d+ms\) – \{.+\}$/) do
             @shrine.remote_url(good_url)
           end
         end
@@ -149,7 +149,7 @@ describe Shrine::Plugins::RemoteUrl do
         it "allows swapping log subscriber" do
           @shrine.plugin :remote_url, log_subscriber: -> (event) { @event = event }
 
-          refute_logged /^Remote URL/ do
+          refute_logged(/^Remote URL/) do
             @shrine.remote_url(good_url)
           end
 
@@ -159,7 +159,7 @@ describe Shrine::Plugins::RemoteUrl do
         it "allows disabling log subscriber" do
           @shrine.plugin :remote_url, log_subscriber: nil
 
-          refute_logged /^Remote URL/ do
+          refute_logged(/^Remote URL/) do
             @shrine.remote_url(good_url)
           end
         end
