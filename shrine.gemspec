@@ -52,7 +52,6 @@ direct uploads for fully asynchronous user experience.
   # for determine_mime_type plugin
   gem.add_development_dependency "mimemagic", ">= 0.3.2"
   gem.add_development_dependency "marcel"
-  gem.add_development_dependency "ruby-filemagic", "~> 0.7" unless RUBY_ENGINE == "jruby" || ENV["CI"]
 
   # for determine_mime_type and infer_extension plugins
   gem.add_development_dependency "mime-types"
