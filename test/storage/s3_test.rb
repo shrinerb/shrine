@@ -444,6 +444,22 @@ describe Shrine::Storage::S3 do
       assert_equal "http://123.cloudfront.net/prefix/foo/bar%20quux", url
     end
 
+    it "applies :prefix to :host URLs" do
+      url = s3(prefix: "uploads").url("foo/bar", host: "http://123.cloudfront.net", public: true)
+      assert_equal "http://123.cloudfront.net/uploads/foo/bar", url
+    end
+
+    it "escapes the key in :host URLs the same way as in public URLs" do
+      url = @s3.url("foo/é+~*!'() quux", host: "http://123.cloudfront.net", public: true)
+      assert_equal "http://123.cloudfront.net/foo/%C3%A9%2B~%2A%21%27%28%29%20quux", url
+      assert_equal URI(@s3.url("foo/é+~*!'() quux", public: true)).path, URI(url).path
+    end
+
+    it "leaves the bucket out of :host URLs when the endpoint host contains the bucket name" do
+      url = s3(bucket: "foo", endpoint: "https://foo.example.com", force_path_style: true).url("bar", host: "http://123.cloudfront.net", public: true)
+      assert_equal "http://123.cloudfront.net/bar", url
+    end
+
     it "uses the custom signer" do
       @s3 = s3(signer: -> (url, **options) { "#{url}?#{options.map{|k,v|"#{k}=#{v}"}.join("&")}" })
 

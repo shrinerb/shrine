@@ -10,6 +10,11 @@ require "content_disposition"
 
 require "uri"
 require "tempfile"
+if RUBY_VERSION >= "4.0"
+  require "cgi/escape" # CGI.escape
+else
+  require "cgi/util" # CGI.escape
+end
 
 class Shrine
   module Storage
@@ -146,6 +151,9 @@ class Shrine
       # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method
       # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#public_url-instance_method
       def url(id, public: self.public, host: nil, **)
+        # With :host, only the escaped object key of the public S3 URL is kept, so the S3 URL is not built.
+        return URI.join(host, escape_path(object_key(id))).to_s if host && public && !signer
+
         if public || signer
           url = object(id).public_url(**)
         else
@@ -354,6 +362,11 @@ class Shrine
       # Returns object key with potential prefix.
       def object_key(id)
         [*prefix, id].join("/")
+      end
+
+      # Escapes the object key the same way as Aws::S3::Object#public_url.
+      def escape_path(key)
+        key.gsub(/[^\/]+/) { |segment| CGI.escape(segment.encode("UTF-8")).gsub("+", "%20").gsub("%7E", "~") }
       end
 
       # Adds support for Aws::S3::Encryption::Client.
