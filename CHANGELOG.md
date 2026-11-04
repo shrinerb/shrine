@@ -2,6 +2,8 @@
 
 * Require Ruby 3.3+ (@janko)
 
+* `s3` – Build public `S3#url` with `:host` from the object key without generating the S3 URL first, which is 3-7x faster (@doutatsu)
+
 ## 3.10.2 (2026-10-11)
 
 * `derivation_endpoint` – Prevent bypassing CDN caching by modifying the encoding or structure of the signed URL query string (@Antsiscool, @janko)
