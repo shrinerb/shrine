@@ -7,6 +7,7 @@ title: Extensions
 | Gem                                                                                   | Description                                                                 |
 | :----                                                                                 | :----------                                                                 |
 | [shrine-aliyun-oss](https://github.com/zillou/shrine-aliyun-oss)                      | Storage using [Alibaba Cloud OSS](https://www.alibabacloud.com/product/oss) |
+| [shrine-bunny](https://github.com/doutatsu/shrine-bunny)                              | Storage using [Bunny Storage](https://bunny.net/storage/)                   |
 | [shrine-cloudinary](https://github.com/shrinerb/shrine-cloudinary)                    | Storage using [Cloudinary](https://cloudinary.com/)                         |
 | [shrine-flickr](https://github.com/shrinerb/shrine-flickr)                            | Storage using [Flickr](https://flickr.com/)                                 |
 | [shrine-fog](https://github.com/shrinerb/shrine-fog)                                  | Storage using [Fog](http://fog.io/)                                         |
