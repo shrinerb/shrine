@@ -195,6 +195,6 @@ plugin :remote_url, log_subscriber: nil
 [remote_url]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/remote_url.rb
 [Down]: https://github.com/janko/down
 [Down::NetHttp]: https://github.com/janko/down#downnethttp
-[open-uri]: https://ruby-doc.org/stdlib/libdoc/open-uri/rdoc/OpenURI.html
+[open-uri]: https://docs.ruby-lang.org/en/master/OpenURI.html
 [http.rb]: https://github.com/httprb/http
 [shrine-url]: https://github.com/shrinerb/shrine-url

@@ -314,8 +314,8 @@ Shrine is able to upload any IO-like object that implement methods [`#read`],
 This includes but is not limited to the following objects:
 
 * [`File`](https://ruby-doc.org/core/File.html)
-* [`Tempfile`](https://ruby-doc.org/stdlib/libdoc/tempfile/rdoc/Tempfile.html)
-* [`StringIO`](https://ruby-doc.org/stdlib/libdoc/stringio/rdoc/StringIO.html)
+* [`Tempfile`](https://docs.ruby-lang.org/en/master/Tempfile.html)
+* [`StringIO`](https://docs.ruby-lang.org/en/master/StringIO.html)
 * [`ActionDispatch::Http::UploadedFile`](https://api.rubyonrails.org/classes/ActionDispatch/Http/UploadedFile.html)
 * [`Shrine::RackFile`](https://shrinerb.com/docs/plugins/rack_file)
 * [`Shrine::DataFile`](https://shrinerb.com/docs/plugins/data_uri)
