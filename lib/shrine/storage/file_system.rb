@@ -93,7 +93,7 @@ class Shrine
       #
       #    file_system.delete_prefixed("somekey/derivatives/")
       def delete_prefixed(delete_prefix)
-        FileUtils.rm_rf directory.join(delete_prefix)
+        FileUtils.rm_rf path(delete_prefix)
       end
 
       # Deletes all files from the #directory. If a block is passed in, deletes

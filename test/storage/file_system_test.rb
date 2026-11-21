@@ -360,6 +360,7 @@ describe Shrine::Storage::FileSystem do
       assert_raises(Shrine::Error) { @storage.exists?(id) }
       assert_raises(Shrine::Error) { @storage.delete(id) }
       assert_raises(Shrine::Error) { @storage.upload(fakeio, id) }
+      assert_raises(Shrine::Error) { @storage.delete_prefixed(id) }
     end
 
     # legitimate ids (including ones with harmless `..` segments) still work
