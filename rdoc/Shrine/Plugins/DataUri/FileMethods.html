@@ -748,6 +748,12 @@
                   </li>
 
                   <li>
+                    <a href="../../../doc/release_notes/3_11_0_md.html">
+                      3.11.0
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="../../../doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -999,12 +1005,12 @@
 
           <div class="method-source-code" id="base64-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
-<span class="line-num">169</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">base64</span>
-<span class="line-num">170</span>   <span class="ruby-identifier">binary</span> = <span class="ruby-identifier">open</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span> }
-<span class="line-num">171</span>   <span class="ruby-identifier">result</span> = <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">strict_encode64</span>(<span class="ruby-identifier">binary</span>)
-<span class="line-num">172</span>   <span class="ruby-identifier">binary</span>.<span class="ruby-identifier">clear</span> <span class="ruby-comment"># deallocate string</span>
-<span class="line-num">173</span>   <span class="ruby-identifier">result</span>
-<span class="line-num">174</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">173</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">base64</span>
+<span class="line-num">174</span>   <span class="ruby-identifier">binary</span> = <span class="ruby-identifier">open</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span> }
+<span class="line-num">175</span>   <span class="ruby-identifier">result</span> = <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">strict_encode64</span>(<span class="ruby-identifier">binary</span>)
+<span class="line-num">176</span>   <span class="ruby-identifier">binary</span>.<span class="ruby-identifier">clear</span> <span class="ruby-comment"># deallocate string</span>
+<span class="line-num">177</span>   <span class="ruby-identifier">result</span>
+<span class="line-num">178</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 
@@ -1051,9 +1057,9 @@
 
           <div class="method-source-code" id="data_uri-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
-<span class="line-num">164</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">data_uri</span>
-<span class="line-num">165</span>   <span class="ruby-ivar">@data_uri</span> ||= <span class="ruby-string">&quot;</span><span class="ruby-string">data:</span><span class="ruby-string">#{</span><span class="ruby-identifier">mime_type</span> <span class="ruby-operator">||</span> <span class="ruby-string">&quot;</span><span class="ruby-string">text/plain</span><span class="ruby-string">&quot;</span><span class="ruby-string">}</span><span class="ruby-string">;base64,</span><span class="ruby-string">#{</span><span class="ruby-identifier">base64</span><span class="ruby-string">}</span><span class="ruby-string">&quot;</span>
-<span class="line-num">166</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">168</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">data_uri</span>
+<span class="line-num">169</span>   <span class="ruby-ivar">@data_uri</span> ||= <span class="ruby-string">&quot;</span><span class="ruby-string">data:</span><span class="ruby-string">#{</span><span class="ruby-identifier">mime_type</span> <span class="ruby-operator">||</span> <span class="ruby-string">&quot;</span><span class="ruby-string">text/plain</span><span class="ruby-string">&quot;</span><span class="ruby-string">}</span><span class="ruby-string">;base64,</span><span class="ruby-string">#{</span><span class="ruby-identifier">base64</span><span class="ruby-string">}</span><span class="ruby-string">&quot;</span>
+<span class="line-num">170</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 

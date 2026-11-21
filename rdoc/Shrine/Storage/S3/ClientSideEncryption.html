@@ -742,6 +742,12 @@
                   </li>
 
                   <li>
+                    <a href="../../../doc/release_notes/3_11_0_md.html">
+                      3.11.0
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="../../../doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -1012,12 +1018,12 @@
 
           <div class="method-source-code" id="new-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/storage/s3.rb</span>
-<span class="line-num">365</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-value">client:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)
-<span class="line-num">366</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">Aws::S3::Encryption</span><span class="ruby-string">&quot;</span>)
-<span class="line-num">367</span> 
-<span class="line-num">368</span>   <span class="ruby-keyword">super</span>(<span class="ruby-value">client</span><span class="ruby-value">:</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">client</span>, <span class="ruby-operator">**</span>)
-<span class="line-num">369</span>   <span class="ruby-ivar">@encryption_client</span> = <span class="ruby-identifier">client</span>
-<span class="line-num">370</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">378</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-value">client:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">379</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">Aws::S3::Encryption</span><span class="ruby-string">&quot;</span>)
+<span class="line-num">380</span> 
+<span class="line-num">381</span>   <span class="ruby-keyword">super</span>(<span class="ruby-value">client</span><span class="ruby-value">:</span> <span class="ruby-identifier">client</span>.<span class="ruby-identifier">client</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">382</span>   <span class="ruby-ivar">@encryption_client</span> = <span class="ruby-identifier">client</span>
+<span class="line-num">383</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 

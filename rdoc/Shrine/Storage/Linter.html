@@ -742,6 +742,12 @@
                   </li>
 
                   <li>
+                    <a href="../../doc/release_notes/3_11_0_md.html">
+                      3.11.0
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="../../doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -1455,7 +1461,7 @@
 <span class="line-num">76</span>     <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">open</span>(<span class="ruby-ivar">@nonexisting</span>)
 <span class="line-num">77</span>     <span class="ruby-identifier">error</span> <span class="ruby-value">:</span><span class="ruby-value">open</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">should raise an exception on nonexisting file</span><span class="ruby-string">&quot;</span>
 <span class="line-num">78</span>   <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">FileNotFound</span>
-<span class="line-num">79</span>   <span class="ruby-keyword">rescue</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">exception</span>
+<span class="line-num">79</span>   <span class="ruby-keyword">rescue</span>
 <span class="line-num">80</span>     <span class="ruby-identifier">error</span> <span class="ruby-value">:</span><span class="ruby-value">open</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">should raise Shrine::FileNotFound on nonexisting file</span><span class="ruby-string">&quot;</span>
 <span class="line-num">81</span>   <span class="ruby-keyword">end</span>
 <span class="line-num">82</span> <span class="ruby-keyword">end</span></pre>

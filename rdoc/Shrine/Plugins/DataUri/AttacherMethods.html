@@ -748,6 +748,12 @@
                   </li>
 
                   <li>
+                    <a href="../../../doc/release_notes/3_11_0_md.html">
+                      3.11.0
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="../../../doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -1001,15 +1007,15 @@
 
           <div class="method-source-code" id="assign_data_uri-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
-<span class="line-num">131</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">assign_data_uri</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">132</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uri</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">uri</span>.<span class="ruby-identifier">nil?</span>
-<span class="line-num">133</span> 
-<span class="line-num">134</span>   <span class="ruby-identifier">data_file</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">data_uri</span>(<span class="ruby-identifier">uri</span>)
-<span class="line-num">135</span>   <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">data_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
-<span class="line-num">136</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">ParseError</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">error</span>
-<span class="line-num">137</span>   <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">clear</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">data_uri_error_messsage</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-identifier">error</span>)
-<span class="line-num">138</span>   <span class="ruby-keyword">false</span>
-<span class="line-num">139</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">135</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">assign_data_uri</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">136</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uri</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;</span><span class="ruby-string">&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">uri</span>.<span class="ruby-identifier">nil?</span>
+<span class="line-num">137</span> 
+<span class="line-num">138</span>   <span class="ruby-identifier">data_file</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">data_uri</span>(<span class="ruby-identifier">uri</span>)
+<span class="line-num">139</span>   <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">data_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)
+<span class="line-num">140</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">ParseError</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">error</span>
+<span class="line-num">141</span>   <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">clear</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">data_uri_error_messsage</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-identifier">error</span>)
+<span class="line-num">142</span>   <span class="ruby-keyword">false</span>
+<span class="line-num">143</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 
@@ -1056,9 +1062,9 @@
 
           <div class="method-source-code" id="data_uri-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
-<span class="line-num">148</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">data_uri</span>
-<span class="line-num">149</span>   <span class="ruby-ivar">@data_uri</span>
-<span class="line-num">150</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">152</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">data_uri</span>
+<span class="line-num">153</span>   <span class="ruby-ivar">@data_uri</span>
+<span class="line-num">154</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 
@@ -1105,10 +1111,10 @@
 
           <div class="method-source-code" id="data_uri-3D-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
-<span class="line-num">142</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">data_uri=</span>(<span class="ruby-identifier">uri</span>)
-<span class="line-num">143</span>   <span class="ruby-identifier">assign_data_uri</span>(<span class="ruby-identifier">uri</span>)
-<span class="line-num">144</span>   <span class="ruby-ivar">@data_uri</span> = <span class="ruby-identifier">uri</span>
-<span class="line-num">145</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">146</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">data_uri=</span>(<span class="ruby-identifier">uri</span>)
+<span class="line-num">147</span>   <span class="ruby-identifier">assign_data_uri</span>(<span class="ruby-identifier">uri</span>)
+<span class="line-num">148</span>   <span class="ruby-ivar">@data_uri</span> = <span class="ruby-identifier">uri</span>
+<span class="line-num">149</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 

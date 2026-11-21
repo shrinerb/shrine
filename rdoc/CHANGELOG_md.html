@@ -11,7 +11,7 @@
   <meta name="keywords" content="ruby,documentation,CHANGELOG">
   <meta
     name="description"
-    content="CHANGELOG: derivation_endpoint` – Prevent bypassing CDN caching by modifying the encoding or structure of the signed URL query string (@Antsiscool, @janko) ## 3"
+    content="CHANGELOG: Require Ruby 3. host` from the object key without generating the S3 URL first, which is 3-7x faster (@doutatsu) ## 3."
   >
 
 
@@ -23,7 +23,7 @@
 
 
 
-    <meta property="og:description" content="derivation_endpoint` – Prevent bypassing CDN caching by modifying the encoding or structure of the signed URL query string (@Antsiscool, @janko) ## 3">
+    <meta property="og:description" content="Require Ruby 3. host` from the object key without generating the S3 URL first, which is 3-7x faster (@doutatsu) ## 3.">
 
 
 
@@ -35,7 +35,7 @@
 
 
 
-    <meta name="twitter:description" content="derivation_endpoint` – Prevent bypassing CDN caching by modifying the encoding or structure of the signed URL query string (@Antsiscool, @janko) ## 3">
+    <meta name="twitter:description" content="Require Ruby 3. host` from the object key without generating the S3 URL first, which is 3-7x faster (@doutatsu) ## 3.">
 
 
 
@@ -739,6 +739,12 @@
                   </li>
 
                   <li>
+                    <a href="./doc/release_notes/3_11_0_md.html">
+                      3.11.0
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="./doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -862,6 +868,16 @@
 </nav>
 
 <main role="main" aria-label="Page CHANGELOG.md">
+
+<span id="label-3.11.0+-282026-11-21-29" class="legacy-anchor"></span>
+<h2 id="3110-2026-11-21"><a href="#3110-2026-11-21"><a href="doc/release_notes/3_11_0_md.html">3.11.0</a> (2026-11-21)</a></h2>
+<ul><li>
+<p>Require Ruby 3.3+ (@janko)</p>
+</li><li>
+<p><code>file_system</code> – Prevent path traversal outside of the storage directory in <code>FileSystem#delete_prefixed</code> (@MaNi4)</p>
+</li><li>
+<p><code>s3</code> – Build public <code>S3#url</code> with <code>:host</code> from the object key without generating the S3 URL first, which is 3-7x faster (@doutatsu)</p>
+</li></ul>
 
 <span id="label-3.10.2+-282026-10-11-29" class="legacy-anchor"></span>
 <h2 id="3102-2026-10-11"><a href="#3102-2026-10-11"><a href="doc/release_notes/3_10_2_md.html">3.10.2</a> (2026-10-11)</a></h2>

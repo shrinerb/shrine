@@ -748,6 +748,12 @@
                   </li>
 
                   <li>
+                    <a href="../../../doc/release_notes/3_11_0_md.html">
+                      3.11.0
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="../../../doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -1046,7 +1052,7 @@
               <div class="method-heading">
                 <a href="#method-i-abstract_atomic_promote" title="Link to this method">
                   <span class="method-name">abstract_atomic_promote</span>
-                  <span class="method-args">(reload:, persist:, **, &amp;block)</span>
+                  <span class="method-args">(reload:, persist:, **, &amp;)</span>
                 </a>
               </div>
 
@@ -1066,13 +1072,13 @@
 
           <div class="method-source-code" id="abstract_atomic_promote-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/atomic_helpers.rb</span>
-<span class="line-num">46</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">abstract_atomic_promote</span>(<span class="ruby-value">reload:</span>, <span class="ruby-value">persist:</span>, <span class="ruby-operator">**</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">46</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">abstract_atomic_promote</span>(<span class="ruby-value">reload:</span>, <span class="ruby-value">persist:</span>, <span class="ruby-operator">**</span>, <span class="ruby-operator">&amp;</span>)
 <span class="line-num">47</span>   <span class="ruby-identifier">original_file</span> = <span class="ruby-identifier">file</span>
 <span class="line-num">48</span> 
 <span class="line-num">49</span>   <span class="ruby-identifier">result</span> = <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span>)
 <span class="line-num">50</span> 
 <span class="line-num">51</span>   <span class="ruby-keyword">begin</span>
-<span class="line-num">52</span>     <span class="ruby-identifier">abstract_atomic_persist</span>(<span class="ruby-identifier">original_file</span>, <span class="ruby-value">reload</span><span class="ruby-value">:</span>, <span class="ruby-value">persist</span><span class="ruby-value">:</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">52</span>     <span class="ruby-identifier">abstract_atomic_persist</span>(<span class="ruby-identifier">original_file</span>, <span class="ruby-value">reload</span><span class="ruby-value">:</span>, <span class="ruby-value">persist</span><span class="ruby-value">:</span>, <span class="ruby-operator">&amp;</span>)
 <span class="line-num">53</span>     <span class="ruby-identifier">result</span>
 <span class="line-num">54</span>   <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>
 <span class="line-num">55</span>     <span class="ruby-identifier">destroy_attached</span>

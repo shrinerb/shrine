@@ -748,6 +748,12 @@
                   </li>
 
                   <li>
+                    <a href="../../doc/release_notes/3_11_0_md.html">
+                      3.11.0
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="../../doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -1313,7 +1319,7 @@
           <div class="method-source-code" id="delete_prefixed-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>
 <span class="line-num">95</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">delete_prefixed</span>(<span class="ruby-identifier">delete_prefix</span>)
-<span class="line-num">96</span>   <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_rf</span> <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">delete_prefix</span>)
+<span class="line-num">96</span>   <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_rf</span> <span class="ruby-identifier">path</span>(<span class="ruby-identifier">delete_prefix</span>)
 <span class="line-num">97</span> <span class="ruby-keyword">end</span></pre>
           </div>
 

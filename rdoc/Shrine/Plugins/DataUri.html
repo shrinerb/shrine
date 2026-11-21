@@ -742,6 +742,12 @@
                   </li>
 
                   <li>
+                    <a href="../../doc/release_notes/3_11_0_md.html">
+                      3.11.0
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="../../doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -1048,13 +1054,13 @@
 
           <div class="method-source-code" id="configure-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
-<span class="line-num">32</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">log_subscriber:</span> <span class="ruby-constant">LOG_SUBSCRIBER</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)
-<span class="line-num">33</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:</span><span class="ruby-value">data_uri</span>] ||= {}
-<span class="line-num">34</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:</span><span class="ruby-value">data_uri</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)
-<span class="line-num">35</span> 
-<span class="line-num">36</span>   <span class="ruby-comment"># instrumentation plugin integration</span>
-<span class="line-num">37</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:</span><span class="ruby-value">data_uri</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">log_subscriber</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:</span><span class="ruby-value">subscribe</span>)
-<span class="line-num">38</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">36</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">log_subscriber:</span> <span class="ruby-constant">LOG_SUBSCRIBER</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)
+<span class="line-num">37</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:</span><span class="ruby-value">data_uri</span>] ||= {}
+<span class="line-num">38</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:</span><span class="ruby-value">data_uri</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)
+<span class="line-num">39</span> 
+<span class="line-num">40</span>   <span class="ruby-comment"># instrumentation plugin integration</span>
+<span class="line-num">41</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:</span><span class="ruby-value">data_uri</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">log_subscriber</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:</span><span class="ruby-value">subscribe</span>)
+<span class="line-num">42</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 
@@ -1101,9 +1107,9 @@
 
           <div class="method-source-code" id="load_dependencies-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb</span>
-<span class="line-num">28</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)
-<span class="line-num">29</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">validation</span>
-<span class="line-num">30</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">32</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)
+<span class="line-num">33</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:</span><span class="ruby-value">validation</span>
+<span class="line-num">34</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 

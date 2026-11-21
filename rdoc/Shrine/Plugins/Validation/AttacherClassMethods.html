@@ -748,6 +748,12 @@
                   </li>
 
                   <li>
+                    <a href="../../../doc/release_notes/3_11_0_md.html">
+                      3.11.0
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="../../../doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -998,8 +1004,9 @@
           <div class="method-source-code" id="validate-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/validation.rb</span>
 <span class="line-num">16</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">validate</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-<span class="line-num">17</span>   <span class="ruby-identifier">private</span> <span class="ruby-identifier">define_method</span>(<span class="ruby-value">:</span><span class="ruby-value">validate_block</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-<span class="line-num">18</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">17</span>   <span class="ruby-identifier">remove_method</span>(<span class="ruby-value">:</span><span class="ruby-value">validate_block</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">private_method_defined?</span>(<span class="ruby-value">:</span><span class="ruby-value">validate_block</span>, <span class="ruby-keyword">false</span>)
+<span class="line-num">18</span>   <span class="ruby-identifier">private</span> <span class="ruby-identifier">define_method</span>(<span class="ruby-value">:</span><span class="ruby-value">validate_block</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="line-num">19</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 

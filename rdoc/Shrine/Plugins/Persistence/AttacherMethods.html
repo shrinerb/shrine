@@ -748,6 +748,12 @@
                   </li>
 
                   <li>
+                    <a href="../../../doc/release_notes/3_11_0_md.html">
+                      3.11.0
+                    </a>
+                  </li>
+
+                  <li>
                     <a href="../../../doc/release_notes/3_2_0_md.html">
                       3.2.0
                     </a>
@@ -1003,9 +1009,9 @@
 
           <div class="method-source-code" id="atomic_persist-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>
-<span class="line-num">67</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">atomic_persist</span>(<span class="ruby-operator">*</span>)
-<span class="line-num">68</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">unhandled by a persistence plugin</span><span class="ruby-string">&quot;</span>
-<span class="line-num">69</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">70</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">atomic_persist</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">71</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">unhandled by a persistence plugin</span><span class="ruby-string">&quot;</span>
+<span class="line-num">72</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 
@@ -1052,9 +1058,9 @@
 
           <div class="method-source-code" id="atomic_promote-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>
-<span class="line-num">63</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">atomic_promote</span>(<span class="ruby-operator">*</span>)
-<span class="line-num">64</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">unhandled by a persistence plugin</span><span class="ruby-string">&quot;</span>
-<span class="line-num">65</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">66</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">atomic_promote</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">67</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">unhandled by a persistence plugin</span><span class="ruby-string">&quot;</span>
+<span class="line-num">68</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 
@@ -1101,9 +1107,9 @@
 
           <div class="method-source-code" id="persist-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>
-<span class="line-num">71</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">persist</span>(<span class="ruby-operator">*</span>)
-<span class="line-num">72</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">unhandled by a persistence plugin</span><span class="ruby-string">&quot;</span>
-<span class="line-num">73</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">74</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">persist</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">75</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">unhandled by a persistence plugin</span><span class="ruby-string">&quot;</span>
+<span class="line-num">76</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 
@@ -1150,10 +1156,10 @@
 
           <div class="method-source-code" id="set_entity-source">
             <pre class="ruby"><span class="ruby-comment"># File lib/shrine/plugins/_persistence.rb</span>
-<span class="line-num">77</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">set_entity</span>(<span class="ruby-operator">*</span>)
-<span class="line-num">78</span>   <span class="ruby-keyword">super</span>
-<span class="line-num">79</span>   <span class="ruby-ivar">@column_serializer</span> = <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">hash_attribute?</span>
-<span class="line-num">80</span> <span class="ruby-keyword">end</span></pre>
+<span class="line-num">80</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier">set_entity</span>(<span class="ruby-operator">*</span>)
+<span class="line-num">81</span>   <span class="ruby-keyword">super</span>
+<span class="line-num">82</span>   <span class="ruby-ivar">@column_serializer</span> = <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">hash_attribute?</span>
+<span class="line-num">83</span> <span class="ruby-keyword">end</span></pre>
           </div>
 
 
