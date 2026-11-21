@@ -1,6 +1,8 @@
-## HEAD
+## 3.11.0 (2026-11-21)
 
 * Require Ruby 3.3+ (@janko)
+
+* `file_system` – Prevent path traversal outside of the storage directory in `FileSystem#delete_prefixed` (@MaNi4)
 
 * `s3` – Build public `S3#url` with `:host` from the object key without generating the S3 URL first, which is 3-7x faster (@doutatsu)
 
