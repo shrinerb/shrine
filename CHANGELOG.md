@@ -1,3 +1,7 @@
+## 3.11.1 (2026-11-22)
+
+* Allow Down 6.x (@janko)
+
 ## 3.11.0 (2026-11-21)
 
 * Require Ruby 3.3+ (@janko)
